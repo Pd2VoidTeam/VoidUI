@@ -1,0 +1,23 @@
+{
+	"menu_id" : "HeistHUD_options_teammates",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_mate_title",
+	"description" : "HeistHUD_mate_desc",
+	"back_callback" : "HeistHUD_mate_desc",
+	"localized" :  true
+	"items" : [
+		{
+			"type" : "slider",
+			"id" : "heitshud_mate_scale",
+			"title" : "HeistHUD_mate_scale_title",
+			"description" : "HeistHUD_mate_scale_desc",
+			"callback" : "callback_heisthud_matescale",
+			"value" : "hud_mate_scale",
+			"default_value" : 1,
+			"max" : 1.5,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+		}
+	]
+}

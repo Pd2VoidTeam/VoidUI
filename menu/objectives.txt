@@ -1,0 +1,81 @@
+{
+	"menu_id" : "HeistHUD_options_objectives",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_objectives_title",
+	"description" : "HeistHUD_objectives_desc",
+	"back_callback" : "heisthud_save",
+	"localized" :  true,
+	"priority" : 10,
+	"items" : [
+		{
+			"type" : "slider",
+			"id" : "hud_objectives_scale",
+			"title" : "HeistHUD_objectives_scale_title",
+			"description" : "HeistHUD_objectives_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_objectives_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 17,
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 16,
+		},
+		{
+			"type" : "button",
+			"id" : "heitshud_timer",
+			"title" : "HeistHUD_timer_panel",
+			"priority" : 15,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_levelname",
+			"title" : "HeistHUD_levelname_title",
+			"description" : "HeistHUD_levelname_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "show_levelname"
+			"priority" : 14,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_ghost_icon",
+			"title" : "HeistHUD_ghost_title",
+			"description" : "HeistHUD_ghost_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "show_ghost_icon"
+			"priority" : 14,
+		},
+		
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 13,
+		},
+		{
+			"type" : "button",
+			"id" : "heitshud_objectives",
+			"title" : "HeistHUD_objectives_panel",
+			"priority" : 12,
+		},
+		{
+			"type" : "slider",
+			"id" : "hud_objective_history",
+			"title" : "HeistHUD_objective_history_title",
+			"description" : "HeistHUD_objective_history_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_objective_history",
+			"default_value" : 3,
+			"max" : 6,
+			"min" : 0,
+			"step" : 1,
+			"localized" :  true
+			"priority" : 11,
+		}
+		
+	]
+}

@@ -1,0 +1,44 @@
+{
+	"menu_id" : "HeistHUD_options_assault",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_assault_title",
+	"description" : "HeistHUD_assault_desc",
+	"back_callback" : "heisthud_save",
+	"localized" :  true,
+	"priority" : 15,
+	"items" : [
+		{
+			"type" : "slider",
+			"id" : "hud_assault_scale",
+			"title" : "HeistHUD_assault_scale_title",
+			"description" : "HeistHUD_assault_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_assault_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 3,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_badge",
+			"title" : "HeistHUD_badge_title",
+			"description" : "HeistHUD_badge_desc",
+			"callback" : "toggle_badge_clbk",
+			"value" : "show_badge"
+			"priority" : 2,
+		},
+		{
+			"type" : "toggle",
+			"id" : "anim_badge",
+			"title" : "HeistHUD_badge_anim_title",
+			"description" : "HeistHUD_badge_anim_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "anim_badge"
+			"priority" : 1,
+		}
+		
+	]
+}

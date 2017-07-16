@@ -1,0 +1,153 @@
+{
+	"menu_id" : "HeistHUD_options_hudteammate",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_hudteammate_title",
+	"description" : "HeistHUD_hudteammate_desc",
+	"back_callback" : "heisthud_save",
+	"localized" :  true,
+	"priority" : 20,
+	"items" : [
+		{
+			"type" : "button",
+			"id" : "heitshud_player",
+			"title" : "HeistHUD_main_panel",
+			"priority" : 14,
+		},
+		{
+			"type" : "slider",
+			"id" : "hud_main_scale",
+			"title" : "HeistHUD_main_scale_title",
+			"description" : "HeistHUD_main_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_main_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 13,
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "main_health",
+			"title" : "HeistHUD_main_health_title",
+			"description" : "HeistHUD_main_health_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"HeistHUD_disabled", 
+				"HeistHUD_health_percentage", 
+				"HeistHUD_health_real"
+			],
+			"value" : "main_health",
+			"priority" : 12,
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "armor",
+			"title" : "HeistHUD_armor_title",
+			"description" : "HeistHUD_armor_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"HeistHUD_disabled", 
+				"HeistHUD_health_percentage", 
+				"HeistHUD_health_real"
+			],
+			"value" : "armor",
+			"priority" : 11,
+		},
+		{
+			"type" : "toggle",
+			"id" : "totalammo",
+			"title" : "HeistHUD_total_title",
+			"description" : "HeistHUD_total_decs",
+			"callback" : "toggle_option_clbk",
+			"value" : "totalammo"
+			"priority" : 10,
+		},
+		{
+			"type" : "toggle",
+			"id" : "main_loud",
+			"title" : "HeistHUD_main_loud_title",
+			"description" : "HeistHUD_main_loud_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "main_loud"
+			"priority" : 9,
+		},
+		{
+			"type" : "toggle",
+			"id" : "main_stealth",
+			"title" : "HeistHUD_main_stealth_title",
+			"description" : "HeistHUD_main_stealth_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "main_stealth"
+			"priority" : 8,
+		},
+		
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 7,
+		},
+		{
+			"type" : "button",
+			"id" : "heitshud_teammate",
+			"title" : "HeistHUD_mate_panel",
+			"priority" : 6,
+		},
+		{
+			"type" : "slider",
+			"id" : "hud_mate_scale",
+			"title" : "HeistHUD_mate_scale_title",
+			"description" : "HeistHUD_mate_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_mate_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 5,
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "mate_health",
+			"title" : "HeistHUD_mate_health_title",
+			"description" : "HeistHUD_mate_health_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"HeistHUD_disabled", 
+				"HeistHUD_health_percentage", 
+				"HeistHUD_health_real"
+			],
+			"value" : "mate_health",
+			"priority" : 4,
+		},
+		{
+			"type" : "toggle",
+			"id" : "mate_loud",
+			"title" : "HeistHUD_mate_loud_title",
+			"description" : "HeistHUD_mate_loud_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "mate_loud"
+			"priority" : 3,
+		},
+		{
+			"type" : "toggle",
+			"id" : "mate_stealth",
+			"title" : "HeistHUD_mate_stealth_title",
+			"description" : "HeistHUD_mate_stealth_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "mate_stealth"
+			"priority" : 2,
+		},
+		{
+			"type" : "toggle",
+			"id" : "mate_name",
+			"title" : "HeistHUD_mate_name_title",
+			"description" : "HeistHUD_mate_name_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "mate_name"
+			"priority" : 1,
+		}
+	]
+}
