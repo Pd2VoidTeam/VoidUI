@@ -49,7 +49,7 @@ function HUDChat:init(ws, hud)
 		alpha = 0,
 		h = 10 * HUDChat.line_height
 	})
-	
+
 	local scrollbar_panel = self._panel:panel({
 		name = "scrollbar_panel",
 		w = 15,
@@ -143,10 +143,10 @@ function HUDChat:update_caret()
 		h = 0
 	end
 	caret:set_world_shape(x, y, w, h - 4)
-	if caret:x() > self._panel_width - 4 then 
+	if caret:x() > self._panel_width - 4 then
 		text:set_x(text:x() - (caret:x() - (self._panel_width)) - 4)
 		caret:set_x(caret:x() - (caret:x() - (self._panel_width)) - 4)
-	elseif caret:x() < 2 then 
+	elseif caret:x() < 2 then
 		text:set_x(text:x() + (2 - caret:x()))
 		caret:set_x(caret:x() + (2 - caret:x()))
 	end
@@ -160,10 +160,15 @@ function HUDChat:receive_message(name, message, color, icon)
 	local character = ""
 	if peer and peer:character() then character = " (".. managers.localization:text("menu_" ..peer:character())..")" end
 	local full_message = name .. character .. ": " .. message
-	if name == managers.localization:to_upper_text("menu_system_message") then 
+	if name == managers.localization:to_upper_text("menu_system_message") then
 		name = message
 		full_message = name
 	end
+  if managers.game_play_central then
+    -- 00:00:00
+    full_message = os.date("!%X",managers.game_play_central:get_heist_timer()) .. " - " .. full_message
+  end
+
 	local len = utf8.len(name) + utf8.len(character) + 1
 	local panel = output_panel:panel({
 		name = tostring(#self._lines),
@@ -206,13 +211,15 @@ function HUDChat:receive_message(name, message, color, icon)
 		layer = -1
 	})
 	line_shadow:set_w(output_panel:w() - line:left())
-	
+
 	local total_len = utf8.len(line:text())
 	local line_height = HUDChat.line_height
 	local lines_count = line:number_of_lines()
 	self._lines_count = self._lines_count + lines_count
-	line:set_range_color(0, len, color)
-	line:set_range_color(len, total_len, Color.white)
+  line:set_range_color(0, 8, Color(0.2, 0.2, 0.5))
+  line:set_range_color(8, 11, Color.white)
+	line:set_range_color(11, 11+len, color)
+	line:set_range_color(11+len, total_len, Color.white)
 	panel:set_h(HUDChat.line_height * lines_count)
 	line:set_h(panel:h())
 	line_shadow:set_h(panel:h())
@@ -249,23 +256,23 @@ end
 function HUDChat:scroll_chat(dir)
 	if self._lines_count > 10 then
 		self._scroll = math.clamp(self._scroll + dir, -(HUDChat.line_height * (self._lines_count - 10)), 0)
-		self:_layout_output_panel()	
+		self:_layout_output_panel()
 	end
 end
 
 function HUDChat:set_chat_scroll(dir)
 	if self._lines_count > 10 then
 		self._scroll = math.clamp(dir, -(HUDChat.line_height * (self._lines_count - 10)), 0)
-		self:_layout_output_panel()	
+		self:_layout_output_panel()
 	end
 end
 function HUDChat:_layout_output_panel()
 	local output_panel = self._panel:child("output_panel")
 	local scrollbar_panel = self._panel:child("scrollbar_panel")
-	local scrollbar = scrollbar_panel:child("scrollbar")	
+	local scrollbar = scrollbar_panel:child("scrollbar")
 	output_panel:set_w(self._output_width)
 	local line_height = HUDChat.line_height
-	if self._lines_count < 10 then 
+	if self._lines_count < 10 then
 		output_panel:set_h(line_height * math.max(10, self._lines_count))
 	else
 		output_panel:set_h(line_height * math.min(10, self._lines_count))
@@ -285,7 +292,7 @@ function HUDChat:_layout_output_panel()
 		end)
 		y = y + panel:h()
 	end
-	if self._lines_count > 9 then 
+	if self._lines_count > 9 then
 		scrollbar:set_h((10 * line_height - 10) * (10 / self._lines_count))
 		scrollbar:set_bottom(math.clamp((scrollbar_panel:h() - 4) * (1 -(-self._scroll / line_height) / self._lines_count), scrollbar:h() + 4, scrollbar_panel:h() - 4))
 	end
@@ -330,7 +337,7 @@ function HUDChat:_animate_focus(input_panel, open, start_alpha, start_x, start_w
 		input_panel:set_alpha(math.lerp(start_alpha, open and 1 or 0, t / TOTAL_T))
 		output_bg:set_alpha(math.lerp(start_alpha, open and 0.5 or 0, t / TOTAL_T))
 		scrollbar_panel:set_alpha(math.lerp(start_alpha, open and 1 or 0, t / TOTAL_T))
-		
+
 		output_bg:set_w(math.lerp(start_w, open and self._panel_width or self._output_width, t / TOTAL_T))
 		input_panel:set_w(math.lerp(start_w, open and self._panel_width or self._output_width, t / TOTAL_T))
 	end

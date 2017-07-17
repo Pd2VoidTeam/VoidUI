@@ -1,7 +1,7 @@
 _G.HeistHUD = _G.HeistHUD or {}
 HeistHUD.mod_path = ModPath
 HeistHUD.options_path = SavePath .. "HeistHUD.txt"
-HeistHUD.options = {} 
+HeistHUD.options = {}
 HeistHUD.hook_files = {
     ["lib/managers/hudmanager"] = "lua/hudmanager.lua",
 	["lib/managers/hud/hudteammate"] = "lua/hudteammate.lua",
@@ -73,7 +73,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_HeistHUD", function(me
 		HeistHUD.options.hud_objectives_scale = item:value()
 		HeistHUD.options.hud_assault_scale = item:value()
 		local hudteammate = MenuHelper:GetMenu("HeistHUD_options_hudteammate")
-		if hudteammate then 
+		if hudteammate then
 			hudteammate._items_list[2]:set_value(item:value())
 			hudteammate._items_list[10]:set_value(item:value())
 		end
@@ -94,17 +94,17 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_HeistHUD", function(me
 	end
 	MenuCallbackHandler.toggle_badge_clbk = function(self, item)
 		HeistHUD.options[item:parameters().name] = (item:value() == "on" and true or false)
-		
+
 		local assault = MenuHelper:GetMenu("HeistHUD_options_assault")
 		if assault then
 			assault._items_list[3]:set_enabled(item:value() == "on" and true or false)
 		end
 	end
-	
+
 	MenuCallbackHandler.callback_heisthud_reset = function(self, item)
 		local buttons = {
-			[1] = { 
-				text = managers.localization:text("dialog_yes"), 
+			[1] = {
+				text = managers.localization:text("dialog_yes"),
 				callback = function(self, item)
 					HeistHUD:reset_options()
 				end,
@@ -113,11 +113,11 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_HeistHUD", function(me
 		}
 		QuickMenu:new( managers.localization:text("HeistHUD_reset_title"), managers.localization:text("HeistHUD_reset_confirm"), buttons, true )
 	end
-	
+
 	MenuCallbackHandler.heisthud_save = function(self, item)
 		HeistHUD:Save()
-	end	
-	
+	end
+
 	HeistHUD:Load()
 	if HeistHUD.options.armor == nil then HeistHUD:reset_options() end
 	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/options.txt", HeistHUD, HeistHUD.options)
