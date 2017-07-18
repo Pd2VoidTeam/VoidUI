@@ -1,5 +1,5 @@
 {
-	"HeistHUD_endless_assault" : "EVADE POLICE TO END ASSAULT",
+	"HeistHUD_endless_assault" : "SUSTAINED ASSAULT IN PROGRESS",
 	
 	"HeistHUD_options_title" : "HeistHUD",
 	"HeistHUD_options_desc" : "Customize the behavior of HeistHUD"
