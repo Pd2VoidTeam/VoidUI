@@ -4,26 +4,26 @@ HeistHUD.mod_path = ModPath
 HeistHUD.options_path = SavePath .. "HeistHUD.txt"
 HeistHUD.options = {}
 HeistHUD.hook_files = {
-  ["lib/managers/hudmanager"]                         = {"HudManager.lua"},
-  ["lib/managers/hud/hudteammate"]                    = {"HudTeammate.lua"},
-  ["lib/managers/hud/hudtemp"]                        = {"HudTemp.lua"},
-  ["lib/managers/hud/hudblackscreen"]                 = {"HudBlackscreen.lua"},
-  ["lib/states/ingamewaitingforplayers"]              = {"HudBlackscreen.lua"},
-  ["lib/managers/hudmanagerpd2"]                      = {"HudManager.lua"},
-  ["lib/units/beings/player/huskplayermovement"]      = {"HudDowns.lua"},
-  ["lib/units/beings/player/states/playerbleedout"]   = {"HudDowns.lua"},
-  ["lib/network/handlers/unitnetworkhandler"]         = {"HudDowns.lua"},
-  ["lib/units/equipment/doctor_bag/doctorbagbase"]    = {"HudDowns.lua"},
-  ["lib/managers/hud/hudobjectives"]                  = {"HudObjectives.lua"},
-  ["lib/managers/hud/hudheisttimer"]                  = {"HudHeistTimer.lua"},
-  ["lib/managers/hud/hudpresenter"]                   = {"HudPresenter.lua"},
-  ["lib/managers/hud/hudhint"]                        = {"HudHint.lua"},
-  ["lib/managers/hintmanager"]                        = {"HudHint.lua"},
-  ["lib/managers/hud/hudinteraction"]                 = {"HudInteraction.lua"},
-  ["lib/managers/hud/hudchat"]                        = {"HudChat.lua"},
-  ["lib/managers/hud/hudassaultcorner"]               = {"HudAssaultCorner.lua"},
-  ["lib/managers/group_ai_states/groupaistatebase"]   = {"HudAssaultCorner.lua"},
-  ["lib/managers/objectinteractionmanager"]           = {"HudAssaultCorner.lua"}
+  ["lib/managers/hudmanager"] = {"HudManager.lua"},
+  ["lib/managers/hud/hudteammate"] = {"HudTeammate.lua"},
+  ["lib/managers/hud/hudtemp"] = {"HudTemp.lua"},
+  ["lib/managers/hud/hudblackscreen"] = {"HudBlackscreen.lua"},
+  ["lib/states/ingamewaitingforplayers"] = {"HudBlackscreen.lua"},
+  ["lib/managers/hudmanagerpd2"] = {"HudManager.lua"},
+  ["lib/units/beings/player/huskplayermovement"] = {"HudDowns.lua"},
+  ["lib/units/beings/player/states/playerbleedout"] = {"HudDowns.lua"},
+  ["lib/network/handlers/unitnetworkhandler"] = {"HudDowns.lua"},
+  ["lib/units/equipment/doctor_bag/doctorbagbase"] = {"HudDowns.lua"},
+  ["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
+  ["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
+  ["lib/managers/hud/hudpresenter"] = {"HudPresenter.lua"},
+  ["lib/managers/hud/hudhint"] = {"HudHint.lua"},
+  ["lib/managers/hintmanager"] = {"HudHint.lua"},
+  ["lib/managers/hud/hudinteraction"] = {"HudInteraction.lua"},
+  ["lib/managers/hud/hudchat"] = {"HudChat.lua"},
+  ["lib/managers/hud/hudassaultcorner"] = {"HudAssaultCorner.lua"},
+  ["lib/managers/group_ai_states/groupaistatebase"] = {"HudAssaultCorner.lua"},
+  ["lib/managers/objectinteractionmanager"] = {"HudAssaultCorner.lua"}
 }
 
 function HeistHUD:Save()
@@ -43,7 +43,22 @@ function HeistHUD:Load()
 end
 
 Hooks:Add("LocalizationManagerPostInit", "HeistHUD_Localization", function(loc)
-  loc:load_localization_file(HeistHUD.mod_path .. "loc/english.txt", false)
+  --loc:load_localization_file(HeistHUD.mod_path .. "loc/english.txt", false)
+  local loc_path = HeistHUD.mod_path .. "loc/"
+
+  if file.DirectoryExists( loc_path ) then
+    for _, filename in pairs(file.GetFiles(loc_path)) do
+      local str = filename:match('^(.*).txt$')
+      if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+        loc:load_localization_file(loc_path .. filename)
+        break
+      end
+    end
+    loc:load_localization_file(loc_path .. "english.txt", false)
+  else
+    log("Localization folder seems to be missing!")
+  end
+
 end)
 
 function HeistHUD:reset_options()
@@ -68,6 +83,7 @@ function HeistHUD:reset_options()
   HeistHUD.options.armor = 2
   HeistHUD:Save()
 end
+
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_HeistHUD", function(menu_manager)
   MenuCallbackHandler.callback_heisthud_hudscale = function(self, item)
   HeistHUD.options.hud_scale = item:value()
@@ -130,10 +146,10 @@ MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/hudteammate.txt", HeistHU
 end )
 
 if RequiredScript then
-  local requiredScript = RequiredScript:lower()
-  if HeistHUD.hook_files[requiredScript] then
-		for __, file in ipairs(HeistHUD.hook_files[requiredScript]) do
-			dofile( HeistHUD.mod_path .. "lua/" .. file )
-		end
+local requiredScript = RequiredScript:lower()
+if HeistHUD.hook_files[requiredScript] then
+  for _, file in ipairs(HeistHUD.hook_files[requiredScript]) do
+    dofile( HeistHUD.mod_path .. "lua/" .. file )
   end
+end
 end
