@@ -13,7 +13,7 @@ Changelog (2017.07.14)
 - Fixed teammate health value not animating
 - Slightly moved the teammate bag panel to avoid clipping
 
-Changelog (2017.08.02) // Edit this you fuck
+Changelog (2017.08.02)
 - Added name label for jokers
 - Added correctly colored outlines for jokers
 - Added the option to resize name labels
