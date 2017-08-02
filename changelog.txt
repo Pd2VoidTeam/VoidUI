@@ -1,0 +1,47 @@
+Changelog (2017.07.14)
+- Restructured the options menu
+- Added reset hud options button
+- Added global hud scale slider wich will resize every element at the same time
+- Added an option for setting teammates health
+- Added options for showing downs/bodybags/detection risk
+- Added the option to disable rank and level for teammates on the hud panel
+- Added options to resize the objective panel and the assault panel
+- Added the option to set the objective history amount
+- Added the option to disable the assault police badge
+- Added the option to disable the pulse animation of the assault police badge
+- Added custom strings for endless assault waves
+- Fixed teammate health value not animating
+- Slightly moved the teammate bag panel to avoid clipping
+
+Changelog (2017.08.02) // Edit this you fuck
+- Added name label for jokers
+- Added correctly colored outlines for jokers
+- Added the option to resize name labels
+- Added dynamic name labels that get small if you are far away from the players or not looking directly at them
+- Added the option to resize the chat
+- Added the option to disable character names on chat messages
+- Added the option to display game time or real time on chat messages
+- Added the option to disable mouse support in chat
+- Added the option to resize waypoints
+- Added the option to set size of the circle waypoints orbit when they're offscreen or hide even them
+- Added the option to disable teammate interaction times
+- Added the option to disable ammo pickup popups
+- Improved mouse support in the chat
+- Resized subtitles and added a background to them
+- The ammo counter will more red the less ammo you have (Don't really like how it looks, might change it)
+- Fixed assault panel showing difficulty skulls during wave survived while the police badge is enabled
+- When the police badge is disabled the difficulty skulls are displayed with the assault strings.
+- Fixed equipment panel color not updating when using tripmines
+- Fixed carried bag panel not moving when the player panel is resized
+- Slightly changed the ability cooldown panel
+- Reworked the ex-presidents health panel
+- If a new objective is the same as the current one, a new objective panel won't be created (needs testing)
+- The hud now displays the health of bots for hosts
+- "Stopped" icon will now be correctly displayed for bots
+- Active ECM jammer time now replaces the pager counter in stealth
+- You can now open the chat in offline mode
+- Teammate downs now counts down like the player downs. if the teammate has more than 3 points in revenant it assumes they have 9 lives aced
+- Removed Hold [button] to mask up panel from the top of the screen
+- Fixed a crash related to controllers
+- Changed menu and localization files from txt to json
+- Updated localization

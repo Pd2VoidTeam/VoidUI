@@ -1,0 +1,149 @@
+{
+	"menu_id" : "HeistHUD_options_label",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_label_title",
+	"description" : "HeistHUD_label_desc",
+	"back_callback" : "heisthud_save",
+	"localized" :  true,
+	"priority" : 18,
+	"items" : [
+		{
+			"type" : "button",
+			"id" : "heitshud_labels",
+			"title" : "HeistHUD_label",
+			"priority" : 13,
+		},
+		{
+			"type" : "toggle",
+			"id" : "label_jokers",
+			"title" : "HeistHUD_jokernames_title",
+			"description" : "HeistHUD_jokernames_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "label_jokers"
+			"priority" : 12,
+		},
+		{
+			"type" : "slider",
+			"id" : "label_scale",
+			"title" : "HeistHUD_label_scale_title",
+			"description" : "HeistHUD_label_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "label_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 11,
+		},
+		{
+			"type" : "toggle",
+			"id" : "label_minmode",
+			"title" : "HeistHUD_minlabel_title",
+			"description" : "HeistHUD_minlabel_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "label_minmode"
+			"priority" : 10,
+		},
+		{
+			"type" : "slider",
+			"id" : "label_minscale",
+			"title" : "HeistHUD_label_minscale_title",
+			"description" : "HeistHUD_label_minscale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "label_minscale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 9,
+		},
+		{
+			"type" : "toggle",
+			"id" : "label_minrank",
+			"title" : "HeistHUD_minrank_title",
+			"description" : "HeistHUD_minrank_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "label_minrank"
+			"priority" : 8,
+		},
+		{
+			"type" : "slider",
+			"id" : "label_minmode_dist",
+			"title" : "HeistHUD_mindist_title",
+			"description" : "HeistHUD_mindist_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "label_minmode_dist",
+			"default_value" : 7,
+			"max" : 30,
+			"min" : 0,
+			"step" : 1,
+			"localized" :  true
+			"priority" : 7,
+		},
+		{
+			"type" : "slider",
+			"id" : "label_minmode_dot",
+			"title" : "HeistHUD_mindot_title",
+			"description" : "HeistHUD_mindot_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "label_minmode_dot",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.1,
+			"step" : 0.01,
+			"localized" :  true
+			"priority" : 6,
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 5,
+		},
+		{
+			"type" : "button",
+			"id" : "heitshud_waypoints",
+			"title" : "HeistHUD_waypoints",
+			"priority" : 4,
+		},
+		{
+			"type" : "slider",
+			"id" : "waypoint_scale",
+			"title" : "HeistHUD_waypoint_scale_title",
+			"description" : "HeistHUD_waypoint_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "waypoint_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 3,
+		},
+		{
+			"type" : "toggle",
+			"id" : "label_waypoint_offscreen",
+			"title" : "HeistHUD_waypoint_offscreen_title",
+			"description" : "HeistHUD_waypoint_offscreen_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "label_waypoint_offscreen"
+			"priority" : 2,
+		},
+		{
+			"type" : "slider",
+			"id" : "waypoint_radius",
+			"title" : "HeistHUD_waypoint_radius_title",
+			"description" : "HeistHUD_waypoint_radius_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "waypoint_radius",
+			"default_value" : 160,
+			"max" : 340,
+			"min" : 100,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 1,
+		}
+		
+	]
+}

@@ -32,8 +32,9 @@ function HUDBlackScreen:init(hud)
 	local is_server = Network:is_server()
 	local continue_button = managers.menu:is_pc_controller() and "ENTER" or nil
 	local text = managers.localization:text("hud_skip_blackscreen", {BTN_ACCEPT = continue_button})
+	if continue_button == nil then continue_button = utf8.char(57344) end
 	local start, _ = string.find(text, continue_button)
-	text = string.sub(text, start - 1)
+	if start then text = string.sub(text, start - 1) end
 	local skip_text = self._blackscreen_panel:text({
 		name = "skip_text",
 		visible = is_server,

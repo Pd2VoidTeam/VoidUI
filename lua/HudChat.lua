@@ -2,10 +2,11 @@ HUDChat.line_height = 18
 function HUDChat:init(ws, hud)
 	self._ws = ws
 	self._hud_panel = hud.panel
+	self._scale = HeistHUD.options.hud_chat_scale
 	self:set_channel_id(ChatManager.GAME)
-	self._input_width = 1200
-	self._output_width = 400
-	self._panel_width = 415
+	self._input_width = 1200 * self._scale
+	self._output_width = 400 * self._scale
+	self._panel_width = 415 * self._scale
 	self._scroll = 0
 	self._lines_count = 0
 	self._lines = {}
@@ -17,7 +18,7 @@ function HUDChat:init(ws, hud)
 	self._panel = self._hud_panel:panel({
 		name = "chat_panel",
 		x = 0,
-		h = 10 * HUDChat.line_height + 25,
+		h = (10 * HUDChat.line_height + 25) * self._scale,
 		w = self._panel_width,
 		halign = "left",
 		valign = "bottom"
@@ -26,7 +27,7 @@ function HUDChat:init(ws, hud)
 	local output_panel = self._panel:panel({
 		name = "output_panel",
 		x = 0,
-		h = 10,
+		h = 10 * self._scale,
 		w = self._output_width,
 		layer = 1
 	})
@@ -34,7 +35,7 @@ function HUDChat:init(ws, hud)
 		name = "debug",
 		text = "",
 		font = "fonts/font_medium_mf",
-		font_size = tweak_data.menu.pd2_small_font_size * 0.8,
+		font_size = tweak_data.menu.pd2_small_font_size * 0.8 * self._scale,
 		x = 0,
 		y = 0,
 		color = Color.white,
@@ -47,13 +48,13 @@ function HUDChat:init(ws, hud)
 		w = self._output_width,
 		color = Color(0.05,0.05,0.05),
 		alpha = 0,
-		h = 10 * HUDChat.line_height
+		h = (10 * HUDChat.line_height ) * self._scale
 	})
-
+	
 	local scrollbar_panel = self._panel:panel({
 		name = "scrollbar_panel",
-		w = 15,
-		h = 10 * HUDChat.line_height,
+		w = 15 * self._scale,
+		h = (10 * HUDChat.line_height) * self._scale,
 		layer = 2,
 		alpha = 0
 	})
@@ -61,10 +62,10 @@ function HUDChat:init(ws, hud)
 		name = "scrollbar",
 		color = Color(0.8,0.8,0.8),
 		alpha = 0.6,
-		x = 5,
-		y = 5
+		x = 5 * self._scale,
+		y = 5 * self._scale
 	})
-	scrollbar:set_size(scrollbar_panel:w() - 10, scrollbar_panel:h() - 10)
+	scrollbar:set_size(scrollbar_panel:w() - 10 * self._scale, scrollbar_panel:h() - 10 * self._scale)
 	self:_create_input_panel()
 	self:_layout_input_panel()
 	self:_layout_output_panel()
@@ -75,7 +76,7 @@ function HUDChat:_create_input_panel()
 		alpha = 0,
 		name = "input_panel",
 		x = 0,
-		h = 25,
+		h = 25 * self._scale,
 		w = self._output_width,
 		layer = 1
 	})
@@ -89,7 +90,7 @@ function HUDChat:_create_input_panel()
 		name = "input_text",
 		text = "",
 		font = "fonts/font_medium_mf",
-		font_size = tweak_data.menu.pd2_small_font_size * 0.8,
+		font_size = tweak_data.menu.pd2_small_font_size * 0.8 * self._scale,
 		x = 2,
 		y = 0,
 		align = "left",
@@ -115,8 +116,8 @@ end
 function HUDChat:_layout_input_panel()
 	self._input_panel:set_w(self._input_width)
 	local input_text = self._input_panel:child("input_text")
-	input_text:set_w(self._input_width - 4)
-	input_text:set_h(self._input_panel:h() - 2)
+	input_text:set_w(self._input_width - 4 * self._scale)
+	input_text:set_h(self._input_panel:h() - 2 * self._scale)
 	self._input_panel:set_y(self._input_panel:parent():h() - self._input_panel:h())
 end
 
@@ -135,20 +136,20 @@ function HUDChat:update_caret()
 	end
 	h = text:h()
 	if w < 2 then
-		w = 2
+		w = 2 * self._scale
 	end
 	if not self._focus then
-		y = 1
+		y = 1 * self._scale
 		w = 0
 		h = 0
 	end
-	caret:set_world_shape(x, y, w, h - 4)
-	if caret:x() > self._panel_width - 4 then
-		text:set_x(text:x() - (caret:x() - (self._panel_width)) - 4)
-		caret:set_x(caret:x() - (caret:x() - (self._panel_width)) - 4)
-	elseif caret:x() < 2 then
-		text:set_x(text:x() + (2 - caret:x()))
-		caret:set_x(caret:x() + (2 - caret:x()))
+	caret:set_world_shape(x, y, w, h - 4 * self._scale)
+	if caret:x() > self._panel_width - 4 then 
+		text:set_x(text:x() - (caret:x() - (self._panel_width)) - 4 * self._scale)
+		caret:set_x(caret:x() - (caret:x() - (self._panel_width)) - 4 * self._scale)
+	elseif caret:x() < 2 then 
+		text:set_x(text:x() + (2 * self._scale - caret:x()))
+		caret:set_x(caret:x() + (2 * self._scale - caret:x()))
 	end
 	self:set_blinking(s == e and self._focus)
 end
@@ -157,19 +158,18 @@ function HUDChat:receive_message(name, message, color, icon)
 	local output_panel = self._panel:child("output_panel")
 	local scrollbar = self._panel:child("scrollbar_panel"):child("scrollbar")
 	local peer = managers.network:session():local_peer():name() == name and managers.network:session():local_peer() or managers.network:session():peer_by_name(name)
-	local character = ""
-	if peer and peer:character() then character = " (".. managers.localization:text("menu_" ..peer:character())..")" end
-	local full_message = name .. character .. ": " .. message
-	if name == managers.localization:to_upper_text("menu_system_message") then
+	local character = peer and " (".. managers.localization:text("menu_" ..peer:character())..")" or ""
+	local full_message = name .. (HeistHUD.options.show_charactername and peer and peer:character() and character or "") .. ": " .. message
+	if name == managers.localization:to_upper_text("menu_system_message") then 
 		name = message
 		full_message = name
 	end
-  if managers.game_play_central then
-    -- 00:00:00
-    full_message = os.date("!%X",managers.game_play_central:get_heist_timer()) .. " - " .. full_message
-  end
-
-	local len = utf8.len(name) + utf8.len(character) + 1
+	if HeistHUD.options.chattime > 1 and managers.game_play_central then
+		local time = HeistHUD.options.chattime == 2 and "[".. os.date('!%X', managers.game_play_central:get_heist_timer()) .. "] " or "[".. os.date('%X') .. "] "
+		full_message =  time .. full_message
+		name = time .. name
+	end
+	local len = utf8.len(name) + utf8.len(character) + 1 
 	local panel = output_panel:panel({
 		name = tostring(#self._lines),
 		w = self._output_width
@@ -178,7 +178,7 @@ function HUDChat:receive_message(name, message, color, icon)
 		name = "line",
 		text = full_message,
 		font = "fonts/font_medium_mf",
-		font_size = tweak_data.menu.pd2_small_font_size * 0.85,
+		font_size = tweak_data.menu.pd2_small_font_size * 0.85 * self._scale,
 		x = 0,
 		y = 0,
 		align = "left",
@@ -196,7 +196,7 @@ function HUDChat:receive_message(name, message, color, icon)
 		name = "line_shadow",
 		text = full_message,
 		font = "fonts/font_medium_mf",
-		font_size = tweak_data.menu.pd2_small_font_size * 0.85,
+		font_size = tweak_data.menu.pd2_small_font_size * 0.85 * self._scale,
 		x = 1,
 		y = 1,
 		align = "left",
@@ -211,20 +211,23 @@ function HUDChat:receive_message(name, message, color, icon)
 		layer = -1
 	})
 	line_shadow:set_w(output_panel:w() - line:left())
-
+	
 	local total_len = utf8.len(line:text())
 	local line_height = HUDChat.line_height
 	local lines_count = line:number_of_lines()
 	self._lines_count = self._lines_count + lines_count
-  line:set_range_color(0, 8, Color(0.2, 0.2, 0.5))
-  line:set_range_color(8, 11, Color.white)
-	line:set_range_color(11, 11+len, color)
-	line:set_range_color(11+len, total_len, Color.white)
-	panel:set_h(HUDChat.line_height * lines_count)
+	line:set_range_color(0, len, color)
+	line:set_range_color(len, total_len, Color.white)
+	panel:set_h(HUDChat.line_height * self._scale * lines_count)
 	line:set_h(panel:h())
 	line_shadow:set_h(panel:h())
 	panel:set_bottom(self._input_panel:bottom())
-	table.insert(self._lines, panel)
+	table.insert(self._lines, {
+		panel = panel,
+		message = message,
+		name = name,
+		character = character
+	})
 	line:set_kern(line:kern())
 	self:_layout_output_panel()
 	line:animate(callback(self, self, "_animate_message_recieved"), line_shadow)
@@ -244,42 +247,42 @@ function HUDChat:_animate_message_recieved(line, line_shadow)
 		t = t + dt
 		line:set_size(math.lerp(0, self._output_width, t / TOTAL_T), math.lerp(0, h, t / TOTAL_T))
 		line_shadow:set_size(math.lerp(0, self._output_width, t / TOTAL_T), math.lerp(0, h, t / TOTAL_T))
-		line:set_font_size(math.lerp(0, tweak_data.menu.pd2_small_font_size * 0.85, t / TOTAL_T))
-		line_shadow:set_font_size(math.lerp(0, tweak_data.menu.pd2_small_font_size * 0.85, t / TOTAL_T))
+		line:set_font_size(math.lerp(0, tweak_data.menu.pd2_small_font_size * 0.85 * self._scale, t / TOTAL_T))
+		line_shadow:set_font_size(math.lerp(0, tweak_data.menu.pd2_small_font_size * 0.85 * self._scale, t / TOTAL_T))
 	end
 	line:set_size(self._output_width, h)
 	line_shadow:set_size(self._output_width, h)
-	line:set_font_size(tweak_data.menu.pd2_small_font_size * 0.85)
-	line_shadow:set_font_size(tweak_data.menu.pd2_small_font_size * 0.85)
+	line:set_font_size(tweak_data.menu.pd2_small_font_size * 0.85 * self._scale)
+	line_shadow:set_font_size(tweak_data.menu.pd2_small_font_size * 0.85 * self._scale)
 end
 
 function HUDChat:scroll_chat(dir)
-	if self._lines_count > 10 then
-		self._scroll = math.clamp(self._scroll + dir, -(HUDChat.line_height * (self._lines_count - 10)), 0)
-		self:_layout_output_panel()
+	if self._lines_count > 10 * self._scale then
+		self._scroll = math.clamp(self._scroll + dir * self._scale, -(HUDChat.line_height * self._scale * (self._lines_count - 10)), 0)
+		self:_layout_output_panel()	
 	end
 end
 
 function HUDChat:set_chat_scroll(dir)
-	if self._lines_count > 10 then
-		self._scroll = math.clamp(dir, -(HUDChat.line_height * (self._lines_count - 10)), 0)
-		self:_layout_output_panel()
+	if self._lines_count > 10 * self._scale then
+		self._scroll = math.clamp(dir * self._scale, -(HUDChat.line_height * self._scale * (self._lines_count - 10)), 0)
+		self:_layout_output_panel()	
 	end
 end
 function HUDChat:_layout_output_panel()
 	local output_panel = self._panel:child("output_panel")
 	local scrollbar_panel = self._panel:child("scrollbar_panel")
-	local scrollbar = scrollbar_panel:child("scrollbar")
+	local scrollbar = scrollbar_panel:child("scrollbar")	
 	output_panel:set_w(self._output_width)
-	local line_height = HUDChat.line_height
-	if self._lines_count < 10 then
+	local line_height = HUDChat.line_height * self._scale
+	if self._lines_count < (10 * self._scale) then 
 		output_panel:set_h(line_height * math.max(10, self._lines_count))
 	else
 		output_panel:set_h(line_height * math.min(10, self._lines_count))
 	end
 	local y = 0 + self._scroll
 	for i = #self._lines, 1, -1 do
-		local panel = self._lines[i]
+		local panel = self._lines[i].panel
 		local b = panel:bottom()
 		local b2 = output_panel:h() - y
 		panel:stop()
@@ -292,9 +295,9 @@ function HUDChat:_layout_output_panel()
 		end)
 		y = y + panel:h()
 	end
-	if self._lines_count > 9 then
-		scrollbar:set_h((10 * line_height - 10) * (10 / self._lines_count))
-		scrollbar:set_bottom(math.clamp((scrollbar_panel:h() - 4) * (1 -(-self._scroll / line_height) / self._lines_count), scrollbar:h() + 4, scrollbar_panel:h() - 4))
+	if self._lines_count > 9 * self._scale then 
+		scrollbar:set_h((10 * line_height - 10 * self._scale) * (10 / self._lines_count))
+		scrollbar:set_bottom(math.clamp((scrollbar_panel:h() - 4 * self._scale) * (1 -(-self._scroll / line_height) / self._lines_count), scrollbar:h() + 4, scrollbar_panel:h() - 4 ))
 	end
 	output_panel:set_bottom(self._input_panel:top())
 end
@@ -316,12 +319,14 @@ function HUDChat:_on_focus()
 	self._enter_text_set = false
 	self:set_layer(1100)
 	self:update_caret()
-	managers.mouse_pointer:use_mouse{
-		id = self._mouse,
-		mouse_press = callback(self, self, 'mouse_pressed'),
-		mouse_release = callback(self, self, "mouse_released"),
-		mouse_move = callback(self, self, "mouse_moved"),
-	}
+	if HeistHUD.options.chat_mouse then
+		managers.mouse_pointer:use_mouse{
+			id = self._mouse,
+			mouse_press = callback(self, self, 'mouse_pressed'),
+			mouse_release = callback(self, self, "mouse_released"),
+			mouse_move = callback(self, self, "mouse_moved"),
+		}
+	end
 end
 
 function HUDChat:_animate_focus(input_panel, open, start_alpha, start_x, start_w)
@@ -333,15 +338,15 @@ function HUDChat:_animate_focus(input_panel, open, start_alpha, start_x, start_w
 	while TOTAL_T > t do
 		local dt = coroutine.yield()
 		t = t + dt
-		output_panel:set_x(math.lerp(start_x, open and 15 or 0,  t / TOTAL_T))
+		output_panel:set_x(math.lerp(start_x, open and 15 * self._scale or 0,  t / TOTAL_T))
 		input_panel:set_alpha(math.lerp(start_alpha, open and 1 or 0, t / TOTAL_T))
 		output_bg:set_alpha(math.lerp(start_alpha, open and 0.5 or 0, t / TOTAL_T))
 		scrollbar_panel:set_alpha(math.lerp(start_alpha, open and 1 or 0, t / TOTAL_T))
-
+		
 		output_bg:set_w(math.lerp(start_w, open and self._panel_width or self._output_width, t / TOTAL_T))
 		input_panel:set_w(math.lerp(start_w, open and self._panel_width or self._output_width, t / TOTAL_T))
 	end
-	output_panel:set_x(open and 15 or 0)
+	output_panel:set_x(open and 15 * self._scale or 0)
 	input_panel:set_alpha(open and 1 or 0)
 	scrollbar_panel:set_alpha(open and 1 or 0)
 	output_bg:set_alpha(open and 0.5 or 0)
@@ -360,14 +365,17 @@ function HUDChat:_loose_focus()
 	self._input_panel:key_press(nil)
 	self._input_panel:enter_text(nil)
 	self._input_panel:key_release(nil)
-	managers.mouse_pointer:remove_mouse(self._mouse)
+	if self._mouse then 
+		managers.mouse_pointer:set_pointer_image("arrow")
+		managers.mouse_pointer:remove_mouse(self._mouse) 
+	end
 	self._panel:child("output_panel"):stop()
 	self._panel:child("output_panel"):animate(callback(self, self, "_animate_fade_output"))
 	self._input_panel:stop()
 	self._input_panel:animate(callback(self, self, "_animate_focus"), false, self._panel:child("output_bg"):alpha(), self._panel:child("output_panel"):x(), self._panel:child("output_bg"):w())
 	local text = self._input_panel:child("input_text")
 	for i = #self._lines, 1, -1 do
-		local panel = self._lines[i]
+		local panel = self._lines[i].panel
 		panel:set_alpha(1)
 	end
 	text:stop()
@@ -432,11 +440,11 @@ function HUDChat:key_press(o, k)
 	elseif self._key_pressed == Idstring("home") then
 		text:set_selection(0, 0)
 	elseif self._key_pressed == Idstring("up")	then
-		self:scroll_chat(-HUDChat.line_height * 5)
+		self:scroll_chat(-HUDChat.line_height * self._scale)
 	elseif self._key_pressed == Idstring("down") then
-		self:scroll_chat(HUDChat.line_height * 5)
-	elseif self._key_pressed == Idstring("page up") and self._lines_count > 10 then
-		self._scroll = -(HUDChat.line_height * (self._lines_count - 10))
+		self:scroll_chat(HUDChat.line_height * self._scale)
+	elseif self._key_pressed == Idstring("page up") and self._lines_count > 10 * self._scale then
+		self._scroll = -(HUDChat.line_height * self._scale * (self._lines_count - 10))
 		self:_layout_output_panel()
 	elseif self._key_pressed == Idstring("page down") then
 		self._scroll = 0
@@ -464,6 +472,7 @@ function HUDChat:mouse_pressed(o, button, x, y)
 		if scrollbar_panel:inside(x, y) then
 			self._scrollbar = true
 			self:set_chat_scroll(-(self._lines_count * HUDChat.line_height) * (1 - ((y - scrollbar_panel:world_y()) / (scrollbar_panel:h() - scrollbar_panel:child("scrollbar"):h()))))
+			if o then managers.mouse_pointer:set_pointer_image("grab") end
 		end
 	elseif button == Idstring("1") then
 		if self._input_panel:inside(x, y) then
@@ -477,11 +486,17 @@ function HUDChat:mouse_pressed(o, button, x, y)
 				text:set_selection(s, e)
 				text:replace_text("")
 			end
-		elseif self._panel:child("output_bg"):inside(x, y) then
+		elseif HeistHUD.options.chat_copy > 1 and self._panel:child("output_bg"):inside(x, y) then
 			for i = #self._lines, 1, -1 do
-				local panel = self._lines[i]
+				local panel = self._lines[i].panel
 				if panel:inside(x, y) then
-					Application:set_clipboard(panel:child("line"):text())
+					local line = self._lines[i].message
+					if HeistHUD.options.chat_copy == 3 then line = self._lines[i].name .. ": " .. line
+					elseif HeistHUD.options.chat_copy == 4 then line = self._lines[i].character .. ": " .. line
+					elseif HeistHUD.options.chat_copy == 5 then line = self._lines[i].name .. self._lines[i].character .. ": " .. line end
+					
+					Application:set_clipboard(line)
+					managers.hud:show_hint({text = managers.localization:text("HeistHUD_chat_clipboard"), time = 1})
 				end
 			end
 		end
@@ -489,26 +504,34 @@ function HUDChat:mouse_pressed(o, button, x, y)
 end
 
 function HUDChat:mouse_released(o, button, x, y)
-	if button == Idstring("0") then
+	if button == Idstring("0") and self._scrollbar then
 		self._scrollbar = false
+		self:mouse_moved(o, x, y)
 	end
 end
 
 function HUDChat:mouse_moved(o, x, y)
 	x = x - (managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:w() - self._hud_panel:w()) / 2
 	y = y - (managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:h() - self._hud_panel:h()) / 2
+	local scrollbar_panel = self._panel:child("scrollbar_panel")
 	if self._scrollbar then
-		local scrollbar_panel = self._panel:child("scrollbar_panel")
 		self:set_chat_scroll(-(self._lines_count * HUDChat.line_height) * (1 - ((y - scrollbar_panel:world_y()) / (scrollbar_panel:h() - scrollbar_panel:child("scrollbar"):h()))))
-	elseif self._panel:child("output_panel"):inside(x, y) then
+		if o then managers.mouse_pointer:set_pointer_image("grab") end
+	elseif scrollbar_panel:inside(x, y) and o then
+		managers.mouse_pointer:set_pointer_image("hand")
+	elseif HeistHUD.options.chat_copy > 1 and self._panel:child("output_panel"):inside(x, y) then
+		local inside = false
 		for i = #self._lines, 1, -1 do
-			local panel = self._lines[i]
+			local panel = self._lines[i].panel
+			if inside == false then inside = panel:inside(x, y) end
 			panel:set_alpha(panel:inside(x, y) and 1 or 0.5)
 		end
+		if o then managers.mouse_pointer:set_pointer_image(inside and "link" or "arrow") end
 	elseif not self._panel:child("output_panel"):inside(x, y) then
 		for i = #self._lines, 1, -1 do
-			local panel = self._lines[i]
+			local panel = self._lines[i].panel
 			panel:set_alpha(1)
 		end
+		if o then managers.mouse_pointer:set_pointer_image("arrow") end
 	end
 end

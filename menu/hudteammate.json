@@ -11,7 +11,7 @@
 			"type" : "button",
 			"id" : "heitshud_player",
 			"title" : "HeistHUD_main_panel",
-			"priority" : 14,
+			"priority" : 16,
 		},
 		{
 			"type" : "slider",
@@ -25,7 +25,7 @@
 			"min" : 0.65,
 			"step" : 0.1,
 			"localized" :  true
-			"priority" : 13,
+			"priority" : 15,
 		},
 		{
 			"type" : "multiple_choice",
@@ -39,7 +39,7 @@
 				"HeistHUD_health_real"
 			],
 			"value" : "main_health",
-			"priority" : 12,
+			"priority" : 14,
 		},
 		{
 			"type" : "multiple_choice",
@@ -53,7 +53,7 @@
 				"HeistHUD_health_real"
 			],
 			"value" : "armor",
-			"priority" : 11,
+			"priority" : 13,
 		},
 		{
 			"type" : "toggle",
@@ -62,7 +62,7 @@
 			"description" : "HeistHUD_total_decs",
 			"callback" : "toggle_option_clbk",
 			"value" : "totalammo"
-			"priority" : 10,
+			"priority" : 12,
 		},
 		{
 			"type" : "toggle",
@@ -71,7 +71,7 @@
 			"description" : "HeistHUD_main_loud_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_loud"
-			"priority" : 9,
+			"priority" : 11,
 		},
 		{
 			"type" : "toggle",
@@ -80,19 +80,28 @@
 			"description" : "HeistHUD_main_stealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_stealth"
-			"priority" : 8,
+			"priority" : 10,
+		},
+		{
+			"type" : "toggle",
+			"id" : "ammo_pickup",
+			"title" : "HeistHUD_ammo_pickup_title",
+			"description" : "HeistHUD_ammo_pickup_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "ammo_pickup"
+			"priority" : 9,
 		},
 		
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 7,
+			"priority" : 8,
 		},
 		{
 			"type" : "button",
 			"id" : "heitshud_teammate",
 			"title" : "HeistHUD_mate_panel",
-			"priority" : 6,
+			"priority" : 7,
 		},
 		{
 			"type" : "slider",
@@ -106,7 +115,7 @@
 			"min" : 0.65,
 			"step" : 0.1,
 			"localized" :  true
-			"priority" : 5,
+			"priority" : 6,
 		},
 		{
 			"type" : "multiple_choice",
@@ -120,7 +129,7 @@
 				"HeistHUD_health_real"
 			],
 			"value" : "mate_health",
-			"priority" : 4,
+			"priority" : 5,
 		},
 		{
 			"type" : "toggle",
@@ -129,7 +138,7 @@
 			"description" : "HeistHUD_mate_loud_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "mate_loud"
-			"priority" : 3,
+			"priority" : 4,
 		},
 		{
 			"type" : "toggle",
@@ -138,7 +147,7 @@
 			"description" : "HeistHUD_mate_stealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "mate_stealth"
-			"priority" : 2,
+			"priority" : 3,
 		},
 		{
 			"type" : "toggle",
@@ -147,6 +156,15 @@
 			"description" : "HeistHUD_mate_name_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "mate_name"
+			"priority" : 2,
+		},
+		{
+			"type" : "toggle",
+			"id" : "mate_interact",
+			"title" : "HeistHUD_mate_interact_title",
+			"description" : "HeistHUD_mate_interact_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "mate_interact"
 			"priority" : 1,
 		}
 	]

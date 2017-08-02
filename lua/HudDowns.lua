@@ -36,12 +36,11 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 	end
 	
 	local teammate_interact = UnitNetworkHandler.sync_teammate_progress
-	
 	function UnitNetworkHandler:sync_teammate_progress(type_index, enabled, tweak_data_id, timer, success, sender)
 		if tweak_data_id == "corpse_alarm_pager" and success == true then managers.hud:pager_used() end
 		return teammate_interact(self, type_index, enabled, tweak_data_id, timer, success, sender)
 	end
-	
+
 elseif RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
 	
 	local doctor_bag_taken = DoctorBagBase.take

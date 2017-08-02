@@ -1,0 +1,74 @@
+{
+	"menu_id" : "HeistHUD_options_chat",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_chat_title",
+	"description" : "HeistHUD_chat_desc",
+	"back_callback" : "heisthud_save",
+	"localized" :  true,
+	"priority" : 10,
+	"items" : [
+		{
+			"type" : "slider",
+			"id" : "hud_chat_scale",
+			"title" : "HeistHUD_chat_scale_title",
+			"description" : "HeistHUD_chat_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hud_chat_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.1,
+			"localized" :  true
+			"priority" : 14,
+		},
+		{
+			"type" : "toggle",
+			"id" : "show_charactername",
+			"title" : "HeistHUD_charactername_title",
+			"description" : "HeistHUD_charactername_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "show_charactername"
+			"priority" : 13,
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "chattime",
+			"title" : "HeistHUD_chattime_title",
+			"description" : "HeistHUD_chattime_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"HeistHUD_disabled", 
+				"HeistHUD_gametime", 
+				"HeistHUD_realtime"
+			],
+			"value" : "chattime",
+			"priority" : 12,
+		},
+		{
+			"type" : "toggle",
+			"id" : "chat_mouse",
+			"title" : "HeistHUD_chat_mouse_title",
+			"description" : "HeistHUD_chat_mouse_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "chat_mouse"
+			"priority" : 11,
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "chat_copy",
+			"title" : "HeistHUD_chat_copy_title",
+			"description" : "HeistHUD_chat_copy_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"HeistHUD_disable", 
+				"HeistHUD_chat_message",
+				"HeistHUD_chat_name", 
+				"HeistHUD_chat_character",
+				"HeistHUD_chat_name_character"
+			],
+			"value" : "chat_copy",
+			"priority" : 10,
+		}
+		
+	]
+}

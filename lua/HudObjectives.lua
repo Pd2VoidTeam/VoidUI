@@ -41,6 +41,7 @@ function HUDObjectives:create_objective(id , data)
 		rotation = 360,
 		align = "left",
 	})
+	objective_text:set_font_size(tweak_data.hud.active_objective_title_font_size * self._scale)
 	local _, _, name_w, name_h = objective_text:text_rect()
 	local objective_text_bg_left = objective_panel:bitmap({
 		name = "objective_text_bg_left",
@@ -123,6 +124,9 @@ function HUDObjectives:_animate_spawn_objective(objective_panel)
 end
 
 function HUDObjectives:activate_objective(data)
+	if data.id == self._active_objective_id then
+		return
+	end
 	print("[HUDObjectives] activate_objective", data.id, data.amount)
 	local objectives_panel = self._hud_panel:child("objectives_panel")
 	local objective_panel = self._objectives[#self._objectives]
@@ -138,7 +142,7 @@ function HUDObjectives:activate_objective(data)
 			self._objectives[i]:animate(callback(self, self, "_animate_objective_list"), i - 1)
 		end
 	end
-	self:create_objective(self._id, data)
+	self:create_objective(data.id, data)
 	if data.amount then
 		self:update_amount_objective(data)
 	end

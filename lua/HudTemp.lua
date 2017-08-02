@@ -3,6 +3,7 @@ function HUDTemp:init(hud)
 	if self._hud_panel:child("temp_panel") then
 		self._hud_panel:remove(self._hud_panel:child("temp_panel"))
 	end
+	self._scale = HeistHUD.options.hud_main_scale
 	self._temp_panel = self._hud_panel:panel({
 		visible = true,
 		name = "temp_panel",
@@ -117,7 +118,7 @@ end
 function HUDTemp:set_throw_bag_text()
 end
 function HUDTemp:_bag_panel_bottom()
-	return self._temp_panel:h() - managers.hud:teampanels_height()
+	return self._temp_panel:h() - managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]._bg_h - (25 * math.clamp(self._scale, 0.65 , 1))
 end
 function HUDTemp:show_carry_bag(carry_id, value)
 	local bag_panel = self._temp_panel:child("bag_panel")
@@ -157,7 +158,7 @@ function HUDTemp:_animate_show_bag_panel(bag_panel)
 	local scx = self._temp_panel:w() / 2
 	local ecx = self._temp_panel:w() - w / 2
 	local scy = self._temp_panel:h() / 1.8
-	local ecy = self:_bag_panel_bottom() - self._bag_panel_h
+	local ecy = self:_bag_panel_bottom() - (bag_panel:h() / 2)
 	local bottom = bag_panel:bottom()
 	local center_y = bag_panel:center_y()
 	local bag_text_panel = bag_panel:child("bag_text_panel")

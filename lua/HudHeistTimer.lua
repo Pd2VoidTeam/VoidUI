@@ -180,17 +180,6 @@ function HUDHeistTimer:whisper_mode_changed()
 		ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
 	end
 end
-
-function HUDHeistTimer:expand_level_bg()
-	if not self._expanded then
-		self._heist_timer_panel:child("level_name"):set_x(self._heist_timer_panel:child("level_name"):x() + 22 * self._scale)
-		self._heist_timer_panel:child("level_name_bg"):set_w(self._heist_timer_panel:child("level_name_bg"):w() + 22 * self._scale)
-		self._heist_timer_panel:child("ghost_icon"):set_x(self._heist_timer_panel:child("ghost_icon"):x() + 22 * self._scale)
-		self._heist_timer_panel:child("bags_panel"):set_x(self._heist_timer_panel:child("bags_panel"):x() + 22 * self._scale)
-		self._heist_timer_panel:child("level_name_bg_right"):set_left(self._heist_timer_panel:child("level_name_bg"):right())
-		self._expanded = true
-	end
-end
 function HUDHeistTimer:loot_value_changed()
 	local bags_panel = self._heist_timer_panel:child("bags_panel")
 	local bags_count = bags_panel:child("bags_count")
