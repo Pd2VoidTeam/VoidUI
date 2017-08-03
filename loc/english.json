@@ -20,6 +20,9 @@
 	"HeistHUD_assault_18" : "You cheated by using invalid character",
 	"HeistHUD_assault_19" : "Drill Jammed",
 	"HeistHUD_assault_20" : "Fire at it!",
+	"HeistHUD_assault_21" : "You have been kicked from the game",
+	"HeistHUD_assault_22" : "The secret assault message is cosmetic",
+	"HeistHUD_assault_23" : "Do they not have coloured printers in Russia?",
 	
 	"HeistHUD_options_title" : "HeistHUD",
 	"HeistHUD_options_desc" : "Customize the behavior of HeistHUD",  
@@ -41,11 +44,11 @@
 	"HeistHUD_armor_desc" : "Define how numerical armor is shown inside your health bar. PERCENTAGE shows your armor as a percentage of your total armor, REAL VALUE shows the actual amount of armor points you have",
 	"HeistHUD_total_title" : "Real Ammo",  	    
 	"HeistHUD_total_decs" : "Show the amount of ammo you have in reserve instead of your total ammo",	
-	"HeistHUD_main_loud_title" : "Show downs counter",  	    
+	"HeistHUD_main_loud_title" : "Show downs",  	    
 	"HeistHUD_main_loud_desc" : "Show the amount of downs you have left before you go to custody (loud only)",
 	"HeistHUD_main_stealth_title" : "Show body bags",  	    
-	"HeistHUD_main_stealth_desc" : "Shows the amount of body bags you have left (stealth only)",	
-	"HeistHUD_ammo_pickup_title" : "Ammo pickups",  	    
+	"HeistHUD_main_stealth_desc" : "Show the amount of body bags you have left (stealth only)",	
+	"HeistHUD_ammo_pickup_title" : "Show Ammo pickups",  	    
 	"HeistHUD_ammo_pickup_desc" : "Show the amount of ammo you've picked up",		
 
 	"HeistHUD_mate_panel" : "Teammate panels",	
@@ -53,7 +56,7 @@
 	"HeistHUD_mate_scale_desc" : "Set the scale of the teammate hud elements",   
 	"HeistHUD_mate_health_title" : "Show health",
 	"HeistHUD_mate_health_desc" : "Define how numerical health is shown inside your teammates' health bar. PERCENTAGE shows health as a percentage of the total health, REAL VALUE shows the actual amount of health points",
-	"HeistHUD_mate_loud_title" : "Show downs counter",  	    
+	"HeistHUD_mate_loud_title" : "Show downs",  	    
 	"HeistHUD_mate_loud_desc" : "Show the amount of downs your teammates' have left before they go to custody (loud only)",
 	"HeistHUD_mate_stealth_title" : "Show detection risk",  	    
 	"HeistHUD_mate_stealth_desc" : "Show your teammates' detection risk in their respective health bars (stealth only)",	
@@ -91,11 +94,11 @@
 	"HeistHUD_chat_scale_desc" : "Set the scale of the player chat",
 	"HeistHUD_chat_mouse_title" : "Enable mouse",
 	"HeistHUD_chat_mouse_desc" : "Enable mouse support for the chat. With mouse enabled you can scroll easier and copy messages",
-	"HeistHUD_charactername_title" : "Show character",
-	"HeistHUD_charactername_desc" : "Show what character the message's sender is playing as",
+	"HeistHUD_charactername_title" : "Show Heister",
+	"HeistHUD_charactername_desc" : "Show what heister the message's sender is playing as",
 	"HeistHUD_chattime_title" : "Show time",
-	"HeistHUD_chattime_desc" : "Show the time the message was sent at. GAME TIME is the time since the current day of the heist started, REAL TIME is the time in real life",
-	"HeistHUD_chat_copy_title" : "Copy messages",
+	"HeistHUD_chattime_desc" : "Show the time messages were sent at. GAME TIME is the time since the start of the current heist day, REAL TIME is the time in real life",
+	"HeistHUD_chat_copy_title" : "Allow Copying messages",
 	"HeistHUD_chat_copy_desc" : "Enable copying chat messages to the clipboard by right clicking on them, and set what to copy",
 	
 	"HeistHUD_label_title" : "Labels and waypoints",
@@ -107,14 +110,14 @@
 	"HeistHUD_label_scale_desc" : "Set the scale of the name labels",
 	"HeistHUD_label_minscale_title" : "Name label minmode scale",
 	"HeistHUD_label_minscale_desc" : "Set the scale of the name labels in minimal mode",
-	"HeistHUD_minlabel_title" : "Label minimal mode",
+	"HeistHUD_minlabel_title" : "Label minimal mode (minmode)",
 	"HeistHUD_minlabel_desc" : "Name labels will become smaller when their owner is far away from you or you're not looking at them",
-	"HeistHUD_minrank_title" : "Minmode rank and level",
-	"HeistHUD_minrank_desc" : "Show your teammates' infamy rank and player level in minimal mode",
+	"HeistHUD_minrank_title" : "Show rank and level in minmode",
+	"HeistHUD_minrank_desc" : "Show your teammates' infamy rank and player level when theit label is in minimal mode",
 	"HeistHUD_mindist_title" : "Minmode Distance",
 	"HeistHUD_mindist_desc" : "Set the distance in meters after which the name labels should enter minimal mode",
-	"HeistHUD_mindot_title" : "Dot Scale",
-	"HeistHUD_mindot_desc" : "The scale of the area in the middle of the screen that makes labels large",
+	"HeistHUD_mindot_title" : "Force normal label area scale",
+	"HeistHUD_mindot_desc" : "The scale of the area in the middle of the screen that forces labels out of minimal mode",
 	"HeistHUD_waypoints" : "Waypoints",
 	"HeistHUD_waypoint_scale_title" : "Waypoints scale",
 	"HeistHUD_waypoint_scale_desc" : "Set the scale of the objective waypoints and awareness markers",
@@ -131,9 +134,9 @@
 	"HeistHUD_gametime" : "Game Time",
 	"HeistHUD_realtime" : "Real Time"
 	"HeistHUD_disable" : "Disabled",
-	"HeistHUD_chat_message" : "Message only"
-	"HeistHUD_chat_name" : "Name & message"
-	"HeistHUD_chat_character" : "Char & message",
-	"HeistHUD_chat_name_character" : "Whole message"
+	"HeistHUD_chat_message" : "Player's message only"
+	"HeistHUD_chat_name" : "Player: message"
+	"HeistHUD_chat_character" : "Heister: message",
+	"HeistHUD_chat_name_character" : "Player (heister): message"
 
 }
