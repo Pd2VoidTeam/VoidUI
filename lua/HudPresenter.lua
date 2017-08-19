@@ -51,10 +51,11 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			font = tweak_data.hud_present.title_font,
 			font_size = 10
 		})
+		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 		local present_bg_left = present_panel:bitmap({
 			name = "present_bg_left",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {28,0,43,156},
+			texture = weapons_texture,
+			texture_rect = {26,0,43,150},
 			layer = 1,
 			y = 0,
 			w = 35,
@@ -64,8 +65,8 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 		})
 		local present_bg = present_panel:bitmap({
 			name = "present_bg",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {71,0,411,156},
+			texture = weapons_texture,
+			texture_rect = {69,0,416,150},
 			layer = 1,
 			w = w,
 			h = h,
@@ -76,8 +77,8 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 		})	
 		local present_bg_right = present_panel:bitmap({
 			name = "present_bg_right",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {482,0,43,156},
+			texture = weapons_texture,
+			texture_rect = {485,0,43,150},
 			layer = 1,
 			y = 0,
 			w = 35,

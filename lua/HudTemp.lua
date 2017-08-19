@@ -3,7 +3,7 @@ function HUDTemp:init(hud)
 	if self._hud_panel:child("temp_panel") then
 		self._hud_panel:remove(self._hud_panel:child("temp_panel"))
 	end
-	self._scale = HeistHUD.options.hud_main_scale
+	self._scale = VoidUI.options.hud_main_scale
 	self._temp_panel = self._hud_panel:panel({
 		visible = true,
 		name = "temp_panel",
@@ -12,7 +12,6 @@ function HUDTemp:init(hud)
 		layer = 0
 	})
 	self:set_throw_bag_text()
-
 	local bag_panel = self._temp_panel:panel({
 		visible = false,
 		name = "bag_panel",

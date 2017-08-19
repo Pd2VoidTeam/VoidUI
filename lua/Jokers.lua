@@ -12,11 +12,22 @@ elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		local player_unit = peer_unit or managers.player:player_unit()
 		local unit_data = self._police[unit:key()]
 		local color_id = managers.criminals:character_color_id_by_unit(player_unit)
-		unit:contour():add("joker", nil, 1)
-		unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
+		if VoidUI.options.outlines then
+			unit:contour():add("joker", nil, 1)
+			unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
+		end
 		
-		if unit_data and HeistHUD.options.label_jokers then
+		if unit_data and VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = player_unit})
+			
+			if VoidUI.options.health_jokers then
+				local label = managers.hud:_get_name_label(panel_id)
+				label.interact:set_visible(true)
+				label.interact_bg:set_visible(true)
+				label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
+				label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(true)
+				label.interact:set_w(label.interact_bg:w())
+			end
 			
 			unit:base().owner_peer_id = player_unit:network():peer():id()
 			unit:unit_data().label_id = panel_id
@@ -41,11 +52,21 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 		
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
 		local color_id = managers.criminals:character_color_id_by_unit(managers.network:session():peer(minion_owner_peer_id):unit())
-		unit:contour():add("joker", nil, 1)
-		unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
+		if VoidUI.options.outlines then
+			unit:contour():add("joker", nil, 1)
+			unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
+		end
 		
-		if HeistHUD.options.label_jokers then
+		if VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = managers.network:session():peer(minion_owner_peer_id):unit()})
+			if VoidUI.options.health_jokers then
+				local label = managers.hud:_get_name_label(panel_id)
+				label.interact:set_visible(true)
+				label.interact_bg:set_visible(true)
+				label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
+				label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(true)
+				label.interact:set_w(label.interact_bg:w())
+			end
 			unit:base().owner_peer_id = minion_owner_peer_id
 			unit:unit_data().label_id = panel_id
 		end
@@ -71,20 +92,24 @@ elseif RequiredScript == "lib/units/enemies/cop/huskcopbrain" then
 		end
 		self._unit:contour():remove("joker")
 
-	clbk_death(self, my_unit, damage_info)
+		clbk_death(self, my_unit, damage_info)
 	end
 	
 elseif RequiredScript == "lib/units/enemies/cop/copdamage" then
 
-	local on_damage_received = opDamage._on_damage_received
+	local on_damage_received = CopDamage._on_damage_received
 	function CopDamage:_on_damage_received(damage_info)
 		on_damage_received(self, damage_info)
-		
-		if self._unit:base().owner_peer_id then
+		if self._unit:unit_data().label_id then
 			local label = managers.hud:_get_name_label(self._unit:unit_data().label_id)
-			label.panel:child("extended_panel"):child("interact"):set_visible(true)
-			label.panel:child("extended_panel"):child("interact_bg"):set_visible(true)
-			label.interact:set_w(label.interact_bg * self._health_ratio)
+			if label then
+				label.interact:set_visible(VoidUI.options.health_jokers)
+				label.interact_bg:set_visible(VoidUI.options.health_jokers)
+				label.panel:child("minmode_panel"):child("min_interact"):set_visible(VoidUI.options.health_jokers)
+				label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(VoidUI.options.health_jokers)
+				label.interact:set_w(label.interact_bg:w() * self._health_ratio)
+				label.panel:child("minmode_panel"):child("min_interact"):set_w(label.panel:child("minmode_panel"):child("min_interact_bg"):w() * self._health_ratio)
+			end
 		end
 	end
 	
