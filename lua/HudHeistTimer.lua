@@ -3,7 +3,7 @@ function HUDHeistTimer:init(hud, tweak_hud)
 	if self._hud_panel:child("heist_timer_panel") then
 		self._hud_panel:remove(self._hud_panel:child("heist_timer_panel"))
 	end
-	self._scale = HeistHUD.options.hud_objectives_scale
+	self._scale = VoidUI.options.hud_objectives_scale
 		
 	self._heist_timer_panel = self._hud_panel:panel({
 		visible = true,
@@ -24,7 +24,7 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		layer = 2,
 		wrap = false,
 		word_wrap = false,
-		x = HeistHUD.options.show_levelname and 25 * self._scale or 30 * self._scale,
+		x = VoidUI.options.show_levelname and 25 * self._scale or 30 * self._scale,
 		y = 7 * self._scale,
 		h = 25 * self._scale
 	})
@@ -36,7 +36,7 @@ function HUDHeistTimer:init(hud, tweak_hud)
 			visible = true,
 			layer = 2,
 			color = Color.white,
-			text = HeistHUD.options.show_levelname and managers.localization:text(level_data.name_id) or " ",
+			text = VoidUI.options.show_levelname and managers.localization:text(level_data.name_id) or " ",
 			font_size = tweak_data.hud.active_objective_title_font_size * 1.2 * self._scale,
 			font = "fonts/font_large_mf",
 			x = 70 * self._scale,
@@ -45,7 +45,7 @@ function HUDHeistTimer:init(hud, tweak_hud)
 			vertical = "top"
 		})
 		local _, _, name_w, name_h = level_name:text_rect()
-		name_w = HeistHUD.options.show_levelname and name_w or 0
+		name_w = VoidUI.options.show_levelname and name_w or 0
 		local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
 		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
 		local ghost_icon = self._heist_timer_panel:bitmap({
@@ -58,15 +58,15 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		})	
 		ghost_icon:set_left(71 * self._scale + name_w)
 		ghost_icon:set_center_y(6 * self._scale + name_h / 2)
-		ghost_icon:set_visible(is_level_ghostable and HeistHUD.options.show_ghost_icon)
+		ghost_icon:set_visible(is_level_ghostable and VoidUI.options.show_ghost_icon)
 		ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
-		local ghost_w = HeistHUD.options.show_ghost_icon and 15 * self._scale or 0
+		local ghost_w = VoidUI.options.show_ghost_icon and 15 * self._scale or 0
 		name_w = is_level_ghostable and name_w + ghost_w or name_w
-		
+		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 		local level_name_bg_left = self._heist_timer_panel:bitmap({
 			name = "level_name_bg_left",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {28,0,43,156},
+			texture = weapons_texture,
+			texture_rect = {26,0,43,150},
 			layer = 1,
 			x = 9 * self._scale,
 			w = 35 * self._scale,
@@ -76,8 +76,8 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		})
 		local level_name_bg = self._heist_timer_panel:bitmap({
 			name = "level_name_bg",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {71,0,411,156},
+			texture = weapons_texture,
+			texture_rect = {69,0,416,150},
 			layer = 1,
 			w = name_w + 12 * self._scale,
 			h = name_h + 8 * self._scale,
@@ -88,8 +88,8 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		
 		local level_name_bg_right = self._heist_timer_panel:bitmap({
 			name = "level_name_bg_right",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {482,0,43,156},
+			texture = weapons_texture,
+			texture_rect = {485,0,43,150},
 			layer = 1,
 			w = 35 * self._scale,
 			h = name_h + 8 * self._scale,
@@ -115,8 +115,8 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		
 		local bags_bg_left = bags_panel:bitmap({
 			name = "bags_bg_left",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {28,0,33,156},
+			texture = weapons_texture,
+			texture_rect = {26,0,43,150},
 			layer = 1,
 			w = bags_panel:w() / 2,
 			h = bags_panel:h(),
@@ -126,8 +126,8 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		
 		local bags_bg_right = bags_panel:bitmap({
 			name = "bags_bg_right",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {492,0,33,156},
+			texture = weapons_texture,
+			texture_rect = {485,0,43,150},
 			layer = 1,
 			w = bags_panel:w() / 2,
 			h = bags_panel:h(),
@@ -181,14 +181,18 @@ function HUDHeistTimer:whisper_mode_changed()
 	end
 end
 function HUDHeistTimer:loot_value_changed()
-	local bags_panel = self._heist_timer_panel:child("bags_panel")
-	local bags_count = bags_panel:child("bags_count")
-	local secured_value = managers.loot:get_secured_mandatory_bags_amount() + managers.loot:get_secured_bonus_bags_amount()
-	if bags_panel:visible() == false and secured_value ~= 0 then
-		bags_panel:animate(callback(self, self, "_animate_bags_enable"))
-		bags_count:set_text("x"..secured_value)
+		local bags_panel = self._heist_timer_panel:child("bags_panel")
+		local bags_count = bags_panel:child("bags_count")
+	if VoidUI.options.show_loot then
+		local secured_value = managers.loot:get_secured_mandatory_bags_amount() + managers.loot:get_secured_bonus_bags_amount()
+		if bags_panel:visible() == false and secured_value ~= 0 then
+			bags_panel:animate(callback(self, self, "_animate_bags_enable"))
+			bags_count:set_text("x"..secured_value)
+		else
+			bags_count:animate(callback(self, self, "_animate_bags_count"), secured_value)
+		end
 	else
-		bags_count:animate(callback(self, self, "_animate_bags_count"), secured_value)
+		bags_panel:set_visible(false)
 	end
 end
 

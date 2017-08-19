@@ -4,8 +4,8 @@ function HUDObjectives:init(hud)
 	if self._hud_panel:child("objectives_panel") then
 		self._hud_panel:remove(self._hud_panel:child("objectives_panel"))
 	end
-	self._scale = HeistHUD.options.hud_objectives_scale
-	self._max_objectives = math.floor(HeistHUD.options.hud_objective_history)
+	self._scale = VoidUI.options.hud_objectives_scale
+	self._max_objectives = math.floor(VoidUI.options.hud_objective_history)
 	
 	local objectives_panel = self._hud_panel:panel({
 		visible = true,
@@ -43,10 +43,11 @@ function HUDObjectives:create_objective(id , data)
 	})
 	objective_text:set_font_size(tweak_data.hud.active_objective_title_font_size * self._scale)
 	local _, _, name_w, name_h = objective_text:text_rect()
+	local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 	local objective_text_bg_left = objective_panel:bitmap({
 		name = "objective_text_bg_left",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {28,0,43,156},
+		texture = weapons_texture,
+		texture_rect = {26,0,43,150},
 		layer = 1,
 		y = 0,
 		w = 25 * self._scale,
@@ -56,8 +57,8 @@ function HUDObjectives:create_objective(id , data)
 	})
 	local objective_text_bg = objective_panel:bitmap({
 		name = "objective_text_bg",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {71,0,411,156},
+		texture = weapons_texture,
+		texture_rect = {69,0,416,150},
 		layer = 1,
 		w = name_w - 17 * self._scale,
 		h = 30 * self._scale,
@@ -68,8 +69,8 @@ function HUDObjectives:create_objective(id , data)
 	})	
 	local objective_text_bg_right = objective_panel:bitmap({
 		name = "objective_text_bg_right",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {482,0,43,156},
+		texture = weapons_texture,
+		texture_rect = {485,0,43,150},
 		layer = 1,
 		y = 0,
 		w = 25 * self._scale,
@@ -79,29 +80,30 @@ function HUDObjectives:create_objective(id , data)
 	})
 	objective_text_bg_right:set_left(objective_text_bg:right())
 	
+	local highlight_texture = "guis/textures/VoidUI/hud_highlights"
 	local objective_border = objective_panel:bitmap({
 		name = "objective_border",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {81,479,471,161},
-		layer = 1,
+		texture = highlight_texture,
+		texture_rect = {0,158,460,157},
+		layer = 2,
 		x = -50 * self._scale,
 		y = 0,
-		w = name_w + 8 * self._scale,
+		w = name_w + 10 * self._scale,
 		h = 30 * self._scale,
-		rotation = 180,
+		rotation = 360,
 		alpha = 0,
 		color = Color(0, 0.5, 0)
 	})
 	
 	local objective_border_right = objective_panel:bitmap({
 		name = "objective_border_right",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {28,479,53,161},
-		layer = 1,
+		texture = highlight_texture,
+		texture_rect = {460,158,43,157},
+		layer = 2,
 		y = 0,
 		w = 25 * self._scale,
 		h = 30 * self._scale,
-		rotation = 180,
+		rotation = 360,
 		alpha = 0,
 		color = Color(0, 0.5, 0)
 	})
@@ -180,7 +182,7 @@ function HUDObjectives:_animate_complete_objective(objective_panel)
 	while TOTAL_T > t do
 		local dt = coroutine.yield()
 		t = t + dt
-		objective_border:set_x(math.lerp(x, 0, t / TOTAL_T))
+		objective_border:set_x(math.lerp(x, 1, t / TOTAL_T))
 		objective_border:set_alpha(math.lerp(0, 1, t / TOTAL_T))
 		objective_border_right:set_left(objective_border:right())
 		objective_border_right:set_alpha(objective_border:alpha())
@@ -188,7 +190,7 @@ function HUDObjectives:_animate_complete_objective(objective_panel)
 		local g = math.lerp(1, 0.5, t / TOTAL_T)
 		objective_text:set_color(Color(rb,g,rb))
 	end
-	objective_border:set_x(0)
+	objective_border:set_x(1)
 	objective_border:set_alpha(1)
 	objective_border_right:set_left(objective_border:right())
 	objective_border_right:set_alpha(objective_border:alpha())

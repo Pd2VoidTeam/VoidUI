@@ -13,12 +13,35 @@ if RequiredScript == "lib/managers/hudmanager" then
 		managers.hud:assault_anticipation()
 	end
 	
+	show_endscreen_hud = HUDManager.show_endscreen_hud
+	function HUDManager:show_endscreen_hud()
+		show_endscreen_hud(self)
+		self._hud_assault_corner:stop_ecm()
+	end
+	function HUDManager:setup_anticipation(total_t)
+		local exists = self._anticipation_dialogs and true or false
+		self._anticipation_dialogs = {}
+		
+		if not VoidUI.options.assault_lines then
+			return
+		end
+		if not exists and total_t == 30 then
+			table.insert(self._anticipation_dialogs, {time = 30, dialog = 2})
+			table.insert(self._anticipation_dialogs, {time = 20, dialog = 3})
+			table.insert(self._anticipation_dialogs, {time = 10, dialog = 4})
+		elseif exists and total_t == 30 then
+			table.insert(self._anticipation_dialogs, {time = 30, dialog = 6})
+			table.insert(self._anticipation_dialogs, {time = 20, dialog = 7})
+			table.insert(self._anticipation_dialogs, {time = 10, dialog = 8})
+		end
+	end
+	
 	local add_waypoint = HUDManager.add_waypoint
 	function HUDManager:add_waypoint(id, data)
 		add_waypoint(self, id, data)
 		
 		if self._hud.waypoints[id] then
-			local scale = HeistHUD.options.waypoint_scale
+			local scale = VoidUI.options.waypoint_scale
 			local bitmap = self._hud.waypoints[id].bitmap
 			local arrow = self._hud.waypoints[id].arrow
 			local distance = self._hud.waypoints[id].distance
@@ -30,7 +53,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			text:set_font_size(text:font_size() * scale)
 			text:set_size(text:w() * scale, text:h() * scale)
 			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-			self._hud.waypoints[id].radius = HeistHUD.options.waypoint_radius
+			self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
 			
 			if data.distance then
 				distance:set_font_size(distance:font_size() * scale)
@@ -48,7 +71,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 		change_waypoint_icon(self, id, icon)
 		
 		if self._hud.waypoints[id] then
-			local scale = HeistHUD.options.waypoint_scale
+			local scale = VoidUI.options.waypoint_scale
 			local bitmap = self._hud.waypoints[id].bitmap
 			bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
 			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
@@ -98,18 +121,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 			if data.state == "offscreen" then
 					local panel = data.bitmap:parent()
 					mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
-					local show = HeistHUD.options.label_waypoint_offscreen
+					local show = VoidUI.options.label_waypoint_offscreen
 					data.bitmap:set_visible(show)
 					data.arrow:set_visible(show)
 					data.text:set_visible(show)
 					
 					local direction = wp_onscreen_direction
 					local panel_center_x, panel_center_y = panel:center()
-					local scale = HeistHUD.options.waypoint_scale
+					local scale = VoidUI.options.waypoint_scale
 					mvector3.set_static(direction, wp_pos.x - panel_center_x, wp_pos.y - panel_center_y, 0)
 					mvector3.normalize(direction)
 					data.arrow:set_center(mvector3.x(data.current_position) + direction.x * (24 * scale), mvector3.y(data.current_position) + direction.y * (24 * scale))
-			elseif data.state == "onscreen" and not HeistHUD.options.label_waypoint_offscreen then
+			elseif data.state == "onscreen" and not VoidUI.options.label_waypoint_offscreen then
 				data.bitmap:set_visible(true)
 				data.text:set_visible(true)
 			end
@@ -135,9 +158,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 		for _, data in ipairs(self._hud.name_labels) do
 			local pos
 			if data.movement then
-				if not alive(data.movement._unit) then
-					label_panel:set_visible(false)
-				else
+				if alive(data.movement._unit) then
 					pos = data.movement:m_pos()
 					mvector3.set(nl_w_pos, pos)
 					mvector3.set_z(nl_w_pos, mvector3.z(data.movement:m_head_pos()) + 30)
@@ -150,7 +171,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				mvector3.set(nl_w_pos, pos)
 				mvector3.set_z(nl_w_pos, pos.z + data.vehicle:vehicle_driving().hud_label_offset)
 			end
-			if HeistHUD.options.label_minmode and pos then
+			if VoidUI.options.label_minmode and pos then
 				mvector3.set(nl_dir, nl_w_pos)
 				mvector3.subtract(nl_dir, cam_pos)
 				mvector3.set(nl_dir_normalized, nl_dir)
@@ -160,7 +181,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				local unit = data.vehicle and data.vehicle or data.movement._unit and data.movement._unit
 				local dis = alive(unit) and mvector3.distance(unit:position(), cam_pos) or 0
 				local label_panel = data.panel
-				if math.ceil(dis / 100) > HeistHUD.options.label_minmode_dist and math.clamp((1 - dot) * 100, 0, HeistHUD.options.label_minmode_dot) == HeistHUD.options.label_minmode_dot then
+				if math.ceil(dis / 100) > VoidUI.options.label_minmode_dist and math.clamp((1 - dot) * 100, 0, VoidUI.options.label_minmode_dot) == VoidUI.options.label_minmode_dot then
 					label_panel:child("minmode_panel"):set_visible(true)
 					label_panel:child("extended_panel"):set_visible(false)
 				else
@@ -173,9 +194,41 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
+	function HUDManager:pd_start_progress(current, total, msg, icon_id)
+		if not self._hud_interaction then
+			return
+		end
+		self._hud_interaction:show_interaction_bar(current, total)
+		self._hud_player_downed:hide_timer()
+		local function feed_circle(o, total)
+			local t = 0
+			while total > t do
+				t = t + coroutine.yield()
+				self._hud_interaction:set_interaction_bar_width(t, total)
+				self._hud_interaction:show_interact({text = utf8.to_upper(managers.localization:text(msg))})
+			end
+		end
+		self._hud_interaction._interact_bar:stop()
+		self._hud_interaction._interact_bar:animate(feed_circle, total)
+	end
+	function HUDManager:pd_stop_progress()
+		if not self._hud_interaction then
+			return
+		end
+		self._hud_interaction:remove_interact()
+		self._hud_interaction:hide_interaction_bar(true)
+		self._hud_player_downed:show_timer()
+	end
+	function HUDManager:pd_start_timer(data)
+		local hud = managers.hud:script(PlayerBase.PLAYER_DOWNED_HUD)
+		hud.unpause_timer()
+		if self._hud_player_downed then
+			self._hud_player_downed:start_timer(data.time or 10)
+		end
+	end
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
-
+		
 	function HUDManager:_create_teammates_panel(hud)
 		hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 		self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
@@ -184,8 +237,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			hud.panel:remove(hud.panel:child("teammates_panel"))
 		end
 		local h = self:teampanels_height() * 2
-		self._main_scale = HeistHUD.options.hud_main_scale and HeistHUD.options.hud_main_scale or 1
-		self._mate_scale = HeistHUD.options.hud_mate_scale and HeistHUD.options.hud_mate_scale or 1
+		self._main_scale = VoidUI.options.hud_main_scale and VoidUI.options.hud_main_scale or 1
+		self._mate_scale = VoidUI.options.hud_mate_scale and VoidUI.options.hud_mate_scale or 1
 		local teammates_panel = hud.panel:panel({
 			name = "teammates_panel",
 			h = h,
@@ -220,10 +273,12 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		for i, data in ipairs(self._hud.teammate_panels_data) do
 			if i ~= HUDManager.PLAYER_PANEL then
 				local panel = self._teammate_panels[i]
-				if panel:ai() or panel:peer_id() then panel._panel:set_w((panel:ai() and 51 or 154) * self._mate_scale)
+				if panel:is_waiting() then panel._panel:set_w(165 * self._mate_scale)
+				elseif panel:ai() or panel:panel():child("custom_player_panel"):child("weapons_panel"):visible() == false then panel._panel:set_w(62 * self._mate_scale)
+				elseif panel:peer_id() then panel._panel:set_w(165 * self._mate_scale)
 				else panel._panel:set_w(0) end
 				if i ~= 1 then
-					panel._panel:set_x(self._teammate_panels[i - 1]._panel:right() + 2 * self._mate_scale)
+					panel._panel:set_x(self._teammate_panels[i - 1]._panel:right() - 9 * self._mate_scale)
 				end
 			end
 		end
@@ -323,8 +378,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)		
 		local last_id = self._hud.name_labels[#self._hud.name_labels] and self._hud.name_labels[#self._hud.name_labels].id or 0
 		local id = last_id + 1
-		local large_scale = HeistHUD.options.label_scale
-		local min_scale = HeistHUD.options.label_minscale
+		local large_scale = VoidUI.options.label_scale
+		local min_scale = VoidUI.options.label_minscale
 		local character_name = data.name
 		local rank = 0
 		local peer_id
@@ -355,6 +410,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			visible = false,
 			w = 256,
 			h = 18
+		})
+		local text = panel:text({
+			name = "text",
+			text = "",
+			font = tweak_data.hud.medium_font,
+			font_size = 0,
+			w = 32,
+			h = 0
 		})
 		local extended_panel = panel:panel({
 			name = "extended_panel"
@@ -430,7 +493,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		})
 		local min_text = minmode_panel:text({
 			name = "text",
-			text = HeistHUD.options.label_minrank and data.name or character_name,
+			text = VoidUI.options.label_minrank and data.name or character_name,
 			font = tweak_data.hud.medium_font,
 			font_size = (tweak_data.hud.name_label_font_size / 2) * min_scale,
 			color = crim_color,
@@ -440,10 +503,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			w = 100,
 			h = 18
 		})
-		min_text:set_range_color(0, HeistHUD.options.label_minrank and utf8.len(experience) or 0, Color.white) 
+		min_text:set_range_color(0, VoidUI.options.label_minrank and utf8.len(experience) or 0, Color.white) 
 		local min_text_shadow = minmode_panel:text({
 			name = "text_shadow",
-			text = HeistHUD.options.label_minrank and data.name or character_name,
+			text = VoidUI.options.label_minrank and data.name or character_name,
 			font = tweak_data.hud.medium_font,
 			font_size = (tweak_data.hud.name_label_font_size / 2) * min_scale,
 			color = Color.black,
@@ -520,7 +583,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		local _, _, cw, ch = cheater:text_rect()
 		local _, _, mtw, mth = min_text:text_rect()
 		
-		panel:set_size(math.max(tw, cw, aw), th + ah + ch)
+		panel:set_size(math.max(tw, cw, aw) + 32, th + ah + ch)
 		cheater:set_size(panel:w(), ch)
 		cheater:set_position(0, 0)
 				
@@ -541,12 +604,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		bag:set_size(th, th * 0.8)
 		bag:set_right(panel:left() - 2)
 		bag:set_center_y(text:center_y())
+		panel:child("text"):set_x(panel:x())
+		panel:child("text"):set_center_y(text:center_y())
 		if bag_number then
 			bag_number:set_size(bag:w(), bag:h())
 			bag_number:set_center(bag:center())
 		end
 		
-		minmode_panel:set_size(panel:w(), mth)
+		minmode_panel:set_size(panel:w(), mth + 1)
 		minmode_panel:set_bottom(text:bottom())
 		min_text:set_size(mtw, mth)
 		min_text_shadow:set_size(mtw, mth)
@@ -558,7 +623,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		min_interact_bg:set_w(min_interact:w())
 		min_interact:set_center_x(min_text:center_x())
 		min_interact_bg:set_center_x(interact:center_x())
-		min_interact:set_bottom(min_text:bottom())
+		min_interact:set_bottom(min_text:bottom() + 1)
 		min_interact_bg:set_y(min_interact:y())
 		min_bag:set_size(mth, mth * 0.8)
 		min_bag:set_right(min_text:left() - 2)
@@ -834,10 +899,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	HUDManager.start_ecm_timer = HUDManager.start_ecm_timer or function(self)		
 		if self._hud_assault_corner and self._jammers and #self._jammers > 0 then
-			self._hud_assault_corner:ecm_timer(self._jammers[1]:base():battery_life())
+			self._hud_assault_corner:ecm_timer(self._jammers[VoidUI.options.jammers == 2 and 1 or #managers.hud._jammers]:base():battery_life())
 		end
 	end
-	
 	HUDManager.player_downed = HUDManager.player_downed or function(self, i)
 		self._teammate_panels[i]:downed()
 	end
@@ -904,4 +968,87 @@ elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" then
 		label:set_text(text)
 		shadow:set_text(text)		
 	end
+elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" then
+	local PADDING = 8
+	function HUDWaitingLegend:init(hud)
+		self._hud_panel = hud.panel
+		self._panel = self._hud_panel:panel({
+			h = tweak_data.hud_players.name_size + 16,
+			halign = "grow",
+			valign = "bottom"
+		})
+		self._all_buttons = {
+			self:create_button("hud_waiting_accept", "drop_in_accept", "spawn"),
+			self:create_button("hud_waiting_return", "drop_in_return", "return_back"),
+			self:create_button("hud_waiting_kick", "drop_in_kick", "kick")
+		}
+		self._btn_panel = self._panel:panel()
+		self._btn_text = self._btn_panel:text({
+			text = "",
+			x = 14,
+			layer = 1,
+			font_size = tweak_data.hud_players.name_size,
+			font = tweak_data.hud_players.name_font,
+
+			y = PADDING
+		})
+		managers.hud:make_fine_text(self._btn_text)
+		self._background = self._btn_panel:bitmap({
+			texture = "guis/textures/VoidUI/hud_weapons",
+			texture_rect = {0,0,528,150},
+			w = self._btn_panel:w(),
+			h = self._btn_panel:h() - PADDING
+		})
+		self._background:set_center_y(self._btn_panel:center_y())
+		self._foreground = self._btn_panel:bitmap({
+			texture = "guis/textures/VoidUI/hud_highlights",
+			texture_rect = {0,158,503,157},
+			layer = 1,
+			x = 1,
+			y = self._background:y(),
+			w = self._btn_panel:w(),
+			h = self._btn_panel:h() - PADDING
+		})
+		self._panel:set_visible(false)
+	end
+	
+	function HUDWaitingLegend:update_buttons()
+		local str = ""
+		for k, btn in pairs(self._all_buttons) do
+			local button_text = managers.localization:btn_macro(btn.binding, true, true)
+			if button_text then
+				str = str .. (str == "" and "" or "  ") .. managers.localization:text(btn.text, {MY_BTN = button_text})
+			end
+		end
+		if str == "" then
+			str = managers.localization:text("hud_waiting_no_binding_text")
+		end
+		self._btn_text:set_text("  " .. str .. "  ")
+		managers.hud:make_fine_text(self._btn_text)
+		self._btn_panel:set_w(self._btn_text:w() + 20)
+		self._btn_panel:set_h(self._btn_text:bottom() + PADDING)
+		self._background:set_w(self._btn_panel:w())
+		self._foreground:set_w(self._btn_panel:w())
+		if not self._panel:visible() then
+			self:animate_open()
+		end
+		self._panel:set_visible(true)
+	end
+	
+	function HUDWaitingLegend:animate_open()
+		self._btn_panel:stop()
+		self._btn_panel:animate(function()
+			local TOTAL_T = 0.4
+			local t = 0
+			while TOTAL_T > t do
+				local dt = coroutine.yield()
+				t = t + dt
+				self._btn_panel:set_w(math.lerp(0, self._background:w(), t / TOTAL_T))
+				self._btn_text:set_w(math.lerp(0, self._background:w(), t / TOTAL_T))
+			end
+		end)
+		self._btn_panel:set_w(self._background:w())
+		managers.hud:make_fine_text(self._btn_text)
+	end
+
 end

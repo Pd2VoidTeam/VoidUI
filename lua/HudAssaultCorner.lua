@@ -6,7 +6,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._noreturn_time = 0
 		self._noreturn_time_current = 0
 		self._assault_phase = 0
-		self._scale = HeistHUD.options.hud_assault_scale
+		self._scale = VoidUI.options.hud_assault_scale
 		if managers.job:current_difficulty_stars() % 2 == 0 then
 			self._skulls_position = {
 				{6, -5},
@@ -45,14 +45,15 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		end
 		self._assault_survived_color = Color(1, 0.1254902, 0.9019608, 0.1254902)
 		self._current_assault_color = self._assault_color
+		local extras_texture = "guis/textures/VoidUI/hud_extras"
 		local icon_assaultbox = assault_panel:bitmap({
 			halign = "right",
 			valign = "top",
 			name = "icon_assaultbox",
-			visible = HeistHUD.options.show_badge,
+			visible = VoidUI.options.show_badge,
 			layer = 3,
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {1055, 484, 116, 143},
+			texture = extras_texture,
+			texture_rect = {111, 8, 116, 140},
 			x = 0,
 			y = 10 * self._scale,
 			w = 60 * self._scale,
@@ -94,7 +95,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 					h = 12 * self._scale,
 					alpha = 0,
 					layer = 4,
-					visible = HeistHUD.options.show_badge
+					visible = VoidUI.options.show_badge
 				})
 				local position = self._skulls_position[i]
 				if position then
@@ -103,7 +104,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				end
 			end
 		end
-		
+		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 		local assaultbox_panel = assault_panel:panel({
 			visible = false,
 			name = "assaultbox_panel",
@@ -112,32 +113,32 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			y = 15,
 			layer = -1
 		})
-		assaultbox_panel:set_right(HeistHUD.options.show_badge and assault_panel:w() + 20 or icon_assaultbox:left() + 20)
+		assaultbox_panel:set_right(VoidUI.options.show_badge and assault_panel:w() + 20 or icon_assaultbox:left() + 20)
 		local background = assaultbox_panel:bitmap({
 				name = "background",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,0,525,156},
+				texture = weapons_texture,
+				texture_rect = {0,0,528,150},
 				layer = -2,
 				x = 1 * self._scale,
 				w = 240 * self._scale,
 				h = 30 * self._scale,
 				alpha = 1
 		})	
-		
+		local highlight_texture = "guis/textures/VoidUI/hud_highlights"
 		local border = assaultbox_panel:bitmap({
 				name = "border",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,479,525,161},
+				texture = highlight_texture,
+				texture_rect = {0,0,503,157},
 				layer = -1,
 				w = 240 * self._scale,
 				h = 30 * self._scale,
 				color = self._assault_color,
-				alpha = 0.8
+				alpha = 1
 		})
 		assault_panel:panel({
 			name = "text_panel",
 			layer = 1,
-			w = HeistHUD.options.show_badge and background:w() or background:w() - 20 * self._scale
+			w = VoidUI.options.show_badge and background:w() or background:w() - 20 * self._scale
 		}):set_center(background:center())
 		
 		local icons_panel = self._hud_panel:panel({
@@ -156,8 +157,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		hostages_panel:set_right(icons_panel:w() - 5) 
 		local hostages_background = hostages_panel:bitmap({
 			name = "hostages_background",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {553,479,169,149},
+			texture = highlight_texture,
+			texture_rect = {0,316,171,150},
 			layer = 1,
 			w = panel_w,
 			h = panel_h,
@@ -165,8 +166,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		})
 		local hostages_border = hostages_panel:bitmap({
 			name = "hostages_border",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {747,479,170,150},
+			texture = highlight_texture,
+			texture_rect = {172,316,171,150},
 			layer = 2,
 			w = panel_w,
 			h = panel_h,
@@ -203,13 +204,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "cuffed_panel",
 			w = panel_w,
 			h = panel_h,
-			alpha = is_level_ghostable and 0 or 1
+			alpha = is_level_ghostable and 0 or 1,
+			visible = VoidUI.options.hostages
 		})
 		cuffed_panel:set_right(hostages_panel:left()) 
 		local cuffed_background = cuffed_panel:bitmap({
 			name = "cuffed_background",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {553,479,169,149},
+			texture = highlight_texture,
+			texture_rect = {0,316,171,150},
 			layer = 1,
 			w = panel_w,
 			h = panel_h,
@@ -217,8 +219,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		})
 		local cuffed_border = cuffed_panel:bitmap({
 			name = "cuffed_border",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {747,479,170,150},
+			texture = highlight_texture,
+			texture_rect = {172,316,171,150},
 			layer = 2,
 			w = panel_w,
 			h = panel_h,
@@ -257,13 +259,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "pagers_panel",
 			w = panel_w,
 			h = panel_h,
-			alpha = is_level_ghostable and 1 or 0
+			alpha = is_level_ghostable and 1 or 0,
+			visible = VoidUI.options.pagers
 		})
 		pagers_panel:set_right(hostages_panel:left()) 
 		local pagers_background = pagers_panel:bitmap({
 			name = "pagers_background",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {553,479,169,149},
+			texture = highlight_texture,
+			texture_rect = {0,316,171,150},
 			layer = 1,
 			w = panel_w,
 			h = panel_h,
@@ -271,8 +274,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		})
 		local pagers_border = pagers_panel:bitmap({
 			name = "pagers_border",
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {747,479,170,150},
+			texture = highlight_texture,
+			texture_rect = {172,316,171,150},
 			layer = 2,
 			w = panel_w,
 			h = panel_h,
@@ -351,8 +354,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			wave_panel:set_right(self._hud_panel:w() - 5)
 			local waves_background = wave_panel:bitmap({
 				name = "waves_background",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {553,479,169,149},
+				texture = highlight_texture,
+				texture_rect = {0,316,171,150},
 				layer = 1,
 				color = Color.black,
 				w = panel_w,
@@ -360,8 +363,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			})
 			local waves_border = wave_panel:bitmap({
 				name = "waves_border",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {747,479,170,150},
+				texture = highlight_texture,
+				texture_rect = {172,316,171,150},
 				layer = 2,
 				w = panel_w,
 				h = panel_h,
@@ -418,8 +421,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		noreturnbox_panel:set_right(point_of_no_return_panel:w() - 10)
 		local background = noreturnbox_panel:bitmap({
 				name = "background",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,0,525,156},
+				texture = weapons_texture,
+				texture_rect = {0,0,528,150},
 				layer = -2,
 				x = 1 * self._scale,
 				w = 240 * self._scale,
@@ -429,13 +432,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		
 		local border = noreturnbox_panel:bitmap({
 				name = "border",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,479,525,161},
+				texture = highlight_texture,
+				texture_rect = {0,0,503,157},
 				layer = -1,
 				w = 240 * self._scale,
 				h = 30 * self._scale,
 				color = self._noreturn_color,
-				alpha = 0.8
+				alpha = 1
 		})
 		
 		local timer_panel = point_of_no_return_panel:panel({
@@ -459,8 +462,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "icon_noreturnbox",
 			visible = true,
 			layer = 2,
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {1186,492,124,124},
+			texture = extras_texture,
+			texture_rect = {231,0,148,148},
 			x = 0,
 			y = 2 * self._scale,
 			w = 56 * self._scale,
@@ -511,8 +514,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		casingbox_panel:set_right(casing_panel:w())
 		local background = casingbox_panel:bitmap({
 				name = "background",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,0,525,156},
+				texture = weapons_texture,
+				texture_rect = {0,0,528,150},
 				layer = -2,
 				x = 1 * self._scale,
 				w = 260 * self._scale,
@@ -522,12 +525,12 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		
 		local border = casingbox_panel:bitmap({
 				name = "border",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {0,479,525,161},
+				texture = highlight_texture,
+				texture_rect = {0,0,503,157},
 				layer = -1,
 				w = 260 * self._scale,
 				h = 30 * self._scale,
-				alpha = 0.8
+				alpha = 1
 		})
 		self._casing_color = Color.white
 		local icon_casingbox = casing_panel:bitmap({
@@ -565,8 +568,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "vip_icon",
 			visible = true,
 			layer = 5,
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {923, 479, 110, 149},
+			texture = extras_texture,
+			texture_rect = {0, 0, 110, 149},
 			x = 0,
 			y = 10 * self._scale,
 			w = 60 * self._scale,
@@ -629,8 +632,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			if type(text_id) == "string" then
 				if text_id == "hud_assault_assault" then
 					easter = math.random(1,10000)
-					if easter < 3 then
-						text_id = "HeistHUD_assault_" .. easter
+					if easter < 22 then
+						text_id = "VoidUI_assault_" .. easter
 					end
 				end
 				text_string = managers.localization:to_upper_text(text_id)
@@ -768,7 +771,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:_get_assault_strings()
 		if self._assault_mode == "normal" then
-			if not HeistHUD.options.show_badge and managers.job:current_difficulty_stars() > 0 then
+			if not VoidUI.options.show_badge and managers.job:current_difficulty_stars() > 0 then
 			local ids_risk = Idstring("risk")
 				return {
 					"hud_assault_assault",
@@ -791,30 +794,30 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				}
 			end
 		elseif self._assault_mode == "endless" then
-			if not HeistHUD.options.show_badge and managers.job:current_difficulty_stars() > 0 then
+			if not VoidUI.options.show_badge and managers.job:current_difficulty_stars() > 0 then
 				local ids_risk = Idstring("risk")
 				return {
-					"HeistHUD_endless_assault",
+					"VoidUI_endless_assault",
 					"hud_assault_padlock",
 					ids_risk,
 					"hud_assault_padlock",
-					"HeistHUD_endless_assault",
+					"VoidUI_endless_assault",
 					"hud_assault_padlock",
 					ids_risk,
 					"hud_assault_padlock",
 				}
 			else
 				return {
-					"HeistHUD_endless_assault",
+					"VoidUI_endless_assault",
 					"hud_assault_padlock",
-					"HeistHUD_endless_assault",
+					"VoidUI_endless_assault",
 					"hud_assault_padlock",
-					"HeistHUD_endless_assault",
+					"VoidUI_endless_assault",
 					"hud_assault_padlock",
 				}
 			end
 		elseif self._assault_mode == "phalanx" then
-			if not HeistHUD.options.show_badge and managers.job:current_difficulty_stars() > 0 then
+			if not VoidUI.options.show_badge and managers.job:current_difficulty_stars() > 0 then
 				local ids_risk = Idstring("risk")
 				return {
 					"hud_assault_vip",
@@ -840,7 +843,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 
 	function HUDAssaultCorner:_get_survived_assault_strings()
-		if not HeistHUD.options.show_badge and managers.job:current_difficulty_stars() > 0 then
+		if not VoidUI.options.show_badge and managers.job:current_difficulty_stars() > 0 then
 			local ids_risk = Idstring("risk")
 			return {
 				"hud_assault_survived",
@@ -896,14 +899,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		if assaultbox_panel:child("text_panel") then
 			assaultbox_panel:child("text_panel"):stop()
 			assaultbox_panel:child("text_panel"):clear()
-			assaultbox_panel:child("text_panel"):set_w(HeistHUD.options.show_badge and assaultbox_panel:w() or assaultbox_panel:w() - 26 * self._scale)
+			assaultbox_panel:child("text_panel"):set_w(VoidUI.options.show_badge and assaultbox_panel:w() or assaultbox_panel:w() - 26 * self._scale)
 		else
-			assaultbox_panel:panel({name = "text_panel", w = HeistHUD.options.show_badge and assaultbox_panel:w() or assaultbox_panel:w() - 30 * self._scale})
+			assaultbox_panel:panel({name = "text_panel", w = VoidUI.options.show_badge and assaultbox_panel:w() or assaultbox_panel:w() - 30 * self._scale})
 		end
 		local text_panel = assaultbox_panel:child("text_panel")
 		
 		assault_panel:set_visible(true)
-		icon_assaultbox:set_visible(HeistHUD.options.show_badge)
+		icon_assaultbox:set_visible(VoidUI.options.show_badge)
 		icon_assaultbox:stop()
 		icon_assaultbox:animate(callback(self, self, "_show_icon_assaultbox"), true)
 		assaultbox_panel:stop()
@@ -962,11 +965,11 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local assault_panel = self._hud_panel:child("assault_panel")
 		local icon_assaultbox = assault_panel:child("icon_assaultbox")
 		
-		assaultbox:set_right(offsetted and (HeistHUD.options.show_badge and icon_assaultbox:left() + 20 * self._scale or assaultbox:parent():w()) or assaultbox:parent():w())
-		assaultbox:set_y(offsetted and (HeistHUD.options.show_badge and 15 * self._scale or 0) or 0)
+		assaultbox:set_right(offsetted and (VoidUI.options.show_badge and icon_assaultbox:left() + 20 * self._scale or assaultbox:parent():w()) or assaultbox:parent():w())
+		assaultbox:set_y(offsetted and (VoidUI.options.show_badge and 15 * self._scale or 0) or 0)
 		background:set_x(assaultbox:w())
-		border:set_x(background:x() - 1 * self._scale)
-		if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+		border:set_x(background:x() + 11 * self._scale)
+		if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 		
 		wait(delay_time)
 		assaultbox:set_visible(true)
@@ -974,13 +977,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			local dt = coroutine.yield()
 			t = t + dt
 			background:set_x(math.lerp(assaultbox:w(), 1 * self._scale, t / TOTAL_T))
-			border:set_x(background:x() - 1 * self._scale)
-			if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+			border:set_x(background:x() + 11 * self._scale)
+			if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 		end
 		
 		background:set_x(1)
-		border:set_x(background:x() - 1)
-		if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+		border:set_x(background:x() + 11 * self._scale)
+		if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 	end
 	function HUDAssaultCorner:_hide_assaultbox(assaultbox)
 		local TOTAL_T = 0.4
@@ -992,15 +995,15 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			local dt = coroutine.yield()
 			t = t + dt
 			background:set_x(math.lerp(1 * self._scale, assaultbox:w(), t / TOTAL_T))
-			border:set_x(background:x() - 1 * self._scale)
-			if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+			border:set_x(background:x() + 11 * self._scale)
+			if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 		end
 		
 		assaultbox:set_visible(false)
 		background:set_x(assaultbox:w())
-		border:set_x(background:x() - 1 * self._scale)
+		border:set_x(background:x() + 11 * self._scale)
 		if text_panel then 
-			text_panel:set_x(background:x() + 19 * self._scale)
+			text_panel:set_x(background:x() + 17 * self._scale)
 			text_panel:stop()
 			text_panel:clear()
 		end
@@ -1012,7 +1015,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local TOTAL_T = 0.2
 		local t = 0
 		local icon_assaultbox = self._hud_panel:child("assault_panel"):child("icon_assaultbox")
-		skull:set_visible(HeistHUD.options.show_badge)
+		skull:set_visible(VoidUI.options.show_badge)
 		local position = self._skulls_position[i]
 		if position then
 			skull:set_center_x(icon_assaultbox:center_x() + position[1] * self._scale)
@@ -1037,7 +1040,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		icon_assaultbox:set_alpha(1)
 		local difficulty = managers.crime_spree:is_active() and 1 or managers.job:current_difficulty_stars()
 		
-		if HeistHUD.options.show_badge and big_logo then
+		if VoidUI.options.show_badge and big_logo then
 			for i = 1, difficulty do
 				assault_panel:child("skull_"..i):stop()
 				assault_panel:child("skull_"..i):animate(callback(self, self, "_animate_skull"), true, 0.8 + ((i - 1) / 20), i) 
@@ -1060,7 +1063,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
 		end
-		if HeistHUD.options.show_badge and HeistHUD.options.anim_badge and big_logo then
+		if VoidUI.options.show_badge and VoidUI.options.anim_badge and big_logo then
 			icon_assaultbox:animate(callback(self, self, "_animate_icon")) 
 		end
 	end
@@ -1075,7 +1078,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local center_y = icon_assaultbox:center_y()
 		local difficulty = managers.crime_spree:is_active() and 1 or managers.job:current_difficulty_stars()
 		
-		if HeistHUD.options.show_badge and big_logo then
+		if VoidUI.options.show_badge and big_logo then
 		
 			for i = 1, difficulty do
 				assault_panel:child("skull_"..i):stop()
@@ -1138,7 +1141,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				local skull = assault_panel:child("skull_"..i)
 				local position = self._skulls_position[i]
 				skull:set_font_size(math.lerp(d and 12 * self._scale or 14 * self._scale, d and 14 * self._scale or 12 * self._scale, t / TOTAL_T))
-				skull:set_visible(icon_assaultbox:visible() and HeistHUD.options.show_badge or false)
+				skull:set_visible(icon_assaultbox:visible() and VoidUI.options.show_badge or false)
 				if position then
 					skull:set_center_x(math.lerp(d and icon_assaultbox:center_x() + position[1] * self._scale or icon_assaultbox:center_x() + position[1] * self._scale * 1.16, d and icon_assaultbox:center_x() + position[1] * self._scale * 1.16 or icon_assaultbox:center_x() + position[1] * self._scale, t / TOTAL_T))
 					skull:set_bottom(math.lerp(d and icon_assaultbox:bottom() + position[2] * self._scale or icon_assaultbox:bottom() + position[2] * self._scale * 1.16, d and icon_assaultbox:bottom() + position[2] * self._scale * 1.16 or icon_assaultbox:bottom() + position[2] * self._scale, t / TOTAL_T)) 
@@ -1176,7 +1179,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._remove_hostage_offset = nil
 		hostage_panel:stop()
 		self._hud_panel:child("icons_panel"):stop()
-		hostage_panel:animate(callback(self, self, "_offset_hostage", is_offseted), HeistHUD.options.show_badge and big_logo or false)
+		hostage_panel:animate(callback(self, self, "_offset_hostage", is_offseted), VoidUI.options.show_badge and big_logo or false)
 		local wave_panel = self._hud_panel:child("wave_panel")
 	end
 	function HUDAssaultCorner:_offset_hostage(is_offseted, hostage_panel, big_logo)
@@ -1304,24 +1307,47 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._casing = false
 	end
 	function HUDAssaultCorner:set_control_info(data)
+		local hostages_panel = self._hud_panel:child("icons_panel"):child("hostages_panel")
+		local cuffed_panel = self._hud_panel:child("icons_panel"):child("cuffed_panel")
+		local pagers_panel = self._hud_panel:child("icons_panel"):child("pagers_panel")
+		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
+		local hostages = string.sub(hostages_panel:child("num_hostages"):text(), 2)
+		local cuffed = string.sub(cuffed_panel:child("num_cuffed"):text(), 2)
+		cuffed_panel:set_visible(VoidUI.options.hostages)
+		pagers_panel:set_visible(VoidUI.options.pagers)
 		if self:is_safehouse_raid() then
-			self._hud_panel:child("icons_panel"):child("cuffed_panel"):child("num_cuffed"):set_text("x".. data.nr_hostages)
-		else
-			local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
+			cuffed_panel:set_visible(true)
+			cuffed_panel:child("num_cuffed"):set_text("x".. data.nr_hostages)
+		elseif is_whisper_mode or VoidUI.options.hostages == false then
+			hostages_panel:child("num_hostages"):set_text("x".. data.nr_hostages)
+		elseif VoidUI.options.hostages then
 			local police = 0
 			
-			if is_whisper_mode == false then
-				for u_key, u_data in pairs(managers.enemy:all_enemies()) do
-					if (u_data and u_data.unit and alive(u_data.unit)) and (u_data.unit:anim_data() and u_data.unit:anim_data().hands_up or u_data.unit:anim_data() and u_data.unit:anim_data().surrender or u_data.unit:base() and u_data.unit:base().mic_is_being_moved)then
-						police = police + 1
-					end
+			for _, unit in pairs(managers.enemy:all_enemies()) do
+				if (unit and unit.unit and alive(unit.unit)) and (unit.unit:anim_data() and unit.unit:anim_data().hands_up or unit.unit:anim_data() and unit.unit:anim_data().surrender or unit.unit:base() and unit.unit:base().mic_is_being_moved)then
+					police = police + 1
 				end
 			end
-
-			self._hud_panel:child("icons_panel"):child("hostages_panel"):child("num_hostages"):set_text("x" .. data.nr_hostages - (tonumber(data.nr_hostages) > 0 and police or 0))
-			self._hud_panel:child("icons_panel"):child("cuffed_panel"):child("num_cuffed"):set_text("x".. police)
+			
+			hostages_panel:child("num_hostages"):set_text("x" .. math.clamp(data.nr_hostages - police, 0, data.nr_hostages))
+			cuffed_panel:child("num_cuffed"):set_text("x".. police)
+		end
+		if string.sub(hostages_panel:child("num_hostages"):text(), 2) ~= hostages then hostages_panel:child("hostages_background"):stop() hostages_panel:child("hostages_background"):animate(callback(self, self, "_blink_background")) end
+		if string.sub(cuffed_panel:child("num_cuffed"):text(), 2) ~= cuffed then cuffed_panel:child("cuffed_background"):stop() cuffed_panel:child("cuffed_background"):animate(callback(self, self, "_blink_background")) end
+	end
+	
+	function HUDAssaultCorner:_blink_background(background)
+		local TOTAL_T = 0.4
+		local t = 0
+		local color = 1
+		while TOTAL_T > t do
+			local dt = coroutine.yield()
+			t = t + dt
+			color = math.lerp(1, 0, t / TOTAL_T)
+			background:set_color(Color(color,color,color))
 		end
 	end
+	
 	function HUDAssaultCorner:feed_point_of_no_return_timer(time, is_inside)
 		time = math.floor(time)
 		if self._noreturn_time == 0 then self._noreturn_time = time end
@@ -1428,13 +1454,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_noreturnbox:set_center_y(center_y)
 			point_of_no_return_timer:set_alpha(math.lerp(0, 1, t / TOTAL_T))
 			background:set_x(math.lerp(noreturnbox_panel:w(), 1, t / TOTAL_T))
-			border:set_x(background:x() - 1 * self._scale)
-			if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+			border:set_x(background:x() + 11 * self._scale)
+			if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 			self._timer_noreturnbox:set_current(0)
 		end
 		background:set_x(1)
-		border:set_x(background:x() - 1)
-		if text_panel then text_panel:set_x(background:x() + 19 * self._scale) end
+		border:set_x(background:x() + 11 * self._scale)
+		if text_panel then text_panel:set_x(background:x() + 17 * self._scale) end
 		TOTAL_T = 0.2
 		t = 0
 		while TOTAL_T > t do
@@ -1475,8 +1501,16 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 
 	function HUDAssaultCorner:ecm_timer(time)
-		self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
-		self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):animate(callback(self, self, "_animate_jammer"), time, self._hud_panel:child("icons_panel"):child("pagers_panel"))
+		if managers.hud and managers.hud._jammers then
+			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
+			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):animate(callback(self, self, "_animate_jammer"), time, self._hud_panel:child("icons_panel"):child("pagers_panel"))
+		end
+	end
+	
+	function HUDAssaultCorner:stop_ecm()
+		if managers.hud and managers.hud._jammers then
+			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
+		end
 	end
 	
 	function HUDAssaultCorner:_animate_jammer(ecm_icon, time, pagers_panel)
@@ -1485,15 +1519,17 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local num_pagers = pagers_panel:child("num_pagers")
 		local TOTAL_T = time
 		local t = 0
-		ecm_icon:set_visible(true)
-		ecm_time:set_visible(true)
-		pagers_icon:set_visible(false)
-		num_pagers:set_visible(false)
+		pagers_panel:set_visible(VoidUI.options.jammers or VoidUI.options.pagers)
+		ecm_icon:set_visible(VoidUI.options.jammers > 1)
+		ecm_time:set_visible(VoidUI.options.jammers > 1)
+		pagers_icon:set_visible(VoidUI.options.jammers < 2)
+		num_pagers:set_visible(VoidUI.options.jammers < 2)
 		t = 0
 		TOTAL_T = time
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
+			pagers_panel:set_visible(VoidUI.options.jammers > 1 or VoidUI.options.pagers) 
 			if (time - t) > 10 then 
 				ecm_time:set_text(string.format("%.0fs", time - t))
 			else
@@ -1504,10 +1540,12 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		ecm_time:set_visible(false)
 		pagers_icon:set_visible(true)
 		num_pagers:set_visible(true)
-		
-		local jammers = table.remove(managers.hud._jammers, 1)
-		if jammers and #managers.hud._jammers > 0 then
-			setup:add_end_frame_clbk(callback(self, self, "ecm_timer", managers.hud._jammers[1]:base():battery_life()))
+		pagers_panel:set_visible(VoidUI.options.pagers)
+		if managers.hud and managers.hud._jammers then
+			local jammers = table.remove(managers.hud._jammers, 1)
+			if jammers and #managers.hud._jammers > 0 then
+				setup:add_end_frame_clbk(callback(self, self, "ecm_timer", managers.hud._jammers[VoidUI.options.jammers == 2 and 1 or #managers.hud._jammers]:base():battery_life()))
+			end
 		end
 	end
 	

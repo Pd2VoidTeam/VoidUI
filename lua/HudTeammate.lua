@@ -3,18 +3,20 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	self.orig.init(self, i, teammates_panel, is_player, width)
 	local teammate_panel = self._panel
 	self._teammates_panel = teammates_panel
-	self._main_scale = HeistHUD.options.hud_main_scale
-	self._mate_scale = HeistHUD.options.hud_mate_scale
+	self._main_scale = VoidUI.options.hud_main_scale
+	self._mate_scale = VoidUI.options.hud_mate_scale
 
 	self._w = self._main_player and 145 * self._main_scale or 111 * self._mate_scale
 	self._bg_h = self._main_player and 120 * self._main_scale or 92 * self._mate_scale
 	self._border_h = self._main_player and 40 * self._main_scale or 0 * self._mate_scale
 	self._health_w = self._main_player and 55 * self._main_scale or 41 * self._mate_scale
-	self._armor_value = self._main_player and 48 * self._main_scale or 0 * self._mate_scale
+	self._armor_value = self._main_player and 48 * self._main_scale or 36 * self._mate_scale
 	self._health_value = self._main_player and 45 * self._main_scale or 35 * self._mate_scale
-	self._ammo_panel_h = self._main_player and 40 * self._main_scale or 31 * self._mate_scale
+	self._ammo_1_w = self._main_player and 138 * self._main_scale or 105 * self._mate_scale
+	self._ammo_2_w = self._main_player and 142 * self._main_scale or 108 * self._mate_scale
+	self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 	self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
-	self._equipment_panel_h = self._main_player and 38 * self._main_scale or 30 * self._mate_scale
+	self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
 	self._downs_max = self._main_player and (tweak_data.player.damage.LIVES_INIT - 1 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)) or 3
 	self._downs = self._downs_max
 	self._primary_max = 0
@@ -78,19 +80,20 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	health_panel:set_bottom(custom_player_panel:bottom())
 	if self._main_player then health_panel:set_x(custom_player_panel:w() - health_panel:w()) end
 	
+	local health_texture = "guis/textures/VoidUI/hud_health"
 	local health_background = health_panel:bitmap({
 		name = "health_background",
 		w = health_panel:w(),
 		h = health_panel:h(),
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {525,0,202,472},
+		texture = health_texture,
+		texture_rect = {0,0,202,472},
 		layer = 1
 	})
 	
 	local health_bar = health_panel:bitmap({
 		name = "health_bar",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {727,0,202,472},
+		texture = health_texture,
+		texture_rect = {203,0,202,472},
 		layer = 2,
 		w = health_panel:w(),
 		h = health_panel:h(),
@@ -99,18 +102,18 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	
 	local health_shade = health_panel:bitmap({
 		name = "health_shade",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {929,0,201,472},
-		layer = 3,
+		texture = health_texture,
+		texture_rect = {406,0,202,472},
+		layer = 4,
 		w = health_panel:w(),
 		h = health_panel:h(),
 		alpha = 1,
-		color = Color(0,0,0)
+		color = Color.black
 	})
 	local custom_bar = health_panel:bitmap({
 		name = "custom_bar",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {727,0,202,472},
+		texture = health_texture,
+		texture_rect = {203,0,202,472},
 		layer = 2,
 		w = health_panel:w(),
 		h = health_panel:h(),
@@ -178,19 +181,19 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	
 	local armor_background = health_panel:bitmap({
 		name = "armor_background",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {1130,0,208,479},
-		layer = 3,
+		texture = health_texture,
+		texture_rect = {609,0,201,472},
+		layer = 4,
 		w = health_panel:w(),
 		h = health_panel:h(),
 		alpha = 1,
-		color = Color(0,0,0)
+		color = Color.black,
 	})	
 	local armor_bar = health_panel:bitmap({
 		name = "armor_bar",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {1130,0,208,479},
-		layer = 4,
+		texture = health_texture,
+		texture_rect = {609,0,201,472},
+		layer = 5,
 		w = health_panel:w(),
 		h = health_panel:h(),
 		alpha = 1,
@@ -216,31 +219,33 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		w = self._health_value,
 		h = health_panel:h(),
 		font_size = self._health_value / 1.4,
+		x = health_panel:x(),
 		text = "15",
 		vertical = "bottom",
 		align = "center",
-		font = "fonts/font_medium_shadow_mf",
-		layer = 7,
+		font = "fonts/font_medium_noshadow_mf",
+		layer = 9,
 		color = Color.white
 	})
 	condition_timer:set_bottom(custom_player_panel:bottom() - 5)
 	
 	local health_stored_bg = custom_player_panel:bitmap({
 		name = "health_stored_bg",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {1408,0,69,473},
+		texture = health_texture,
+		texture_rect = {882,0,70,472},
 		layer = 3,
 		w = 0,
 		h = health_panel:h(),
 		alpha = 1,
+		color = Color(0.6,0.6,0.6),
 		visible = false
 	})
 	health_stored_bg:set_x(health_panel:x())
 	health_stored_bg:set_bottom(custom_player_panel:h())
 	local health_stored = custom_player_panel:bitmap({
 		name = "health_stored",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {1339,0,69,473},
+		texture = health_texture,
+		texture_rect = {882,0,70,472},
 		layer = 4,
 		w = self._health_w / 2.9,
 		h = health_panel:h(),
@@ -249,6 +254,27 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 	health_stored:set_right(health_panel:x() + (11 * self._main_scale))
 	health_stored:set_bottom(custom_player_panel:h())
+	local absorb_color = tweak_data.chat_colors[5]
+	local absorb_shield_bar = health_panel:bitmap({
+		name = "absorb_shield_bar",
+		texture = health_texture,
+		texture_rect = {609,0,201,472},
+		color = absorb_color,
+		layer = 5,
+		w = health_panel:w(),
+		h = 0,
+		alpha = 1,
+	})
+	local absorb_health_bar = health_panel:bitmap({
+		name = "absorb_health_bar",
+		texture = health_texture,
+		texture_rect = {203,0,202,472},
+		color = absorb_color,
+		layer = 2,
+		w = health_panel:w(),
+		h = 0,
+		alpha = 1,
+	})
 	local weapons_panel = custom_player_panel:panel({
 		name = "weapons_panel",
 		layer = 1,
@@ -261,8 +287,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	
 	local weapons_background = weapons_panel:bitmap({
 		name = "weapons_background",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {0,0,525,471},
+		texture = "guis/textures/VoidUI/hud_weapons",
 		layer = 1,
 		w = weapons_panel:w(),
 		h = weapons_panel:h(),
@@ -272,13 +297,13 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		name = "primary_ammo_panel",
 		layer = 1,
 		x = 5,
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h,
 	})
-	
+	primary_ammo_panel:set_right(weapons_panel:w())
 	local primary_ammo_amount = primary_ammo_panel:text({
 		name = "primary_ammo_amount",
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h,
 		font_size = self._ammo_panel_h / 1.4,
 		text = "000/000",
@@ -288,11 +313,11 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		layer = 3,
 		alpha = 1,
 	})
-	primary_ammo_amount:set_left(primary_ammo_panel:left() + (self._main_player and 15 * self._main_scale or -15 * self._mate_scale))
+	primary_ammo_amount:set_left(primary_ammo_panel:left() + (self._main_player and 5 * self._main_scale or -15 * self._mate_scale))
 	
 	local primary_firemode = primary_ammo_panel:text({
 		name = "primary_firemode",
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h / 1.6,
 		font_size = self._ammo_panel_h / 3,
 		text = "Semi",
@@ -302,12 +327,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		layer = 3,
 		visible = self._main_player and true or false
 	})
-	primary_firemode:set_left(primary_ammo_panel:left() + (87 * self._main_scale))
+	primary_firemode:set_left(primary_ammo_panel:left() + (77 * self._main_scale))
 	
 	local primary_pickup = primary_ammo_panel:text({
 		name = "primary_pickup",
 		visible = self._main_player and true or false,
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h / 1.35,
 		font_size = self._ammo_panel_h / 3.3,
 		text = "+1",
@@ -318,30 +343,30 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		alpha = 0,
 		color = Color(0.2, 0.5, 0.2)
 	})
-	primary_pickup:set_left(primary_ammo_panel:left() + (90 * self._main_scale))
-	
+	primary_pickup:set_left(primary_ammo_panel:left() + (80 * self._main_scale))
+	local highlight_texture = "guis/textures/VoidUI/hud_highlights"
+	local selected_rect = self._main_player and {0,0,503,157} or {0,158,503,157}
 	local primary_selected_image = primary_ammo_panel:bitmap({
 		name = "primary_selected_image",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {0,479,525,161},
+		texture = highlight_texture,
+		texture_rect = selected_rect,
 		layer = 1,
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h,
-		alpha = 0,
+		alpha = 1,
 	})	
-		
 		
 	local secondary_ammo_panel = weapons_panel:panel({
 		name = "secondary_ammo_panel",
 		layer = 1,
-		w = self._w,
+		w = self._ammo_2_w,
 		h = self._ammo_panel_h,
 	})
 	secondary_ammo_panel:set_top(primary_ammo_panel:bottom() + 1 * self._main_scale)
-	
+	secondary_ammo_panel:set_right(weapons_panel:w())
 	local secondary_ammo_amount = secondary_ammo_panel:text({
 		name = "secondary_ammo_amount",
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h,
 		font_size = self._ammo_panel_h / 1.4,
 		text = "000/000",
@@ -351,11 +376,11 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		layer = 3,
 		alpha = 1,
 	})
-	secondary_ammo_amount:set_left(secondary_ammo_panel:left() + (self._main_player and 15 * self._main_scale or -15 * self._mate_scale))
+	secondary_ammo_amount:set_left(secondary_ammo_panel:left() + (self._main_player and 10 * self._main_scale or -10 * self._mate_scale))
 	
 	local secondary_firemode = secondary_ammo_panel:text({
 		name = "secondary_firemode",
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h / 1.6,
 		font_size = self._ammo_panel_h / 3,
 		text = "Semi",
@@ -365,12 +390,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		layer = 3,
 		visible = self._main_player and true or false
 	})
-	secondary_firemode:set_left(secondary_ammo_panel:left() + (87 * self._main_scale))
+	secondary_firemode:set_left(secondary_ammo_panel:left() + (82 * self._main_scale))
 	
 	local secondary_pickup = secondary_ammo_panel:text({
 		name = "secondary_pickup",
 		visible = self._main_player and true or false,
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h / 1.35,
 		font_size = self._ammo_panel_h / 3.3,
 		text = "+1",
@@ -381,18 +406,17 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		alpha = 0,
 		color = Color(0.2, 0.5, 0.2)
 	})
-	secondary_pickup:set_left(secondary_ammo_panel:left() + (90 * self._main_scale))
+	secondary_pickup:set_left(secondary_ammo_panel:left() + (85 * self._main_scale))
 	
 	local secondary_selected_image = secondary_ammo_panel:bitmap({
 		name = "secondary_selected_image",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {15,479,525,161},
+		texture = highlight_texture,
+		texture_rect = selected_rect,
 		layer = 1,
-		w = self._w,
+		w = self._ammo_1_w,
 		h = self._ammo_panel_h,
-		alpha = 0,
+		alpha = 1,
 	})
-
 	local equipment_panel = weapons_panel:panel({
 		name = "equipment_panel",
 		layer = 1,
@@ -403,8 +427,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	
 	local equipment_border = equipment_panel:bitmap({
 		name = "equipment_border",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {746,479,170,150},
+		texture = highlight_texture,
+		texture_rect = {172,316,171,150},
 		layer = 1,
 		w = self._equipment_panel_w,
 		h = self._equipment_panel_h,
@@ -417,7 +441,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		texture_rect = texture_rect,
 		layer = 2,
 		w = self._equipment_panel_w / 1.9,
-		h = self._equipment_panel_h / 1.5,
+		h = self._equipment_panel_h / 1.6,
 		alpha = 0.6,
 	})
 	equipment_image:set_center(equipment_border:center())
@@ -442,12 +466,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		h = self._equipment_panel_h,
 	})
 	equipment_panel:set_bottom(weapons_background:bottom())
-	ties_panel:set_left(equipment_panel:right() - (self._main_player and 2 * self._main_scale or 2 * self._mate_scale))
+	ties_panel:set_left(equipment_panel:right() - (self._main_player and 2 * self._main_scale or 1 * self._mate_scale))
 	
 	local ties_border = ties_panel:bitmap({
 		name = "ties_border",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {746,479,170,150},
+		texture = highlight_texture,
+		texture_rect = {172,316,171,150},
 		layer = 1,
 		w = self._equipment_panel_w,
 		h = self._equipment_panel_h,
@@ -463,7 +487,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		texture_rect = rect,
 		layer = 2,
 		w = self._equipment_panel_w / 1.5,
-		h = self._equipment_panel_h / 1.5,
+		h = self._equipment_panel_h / 1.6,
 		alpha = 0.6,
 	})
 	ties_image:set_center(ties_border:center())
@@ -488,12 +512,12 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		h = self._equipment_panel_h,
 	})
 	grenades_panel:set_bottom(weapons_background:bottom())
-	grenades_panel:set_left(ties_panel:right() - (self._main_player and 2 * self._main_scale or 2 * self._mate_scale))
+	grenades_panel:set_left(ties_panel:right() - (self._main_player and 1 * self._main_scale or 1 * self._mate_scale))
 	
 	local grenades_border = grenades_panel:bitmap({
 		name = "grenades_border",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {746,479,170,150},
+		texture = highlight_texture,
+		texture_rect = {172,316,171,150},
 		layer = 1,
 		w = self._equipment_panel_w,
 		h = self._equipment_panel_h,
@@ -508,7 +532,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		texture_rect = rect,
 		layer = 2,
 		w = self._equipment_panel_w / 1.7,
-		h = self._equipment_panel_h / 1.5,
+		h = self._equipment_panel_h / 1.6,
 		alpha = 0.6,
 	})
 	grenades_image:set_center(grenades_border:center())
@@ -534,8 +558,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	
 	local cooldown_border = cooldown_panel:bitmap({
 		name = "cooldown_border",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {746,479,170,150},
+		texture = highlight_texture,
+		texture_rect = {172,316,171,150},
 		layer = 2,
 		w = self._equipment_panel_w,
 		h = self._equipment_panel_h,
@@ -544,8 +568,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	})
 	local cooldown_bg = cooldown_panel:bitmap({
 		name = "cooldown_bg",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {553,479,169,149},
+		texture = highlight_texture,
+		texture_rect = {0,316,171,150},
 		layer = -10,
 		w = self._equipment_panel_w,
 		h = self._equipment_panel_h,
@@ -600,7 +624,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	local interact_panel = custom_player_panel:panel({
 		name = "interact_panel",
 		visible = false,
-		layer = 1,
+		layer = 3,
 	})
 	interact_panel:set_bottom(health_panel:bottom())
 	local interact_text = interact_panel:text({
@@ -617,8 +641,8 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 	interact_text:set_x(9 * self._mate_scale)
 	local interact_bar = interact_panel:bitmap({
 		name = "interact_bar",
-		texture = "guis/textures/pd2/skilltree/bg_mastermind",
-		texture_rect = {1130,0,208,479},
+		texture = health_texture,
+		texture_rect = {609,0,201,472},
 		layer = 4,
 		w = health_panel:w(),
 		h = health_panel:h(),
@@ -637,6 +661,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		color = Color.white
 	})	
 	interact_time:set_bottom(self._custom_player_panel:bottom() - 3)
+	self:create_custom_waiting_panel(teammates_panel)
 	self:set_info_visible()
 end
 
@@ -661,13 +686,13 @@ function HUDTeammate:set_info_visible()
 		downs_value:set_visible(false)
 	else
 		if is_whisper_mode == true then
-			if self._main_player then visible = HeistHUD.options.main_stealth 
-			else visible = HeistHUD.options.mate_stealth end
+			if self._main_player then visible = VoidUI.options.main_stealth 
+			else visible = VoidUI.options.mate_stealth end
 			detect_value:set_visible(visible)
 			downs_value:set_visible(false)
 		elseif is_whisper_mode == false then
-			if self._main_player then visible = HeistHUD.options.main_loud
-			else visible = HeistHUD.options.mate_loud end
+			if self._main_player then visible = VoidUI.options.main_loud
+			else visible = VoidUI.options.mate_loud end
 			detect_value:set_visible(false)
 			downs_value:set_visible(visible)
 		end
@@ -689,6 +714,7 @@ function HUDTeammate:set_state(state)
 	local name = self._custom_player_panel:child("name")
 	local name_shadow = self._custom_player_panel:child("name_shadow")
 	local downs_value = health_panel:child("downs_value")
+	local armor_value = health_panel:child("armor_value")
 	local weapons_panel = self._custom_player_panel:child("weapons_panel")
 	local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
 	local secondary_ammo_panel = weapons_panel:child("secondary_ammo_panel")
@@ -700,6 +726,7 @@ function HUDTeammate:set_state(state)
 			name:show()
 			name_shadow:show()
 			weapons_panel:show()
+			armor_value:show()
 			local peer = managers.network:session():peer(self:peer_id())
 			local outfit = peer and peer:blackmarket_outfit()
 			local skills = outfit and outfit.skills
@@ -713,6 +740,7 @@ function HUDTeammate:set_state(state)
 			name:show()
 			name_shadow:show()
 			weapons_panel:hide()
+			armor_value:hide()
 		end
 	else
 		weapons_panel:show()
@@ -739,7 +767,6 @@ function HUDTeammate:set_callsign(id)
 	
 	name:set_color(color)
 	health_background:set_color(color * 0.2 + Color.black)
-	health_stored_bg:set_color(color * 0.4 + Color.black)
 	health_bar:set_color(color * 0.7 + Color.black * 0.9)
 	armor_value:set_color(color * 0.4 + Color.black * 0.5)
 	health_value:set_color(color * 0.4 + Color.black * 0.5)
@@ -760,7 +787,7 @@ function HUDTeammate:set_name(teammate_name)
 	local name_shadow = self._custom_player_panel:child("name_shadow")
 	local peer = managers.network:session():peer(self:peer_id())
 	local level = "" 
-	if HeistHUD.options.mate_name and peer then 
+	if VoidUI.options.mate_name and peer then 
 		level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "" ) .. (peer:level() and peer:level().. " " or (self:ai() and "" or " "))
 	end
 	name:set_font_size(19 * (self._mate_scale < 1 and self._mate_scale or 1))
@@ -824,34 +851,36 @@ function HUDTeammate:round(number)
 	end
 end
 function HUDTeammate:set_health(data)
+	self._health_data = data
 	local health_stored = self._custom_player_panel:child("health_stored")
 	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
 	local health_panel = self._custom_player_panel:child("health_panel")
 	local health_background = health_panel:child("health_background")
 	local health_bar = health_panel:child("health_bar")
 	local health_value = health_panel:child("health_value")
-	local percentage = math.floor((data.current / data.total) * 100)
-	if percentage > 100 then percentage = 100 end
-	local show_health = self._main_player and HeistHUD.options.main_health or HeistHUD.options.mate_health
-	health_value:stop()
-	health_value:animate(function(o)
-		local current_percentage = (health_bar:h() / self._bg_h) * 100
-		local hp_value = ""
+	
+	local show_health_value = self._main_player and VoidUI.options.main_health or VoidUI.options.mate_health
+	local amount = math.clamp(data.current / data.total, 0, 1)
+	if amount < math.clamp(health_bar:h() / self._bg_h, 0, 1) then self:_damage_taken() end
+	health_bar:stop()
+	health_bar:animate(function(o)
+		local s = math.clamp(health_bar:h() / self._bg_h, 0, 1)
+		local c = s
 		over(0.2, function(p)
 			if alive(health_bar) then
-				value = math.floor(math.lerp(current_percentage, percentage, p))
-				if show_health == 2 then hp_value = math.floor(value)
-				elseif show_health == 3 then hp_value = self:round((data.total * 10) * (value / 100)) end
-				value = value / 100
-				health_bar:set_h(self._bg_h * value)
-				health_bar:set_texture_rect(727, 0 + ((1- value) * 472),202,472 * value)
+				c =	math.lerp(s, amount, p)
+				health_bar:set_h(self._bg_h * c)
+				health_bar:set_texture_rect(203, 0 + ((1- c) * 472),202,472 * c)
 				health_bar:set_bottom(health_background:bottom())
-				health_value:set_text(hp_value)
+				
+				if show_health_value == 1 or c == 0 then health_value:set_text("")
+				elseif show_health_value == 2 then health_value:set_text(math.clamp(self:round(c * 100), 0, 100))
+				elseif show_health_value == 3 then health_value:set_text(self:round((data.total * 10) * c)) end
 				
 				health_stored_bg:set_bottom(math.clamp(health_panel:y() + health_bar:top(), health_panel:top() + health_stored_bg:h(), health_panel:bottom()))
 				health_stored:set_bottom(health_stored_bg:bottom())
-				health_stored_bg:set_texture_rect(1408,(((health_stored_bg:y() - health_panel:y()) / self._bg_h) * 473),69,473 * (health_stored_bg:h() / self._bg_h))
-				health_stored:set_texture_rect(1408,(((health_stored:y() - health_panel:y()) / self._bg_h) * 473),69,473 * (health_stored:h() / self._bg_h))
+				health_stored_bg:set_texture_rect(882,(((health_stored_bg:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored_bg:h() / self._bg_h))
+				health_stored:set_texture_rect(882,(((health_stored:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored:h() / self._bg_h))
 			end
 		end)
 	end)
@@ -886,7 +915,7 @@ function HUDTeammate:set_custom_radial(data)
 	if (data.current / data.total) * 100 > 1 then
 		custom_bar:show()
 		custom_bar:set_h(self._bg_h * value)
-		custom_bar:set_texture_rect(726, 0 + ((1- value) * 472),202,472 * value)
+		custom_bar:set_texture_rect(203, 0 + ((1- value) * 472),202,472 * value)
 		custom_bar:set_bottom(health_background:bottom())
 		custom_bar:set_color(Color(0.0, 0.4, 0.4))
 		custom_bar:set_alpha(1)
@@ -897,29 +926,28 @@ function HUDTeammate:set_custom_radial(data)
 	end
 end
 function HUDTeammate:set_armor(data)
+	self._armor_data = data
 	local health_panel = self._custom_player_panel:child("health_panel")
 	local armor_background = health_panel:child("armor_background")
 	local armor_bar = health_panel:child("armor_bar")
 	local armor_value = health_panel:child("armor_value")
-	local percentage = math.ceil((data.current / data.total) * 100)
-	if percentage > 100 then percentage = 100 end
-	local value = percentage / 100
+	local amount = math.clamp(data.current / data.total, 0, 1)
 	
-	armor_bar:set_h(self._bg_h * value)
-	armor_bar:set_texture_rect(1130,0 + ((1- value) * 479),208,479 * value)
+	armor_bar:set_h(self._bg_h * amount)
+	armor_bar:set_texture_rect(609,0 + ((1- amount) * 472),201,472 * amount)
 	armor_bar:set_bottom(armor_background:bottom())
 	
-	local arm_value = ""
-	if HeistHUD.options.armor == 2 then arm_value = self:round(value * 100)
-	elseif HeistHUD.options.armor == 3 then arm_value = self:round((data.total * 10) * value) end
-	armor_value:set_text(arm_value)
+	local show_armor_value = self._main_player and VoidUI.options.main_armor or VoidUI.options.mate_armor
+	if show_armor_value == 2 then armor_value:set_text(math.ceil(amount * 100))
+	elseif show_armor_value == 3 then armor_value:set_text(self:round((data.total * 10) * amount))
+	else armor_value:set_text("") end
 	
 	if (data.current / data.total) * 100 < 1 then
 		armor_bar:set_h(0)
 		armor_value:set_text("")
 	end
 	
-	if self._main_player and HeistHUD.options.main_health == 1 or HeistHUD.options.mate_health == 1 then
+	if self._main_player and VoidUI.options.main_health == 1 or VoidUI.options.mate_health == 1 then
 		armor_value:set_w(self._health_value)
 		armor_value:set_font_size(self._armor_value / 2)
 		armor_value:set_bottom(health_panel:h() - 5)
@@ -937,47 +965,27 @@ function HUDTeammate:_set_weapon_selected(id, hud_icon)
 	local secondary_ammo_panel = weapons_panel:child("secondary_ammo_panel")
 	local primary_selected_image = primary_ammo_panel:child("primary_selected_image")
 	local secondary_selected_image = secondary_ammo_panel:child("secondary_selected_image")
-	
-	if not self._main_player then
-		primary_ammo_panel:child("primary_selected_image"):set_rotation(180)
-		primary_ammo_panel:child("primary_selected_image"):set_texture_rect(26,479,525,161)
-		secondary_ammo_panel:child("secondary_selected_image"):set_rotation(180)
-		secondary_ammo_panel:child("secondary_selected_image"):set_texture_rect(25,479,525,161)
-	end
 
 	primary_ammo_panel:animate(function(o)
 		local x = primary_ammo_panel:x()
 		local x2 = is_secondary and (self._main_player and 20 * self._main_scale or -20 * self._mate_scale) or 0
+		local a = primary_selected_image:alpha()
+		local a2 = is_secondary and 0 or 1
 		over(0.2, function(p)
 			if alive(primary_ammo_panel) then
-				primary_ammo_panel:set_x(math.lerp(x, x2, p))
+				primary_ammo_panel:set_x(math.lerp(x, weapons_panel:w() - primary_ammo_panel:w() + x2, p))
+				primary_selected_image:set_alpha(math.lerp(a, a2, p))
 			end
 		end)
 	end)
 	secondary_ammo_panel:animate(function(o)
 		local x = secondary_ammo_panel:x()
-		local x2 = is_secondary and (self._main_player and 0 or -2 * self._mate_scale) or (self._main_player and 25 * self._main_scale or -20 * self._mate_scale)
-		over(0.2, function(p)
-			if alive(secondary_ammo_panel) then
-				secondary_ammo_panel:set_x(math.lerp(x, x2, p))
-			end
-		end)
-	end)
-	
-	primary_selected_image:animate(function(o)
-		local a = primary_selected_image:alpha()
-		local a2 = is_secondary and 0 or 1
-		over(0.2, function(p)
-			if alive(primary_selected_image) then
-				primary_selected_image:set_alpha(math.lerp(a, a2, p))
-			end
-		end)
-	end)
-	secondary_selected_image:animate(function(o)
+		local x2 = is_secondary and 0 or (self._main_player and 15 * self._main_scale or -15 * self._mate_scale)
 		local a = secondary_selected_image:alpha()
 		local a2 = is_secondary and 1 or 0
 		over(0.2, function(p)
-			if alive(secondary_selected_image) then
+			if alive(secondary_ammo_panel) then
+				secondary_ammo_panel:set_x(math.lerp(x, weapons_panel:w() - secondary_ammo_panel:w() + x2, p))
 				secondary_selected_image:set_alpha(math.lerp(a, a2, p))
 			end
 		end)
@@ -993,7 +1001,9 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	
 	local current_left_total = current_left
 	local max_total = max
-	if (HeistHUD.options.totalammo or false) == true and self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) then
+	local peer = managers.network:session():peer(self:peer_id())
+	local outfit = peer and peer:blackmarket_outfit()
+	if VoidUI.options.totalammo == true and (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
 		current_left = current_left - current_clip
 		max = max - max_clip
 	end
@@ -1002,11 +1012,11 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	ammo_amount:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
 	ammo_image:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
 	
-	if HeistHUD.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
+	if VoidUI.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
 		pickup:stop()
 		pickup:animate(callback(self, self, "_animate_pickup"))
 		pickup:set_text("+".. string.sub(pickup:text(), 2) + current_left - self._primary_max) 
-	elseif HeistHUD.options.ammo_pickup and type == "secondary" and self._secondary_max < current_left and current_left - self._secondary_max ~= 0 then
+	elseif VoidUI.options.ammo_pickup and type == "secondary" and self._secondary_max < current_left and current_left - self._secondary_max ~= 0 then
 		pickup:stop()
 		pickup:animate(callback(self, self, "_animate_pickup"))
 		pickup:set_text("+".. string.sub(pickup:text(), 2) + current_left - self._secondary_max) 
@@ -1236,7 +1246,7 @@ function HUDTeammate:set_ability_radial(data)
 	custom_bar:set_alpha(0.5)
 	custom_bar:set_visible(percentage > 0)
 	custom_bar:set_h(self._bg_h * percentage)
-	custom_bar:set_texture_rect(726, 0 + ((1 - percentage) * 472),202,472 * percentage)
+	custom_bar:set_texture_rect(203, 0 + ((1 - percentage) * 472),202,472 * percentage)
 	custom_bar:set_bottom(health_panel:child("health_background"):bottom())
 end
 
@@ -1249,7 +1259,7 @@ function HUDTeammate:activate_ability_radial(time)
 		custom_bar:set_alpha(0.5)
 		over(time, function(p)
 			custom_bar:set_h(math.lerp(self._bg_h, 0, p))
-			custom_bar:set_texture_rect(726, math.lerp(0, 472, p),202,math.lerp(472, 0, p))
+			custom_bar:set_texture_rect(203, math.lerp(0, 472, p),202,math.lerp(472, 0, p))
 			custom_bar:set_bottom(health_panel:child("health_background"):bottom())
 		end)
 		custom_bar:set_visible(false)
@@ -1384,101 +1394,267 @@ function HUDTeammate:remove_special_equipment(equipment)
 end
 
 function HUDTeammate:create_waiting_panel(parent_panel)
-	local PADD = 2
+
+end
+
+function HUDTeammate:create_custom_waiting_panel(parent_panel)
 	local panel = parent_panel:panel()
-	print(self._panel:lefttop())
-	print(panel:lefttop())
-	print(self._panel:world_x(), self._panel:world_y())
-	print(panel:world_x(), panel:world_y())
-	panel:set_visible(flase)
+	panel:set_visible(false)
 	panel:set_lefttop(self._panel:lefttop())
 	local name = panel:text({
 		name = "name",
-		font_size = tweak_data.hud_players.name_size,
-		font = tweak_data.hud_players.name_font
+		font_size = 19,
+		vertical = "bottom",
+		layer = 1,
+		font = "fonts/font_medium_mf",
+		text = "Name"
 	})
-	local player_panel = self._panel:child("player")
-	local health_panel = player_panel:child("radial_health_panel")
+	local name_shadow = panel:text({
+		name = "name_shadow",
+		font_size = 19,
+		vertical = "bottom",
+		color = Color.black,
+		font = "fonts/font_medium_mf",
+		text = "Name"
+	})
+	local player_panel = self._custom_player_panel
+	local health_panel = player_panel:child("health_panel")
 	local detection = panel:panel({
 		name = "detection",
 		w = health_panel:w(),
 		h = health_panel:h()
 	})
+	local health_texture = "guis/textures/VoidUI/hud_health"
 	detection:set_lefttop(health_panel:lefttop())
-	local detection_ring_left_bg = detection:bitmap({
-		name = "detection_left_bg",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		alpha = 0.2,
-		blend_mode = "add",
+	local armor_bar_bg = detection:bitmap({
+		name = "detection_bar_bg",
+		texture = health_texture,
+		texture_rect = {609,0,201,472},
+		layer = 2,
+		color = Color.white,
 		w = detection:w(),
 		h = detection:h()
 	})
-	local detection_ring_right_bg = detection:bitmap({
-		name = "detection_right_bg",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		alpha = 0.2,
-		blend_mode = "add",
+	local detection_bar_bg = detection:bitmap({
+		name = "detection_bar_bg",
+		texture = health_texture,
+		texture_rect = {0,0,202,472},
+		color = Color.black,
 		w = detection:w(),
 		h = detection:h()
 	})
-	detection_ring_right_bg:set_texture_rect(detection_ring_right_bg:texture_width(), 0, -detection_ring_right_bg:texture_width(), detection_ring_right_bg:texture_height())
-	local detection_ring_left = detection:bitmap({
-		name = "detection_left",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		render_template = "VertexColorTexturedRadial",
-		blend_mode = "add",
+	local detection_bar = detection:bitmap({
+		name = "detection_bar",
+		texture = health_texture,
+		texture_rect = {203,0,202,472},
 		layer = 1,
 		w = detection:w(),
 		h = detection:h()
 	})
-	local detection_ring_right = detection:bitmap({
-		name = "detection_right",
-		texture = "guis/textures/pd2/mission_briefing/inv_detection_meter",
-		render_template = "VertexColorTexturedRadial",
-		blend_mode = "add",
-		layer = 1,
+	local detection_shade = detection:bitmap({
+		name = "detection_shade",
+		texture = health_texture,
+		texture_rect = {406,0,202,472},
+		layer = 2,
 		w = detection:w(),
-		h = detection:h()
+		h = detection:h(),
+		color = Color.black
 	})
-	detection_ring_right:set_texture_rect(detection_ring_right:texture_width(), 0, -detection_ring_right:texture_width(), detection_ring_right:texture_height())
 	local detection_value = panel:text({
 		name = "detection_value",
-		font_size = tweak_data.menu.pd2_medium_font_size,
-		font = tweak_data.menu.pd2_medium_font,
+		w = self._health_value,
+		h = self._health_value,
+		font_size = self._health_value / 1.7,
+		font = "fonts/font_medium_noshadow_mf",
+		layer = 3,
+		text = "75%",
+		vertical = "bottom",
 		align = "center",
-		vertical = "center"
 	})
-	detection_value:set_center_x(detection:left() + detection:w() / 2)
-	detection_value:set_center_y(detection:top() + detection:h() / 2 + 2)
-	local bg_rect = {
-		84,
-		0,
-		44,
-		32
-	}
-	local tabs_texture = "guis/textures/pd2/hud_tabs"
-	local bg_color = Color.white / 3
-	name:set_lefttop(detection:right() + PADD, detection:top())
-	local bg = panel:bitmap({
-		name = "name_bg",
-		texture = tabs_texture,
-		texture_rect = bg_rect,
+	detection_value:set_left(health_panel:left())
+	detection_value:set_bottom(health_panel:bottom() - 3)
+	name:set_leftbottom(detection:left() + 9 * self._mate_scale, detection:top())
+	name_shadow:set_leftbottom(name:x() + 1, detection:top() + 1)
+	local weapons_panel = player_panel:child("weapons_panel")
+	local background = panel:bitmap({
+		name = "background",
+		texture = "guis/textures/VoidUI/hud_weapons",
+		w = weapons_panel:w(),
+		h = weapons_panel:h(),
 		visible = true,
-		layer = -1,
-		color = bg_color,
-		y = name:y() - PADD
+		layer = -1
 	})
-	bg:set_lefttop(detection:right() + PADD, detection:top())
+	background:set_lefttop(detection:right() - (6 * self._mate_scale), detection:top())
+	local highlight_texture = "guis/textures/VoidUI/hud_highlights"
+	local primary_border = panel:bitmap({
+		name = "primary_border",
+		texture = highlight_texture,
+		texture_rect = {0,158,503,157},
+		layer = 1,
+		x = background:left() + 7 * self._mate_scale,
+		y = background:top(),
+		w = self._w,
+		h = self._ammo_panel_h,
+		rotation = 180,
+		alpha = 1
+	})
+	local primary_weapon = panel:text({
+		name = "primary_weapon",
+		x = background:left() + 4 * self._mate_scale,
+		y = background:top(),
+		w = weapons_panel:w() - 8 * self._mate_scale,
+		h = self._ammo_panel_h,
+		font_size = self._ammo_panel_h / 2.5,
+		text = "Primary Weapon",
+		vertical = "center",
+		align = "center",
+		font = "fonts/font_large_mf",
+		wrap = true,
+		word_wrap = true,
+		layer = 2,
+		alpha = 1
+	})
+	local secondary_border = panel:bitmap({
+		name = "secondary_border",
+		texture = highlight_texture,
+		texture_rect = {0,158,503,157},
+		layer = 1,
+		x = background:left() + 4 * self._mate_scale,
+		y = primary_border:bottom() + 1 * self._mate_scale,
+		w = self._w,
+		h = self._ammo_panel_h,
+		rotation = 180,
+		alpha = 1
+	})
+	local secondary_weapon = panel:text({
+		name = "secondary_weapon",
+		x = background:left() + 2 * self._mate_scale,
+		y = primary_border:bottom() + 1 * self._mate_scale,
+		w = weapons_panel:w() - 4 * self._mate_scale,
+		h = self._ammo_panel_h,
+		font_size = self._ammo_panel_h / 2.5,
+		text = "Secondary Weapon",
+		vertical = "center",
+		align = "center",
+		font = "fonts/font_large_mf",
+		wrap = true,
+		word_wrap = true,
+		layer = 2,
+		alpha = 1
+	})
 	local deploy_panel = panel:panel({name = "deploy"})
 	local throw_panel = panel:panel({name = "throw"})
 	local perk_panel = panel:panel({name = "perk"})
-	self:_create_equipment(deploy_panel, "frag_grenade")
-	self:_create_equipment(throw_panel, "frag_grenade")
-	self:_create_equipment(perk_panel, "frag_grenade")
-	deploy_panel:set_lefttop(detection:right() + PADD, detection:center_y())
-	throw_panel:set_lefttop(deploy_panel:right() + PADD, deploy_panel:top())
-	perk_panel:set_lefttop(throw_panel:right() + PADD, deploy_panel:top())
+	self:_create_equipment(deploy_panel, "frag_grenade", self._mate_scale)
+	self:_create_equipment(throw_panel, "frag_grenade", self._mate_scale)
+	self:_create_equipment(perk_panel, "frag_grenade", self._mate_scale)
+	deploy_panel:set_leftbottom(background:left(), background:bottom())
+	throw_panel:set_leftbottom(deploy_panel:right() - 1 * self._mate_scale, background:bottom())
+	perk_panel:set_leftbottom(throw_panel:right() - 2 * self._mate_scale, background:bottom())
 	self._wait_panel = panel
+end
+
+function HUDTeammate:_create_equipment(panel, icon_name, scale)
+	scale = scale or 1
+	local icon, rect
+	if icon_name then
+		icon, rect = tweak_data.hud_icons:get_icon_data(icon_name)
+	end
+	panel:set_w(self._equipment_panel_w)
+	panel:set_h(self._equipment_panel_h)
+	local vis_at_start = true
+	local bg = panel:bitmap({
+		name = "bg",
+		texture = "guis/textures/VoidUI/hud_highlights",
+		texture_rect = {172,316,171,150},
+		visible = true,
+		layer = 0,
+		color = bg_color,
+		w = panel:w(),
+		h = panel:h(),
+		x = 0
+	})
+	local icon = panel:bitmap({
+		name = "icon",
+		texture = icon,
+		texture_rect = rect,
+		visible = vis_at_start,
+		layer = 1,
+		alpha = 0.6,
+		color = Color.white,
+		w = self._equipment_panel_w / 1.6,
+		h = self._equipment_panel_h / 1.5,
+		x = 2
+	})
+	icon:set_center(bg:center())
+	local amount = panel:text({
+		name = "amount",
+		visible = vis_at_start,
+		text = "x0",
+		font = "fonts/font_medium_shadow_mf",
+		vertical = "bottom",
+		align = "right",
+		layer = 2,
+		w = self._equipment_panel_w / 1.2,
+		h = self._equipment_panel_h,
+		font_size = self._equipment_panel_h / 2
+	})
+end
+local set_icon_data = function(image, icon, rect)
+	if rect then
+		image:set_image(icon, unpack(rect))
+		return
+	end
+	local text, rect = tweak_data.hud_icons:get_icon_data(icon or "fallback")
+	image:set_image(text, unpack(rect))
+end
+function HUDTeammate:set_waiting(waiting, peer)
+	local my_peer = managers.network:session():peer(self._peer_id)
+	peer = peer or my_peer
+	if self._wait_panel then
+		if waiting then
+			self._panel:set_visible(false)
+			self._wait_panel:set_lefttop(self._panel:lefttop())
+			local name = self._wait_panel:child("name")
+			local name_shadow = self._wait_panel:child("name_shadow")
+			local detection = self._wait_panel:child("detection")
+			local detection_value = self._wait_panel:child("detection_value")
+			local current, reached = managers.blackmarket:get_suspicion_offset_of_peer(peer, tweak_data.player.SUSPICION_OFFSET_LERP or 0.75)
+			detection:child("detection_bar"):set_h(detection:h() * current)
+			detection:child("detection_bar"):set_texture_rect(203, 0 + ((1- current) * 472),202,472 * current)
+			detection:child("detection_bar"):set_bottom(detection:child("detection_bar_bg"):bottom())
+			detection:child("detection_bar"):set_color(math.round(current * 100) > 50 and tweak_data.screen_colors.pro_color or tweak_data.chat_colors[5])
+			detection_value:set_color(math.round(current * 100) > 50 and tweak_data.screen_colors.pro_color + Color.black * 0.5 or tweak_data.chat_colors[5] + Color.black * 0.5)
+			detection_value:set_text(math.round(current * 100) .. "%")
+			if reached then
+				detection_value:set_color(Color(255, 255, 42, 0) / 255)
+			else
+				detection_value:set_color(tweak_data.screen_colors.text)
+			end
+			local outfit = peer:profile().outfit
+			outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
+			name:set_text((0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. "" .. peer:name())
+			name_shadow:set_text(name:text())
+			if outfit.primary and outfit.primary.factory_id then self._wait_panel:child("primary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.primary.factory_id)) end
+			if outfit.secondary and outfit.secondary.factory_id then self._wait_panel:child("secondary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.secondary.factory_id)) end
+			local has_deployable = outfit.deployable and outfit.deployable ~= "nil"
+			self._wait_panel:child("deploy"):child("amount"):set_text(has_deployable and "x" .. outfit.deployable_amount or "")
+			self._wait_panel:child("throw"):child("amount"):set_text("x" .. managers.player:get_max_grenades(peer:grenade_id()))
+			self._wait_panel:child("perk"):child("amount"):set_text(outfit.skills.specializations[2] .. "/9")
+			local deploy_image = self._wait_panel:child("deploy"):child("icon")
+			if has_deployable then
+				set_icon_data(deploy_image, tweak_data.equipments[outfit.deployable].icon)
+			else
+				set_icon_data(deploy_image, "none_icon")
+			end
+			set_icon_data(self._wait_panel:child("throw"):child("icon"), outfit.grenade and tweak_data.blackmarket.projectiles[outfit.grenade].icon)
+			set_icon_data(self._wait_panel:child("perk"):child("icon"), tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1])))
+		elseif self._ai or my_peer and my_peer:unit() then
+			self._panel:set_visible(true)
+		end
+		self._wait_panel:set_visible(waiting)
+	end
+	managers.hud:align_teammate_panels()
 end
 
 function HUDTeammate:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
@@ -1528,8 +1704,8 @@ function HUDTeammate:teammate_progress(enabled, type_index, tweak_data_id, timer
 		local health_panel = panel:child("health_panel")
 		
 		local bar = self._custom_player_panel:bitmap({
-			texture = "guis/textures/pd2/skilltree/bg_mastermind",
-			texture_rect = {1130,0,208,479},
+			texture = "guis/textures/VoidUI/hud_health",
+			texture_rect = {609,0,201,472},
 			layer = 4,
 			x = health_panel:x(),
 			y = health_panel:y(),
@@ -1578,9 +1754,9 @@ function HUDTeammate:_animate_interact(panel, interact, timer)
 		value = t / timer
 		left = timer - t
 		interact:set_h(self._bg_h * value)
-		interact:set_texture_rect(1130,0 + ((1- value) * 479),208,479 * value)
+		interact:set_texture_rect(609,0 + ((1- value) * 472),201,472 * value)
 		interact:set_bottom(self._custom_player_panel:bottom())
-		if HeistHUD.options.mate_interact and left > 0 then panel:child("interact_time"):set_text(string.format("%.1fs", left))
+		if VoidUI.options.mate_interact and left > 0 then panel:child("interact_time"):set_text(string.format("%.1fs", left))
 		else panel:child("interact_time"):set_text("") end
 	end
 end
@@ -1618,10 +1794,13 @@ end
 function HUDTeammate:start_timer(time)
 	self._timer_paused = 0
 	self._timer = time
-	self._custom_player_panel:child("condition_timer"):set_font_size(tweak_data.hud_players.timer_size)
-	self._custom_player_panel:child("condition_timer"):set_color(Color.white)
+	self._timer_total = time
+	self._custom_player_panel:child("condition_timer"):set_color(Color(1, 0.7, 0.7))
+	self._custom_player_panel:child("condition_timer"):set_font_size(30)
 	self._custom_player_panel:child("condition_timer"):stop()
 	self._custom_player_panel:child("condition_timer"):set_visible(true)
+	self._custom_player_panel:child("health_panel"):child("custom_bar"):set_visible(true)
+	self._custom_player_panel:child("health_panel"):child("health_bar"):set_visible(false)
 	self._custom_player_panel:child("health_panel"):child("condition_icon"):set_alpha(0.4)
 	self._custom_player_panel:child("condition_timer"):animate(callback(self, self, "_animate_timer"))
 end
@@ -1633,24 +1812,36 @@ function HUDTeammate:set_pause_timer(pause)
 	self._timer_paused = self._timer_paused + (pause and 1 or -1)
 end
 function HUDTeammate:stop_timer()
-	if not alive(self._panel) then
+	if not alive(self._custom_player_panel) then
 		return
 	end
-	self._custom_player_panel:child("condition_timer"):set_visible(false)
-	self._custom_player_panel:child("health_panel"):child("condition_icon"):set_alpha(1)
 	self._custom_player_panel:child("condition_timer"):stop()
+	self._custom_player_panel:child("condition_timer"):set_visible(false)
+	self._custom_player_panel:child("health_panel"):child("custom_bar"):set_visible(false)
+	self._custom_player_panel:child("health_panel"):child("health_bar"):set_visible(true)
+	self._custom_player_panel:child("health_panel"):child("condition_icon"):set_alpha(1)
+	
 end
 function HUDTeammate:is_timer_running()
 	return self._custom_player_panel:child("condition_timer"):visible()
 end
+
 function HUDTeammate:_animate_timer()
 	local rounded_timer = math.round(self._timer)
+	local custom_bar = self._custom_player_panel:child("health_panel"):child("custom_bar")
+	local amount = (self._timer / self._timer_total)
 	while self._timer >= 0 do
 		local dt = coroutine.yield()
+		custom_bar:set_visible(true)
+		custom_bar:set_color(tweak_data.screen_colors.pro_color * 0.7 + Color.black * 0.9)
 		if self._timer_paused == 0 then
 			self._timer = self._timer - dt
 			local text = self._timer < 0 and "00" or (math.round(self._timer) < 10 and "0" or "") .. math.round(self._timer)
 			self._custom_player_panel:child("condition_timer"):set_text(text)
+			amount = self._timer / self._timer_total
+			custom_bar:set_h(self._bg_h * amount)
+			custom_bar:set_texture_rect(203, 0 + ((1- amount) * 472),202,472 * amount)
+			custom_bar:set_bottom(self._custom_player_panel:child("health_panel"):h())
 			if rounded_timer > math.round(self._timer) then
 				rounded_timer = math.round(self._timer)
 				if rounded_timer < 11 then
@@ -1668,11 +1859,11 @@ function HUDTeammate:_animate_timer_flash()
 		t = t + coroutine.yield()
 		local n = 1 - math.sin(t * 180)
 		local r = math.lerp(1 or self._point_of_no_return_color.r, 1, n)
-		local g = math.lerp(0 or self._point_of_no_return_color.g, 0.8, n)
-		local b = math.lerp(0 or self._point_of_no_return_color.b, 0.2, n)
+		local g = math.lerp(0.7 or self._point_of_no_return_color.g, 0.1, n)
+		local b = math.lerp(0.7 or self._point_of_no_return_color.b, 0.1, n)
 		condition_timer:set_color(Color(r, g, b))
 		condition_timer:set_alpha(1)
-		condition_timer:set_font_size(math.lerp(tweak_data.hud_players.timer_size, tweak_data.hud_players.timer_flash_size, n))
+		condition_timer:set_font_size(math.lerp(30, 45, n))
 	end
 	condition_timer:set_font_size(30)
 end
@@ -1686,7 +1877,9 @@ function HUDTeammate:remove_panel()
 		self._custom_player_panel:remove(table.remove(special_equipment))
 	end
 	self:set_condition("mugshot_normal")
+	self._custom_player_panel:child("health_panel"):child("custom_bar"):set_h(0)
 	self._custom_player_panel:child("weapons_panel"):set_visible(false)
+	self._custom_player_panel:child("weapons_panel"):set_x(self._custom_player_panel:child("health_panel"):right() - (6 * self._mate_scale))
 	self._custom_player_panel:child("carry_panel"):set_visible(false)
 	self._custom_player_panel:child("carry_panel"):child("name"):set_text("")
 	self:set_cheater(false)
@@ -1709,6 +1902,7 @@ function HUDTeammate:set_stored_health_max(stored_health_ratio)
 	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
 	local health_stored_max = self._custom_player_panel:child("health_stored_max")
 	local value = math.min(stored_health_ratio, 1)
+	local color = tweak_data.chat_colors[self._color_id] or Color.white
 	if alive(health_stored_bg) and value > 0 then	
 		health_stored:set_visible(true)
 		health_stored:set_w(self._health_w / 2.9)
@@ -1717,15 +1911,16 @@ function HUDTeammate:set_stored_health_max(stored_health_ratio)
 		health_stored_bg:set_w(self._health_w / 2.9)
 		health_stored_bg:set_h(self._bg_h * value)
 		health_stored_bg:set_right(health_panel:x() + (11 * self._main_scale))
-		health_stored_bg:set_texture_rect(1408,((1- value) * 473),69,473 * value)
+		health_stored_bg:set_texture_rect(882,((1- value) * 472),70,472 * value)
 		health_stored_bg:set_bottom(self._custom_player_panel:h())
-		
+		health_stored_bg:set_color(color * 0.4 + Color.black)
+		health_stored:set_color(health_panel:child("health_bar"):color())
 		weapons_panel:set_x(health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale))
 		if not health_stored_max then 	
 			local health_stored_max = self._custom_player_panel:bitmap({
 				name = "health_stored_max",
-				texture = "guis/textures/pd2/skilltree/bg_mastermind",
-				texture_rect = {1408,0,69,473},
+				texture = "guis/textures/VoidUI/hud_health",
+				texture_rect = {882,0,70,472},
 				layer = 1,
 				w = self._health_w / 2.9,
 				h = self._bg_h,
@@ -1743,7 +1938,6 @@ function HUDTeammate:set_stored_health(stored_health_ratio)
 	local health_panel = self._custom_player_panel:child("health_panel")
 	local health_stored = self._custom_player_panel:child("health_stored")
 	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
-	health_stored:set_color(health_panel:child("health_bar"):color())
 	if alive(health_stored) then
 		local value = math.min(stored_health_ratio, 1)
 		health_stored:animate(function(o)
@@ -1752,10 +1946,110 @@ function HUDTeammate:set_stored_health(stored_health_ratio)
 			over(0.2, function(p)
 				health_stored:set_h(math.lerp(h, health_panel:h() * value, p))
 				health_stored:set_bottom(health_stored_bg:bottom())
-				health_stored:set_texture_rect(1408,((health_stored:y() - health_panel:y()) / self._bg_h) * 473, 69, 473 * (health_stored:h() / self._bg_h))
+				health_stored:set_texture_rect(882,((health_stored:y() - health_panel:y()) / self._bg_h) * 472, 70, 472 * (health_stored:h() / self._bg_h))
 			end)
 		end)
 	end
+end
+
+function HUDTeammate:_animate_update_absorb(o, radial_absorb_shield_name, radial_absorb_health_name, var_name, blink)
+	repeat
+		coroutine.yield()
+	until alive(self._panel) and self[var_name] and self._armor_data and self._health_data
+	local teammate_panel = self._panel:child("player")
+	local health_panel = self._custom_player_panel:child("health_panel")
+	local armor_bar = health_panel:child("armor_bar")
+	local health_bar = health_panel:child("health_bar")
+	local absorb_shield_bar = health_panel:child("absorb_shield_bar")
+	local absorb_health_bar = health_panel:child("absorb_health_bar")
+	local current_absorb = 0
+	local current_shield, current_health, armor_value, health_value
+	local step_speed = 1
+	local lerp_speed = 1
+	local dt, update_absorb
+	local t = 0
+	while alive(teammate_panel) do
+		dt = coroutine.yield()
+		if self[var_name] and self._armor_data and self._health_data then
+			update_absorb = false
+			
+			current_shield = self._armor_data.current
+			current_health = self._health_data.current
+			
+			armor_value = self._armor_data.current / self._armor_data.total
+			health_value = health_bar:h() / self._bg_h
+			
+			if absorb_shield_bar:y() ~= armor_bar:y() or absorb_health_bar ~= health_bar:y() then
+				absorb_shield_bar:set_top(armor_bar:y())
+				absorb_health_bar:set_top(health_bar:y())
+				update_absorb = true
+			end
+			if current_absorb ~= self[var_name] then
+				current_absorb = math.lerp(current_absorb, self[var_name], lerp_speed * dt)
+				current_absorb = math.step(current_absorb, self[var_name], step_speed * dt)
+				update_absorb = true
+			end
+			if blink then
+				t = (t + dt * 0.5) % 1
+				armor_bar:set_alpha(math.abs(math.sin(t * 180)) * 0.25 + 0.75)
+				health_bar:set_alpha(math.abs(math.sin(t * 180)) * 0.25 + 0.75)
+			end
+			if update_absorb and current_absorb > 0 then
+				local shield_ratio = current_shield == 0 and 0 or math.min(current_absorb / current_shield, 1)
+				local health_ratio = current_health == 0 and 0 or math.min((current_absorb - shield_ratio * current_shield) / current_health, 1)
+				local shield = math.clamp(shield_ratio, 0, 1)
+				local health = math.clamp(health_ratio, 0, 1)
+				
+				absorb_shield_bar:set_h(self._bg_h * shield)
+				absorb_shield_bar:set_texture_rect(609, ((1- armor_value) * 472), 201,472 * shield)
+				
+				absorb_health_bar:set_h(self._bg_h * health)
+				absorb_health_bar:set_texture_rect(203, ((1- health_value) * 472), 202,472 * health)
+				
+				absorb_shield_bar:set_visible(armor_value * 100 > 1)
+				absorb_health_bar:set_visible(health_value * 100 > 1)
+			end
+		end
+	end
+end
+
+function HUDTeammate:set_info_meter(data)
+	local health_panel = self._custom_player_panel:child("health_panel")
+	local weapons_panel = self._custom_player_panel:child("weapons_panel")
+	local health_stored = self._custom_player_panel:child("health_stored")
+	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
+
+	local percentage = math.clamp(data.current / data.max, 0, 1)
+	if data.total > 0 then
+		if self._main_player then
+			health_stored_bg:set_visible(true)
+			health_stored:set_visible(true)
+			health_stored_bg:set_w(self._health_w / 2.9)
+			health_stored:set_w(self._health_w / 2.9)
+			health_stored_bg:set_right(health_panel:x() + (11 * self._main_scale))
+			weapons_panel:set_x(health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale))
+		else
+			health_stored_bg:set_visible(true)
+			health_stored:set_visible(true)
+			health_stored_bg:set_w(self._health_w / 2.9)
+			health_stored:set_w(self._health_w / 2.9)
+			health_stored_bg:set_left(health_panel:right() - (5 * self._mate_scale))
+			health_stored:set_left(health_panel:right() - (5 * self._mate_scale))
+			weapons_panel:set_x(health_stored_bg:x() + (8 * self._mate_scale))
+		
+		end
+	end
+	health_stored:stop()
+	health_stored:animate(function(o)
+		local current_percentage = health_stored:h() / self._bg_h
+		over(0.2, function(p)
+			local value = math.lerp(current_percentage, percentage, p) 
+			health_stored:set_h(self._bg_h * value)
+			health_stored:set_texture_rect(882,(1 - value) * 472, 70, 472 * value)
+			health_stored:set_bottom(self._custom_player_panel:h())
+			health_stored:set_visible(value > 0)
+		end)
+	end)
 end
 
 function HUDTeammate:downed()
