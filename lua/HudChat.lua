@@ -2,7 +2,7 @@ HUDChat.line_height = 18
 function HUDChat:init(ws, hud)
 	self._ws = ws
 	self._hud_panel = hud.panel
-	self._scale = VoidUI.options.hud_chat_scale
+	self._scale = HeistHUD.options.hud_chat_scale
 	self:set_channel_id(ChatManager.GAME)
 	self._input_width = 1200 * self._scale
 	self._output_width = 400 * self._scale
@@ -159,13 +159,13 @@ function HUDChat:receive_message(name, message, color, icon)
 	local scrollbar = self._panel:child("scrollbar_panel"):child("scrollbar")
 	local peer = managers.network:session():local_peer():name() == name and managers.network:session():local_peer() or managers.network:session():peer_by_name(name)
 	local character = peer and " (".. managers.localization:text("menu_" ..peer:character())..")" or ""
-	local full_message = name .. (VoidUI.options.show_charactername and peer and peer:character() and character or "") .. ": " .. message
+	local full_message = name .. (HeistHUD.options.show_charactername and peer and peer:character() and character or "") .. ": " .. message
 	if name == managers.localization:to_upper_text("menu_system_message") then 
 		name = message
 		full_message = name
 	end
-	if VoidUI.options.chattime > 1 and managers.game_play_central then
-		local time = VoidUI.options.chattime == 2 and "[".. os.date('!%X', managers.game_play_central:get_heist_timer()) .. "] " or "[".. os.date('%X') .. "] "
+	if HeistHUD.options.chattime > 1 and managers.game_play_central then
+		local time = HeistHUD.options.chattime == 2 and "[".. os.date('!%X', managers.game_play_central:get_heist_timer()) .. "] " or "[".. os.date('%X') .. "] "
 		full_message =  time .. full_message
 		name = time .. name
 	end
@@ -319,7 +319,7 @@ function HUDChat:_on_focus()
 	self._enter_text_set = false
 	self:set_layer(1100)
 	self:update_caret()
-	if VoidUI.options.chat_mouse then
+	if HeistHUD.options.chat_mouse then
 		managers.mouse_pointer:use_mouse{
 			id = self._mouse,
 			mouse_press = callback(self, self, 'mouse_pressed'),
@@ -486,17 +486,17 @@ function HUDChat:mouse_pressed(o, button, x, y)
 				text:set_selection(s, e)
 				text:replace_text("")
 			end
-		elseif VoidUI.options.chat_copy > 1 and self._panel:child("output_bg"):inside(x, y) then
+		elseif HeistHUD.options.chat_copy > 1 and self._panel:child("output_bg"):inside(x, y) then
 			for i = #self._lines, 1, -1 do
 				local panel = self._lines[i].panel
 				if panel:inside(x, y) then
 					local line = self._lines[i].message
-					if VoidUI.options.chat_copy == 3 then line = self._lines[i].name .. ": " .. line
-					elseif VoidUI.options.chat_copy == 4 then line = self._lines[i].character .. ": " .. line
-					elseif VoidUI.options.chat_copy == 5 then line = self._lines[i].name .. self._lines[i].character .. ": " .. line end
+					if HeistHUD.options.chat_copy == 3 then line = self._lines[i].name .. ": " .. line
+					elseif HeistHUD.options.chat_copy == 4 then line = self._lines[i].character .. ": " .. line
+					elseif HeistHUD.options.chat_copy == 5 then line = self._lines[i].name .. self._lines[i].character .. ": " .. line end
 					
 					Application:set_clipboard(line)
-					managers.hud:show_hint({text = managers.localization:text("VoidUI_chat_clipboard"), time = 1})
+					managers.hud:show_hint({text = managers.localization:text("HeistHUD_chat_clipboard"), time = 1})
 				end
 			end
 		end
@@ -519,7 +519,7 @@ function HUDChat:mouse_moved(o, x, y)
 		if o then managers.mouse_pointer:set_pointer_image("grab") end
 	elseif scrollbar_panel:inside(x, y) and o then
 		managers.mouse_pointer:set_pointer_image("hand")
-	elseif VoidUI.options.chat_copy > 1 and self._panel:child("output_panel"):inside(x, y) then
+	elseif HeistHUD.options.chat_copy > 1 and self._panel:child("output_panel"):inside(x, y) then
 		local inside = false
 		for i = #self._lines, 1, -1 do
 			local panel = self._lines[i].panel

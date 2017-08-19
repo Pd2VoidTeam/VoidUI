@@ -1,17 +1,17 @@
 {
-	"menu_id" : "VoidUI_objectives",
-	"parent_menu_id" : "VoidUI_options",
-	"title" : "VoidUI_objectives_title",
-	"description" : "VoidUI_objectives_desc",
-	"back_callback" : "VoidUI_save",
+	"menu_id" : "HeistHUD_options_objectives",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_objectives_title",
+	"description" : "HeistHUD_objectives_desc",
+	"back_callback" : "heisthud_save",
 	"localized" :  true,
 	"priority" : 10,
 	"items" : [
 		{
 			"type" : "slider",
 			"id" : "hud_objectives_scale",
-			"title" : "VoidUI_objectives_scale_title",
-			"description" : "VoidUI_objectives_scale_desc",
+			"title" : "HeistHUD_objectives_scale_title",
+			"description" : "HeistHUD_objectives_scale_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "hud_objectives_scale",
 			"default_value" : 1,
@@ -29,14 +29,14 @@
 		{
 			"type" : "button",
 			"id" : "heitshud_timer",
-			"title" : "VoidUI_timer_panel",
+			"title" : "HeistHUD_timer_panel",
 			"priority" : 15,
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_levelname",
-			"title" : "VoidUI_levelname_title",
-			"description" : "VoidUI_levelname_desc",
+			"title" : "HeistHUD_levelname_title",
+			"description" : "HeistHUD_levelname_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "show_levelname"
 			"priority" : 14,
@@ -44,21 +44,13 @@
 		{
 			"type" : "toggle",
 			"id" : "show_ghost_icon",
-			"title" : "VoidUI_ghost_title",
-			"description" : "VoidUI_ghost_desc",
+			"title" : "HeistHUD_ghost_title",
+			"description" : "HeistHUD_ghost_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "show_ghost_icon"
 			"priority" : 14,
 		},
-		{
-			"type" : "toggle",
-			"id" : "show_loot",
-			"title" : "VoidUI_loot_title",
-			"description" : "VoidUI_loot_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_loot"
-			"priority" : 14,
-		},
+		
 		{
 			"type" : "divider",
 			"size" : 25,
@@ -67,14 +59,14 @@
 		{
 			"type" : "button",
 			"id" : "heitshud_objectives",
-			"title" : "VoidUI_objectives_panel",
+			"title" : "HeistHUD_objectives_panel",
 			"priority" : 12,
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_objective_history",
-			"title" : "VoidUI_objective_history_title",
-			"description" : "VoidUI_objective_history_desc",
+			"title" : "HeistHUD_objective_history_title",
+			"description" : "HeistHUD_objective_history_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "hud_objective_history",
 			"default_value" : 3,

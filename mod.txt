@@ -1,13 +1,13 @@
 {
-    "name" : "Void UI",
+    "name" : "We need a good name goddammit",
     "author" : "Xeletron",
-	"description" : "Void UI is a hud mod that aims to fully replace the in game hud of the game. \nSpecial thanks to: Fanged Hex, VxWolf, Canada",
-    "version" : "0.4",
-	"priority" : 10,
+	"description" : "HeistHUD is a hud mod that aims to fully replace the in game hud of the game. \nSpecial thanks to: Fanged Hex, VxWolf, Canada",
+    "version" : "0.3",
+	"priority" : 1,
     "updates" : [
         {
             "revision" : 1,
-            "identifier" : "VoidUI"
+            "identifier" : "HeistHUD"
         }
     ]
     "hooks" : [  
@@ -16,7 +16,6 @@
 		{"hook_id" : "lib/managers/hud/hudobjectives", "script_path" : "main.lua"},
 		{"hook_id" : "lib/managers/hud/hudtemp", "script_path" : "main.lua"},
 		{"hook_id" : "lib/managers/hud/hudblackscreen", "script_path" : "main.lua"},
-		{"hook_id" : "lib/managers/hud/hudsuspicion", "script_path" : "main.lua"},
 		{"hook_id" : "lib/states/ingamewaitingforplayers", "script_path" : "main.lua"},
         {"hook_id" : "lib/managers/hudmanager", "script_path" : "main.lua"},
         {"hook_id" : "lib/managers/hudmanagerpd2", "script_path" : "main.lua"},
@@ -39,8 +38,6 @@
 		{"hook_id" : "lib/managers/customsafehousemanager", "script_path" : "main.lua"},
 		{"hook_id" : "lib/units/player_team/teamaidamage", "script_path" : "main.lua"},
 		{"hook_id" : "lib/units/equipment/ecm_jammer/ecmjammerbase", "script_path" : "main.lua"},
-		{"hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", "script_path" : "main.lua"},
-		{"hook_id" : "lib/managers/hud/hudwaitinglegend", "script_path" : "main.lua"},
-		{"hook_id" : "lib/managers/hud/hudplayerdowned", "script_path" : "main.lua"}
+		{"hook_id" : "core/lib/managers/subtitle/coresubtitlepresenter", "script_path" : "main.lua"}
     ]
 }

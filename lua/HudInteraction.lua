@@ -56,6 +56,7 @@ function HUDInteraction:init(hud, child_name)
 end
 
 function HUDInteraction:show_interact(data)
+	self:remove_interact()
 	local text = utf8.to_upper(data.text or "Press 'F' to pay respects")
 	self._hud_panel:child(self._child_name_text):set_visible(true)
 	self._hud_panel:child(self._child_name_text):set_text(text)
@@ -134,7 +135,7 @@ function HUDInteraction:set_interaction_bar_width(current, total)
 	self._interact_bar_bg:set_w(text_w)
 	self._interact_bar:set_w((text_w - 4) * (current / total))
 	self._interact_bar_bg:set_x(self._hud_panel:w() / 2 - (text_w / 2))
-	if VoidUI.options.center_interaction and VoidUI.options.center_interaction or false then 
+	if HeistHUD.options.center_interaction and HeistHUD.options.center_interaction or false then 
 		self._interact_bar:set_center_x(self._interact_bar_bg:center_x())
 	else
 		self._interact_bar:set_x(self._hud_panel:w() / 2 - ((text_w - 4) / 2))

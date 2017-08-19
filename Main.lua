@@ -1,20 +1,18 @@
-_G.VoidUI = _G.VoidUI or {}
-VoidUI.mod_path = ModPath
-VoidUI.options_path = SavePath .. "VoidUI.txt"
-VoidUI.options = {} 
-VoidUI.hook_files = {
+_G.HeistHUD = _G.HeistHUD or {}
+HeistHUD.mod_path = ModPath
+HeistHUD.options_path = SavePath .. "HeistHUD.txt"
+HeistHUD.options = {} 
+HeistHUD.hook_files = {
 	["lib/managers/hudmanager"] = {"HudManager.lua"},
 	["lib/managers/hud/hudteammate"] = {"HudTeammate.lua"},
 	["lib/managers/hud/hudtemp"] = {"HudTemp.lua"},
 	["lib/managers/hud/hudblackscreen"] = {"HudBlackscreen.lua"},
-	["lib/managers/hud/hudsuspicion"] = {"HudSuspicion.lua"},
 	["lib/states/ingamewaitingforplayers"] = {"HudBlackscreen.lua"},
 	["lib/managers/hudmanagerpd2"] = {"HudManager.lua"},
-	["lib/units/beings/player/huskplayermovement"] = {"HudPlayerDowned.lua"},
-	["lib/units/beings/player/states/playerbleedout"] = {"HudPlayerDowned.lua"},
-	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "Jokers.lua"},
-	["lib/units/equipment/doctor_bag/doctorbagbase"] = {"HudPlayerDowned.lua"},
-	["lib/managers/hud/hudplayerdowned"] = {"HudPlayerDowned.lua"},
+	["lib/units/beings/player/huskplayermovement"] = {"HudDowns.lua"},
+	["lib/units/beings/player/states/playerbleedout"] = {"HudDowns.lua"},
+	["lib/network/handlers/unitnetworkhandler"] = {"HudDowns.lua", "Jokers.lua"},
+	["lib/units/equipment/doctor_bag/doctorbagbase"] = {"HudDowns.lua"},
 	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
 	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
 	["lib/managers/customsafehousemanager"] = {"HudPresenter.lua"},
@@ -32,50 +30,25 @@ VoidUI.hook_files = {
 	["lib/units/enemies/cop/copdamage"] = {"Jokers.lua"},
 	["lib/units/player_team/teamaidamage"] = {"HudManager.lua"},
 	["lib/units/player_team/huskteamaidamage"] = {"HudManager.lua"},
-	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"},
-	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"}
+	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"}
 }
-VoidUI.menu_names = {
-	"VoidUI_options",
-	"VoidUI_hudteammate",
-	"VoidUI_objectives",
-	"VoidUI_assault",
-	"VoidUI_chat",
-	"VoidUI_label"
-}
-VoidUI.disable_list = {
-	["anim_badge"] = "show_badge",
-	["health_jokers"] = "label_jokers",
-	["label_minscale"] = "label_minmode",
-	["label_minrank"] = "label_minmode",
-	["label_minmode_dist"] = "label_minmode",
-	["label_minmode_dot"] = "label_minmode"
-}
-
-function VoidUI:Save()
+function HeistHUD:Save()
 	local file = io.open( self.options_path, "w+" )
 	if file then
 		file:write( json.encode( self.options ) )
 		file:close()
 	end
 end
-function VoidUI:Load()
+function HeistHUD:Load()
 	local file = io.open( self.options_path, "r" )
 	if file then
-		self.options_temp = json.decode( file:read("*all") )
+		self.options = json.decode( file:read("*all") )
 		file:close()
-		for k,v in pairs(self.options_temp) do 
-			self.options[k] = v 
-		end
-		self.options_temp = nil
-	else
-		VoidUI:DefaultConfig()
-		VoidUI:Save()
 	end
 end
 
-Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
-	local loc_path = VoidUI.mod_path .. "loc/"
+Hooks:Add("LocalizationManagerPostInit", "HeistHUD_Localization", function(loc)
+	local loc_path = HeistHUD.mod_path .. "loc/"
 
 	if file.DirectoryExists( loc_path ) then
 		for _, filename in pairs(file.GetFiles(loc_path)) do
@@ -89,155 +62,115 @@ Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	else
 		log("Localization folder seems to be missing!")
 	end
+
 end)
 
-function VoidUI:DefaultConfig()
-	VoidUI.options = {
-		totalammo = true,
-		main_loud = true,
-		main_stealth = true,
-		mate_loud = true,
-		mate_stealth = true,
-		mate_name = true,
-		show_levelname = true,
-		show_ghost_icon = true,
-		show_badge = true,
-		anim_badge = true,
-		show_charactername = true,
-		label_jokers = true,
-		label_minmode = true,
-		label_minrank = true,
-		label_waypoint_offscreen = true,
-		chat_mouse = true,
-		mate_interact = true,
-		ammo_pickup = true,
-		show_loot = true,
-		hostages = true,
-		pagers = true,
-		outlines = true,
-		assault_lines = true,
-		health_jokers = true,
-		jammers = 2,
-		hud_scale = 1,
-		hud_main_scale = 1,
-		hud_mate_scale = 1,
-		hud_chat_scale = 1,
-		hud_assault_scale = 1,
-		hud_objectives_scale = 1,
-		waypoint_scale = 0.8,
-		label_minscale = 1,
-		label_scale = 1,
-		hud_objective_history = 3,
-		label_minmode_dist = 7,
-		label_minmode_dot = 1,
-		chat_copy = 5,
-		main_health = 2,
-		mate_health = 2,
-		chattime = 1,
-		main_armor = 2,
-		mate_armor = 1,
-		waypoint_radius = 200 
-	}
+function HeistHUD:reset_options()
+	HeistHUD.options.totalammo = true
+	HeistHUD.options.main_loud = true
+	HeistHUD.options.main_stealth = true
+	HeistHUD.options.mate_loud = true
+	HeistHUD.options.mate_stealth = true
+	HeistHUD.options.mate_name = true
+	HeistHUD.options.show_levelname = true
+	HeistHUD.options.show_ghost_icon = true
+	HeistHUD.options.show_badge = true
+	HeistHUD.options.anim_badge = true
+	HeistHUD.options.show_charactername = true
+	HeistHUD.options.label_jokers = true
+	HeistHUD.options.label_minmode = true
+	HeistHUD.options.label_minrank = true
+	HeistHUD.options.label_waypoint_offscreen = true
+	HeistHUD.options.chat_mouse = true
+	HeistHUD.options.mate_interact = true
+	HeistHUD.options.ammo_pickup = true
+	HeistHUD.options.hud_scale = 1
+	HeistHUD.options.hud_main_scale = 1
+	HeistHUD.options.hud_mate_scale = 1
+	HeistHUD.options.hud_chat_scale = 1
+	HeistHUD.options.hud_assault_scale = 1
+	HeistHUD.options.hud_objectives_scale = 1
+	HeistHUD.options.waypoint_scale = 0.8
+	HeistHUD.options.label_minscale = 1
+	HeistHUD.options.label_scale = 1
+	HeistHUD.options.hud_objective_history = 3
+	HeistHUD.options.label_minmode_dist = 7
+	HeistHUD.options.label_minmode_dot = 1
+	HeistHUD.options.chat_copy = 4
+	HeistHUD.options.main_health = 2
+	HeistHUD.options.mate_health = 2
+	HeistHUD.options.chattime = 1
+	HeistHUD.options.armor = 2
+	HeistHUD.options.waypoint_radius = 200
+	HeistHUD:Save()
 end
-
-function VoidUI:UpdateMenu()
-	for _, menu_name in pairs(VoidUI.menu_names) do 
-		for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
-			if VoidUI.disable_list[item:parameters().name] then
-				local disable_list_entry = VoidUI.disable_list[item:parameters().name]
-				item:set_enabled(VoidUI.options[disable_list_entry])
-			end
-			if item._type == "slider" then
-				local value = VoidUI.options[item:parameters().name]
-				local step = item:parameters().step
-				if step >= 1 and value ~= nil and step ~= nil then
-					if value % step ~= 0 then
-						item:set_value(value + (value % step >= 0.5 and 1 - value % step or -(value % step)))
-					end
-				end
-			end
-		end
-	end
-end
-Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu_manager)
-	MenuCallbackHandler.callback_VoidUI_hudscale = function(self, item)
-		VoidUI.options.hud_scale = item:value()
-		VoidUI.options.hud_main_scale = item:value()
-		VoidUI.options.hud_mate_scale = item:value()
-		VoidUI.options.hud_objectives_scale = item:value()
-		VoidUI.options.hud_assault_scale = item:value()
-		VoidUI.options.hud_chat_scale = item:value()
-		local hudteammate = MenuHelper:GetMenu("VoidUI_hudteammate")
+Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_HeistHUD", function(menu_manager)
+	MenuCallbackHandler.callback_heisthud_hudscale = function(self, item)
+		HeistHUD.options.hud_scale = item:value()
+		HeistHUD.options.hud_main_scale = item:value()
+		HeistHUD.options.hud_mate_scale = item:value()
+		HeistHUD.options.hud_objectives_scale = item:value()
+		HeistHUD.options.hud_assault_scale = item:value()
+		HeistHUD.options.hud_chat_scale = item:value()
+		local hudteammate = MenuHelper:GetMenu("HeistHUD_options_hudteammate")
 		if hudteammate then 
 			hudteammate._items_list[2]:set_value(item:value())
 			hudteammate._items_list[11]:set_value(item:value())
 		end
-		local objectives = MenuHelper:GetMenu("VoidUI_objectives")
+		local objectives = MenuHelper:GetMenu("HeistHUD_options_objectives")
 		if objectives then
 			objectives._items_list[1]:set_value(item:value())
 		end
-		local assault = MenuHelper:GetMenu("VoidUI_assault")
+		local assault = MenuHelper:GetMenu("HeistHUD_options_assault")
 		if assault then
 			assault._items_list[1]:set_value(item:value())
 		end
-		local chat = MenuHelper:GetMenu("VoidUI_chat")
+		local chat = MenuHelper:GetMenu("HeistHUD_options_chat")
 		if assault then
 			chat._items_list[1]:set_value(item:value())
 		end
 	end
 	MenuCallbackHandler.basic_option_clbk = function(self, item)
-		VoidUI.options[item:parameters().name] = item:value()
-		VoidUI:UpdateMenu()
+		HeistHUD.options[item:parameters().name] = item:value()
 	end
 	MenuCallbackHandler.toggle_option_clbk = function(self, item)
-		VoidUI.options[item:parameters().name] = (item:value() == "on" and true or false)
-		VoidUI:UpdateMenu()
+		HeistHUD.options[item:parameters().name] = (item:value() == "on" and true or false)
+	end
+	MenuCallbackHandler.toggle_badge_clbk = function(self, item)
+		HeistHUD.options[item:parameters().name] = (item:value() == "on" and true or false)
+		
+		local assault = MenuHelper:GetMenu("HeistHUD_options_assault")
+		if assault then
+			assault._items_list[3]:set_enabled(item:value() == "on" and true or false)
+		end
 	end
 	
-	MenuCallbackHandler.callback_VoidUI_reset = function(self, item)
+	MenuCallbackHandler.callback_heisthud_reset = function(self, item)
 		local buttons = {
 			[1] = { 
 				text = managers.localization:text("dialog_yes"), 
 				callback = function(self, item)
-					VoidUI:DefaultConfig()
-					for _, menu_name in pairs(VoidUI.menu_names) do 
-						for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
-							local value = VoidUI.options[item:parameters().name]
-							if value then 
-								if item._type == "toggle" then
-									item:set_value(value and "on" or "off")
-								elseif item._type ~= "divider" then
-									item:set_value(value)
-								end
-							end
-						end
-					end
-					managers.viewport:resolution_changed()
+					HeistHUD:reset_options()
 				end,
 				},
 			[2] = { text = managers.localization:text("dialog_no"), is_cancel_button = true, }
 		}
-		QuickMenu:new( managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true )
+		QuickMenu:new( managers.localization:text("HeistHUD_reset_title"), managers.localization:text("HeistHUD_reset_confirm"), buttons, true )
 	end
 	
-	MenuCallbackHandler.VoidUI_save = function(self, item)
-		VoidUI:Save()
+	MenuCallbackHandler.heisthud_save = function(self, item)
+		HeistHUD:Save()
 	end	
 	
-	VoidUI:DefaultConfig()
-	VoidUI:Load()
-	
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/chat.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/assaultcorner.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/labels.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/objectives.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/hudteammate.json", VoidUI, VoidUI.options)
+	HeistHUD:Load()
+	if HeistHUD.options.chat_mouse == nil then HeistHUD:reset_options() end
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/options.json", HeistHUD, HeistHUD.options)
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/chat.json", HeistHUD, HeistHUD.options)
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/assaultcorner.json", HeistHUD, HeistHUD.options)
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/labels.json", HeistHUD, HeistHUD.options)
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/objectives.json", HeistHUD, HeistHUD.options)
+	MenuHelper:LoadFromJsonFile(HeistHUD.mod_path .. "menu/hudteammate.json", HeistHUD, HeistHUD.options)
 end )
-
-Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
-	VoidUI:UpdateMenu()
-end)
 
 function MenuManager:toggle_chatinput()
 	if Application:editor() then
@@ -260,9 +193,9 @@ end
 	
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
-		if VoidUI.hook_files[requiredScript] then
-			for _, file in ipairs(VoidUI.hook_files[requiredScript]) do
-			dofile( VoidUI.mod_path .. "lua/" .. file )
+		if HeistHUD.hook_files[requiredScript] then
+			for _, file in ipairs(HeistHUD.hook_files[requiredScript]) do
+			dofile( HeistHUD.mod_path .. "lua/" .. file )
 		end
 	end
 end

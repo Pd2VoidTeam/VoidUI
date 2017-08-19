@@ -1,41 +1,32 @@
 {
-	"menu_id" : "VoidUI_label",
-	"parent_menu_id" : "VoidUI_options",
-	"title" : "VoidUI_label_title",
-	"description" : "VoidUI_label_desc",
-	"back_callback" : "VoidUI_save",
+	"menu_id" : "HeistHUD_options_label",
+	"parent_menu_id" : "HeistHUD_options",
+	"title" : "HeistHUD_label_title",
+	"description" : "HeistHUD_label_desc",
+	"back_callback" : "heisthud_save",
 	"localized" :  true,
 	"priority" : 18,
 	"items" : [
 		{
 			"type" : "button",
 			"id" : "heitshud_labels",
-			"title" : "VoidUI_label",
-			"priority" : 14,
-		},
-		{
-			"type" : "toggle",
-			"id" : "label_jokers",
-			"title" : "VoidUI_jokernames_title",
-			"description" : "VoidUI_jokernames_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_jokers"
+			"title" : "HeistHUD_label",
 			"priority" : 13,
 		},
 		{
 			"type" : "toggle",
-			"id" : "health_jokers",
-			"title" : "VoidUI_jokerhealth_title",
-			"description" : "VoidUI_jokerhealth_desc",
+			"id" : "label_jokers",
+			"title" : "HeistHUD_jokernames_title",
+			"description" : "HeistHUD_jokernames_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "health_jokers"
+			"value" : "label_jokers"
 			"priority" : 12,
 		},
 		{
 			"type" : "slider",
 			"id" : "label_scale",
-			"title" : "VoidUI_label_scale_title",
-			"description" : "VoidUI_label_scale_desc",
+			"title" : "HeistHUD_label_scale_title",
+			"description" : "HeistHUD_label_scale_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "label_scale",
 			"default_value" : 1,
@@ -48,8 +39,8 @@
 		{
 			"type" : "toggle",
 			"id" : "label_minmode",
-			"title" : "VoidUI_minlabel_title",
-			"description" : "VoidUI_minlabel_desc",
+			"title" : "HeistHUD_minlabel_title",
+			"description" : "HeistHUD_minlabel_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_minmode"
 			"priority" : 10,
@@ -57,8 +48,8 @@
 		{
 			"type" : "slider",
 			"id" : "label_minscale",
-			"title" : "VoidUI_label_minscale_title",
-			"description" : "VoidUI_label_minscale_desc",
+			"title" : "HeistHUD_label_minscale_title",
+			"description" : "HeistHUD_label_minscale_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "label_minscale",
 			"default_value" : 1,
@@ -71,8 +62,8 @@
 		{
 			"type" : "toggle",
 			"id" : "label_minrank",
-			"title" : "VoidUI_minrank_title",
-			"description" : "VoidUI_minrank_desc",
+			"title" : "HeistHUD_minrank_title",
+			"description" : "HeistHUD_minrank_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_minrank"
 			"priority" : 8,
@@ -80,8 +71,8 @@
 		{
 			"type" : "slider",
 			"id" : "label_minmode_dist",
-			"title" : "VoidUI_mindist_title",
-			"description" : "VoidUI_mindist_desc",
+			"title" : "HeistHUD_mindist_title",
+			"description" : "HeistHUD_mindist_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "label_minmode_dist",
 			"default_value" : 7,
@@ -94,8 +85,8 @@
 		{
 			"type" : "slider",
 			"id" : "label_minmode_dot",
-			"title" : "VoidUI_mindot_title",
-			"description" : "VoidUI_mindot_desc",
+			"title" : "HeistHUD_mindot_title",
+			"description" : "HeistHUD_mindot_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "label_minmode_dot",
 			"default_value" : 1,
@@ -113,14 +104,14 @@
 		{
 			"type" : "button",
 			"id" : "heitshud_waypoints",
-			"title" : "VoidUI_waypoints",
+			"title" : "HeistHUD_waypoints",
 			"priority" : 4,
 		},
 		{
 			"type" : "slider",
 			"id" : "waypoint_scale",
-			"title" : "VoidUI_waypoint_scale_title",
-			"description" : "VoidUI_waypoint_scale_desc",
+			"title" : "HeistHUD_waypoint_scale_title",
+			"description" : "HeistHUD_waypoint_scale_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "waypoint_scale",
 			"default_value" : 1,
@@ -133,8 +124,8 @@
 		{
 			"type" : "toggle",
 			"id" : "label_waypoint_offscreen",
-			"title" : "VoidUI_waypoint_offscreen_title",
-			"description" : "VoidUI_waypoint_offscreen_desc",
+			"title" : "HeistHUD_waypoint_offscreen_title",
+			"description" : "HeistHUD_waypoint_offscreen_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_waypoint_offscreen"
 			"priority" : 2,
@@ -142,8 +133,8 @@
 		{
 			"type" : "slider",
 			"id" : "waypoint_radius",
-			"title" : "VoidUI_waypoint_radius_title",
-			"description" : "VoidUI_waypoint_radius_desc",
+			"title" : "HeistHUD_waypoint_radius_title",
+			"description" : "HeistHUD_waypoint_radius_desc",
 			"callback" : "basic_option_clbk",
 			"value" : "waypoint_radius",
 			"default_value" : 160,
