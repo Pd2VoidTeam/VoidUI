@@ -655,6 +655,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			w = 256,
 			h = 18
 		})
+        panel:text({
+            name = "text",
+            text = "",
+            font = tweak_data.hud.medium_font,
+            font_size = 0,
+            w = 32,
+            h = 0
+        })
 		local extended_panel = panel:panel({
 			name = "extended_panel"
 		})
