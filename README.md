@@ -7,6 +7,6 @@ VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD
 - English language localization tweaks made by VxWolf
 
 ## Installing
--Download and install BLT from <PUT A LINK HERE!>
--Download VoidUI. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
--If the game is running, restart it.
+- Download and install BLT from <PUT A LINK HERE!>
+- Download VoidUI. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
+- If the game is running, restart it.
