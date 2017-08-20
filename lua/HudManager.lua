@@ -229,57 +229,25 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		
-	function HUDManager:_create_teammates_panel(hud)
-		hud = hud or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
-		self._hud.teammate_panels_data = self._hud.teammate_panels_data or {}
-		self._teammate_panels = {}
-		if hud.panel:child("teammates_panel") then
-			hud.panel:remove(hud.panel:child("teammates_panel"))
-		end
-		local h = self:teampanels_height() * 2
-		self._main_scale = VoidUI.options.hud_main_scale and VoidUI.options.hud_main_scale or 1
-		self._mate_scale = VoidUI.options.hud_mate_scale and VoidUI.options.hud_mate_scale or 1
-		local teammates_panel = hud.panel:panel({
-			name = "teammates_panel",
-			h = h,
-			y = hud.panel:h() - h,
-			halign = "grow",
-			valign = "bottom"
-		})
-		for i = 1, 4 do
-			local is_player = i == HUDManager.PLAYER_PANEL
-			self._hud.teammate_panels_data[i] = {
-				taken = false,
-				special_equipments = {}
-			}
-
-			local teammate = HUDTeammate:new(i, teammates_panel, is_player, teammates_panel:w())
-			if is_player then
-				teammate._panel:set_w(220 * self._main_scale)
-				teammate._panel:set_right(teammates_panel:right())
-			else
-				teammate._panel:set_w(154 * self._mate_scale)
-				teammate._panel:set_left(teammates_panel:left() + ((i - 1) * teammate._panel:w()) + (2 * (i - 1))* self._mate_scale)
-			end
-			table.insert(self._teammate_panels, teammate)
-			if is_player then
-				teammate:add_panel()
-			end
-		end
-		
+	local create_teammates_panel = HUDManager._create_teammates_panel
+	function HUDManager:_create_teammates_panel(...)
+		self._main_scale = VoidUI.options.hud_main_scale
+		self._mate_scale = VoidUI.options.hud_mate_scale
+		create_teammates_panel(self, ...)
 	end
 	
-	HUDManager.align_teammate_panels = HUDManager.align_teammate_panels or function(self)
+	function HUDManager:align_teammate_panels()
 		for i, data in ipairs(self._hud.teammate_panels_data) do
-			if i ~= HUDManager.PLAYER_PANEL then
-				local panel = self._teammate_panels[i]
+			local panel = self._teammate_panels[i]
+			if i == HUDManager.PLAYER_PANEL then
+				panel._panel:set_w(220 * self._main_scale)
+				panel._panel:set_right(panel._panel:parent():right())
+			else
 				if panel:is_waiting() then panel._panel:set_w(165 * self._mate_scale)
 				elseif panel:ai() or panel:panel():child("custom_player_panel"):child("weapons_panel"):visible() == false then panel._panel:set_w(62 * self._mate_scale)
 				elseif panel:peer_id() then panel._panel:set_w(165 * self._mate_scale)
 				else panel._panel:set_w(0) end
-				if i ~= 1 then
-					panel._panel:set_x(self._teammate_panels[i - 1]._panel:right() - 9 * self._mate_scale)
-				end
+				panel._panel:set_x((i - 1) * panel._panel:w() - (i - 1) * (9 * self._mate_scale))
 			end
 		end
 	end
@@ -654,6 +622,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			visible = false,
 			w = 256,
 			h = 18
+		})
+		panel:text({
+			name = "text",
+			text = "",
+			font = tweak_data.hud.medium_font,
+			font_size = 0,
+			w = 32,
+			h = 0
 		})
 		local extended_panel = panel:panel({
 			name = "extended_panel"

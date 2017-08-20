@@ -2,7 +2,7 @@
     "name" : "Void UI",
     "author" : "Xeletron",
 	"description" : "Void UI is a hud mod that aims to fully replace the in game hud of the game. \nSpecial thanks to: Fanged Hex, VxWolf, Canada",
-    "version" : "0.4",
+    "version" : "0.5",
 	"priority" : 10,
     "updates" : [
         {

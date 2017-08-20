@@ -73,7 +73,11 @@ function VoidUI:Load()
 		VoidUI:Save()
 	end
 end
-
+function VoidUI:LoadTextures()
+	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "guis/textures/VoidUI")) do
+		DB:create_entry(Idstring("texture"), Idstring("guis/textures/VoidUI/".. file:gsub(".texture", "")), VoidUI.mod_path.. "guis/textures/VoidUI/".. file)
+	end
+end
 Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	local loc_path = VoidUI.mod_path .. "loc/"
 
@@ -90,7 +94,6 @@ Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 		log("Localization folder seems to be missing!")
 	end
 end)
-
 function VoidUI:DefaultConfig()
 	VoidUI.options = {
 		totalammo = true,
@@ -138,6 +141,7 @@ function VoidUI:DefaultConfig()
 		mate_armor = 1,
 		waypoint_radius = 200 
 	}
+
 end
 
 function VoidUI:UpdateMenu()
@@ -237,6 +241,7 @@ end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
+	VoidUI:LoadTextures()
 end)
 
 function MenuManager:toggle_chatinput()
