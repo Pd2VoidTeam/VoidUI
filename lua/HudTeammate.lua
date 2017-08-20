@@ -931,18 +931,18 @@ function HUDTeammate:set_armor(data)
 	local armor_background = health_panel:child("armor_background")
 	local armor_bar = health_panel:child("armor_bar")
 	local armor_value = health_panel:child("armor_value")
-	local amount = math.clamp(data.current / data.total, 0, 1)
+	local amount = math.ceil((data.current / data.total) * 100) / 100
 	
 	armor_bar:set_h(self._bg_h * amount)
 	armor_bar:set_texture_rect(609,0 + ((1- amount) * 472),201,472 * amount)
 	armor_bar:set_bottom(armor_background:bottom())
 	
 	local show_armor_value = self._main_player and VoidUI.options.main_armor or VoidUI.options.mate_armor
-	if show_armor_value == 2 then armor_value:set_text(math.ceil(amount * 100))
+	if show_armor_value == 2 then armor_value:set_text(self:round(amount * 100))
 	elseif show_armor_value == 3 then armor_value:set_text(self:round((data.total * 10) * amount))
 	else armor_value:set_text("") end
 	
-	if (data.current / data.total) * 100 < 1 then
+	if (data.current / data.total) < 0.01 then
 		armor_bar:set_h(0)
 		armor_value:set_text("")
 	end
@@ -1003,7 +1003,7 @@ function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, curre
 	local max_total = max
 	local peer = managers.network:session():peer(self:peer_id())
 	local outfit = peer and peer:blackmarket_outfit()
-	if VoidUI.options.totalammo == true and (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
+	if VoidUI.options.totalammo == true and (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
 		current_left = current_left - current_clip
 		max = max - max_clip
 	end
