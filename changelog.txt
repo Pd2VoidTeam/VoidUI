@@ -1,34 +1,17 @@
-Version 0.5
-- Added new heist intro screen (blackscreen panel)
-- Improved suspicion panel
-- BeardLib is no longer needed for the custom textures and they're not in the mod_overrides folder anymore
-- Fixed a crash with vehicles
-
-Version 0.4 (2017.08.18)
-- The mod is now called Void UI
-- Remade most textures
-- Textures are now stored in seprate custom files, no longer overriding a default game texture
-- Improved the set_health and set_armor functions.
-- Improved the options menu.
-- Added experimental suspicion panel (need feedback on it)
-- Added maniac panel
-- Added a blinking animation to the hostages panels when gaining or loosing a hostage
-- Added a graphic element for bleeding out
-- Added the option to show jokers health
-- Added the option to disable the secured loot count
-- Added the option to show teammates armor value
-- Added the option to disable joker contours
-- Added the option to disable cop hostages
-- Added the option to disable pager count
-- Added the option to disable jammer timers
-- Added the option to show the latest jammer
-- Added waiting panel drop-in prompt
-- Fixed interaction timer randomly appearing when downed
-- Fixed a crash related to ecm jammers
-- Fixed a crash related to name labels
-- Fixed a crash when using the Keepers mod
-- Fixed Swan song bar freezing on a panel if that panels owner quits.
-- Fixed downed icon appearing infront of the bleedout timer on the teammates panel
+Version 0.2 (2017.07.14)
+- Restructured the options menu
+- Added reset hud options button
+- Added global hud scale slider wich will resize every element at the same time
+- Added an option for setting teammates health
+- Added options for showing downs/bodybags/detection risk
+- Added the option to disable rank and level for teammates on the hud panel
+- Added options to resize the objective panel and the assault panel
+- Added the option to set the objective history amount
+- Added the option to disable the assault police badge
+- Added the option to disable the pulse animation of the assault police badge
+- Added custom strings for endless assault waves
+- Fixed teammate health value not animating
+- Slightly moved the teammate bag panel to avoid clipping
 
 Version 0.3 (2017.08.02)
 - Added name label for jokers
@@ -63,17 +46,27 @@ Version 0.3 (2017.08.02)
 - Changed menu and localization files from txt to json
 - Updated localization
 
-Version 0.2 (2017.07.14)
-- Restructured the options menu
-- Added reset hud options button
-- Added global hud scale slider wich will resize every element at the same time
-- Added an option for setting teammates health
-- Added options for showing downs/bodybags/detection risk
-- Added the option to disable rank and level for teammates on the hud panel
-- Added options to resize the objective panel and the assault panel
-- Added the option to set the objective history amount
-- Added the option to disable the assault police badge
-- Added the option to disable the pulse animation of the assault police badge
-- Added custom strings for endless assault waves
-- Fixed teammate health value not animating
-- Slightly moved the teammate bag panel to avoid clipping
+Version 0.4 (2017.08.18)
+- The mod is now called Void UI
+- Remade most textures
+- Textures are now stored in seprate custom files, no longer overriding a default game texture
+- Improved the set_health and set_armor functions.
+- Improved the options menu.
+- Added experimental suspicion panel (need feedback on it)
+- Added maniac panel
+- Added a blinking animation to the hostages panels when gaining or loosing a hostage
+- Added a graphic element for bleeding out
+- Added the option to show jokers health
+- Added the option to disable the secured loot count
+- Added the option to show teammates armor value
+- Added the option to disable joker contours
+- Added the option to disable cop hostages
+- Added the option to disable pager count
+- Added the option to disable jammer timers
+- Added waiting panel drop-in prompt
+- Fixed interaction timer randomly appearing when downed
+- Fixed a crash related to ecm jammers
+- Fixed a crash related to name labels
+- Fixed a crash when using the Keepers mod
+- Fixed Swan song bar freezing on a panel if that panels owner quits.
+- Fixed downed icon appearing infront of the bleedout timer on the teammates panel

@@ -1542,7 +1542,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		num_pagers:set_visible(true)
 		pagers_panel:set_visible(VoidUI.options.pagers)
 		if managers.hud and managers.hud._jammers then
-			local jammers = table.remove(managers.hud._jammers, VoidUI.options.jammers == 2 and 1 or #managers.hud._jammers)
+			local jammers = table.remove(managers.hud._jammers, 1)
 			if jammers and #managers.hud._jammers > 0 then
 				setup:add_end_frame_clbk(callback(self, self, "ecm_timer", managers.hud._jammers[VoidUI.options.jammers == 2 and 1 or #managers.hud._jammers]:base():battery_life()))
 			end
