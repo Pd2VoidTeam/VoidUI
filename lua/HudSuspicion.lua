@@ -19,10 +19,10 @@ function HUDSuspicion:init(hud, sound_source)
 	local suspicion_left_blue = self._suspicion_panel:bitmap({
 		name = "suspicion_left_blue",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {648,26,-90,88},
+		texture_rect = {400,150,-90,88},
 		color = Color(0,0.47,1),
 		alpha = 1,
-		w = 30,
+		w = 39,
 		h = 20,
 		layer = 4
 	})
@@ -30,10 +30,10 @@ function HUDSuspicion:init(hud, sound_source)
 	local suspicion_left_red = self._suspicion_panel:bitmap({
 		name = "suspicion_left_red",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {648,26,-90,88},
+		texture_rect = {400,150,-90,88},
 		color = Color(1,0.2,0),
 		alpha = 1,
-		w = 30,
+		w = 39,
 		h = 20,
 		layer = 2
 	})
@@ -41,10 +41,10 @@ function HUDSuspicion:init(hud, sound_source)
 	local suspicion_right_blue = self._suspicion_panel:bitmap({
 		name = "suspicion_right_blue",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {558,26,90,88},
+		texture_rect = {310,150,90,88},
 		color = Color(0,0.47,1),
 		alpha = 1,
-		w = 30,
+		w = 39,
 		h = 20,
 		layer = 4
 	})
@@ -52,10 +52,10 @@ function HUDSuspicion:init(hud, sound_source)
 	local suspicion_right_red = self._suspicion_panel:bitmap({
 		name = "suspicion_right_red",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {558,26,90,88},
+		texture_rect = {310,150,90,88},
 		color = Color(1,0.2,0),
 		alpha = 1,
-		w = 30,
+		w = 39,
 		h = 20,
 		layer = 2
 	})
@@ -71,93 +71,66 @@ function HUDSuspicion:init(hud, sound_source)
 		font_size = 20,
 		font = "fonts/font_medium_shadow_mf",
 	})
-	local left_blue = self._suspicion_fill_panel:bitmap({
-		name = "left_blue",
+	local left_shade = self._suspicion_panel:bitmap({
+		name = "left_shade",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {556,26, -177,88},
-		color = Color(0,0.47,1),
-		layer = 3,
-		w = 65,
+		texture_rect = {309,239,-309,88},
+		layer = 6,
+		w = 130,
 		h = 20,
 	})
-	left_blue:set_right(self._suspicion_fill_panel:w() / 2 - 16)
-	local left_red = self._suspicion_fill_panel:bitmap({
-		name = "left_red",
-		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {556,26, -177,88},
-		color = Color(1,0.2,0),
-		layer = 3,
-		w = 65,
-		h = 20,
-	})
-	left_red:set_right(left_blue:x() + 16)
+	left_shade:set_right(self._suspicion_panel:w() / 2 - 16)
 	
-	local right_blue = self._suspicion_fill_panel:bitmap({
-		name = "right_blue",
+	local right_shade = self._suspicion_panel:bitmap({
+		name = "right_shade",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {380,26,177,88},
-		color = Color(0,0.47,1),
-		layer = 3,
-		w = 65,
+		texture_rect = {0,239,309,88},
+		layer = 6,
+		w = 130,
 		h = 20,
 	})
-	right_blue:set_x(self._suspicion_fill_panel:w() / 2 + 16)
-	local right_red = self._suspicion_fill_panel:bitmap({
-		name = "right_red",
-		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {380,26,177,88},
-		color = Color(1,0.2,0),
-		layer = 3,
-		w = 65,
-		h = 20,
-	})
-	right_red:set_x(right_blue:right() - 16)
+	right_shade:set_x(self._suspicion_panel:w() / 2 + 16)
 	
+	local left_fill = self._suspicion_fill_panel:bitmap({
+		name = "left_fill",
+		texture = "guis/textures/VoidUI/hud_extras",
+		texture_rect = {309,150, -309,88},
+		layer = 3,
+		w = 130,
+		h = 20,
+	})
+	left_fill:set_right(self._suspicion_fill_panel:w() / 2 - 16)
 	
-	local bg_bl = self._misc_panel:bitmap({
-		name = "bg_bl",
+	local right_fill = self._suspicion_fill_panel:bitmap({
+		name = "right_fill",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {556,26, -177,88},
-		color = Color(0,0.47,1),
-		alpha = 0.3,
-		layer = 0,
-		w = 65,
+		texture_rect = {0,150,309,88},
+		layer = 3,
+		w = 130,
 		h = 20,
 	})
-	bg_bl:set_right(self._misc_panel:w() / 2 - 16)
-	local bg_rl = self._misc_panel:bitmap({
-		name = "bg_rl",
+	right_fill:set_x(self._suspicion_fill_panel:w() / 2 + 16)
+	
+	local left_background = self._misc_panel:bitmap({
+		name = "left_background",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {556,26, -177,88},
-		color = Color(1,0.2,0),
+		texture_rect = {309,150, -309,88},
 		alpha = 0.3,
 		layer = 0,
-		w = 65,
+		w = 130,
 		h = 20,
 	})
-	bg_rl:set_right(bg_bl:x() + 16)
-	local bg_br = self._misc_panel:bitmap({
-		name = "bg_br",
+	left_background:set_right(self._misc_panel:w() / 2 - 16)
+	local right_background = self._misc_panel:bitmap({
+		name = "right_background",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {380,26,177,88},
-		color = Color(0,0.47,1),
+		texture_rect = {0,150,309,88},
 		alpha = 0.3,
 		layer = 0,
-		w = 65,
+		w = 130,
 		h = 20,
 	})
-	bg_br:set_x(self._misc_panel:w() / 2 + 16)
-	local bg_rr = self._misc_panel:bitmap({
-		name = "bg_rr",
-		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {380,26,177,88},
-		color = Color(1,0.2,0),
-		alpha = 0.3,
-		layer = 0,
-		w = 65,
-		h = 20,
-	})
-	bg_rr:set_x(bg_br:right() - 16)
+	right_background:set_x(self._misc_panel:w() / 2 + 16)
 	
 	local suspicion_detected = self._suspicion_panel:bitmap({
 		name = "suspicion_detected",
@@ -285,33 +258,26 @@ function HUDSuspicion:animate_eye()
 	self._eye_animation = self._suspicion_panel:animate(animate_func, self)
 end
 function HUDSuspicion:align_suspicion(value)
-	local left_blue = self._suspicion_fill_panel:child("left_blue")
-	local left_red = self._suspicion_fill_panel:child("left_red")
-	local right_blue = self._suspicion_fill_panel:child("right_blue")
-	local right_red = self._suspicion_fill_panel:child("right_red")
+	local left_fill = self._suspicion_fill_panel:child("left_fill")
+	local right_fill = self._suspicion_fill_panel:child("right_fill")
+	local left_background = self._misc_panel:child("left_background")
+	local right_background = self._misc_panel:child("right_background")
 	
 	local suspicion_left_blue = self._suspicion_panel:child("suspicion_left_blue")
 	local suspicion_left_red = self._suspicion_panel:child("suspicion_left_red")
 	local suspicion_right_blue = self._suspicion_panel:child("suspicion_right_blue")
 	local suspicion_right_red = self._suspicion_panel:child("suspicion_right_red")
 	
-	local bg_br = self._misc_panel:child("bg_br")
-	local bg_bl = self._misc_panel:child("bg_bl")
-	local bg_rr = self._misc_panel:child("bg_rr")
-	local bg_rl = self._misc_panel:child("bg_rl")
-	
-	suspicion_right_red:set_x(math.lerp(bg_br:x(), bg_rr:right() - suspicion_right_red:w(), value))
-	suspicion_right_blue:set_x(math.min(suspicion_right_red:x(), bg_br:right() - suspicion_right_blue:w()))
-	suspicion_left_red:set_x(math.lerp(bg_bl:right() - suspicion_left_red:w(), bg_rl:x(), value))
-	suspicion_left_blue:set_x(math.max(suspicion_left_red:x(), bg_bl:x()))
+	suspicion_right_red:set_x(math.lerp(right_background:x(), right_background:right() - suspicion_right_red:w(), value))
+	suspicion_right_blue:set_x(math.min(suspicion_right_red:x(), right_background:x() + (right_background:w() / 2.35) - suspicion_right_blue:w() / 2))
+	suspicion_left_red:set_x(math.lerp(left_background:right() - suspicion_left_red:w(), left_background:x(), value))
+	suspicion_left_blue:set_x(math.max(suspicion_left_red:x(), left_background:x() + left_background:w() / 2.3))
 	
 	self._suspicion_fill_panel:set_w(suspicion_right_red:center_x() - suspicion_left_red:center_x())
 	self._suspicion_fill_panel:set_center_x(self._misc_panel:center_x())
 	
-	left_blue:set_right(self._suspicion_fill_panel:w() / 2 - 16)
-	left_red:set_right(left_blue:x() + 16)
-	right_blue:set_x(self._suspicion_fill_panel:w() / 2 + 16)
-	right_red:set_x(right_blue:right() - 16)
+	left_fill:set_right(self._suspicion_fill_panel:w() / 2 - 16)
+	right_fill:set_x(self._suspicion_fill_panel:w() / 2 + 16)
 end
 function HUDSuspicion:hide()
 	if self._eye_animation then

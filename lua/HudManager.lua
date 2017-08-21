@@ -65,6 +65,27 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
+	local show = HUDManager.show
+	function HUDManager:show(name)
+		show(self, name)
+		if name == PlayerBase.PLAYER_DOWNED_HUD and self._teammate_panels[HUDManager.PLAYER_PANEL] then
+			local health_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]._custom_player_panel:child("health_panel")
+			health_panel:child("armor_value"):hide()
+			health_panel:child("health_value"):hide()
+			health_panel:child("health_bar"):hide()
+		end
+	end
+	
+	local hide = HUDManager.hide
+	function HUDManager:hide(name)
+		hide(self, name)
+		if name == PlayerBase.PLAYER_DOWNED_HUD and self._teammate_panels[HUDManager.PLAYER_PANEL] then
+			local health_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]._custom_player_panel:child("health_panel")
+			health_panel:child("armor_value"):show()
+			health_panel:child("health_value"):show()
+			health_panel:child("health_bar"):show()
+		end
+	end
 	
 	local change_waypoint_icon = HUDManager.change_waypoint_icon
 	function HUDManager:change_waypoint_icon(id, icon)
@@ -228,7 +249,11 @@ if RequiredScript == "lib/managers/hudmanager" then
 	end
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
-		
+	
+	function HUDManager:teampanels_height()
+		return 300
+	end
+	
 	local create_teammates_panel = HUDManager._create_teammates_panel
 	function HUDManager:_create_teammates_panel(...)
 		self._main_scale = VoidUI.options.hud_main_scale
@@ -247,7 +272,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				elseif panel:ai() or panel:panel():child("custom_player_panel"):child("weapons_panel"):visible() == false then panel._panel:set_w(62 * self._mate_scale)
 				elseif panel:peer_id() then panel._panel:set_w(165 * self._mate_scale)
 				else panel._panel:set_w(0) end
-				panel._panel:set_x((i - 1) * panel._panel:w() - (i - 1) * (9 * self._mate_scale))
+				panel._panel:set_x(i == 1 and 0 or self._teammate_panels[i - 1]._panel:right() -  9 * self._mate_scale)
 			end
 		end
 	end
@@ -850,12 +875,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
 			local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
 			player_panel:child("weapons_panel"):set_visible(false)
+			self:align_teammate_panels()
 		end
 	end
 	function HUDManager:show_player_gear(panel_id)
 		if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
 			local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
 			player_panel:child("weapons_panel"):set_visible(true)
+			self:align_teammate_panels()
 		end
 	end
 

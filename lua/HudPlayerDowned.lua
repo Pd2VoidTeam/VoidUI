@@ -57,6 +57,10 @@ if RequiredScript == "lib/managers/hud/hudplayerdowned" then
 		self._hud_panel:child("downed_panel"):animate(callback(self, self, "_aimate_timer"), time)
 	end
 	function HUDPlayerDowned:_aimate_timer(downed_panel, time)
+		local player_panel = managers.hud._teammate_panels[HUDManager.PLAYER_PANEL]._custom_player_panel
+		downed_panel:set_position(player_panel:child("health_panel"):world_x(), player_panel:child("health_panel"):world_y())
+		self._hud.timer:set_x(downed_panel:x())
+		self._hud.timer:set_bottom(downed_panel:bottom())
 		local downed_bar = downed_panel:child("downed_bar")
 		local total_time = time
 		local amount = time / total_time

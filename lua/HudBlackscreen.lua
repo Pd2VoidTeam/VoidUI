@@ -70,7 +70,7 @@ function HUDBlackScreen:_set_job_data()
 	end
 	local job_panel = self._blackscreen_panel:panel({
 		visible = true,
-		name = "job_panel",
+		name = "custom_job_panel",
 		y = 0,
 		valign = "grow",
 		halign = "grow",
@@ -114,9 +114,9 @@ function HUDBlackScreen:_set_job_data()
 		risk_panel:set_position(math.round(risk_panel:x()), math.round(risk_panel:y()))
 	end
 	skip_text:set_top(risk_panel:bottom() + skip_text:h())
-	skip_text:set_center_x(risk_panel:center_x())
+	skip_text:set_center_x(job_panel:w() / 2)
 	loading_text:set_top(risk_panel:bottom() + loading_text:h())
-	loading_text:set_center_x(risk_panel:center_x())
+	loading_text:set_center_x(job_panel:w() / 2)
 	
 	local level_data = managers.job:current_level_data()
 	if level_data then
@@ -132,66 +132,94 @@ function HUDBlackScreen:_set_job_data()
 		level_text:set_bottom(risk_panel:top())
 		level_text:set_center_x(risk_panel:center_x())
 	end
-	self._blackscreen_panel:child("job_panel"):animate(callback(self, self, "_animate_grow"))
+	job_panel:animate(callback(self, self, "_animate_grow"))
 end
 
 function HUDBlackScreen:_animate_grow(job_panel)
 	local level_text = job_panel:child("level_text")
-	local risk_panel = job_panel:child("risk_panel")
-	local risk_text = risk_panel:child("risk_text")
-	local star = risk_panel:child("star_1")
-	local panel_w, panel_h = risk_panel:size()
-	local risk_w, risk_h = risk_text:size()	
+	--local risk_panel = job_panel:child("risk_panel")
+	--local risk_text = risk_panel:child("risk_text")
+	--local star = risk_panel:child("star_1")
+	--local panel_w, panel_h = risk_panel:size()
+	--local risk_w, risk_h = risk_text:size()	
 	local t = 0
-	local TOTAL_T = 45
+	local TOTAL_T = 120
 	while TOTAL_T > t do
 		local dt = coroutine.yield()
 		t = t + dt
-		level_text:set_font_size(math.lerp(50, 100, t / TOTAL_T))
-		risk_text:set_font_size(math.lerp(35, 70, t / TOTAL_T))
-		risk_panel:set_size(math.lerp(panel_w, panel_w * 2, t / TOTAL_T), math.lerp(panel_h, panel_h * 2, t / TOTAL_T))
-		risk_text:set_size(math.lerp(risk_w, risk_w * 2, t / TOTAL_T), math.lerp(risk_h, risk_h * 2, t / TOTAL_T))
+		level_text:set_font_size(math.lerp(50, 120, t / TOTAL_T))
+		--[[
+		risk_text:set_font_size(math.lerp(35, 18, t / TOTAL_T))
+		risk_panel:set_size(math.lerp(panel_w, panel_w / 2, t / TOTAL_T), math.lerp(panel_h, panel_h / 2, t / TOTAL_T))
+		risk_text:set_size(math.lerp(risk_w, risk_w / 2, t / TOTAL_T), math.lerp(risk_h, risk_h / 2, t / TOTAL_T))
 		risk_panel:set_center(job_panel:w() / 2, job_panel:h() / 2)
 		
 		for i = 1, #tweak_data.difficulties - 2 do
 			star = risk_panel:child("star_"..i)
-			star:set_size(math.lerp(35, 70, t / TOTAL_T), math.lerp(35, 70, t / TOTAL_T))
+			star:set_size(math.lerp(35, 18, t / TOTAL_T), math.lerp(35, 18, t / TOTAL_T))
 			star:set_x(risk_text:w() + (i - 1) * star:w())
 		end
+		--]]
 	end
 end
 
 function HUDBlackScreen:_set_job_data_crime_spree()
+	local skip_text = self._blackscreen_panel:child("skip_text")
+	local loading_text = self._blackscreen_panel:child("loading_text")
 	local job_panel = self._blackscreen_panel:panel({
 		visible = true,
-		name = "job_panel",
+		name = "custom_job_panel",
 		y = 0,
 		valign = "grow",
 		halign = "grow",
 		layer = 1
 	})
-	local job_text = job_panel:text({
+	local risk_panel = job_panel:panel({name = "risk_panel"})
+	local job_text = risk_panel:text({
 		text = managers.localization:to_upper_text("cn_crime_spree"),
 		font = tweak_data.menu.pd2_large_font,
-		font_size = tweak_data.menu.pd2_large_font_size,
+		font_size = 35,
 		align = "center",
 		vertical = "bottom",
 		color = tweak_data.screen_colors.crime_spree_risk
 	})
-	job_text:set_bottom(job_panel:h() * 0.5)
-	job_text:set_center_x(job_panel:center_x())
-	local risk_text = job_panel:text({
+	managers.hud:make_fine_text(job_text)
+	local risk_text = risk_panel:text({
 		text = managers.localization:to_upper_text("menu_cs_level", {
-			level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")
+			level = 15 --managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")
 		}),
 		font = tweak_data.menu.pd2_large_font,
-		font_size = tweak_data.menu.pd2_large_font_size,
+		font_size = 35,
 		align = "center",
 		vertical = "top",
 		color = tweak_data.screen_colors.crime_spree_risk
 	})
-	risk_text:set_top(job_panel:h() * 0.5)
-	risk_text:set_center_x(job_panel:center_x())
+	managers.hud:make_fine_text(risk_text)
+	risk_text:set_left(job_text:right() + 10)
+	risk_panel:set_size(risk_text:right(), risk_text:bottom())
+	risk_panel:set_center(job_panel:w() / 2, job_panel:h() / 2)
+	risk_panel:set_position(math.round(risk_panel:x()), math.round(risk_panel:y()))
+	
+	skip_text:set_top(risk_panel:bottom() + skip_text:h())
+	skip_text:set_center_x(job_panel:w() / 2)
+	loading_text:set_top(risk_panel:bottom() + loading_text:h())
+	loading_text:set_center_x(job_panel:w() / 2)
+	
+	local level_data = managers.job:current_level_data()
+	if level_data then
+		local level_text = job_panel:text({
+			name = "level_text",
+			text = managers.localization:to_upper_text(level_data.name_id),
+			font = tweak_data.menu.pd2_large_font,
+			font_size = 50,
+			align = "center",
+			vertical = "bottom",
+			color = tweak_data.screen_colors.crime_spree_risk,
+		})
+		level_text:set_bottom(risk_panel:top())
+		level_text:set_center_x(risk_panel:center_x())
+	end
+	job_panel:animate(callback(self, self, "_animate_grow"))
 end
 
 local fade_out_mid_text = HUDBlackScreen.fade_out_mid_text
@@ -203,7 +231,7 @@ end
 animate_fade_out = HUDBlackScreen._animate_fade_out
 function HUDBlackScreen:_animate_fade_out(...)
 	animate_fade_out(self, ...)
-	self._blackscreen_panel:child("job_panel"):stop()
+	self._blackscreen_panel:child("custom_job_panel"):stop()
 end
 
 function HUDBlackScreen:set_skip_circle(current, total)

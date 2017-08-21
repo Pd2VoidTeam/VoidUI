@@ -873,7 +873,7 @@ function HUDTeammate:set_health(data)
 				health_bar:set_texture_rect(203, 0 + ((1- c) * 472),202,472 * c)
 				health_bar:set_bottom(health_background:bottom())
 				
-				if show_health_value == 1 or c == 0 then health_value:set_text("")
+				if show_health_value == 1 then health_value:set_text("")
 				elseif show_health_value == 2 then health_value:set_text(math.clamp(self:round(c * 100), 0, 100))
 				elseif show_health_value == 3 then health_value:set_text(self:round((data.total * 10) * c)) end
 				
