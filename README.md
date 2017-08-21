@@ -2,14 +2,20 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## Coding
+## What's new in 0.5.1 (2017.08.21)
+- Fixed some bugs that were created by the last update
+- Added heist intro for crime spree
+- Fixed the bleedout panel overlapping with the health values
+- Further improved suspicion meter
+
+## Credits
 - Most part of the hud made by Xeletron
 - Small lua tweaks made by Fanged Hex
 - English language localization tweaks made by VxWolf
 
 ## Installing
-- Download and install BLT from <PUT A LINK HERE!>
-- Download VoidUI. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
+- Download and install BLT from https://github.com/JamesWilko/Payday-2-BLT/releases
+- Download 'VoidUI.zip'. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
 - If the game is running, restart it.
 
 ## GNU General Public License
