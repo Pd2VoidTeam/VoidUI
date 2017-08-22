@@ -1879,7 +1879,7 @@ function HUDTeammate:remove_panel()
 	self:set_condition("mugshot_normal")
 	self._custom_player_panel:child("health_panel"):child("custom_bar"):set_h(0)
 	self._custom_player_panel:child("weapons_panel"):set_visible(false)
-	self._custom_player_panel:child("weapons_panel"):set_x(self._custom_player_panel:child("health_panel"):right() - (6 * self._mate_scale))
+	if not self._main_player then self._custom_player_panel:child("weapons_panel"):set_x(self._custom_player_panel:child("health_panel"):right() - (6 * self._mate_scale)) end
 	self._custom_player_panel:child("carry_panel"):set_visible(false)
 	self._custom_player_panel:child("carry_panel"):child("name"):set_text("")
 	self:set_cheater(false)
