@@ -22,17 +22,25 @@ if RequiredScript == "lib/managers/hudmanager" then
 		local exists = self._anticipation_dialogs and true or false
 		self._anticipation_dialogs = {}
 		
-		if not VoidUI.options.assault_lines then
+		if not VoidUI.options.assault_lines == 1 then
 			return
 		end
 		if not exists and total_t == 30 then
-			table.insert(self._anticipation_dialogs, {time = 30, dialog = 2})
-			table.insert(self._anticipation_dialogs, {time = 20, dialog = 3})
-			table.insert(self._anticipation_dialogs, {time = 10, dialog = 4})
+			if VoidUI.options.assault_lines == 3 then
+				table.insert(self._anticipation_dialogs, {time = 30, dialog = 2})
+				table.insert(self._anticipation_dialogs, {time = 20, dialog = 3})
+				table.insert(self._anticipation_dialogs, {time = 10, dialog = 4})
+			elseif VoidUI.options.assault_lines == 2 then
+				table.insert(self._anticipation_dialogs, {time = 30, dialog = 2})
+			end
 		elseif exists and total_t == 30 then
-			table.insert(self._anticipation_dialogs, {time = 30, dialog = 6})
-			table.insert(self._anticipation_dialogs, {time = 20, dialog = 7})
-			table.insert(self._anticipation_dialogs, {time = 10, dialog = 8})
+			if VoidUI.options.assault_lines == 3 then
+				table.insert(self._anticipation_dialogs, {time = 30, dialog = 6})
+				table.insert(self._anticipation_dialogs, {time = 20, dialog = 7})
+				table.insert(self._anticipation_dialogs, {time = 10, dialog = 8})
+			elseif VoidUI.options.assault_lines == 2 then
+				table.insert(self._anticipation_dialogs, {time = 30, dialog = 6})
+			end
 		end
 	end
 	

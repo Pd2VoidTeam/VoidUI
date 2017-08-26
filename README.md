@@ -2,11 +2,11 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 0.5.1 (2017.08.21)
-- Fixed some bugs that were created by the last update
-- Added heist intro for crime spree
-- Fixed the bleedout panel overlapping with the health values
-- Further improved suspicion meter
+## What's new in 0.5.2 (2017.08.26 AEST)
+- Localization improvement
+- You can now change how detailed Bain is with announcing the next assault wave.
+  Standard will make Bain tell you when the wave starts in 30 seconds (new)
+  Verbrose will make Bain tell you when the wave starts every 10 seconds (old behaviour)
 
 ## Credits
 - Most part of the hud made by Xeletron

@@ -35,11 +35,16 @@
 			"priority" : 3,
 		},
 		{
-			"type" : "toggle",
+			"type" : "multiple_choice",
 			"id" : "assault_lines",
 			"title" : "VoidUI_assault_lines_title",
 			"description" : "VoidUI_assault_lines_desc",
-			"callback" : "toggle_option_clbk",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"VoidUI_disable",
+				"VoidUI_assault_lines_30sec",
+				"VoidUI_assault_lines_every10sec"
+			]
 			"value" : "assault_lines"
 			"priority" : 2,
 		},
