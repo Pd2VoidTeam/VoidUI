@@ -186,7 +186,7 @@ function HUDBlackScreen:_set_job_data_crime_spree()
 	managers.hud:make_fine_text(job_text)
 	local risk_text = risk_panel:text({
 		text = managers.localization:to_upper_text("menu_cs_level", {
-			level = 15 --managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")
+			level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")
 		}),
 		font = tweak_data.menu.pd2_large_font,
 		font_size = 35,
