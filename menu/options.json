@@ -1,6 +1,6 @@
 {
 	"menu_id" : "VoidUI_options",
-	"parent_menu_id" : "lua_mod_options_menu",
+	"parent_menu_id" : "blt_options",
 	"title" : "VoidUI_options_title",
 	"description" : "VoidUI_options_desc",
 	"back_callback" : "VoidUI_save",
