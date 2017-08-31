@@ -237,31 +237,31 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/labels.json", VoidUI, VoidUI.options)
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/objectives.json", VoidUI, VoidUI.options)
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/hudteammate.json", VoidUI, VoidUI.options)
+
+    function MenuManager:toggle_chatinput()
+        if Application:editor() then
+            return
+        end
+        if SystemInfo:platform() ~= Idstring("WIN32") then
+            return
+        end
+        if self:active_menu() then
+            return
+        end
+        if not managers.network:session() then
+            return
+        end
+        if managers.hud then
+            managers.hud:toggle_chatinput()
+            return true
+        end
+    end
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
 	VoidUI:LoadTextures()
 end)
-
-function MenuManager:toggle_chatinput()
-	if Application:editor() then
-		return
-	end
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return
-	end
-	if self:active_menu() then
-		return
-	end
-	if not managers.network:session() then
-		return
-	end
-	if managers.hud then
-		managers.hud:toggle_chatinput()
-		return true
-	end
-end
 	
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()

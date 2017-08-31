@@ -11,7 +11,7 @@
 			"type" : "button",
 			"id" : "heitshud_labels",
 			"title" : "VoidUI_label",
-			"priority" : 14,
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -19,8 +19,8 @@
 			"title" : "VoidUI_jokernames_title",
 			"description" : "VoidUI_jokernames_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "label_jokers"
-			"priority" : 13,
+			"value" : "label_jokers",
+			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -28,8 +28,8 @@
 			"title" : "VoidUI_jokerhealth_title",
 			"description" : "VoidUI_jokerhealth_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "health_jokers"
-			"priority" : 12,
+			"value" : "health_jokers",
+			"priority" : 12
 		},
 		{
 			"type" : "slider",
@@ -42,8 +42,8 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 11,
+			"localized" :  true,
+			"priority" : 11
 		},
 		{
 			"type" : "toggle",
@@ -51,8 +51,8 @@
 			"title" : "VoidUI_minlabel_title",
 			"description" : "VoidUI_minlabel_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "label_minmode"
-			"priority" : 10,
+			"value" : "label_minmode",
+			"priority" : 10
 		},
 		{
 			"type" : "slider",
@@ -65,8 +65,8 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 9,
+			"localized" :  true,
+			"priority" : 9
 		},
 		{
 			"type" : "toggle",
@@ -74,8 +74,8 @@
 			"title" : "VoidUI_minrank_title",
 			"description" : "VoidUI_minrank_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "label_minrank"
-			"priority" : 8,
+			"value" : "label_minrank",
+			"priority" : 8
 		},
 		{
 			"type" : "slider",
@@ -88,8 +88,8 @@
 			"max" : 30,
 			"min" : 0,
 			"step" : 1,
-			"localized" :  true
-			"priority" : 7,
+			"localized" :  true,
+			"priority" : 7
 		},
 		{
 			"type" : "slider",
@@ -102,19 +102,19 @@
 			"max" : 2,
 			"min" : 0.1,
 			"step" : 0.01,
-			"localized" :  true
-			"priority" : 6,
+			"localized" :  true,
+			"priority" : 6
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 5,
+			"priority" : 5
 		},
 		{
 			"type" : "button",
 			"id" : "heitshud_waypoints",
 			"title" : "VoidUI_waypoints",
-			"priority" : 4,
+			"priority" : 4
 		},
 		{
 			"type" : "slider",
@@ -127,8 +127,8 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 3,
+			"localized" :  true,
+			"priority" : 3
 		},
 		{
 			"type" : "toggle",
@@ -136,8 +136,8 @@
 			"title" : "VoidUI_waypoint_offscreen_title",
 			"description" : "VoidUI_waypoint_offscreen_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "label_waypoint_offscreen"
-			"priority" : 2,
+			"value" : "label_waypoint_offscreen",
+			"priority" : 2
 		},
 		{
 			"type" : "slider",
@@ -150,8 +150,8 @@
 			"max" : 340,
 			"min" : 100,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 1,
+			"localized" :  true,
+			"priority" : 1
 		}
 		
 	]

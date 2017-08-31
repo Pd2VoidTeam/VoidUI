@@ -18,19 +18,19 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 17,
+			"localized" :  true,
+			"priority" : 17
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 16,
+			"priority" : 16
 		},
 		{
 			"type" : "button",
 			"id" : "heitshud_timer",
 			"title" : "VoidUI_timer_panel",
-			"priority" : 15,
+			"priority" : 15
 		},
 		{
 			"type" : "toggle",
@@ -38,8 +38,8 @@
 			"title" : "VoidUI_levelname_title",
 			"description" : "VoidUI_levelname_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "show_levelname"
-			"priority" : 14,
+			"value" : "show_levelname",
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -47,8 +47,8 @@
 			"title" : "VoidUI_ghost_title",
 			"description" : "VoidUI_ghost_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "show_ghost_icon"
-			"priority" : 14,
+			"value" : "show_ghost_icon",
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -56,19 +56,19 @@
 			"title" : "VoidUI_loot_title",
 			"description" : "VoidUI_loot_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "show_loot"
-			"priority" : 14,
+			"value" : "show_loot",
+			"priority" : 14
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 13,
+			"priority" : 13
 		},
 		{
 			"type" : "button",
 			"id" : "heitshud_objectives",
 			"title" : "VoidUI_objectives_panel",
-			"priority" : 12,
+			"priority" : 12
 		},
 		{
 			"type" : "slider",
@@ -81,8 +81,8 @@
 			"max" : 6,
 			"min" : 0,
 			"step" : 1,
-			"localized" :  true
-			"priority" : 11,
+			"localized" :  true,
+			"priority" : 11
 		}
 		
 	]

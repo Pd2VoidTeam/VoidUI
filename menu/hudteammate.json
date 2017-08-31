@@ -11,7 +11,7 @@
 			"type" : "button",
 			"id" : "heitshud_player",
 			"title" : "VoidUI_main_panel",
-			"priority" : 17,
+			"priority" : 17
 		},
 		{
 			"type" : "slider",
@@ -24,8 +24,8 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.01,
-			"localized" :  true
-			"priority" : 16,
+			"localized" :  true,
+			"priority" : 16
 		},
 		{
 			"type" : "multiple_choice",
@@ -39,7 +39,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_health",
-			"priority" : 15,
+			"priority" : 15
 		},
 		{
 			"type" : "multiple_choice",
@@ -53,7 +53,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_armor",
-			"priority" : 14,
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -61,8 +61,8 @@
 			"title" : "VoidUI_total_title",
 			"description" : "VoidUI_total_decs",
 			"callback" : "toggle_option_clbk",
-			"value" : "totalammo"
-			"priority" : 13,
+			"value" : "totalammo",
+			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -70,8 +70,8 @@
 			"title" : "VoidUI_main_loud_title",
 			"description" : "VoidUI_main_loud_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "main_loud"
-			"priority" : 12,
+			"value" : "main_loud",
+			"priority" : 12
 		},
 		{
 			"type" : "toggle",
@@ -79,8 +79,8 @@
 			"title" : "VoidUI_main_stealth_title",
 			"description" : "VoidUI_main_stealth_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "main_stealth"
-			"priority" : 11,
+			"value" : "main_stealth",
+			"priority" : 11
 		},
 		{
 			"type" : "toggle",
@@ -88,20 +88,20 @@
 			"title" : "VoidUI_ammo_pickup_title",
 			"description" : "VoidUI_ammo_pickup_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "ammo_pickup"
-			"priority" : 10,
+			"value" : "ammo_pickup",
+			"priority" : 10
 		},
 		
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 9,
+			"priority" : 9
 		},
 		{
 			"type" : "button",
 			"id" : "heitshud_teammate",
 			"title" : "VoidUI_mate_panel",
-			"priority" : 8,
+			"priority" : 8
 		},
 		{
 			"type" : "slider",
@@ -114,8 +114,8 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.1,
-			"localized" :  true
-			"priority" : 7,
+			"localized" :  true,
+			"priority" : 7
 		},
 		{
 			"type" : "multiple_choice",
@@ -129,7 +129,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "mate_health",
-			"priority" : 6,
+			"priority" : 6
 		},
 		{
 			"type" : "multiple_choice",
@@ -143,7 +143,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "mate_armor",
-			"priority" : 5,
+			"priority" : 5
 		},
 		{
 			"type" : "toggle",
@@ -151,8 +151,8 @@
 			"title" : "VoidUI_mate_loud_title",
 			"description" : "VoidUI_mate_loud_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "mate_loud"
-			"priority" : 4,
+			"value" : "mate_loud",
+			"priority" : 4
 		},
 		{
 			"type" : "toggle",
@@ -160,8 +160,8 @@
 			"title" : "VoidUI_mate_stealth_title",
 			"description" : "VoidUI_mate_stealth_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "mate_stealth"
-			"priority" : 3,
+			"value" : "mate_stealth",
+			"priority" : 3
 		},
 		{
 			"type" : "toggle",
@@ -169,8 +169,8 @@
 			"title" : "VoidUI_mate_name_title",
 			"description" : "VoidUI_mate_name_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "mate_name"
-			"priority" : 2,
+			"value" : "mate_name",
+			"priority" : 2
 		},
 		{
 			"type" : "toggle",
@@ -178,8 +178,8 @@
 			"title" : "VoidUI_mate_interact_title",
 			"description" : "VoidUI_mate_interact_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "mate_interact"
-			"priority" : 1,
+			"value" : "mate_interact",
+			"priority" : 1
 		}
 	]
 }
