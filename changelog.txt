@@ -1,3 +1,7 @@
+Version 0.6.0 (2017.09.01)
+- Now compatible with BLT2
+- Until a fix from BLT, our mod menu is now directly in Options (can be used ingame instead of only in mainmenu)
+
 Version 0.5.2 (2017.08.26 AEST)
 - Localization improvement
 - You can now change how detailed Bain is with announcing the next assault wave.

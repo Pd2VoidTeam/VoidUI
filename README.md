@@ -2,11 +2,9 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 0.5.2 (2017.08.26 AEST)
-- Localization improvement
-- You can now change how detailed Bain is with announcing the next assault wave.
-  Standard will make Bain tell you when the wave starts in 30 seconds (new)
-  Verbrose will make Bain tell you when the wave starts every 10 seconds (old behaviour)
+## What's new in 0.6.0 (2017.09.01)
+- Now compatible with BLT2
+- Until a fix from BLT, our mod menu is now directly in Options (can be used ingame instead of only in mainmenu)
 
 ## Credits
 - Most part of the hud made by Xeletron
