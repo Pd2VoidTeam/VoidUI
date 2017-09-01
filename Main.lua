@@ -259,6 +259,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
+    MenuHelper:AddMenuItem( nodes.options, "VoidUI_options", "VoidUI_options_title", "VoidUI_options_desc", "user_interface", "after" )
 	VoidUI:UpdateMenu()
 	VoidUI:LoadTextures()
 end)

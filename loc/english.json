@@ -25,7 +25,7 @@
 	"VoidUI_assault_23" : "Do they not have coloured printers in Russia?",
 	"VoidUI_assault_24" : "Thermal Drill: The PAYDAY 2 Card Game",
 	
-	"VoidUI_options_title" : "Void UI",
+	"VoidUI_options_title" : "Void UI Settings",
 	"VoidUI_options_desc" : "Customize the behavior of Void UI",  
 	"VoidUI_hud_scale_title" : "HUD Scale",
 	"VoidUI_hud_scale_desc" : "Set the scale of every hud element together. Elements can also be resized separately",
@@ -33,8 +33,8 @@
 	"VoidUI_outlines_desc" : "Make the outline of converted cops the same color as their owner",
 	"VoidUI_assault_lines_title" : "Imminent assault alerts",
 	"VoidUI_assault_lines_desc" : "Add back bain responses stating how long until the next assault",
-	"VoidUI_assault_lines_30sec" : "Standard"
-	"VoidUI_assault_lines_every10sec" : "Verbrose"
+	"VoidUI_assault_lines_30sec" : "Standard",
+	"VoidUI_assault_lines_every10sec" : "Verbose",
 	"VoidUI_reset_title" : "Reset Options",
 	"VoidUI_reset_desc" : "Reset every option to their default configuration",
 	"VoidUI_reset_confirm" : "Are you sure you want to reset Void UI to the default configuration? This can not be undone.",
@@ -74,7 +74,7 @@
 	"VoidUI_mate_interact_desc" : "Show the remaining time from your teammates' interaction",
 	
 	"VoidUI_objectives_title" : "Timer and Objectives",
-	"VoidUI_objectives_desc" : "Options related to the timer panel and the objectives panel"
+	"VoidUI_objectives_desc" : "Options related to the timer panel and the objectives panel",
 	"VoidUI_objectives_scale_title" : "Panel Scale",
 	"VoidUI_objectives_scale_desc" : "Set the scale of both the timer and the objectives elements",
 	"VoidUI_timer_panel" : "Timer panel",
@@ -89,7 +89,7 @@
 	"VoidUI_objective_history_desc" : "Set the maximum amount of past objectives that can appear on the hud",
 	
 	"VoidUI_assault_title" : "Assault panel",
-	"VoidUI_assault_desc" : "Options related to the assault panel"	
+	"VoidUI_assault_desc" : "Options related to the assault panel",
 	"VoidUI_assault_scale_title" : "Panel Scale",
 	"VoidUI_assault_scale_desc" : "Set the scale the assault panel element",
 	"VoidUI_badge_title" : "Police Badge",
@@ -105,7 +105,7 @@
 	
 	"VoidUI_chat_clipboard" : "Message copied to clipboard",
 	"VoidUI_chat_title" : "Player chat",
-	"VoidUI_chat_desc" : "Options related to the player chat"
+	"VoidUI_chat_desc" : "Options related to the player chat",
 	"VoidUI_chat_scale_title" : "Chat Scale",
 	"VoidUI_chat_scale_desc" : "Set the scale of the player chat",
 	"VoidUI_chat_mouse_title" : "Enable mouse",
@@ -118,7 +118,7 @@
 	"VoidUI_chat_copy_desc" : "Enable copying chat messages to the clipboard by right clicking on them, and set what to copy",
 	
 	"VoidUI_label_title" : "Labels and waypoints",
-	"VoidUI_label_desc" : "Options related to the floating labels and waypoints"	
+	"VoidUI_label_desc" : "Options related to the floating labels and waypoints",	
 	"VoidUI_label" : "Name Labels",
 	"VoidUI_jokernames_title" : "Convert labels",
 	"VoidUI_jokernames_desc" : "Add name labels for converted cops",
@@ -148,14 +148,14 @@
 	
 	"VoidUI_disabled" : "Hide",
 	"VoidUI_ecm_first" : "First placed",
-	"VoidUI_ecm_last" : "Last placed"
+	"VoidUI_ecm_last" : "Last placed",
 	"VoidUI_health_percentage" : "Percentage",
-	"VoidUI_health_real" : "Real Value"
+	"VoidUI_health_real" : "Real Value",
 	"VoidUI_gametime" : "Game Time",
-	"VoidUI_realtime" : "Real Time"
+	"VoidUI_realtime" : "Real Time",
 	"VoidUI_disable" : "Disabled",
-	"VoidUI_chat_message" : "Player's message only"
-	"VoidUI_chat_name" : "Player: message"
+	"VoidUI_chat_message" : "Player's message only",
+	"VoidUI_chat_name" : "Player: message",
 	"VoidUI_chat_character" : "Heister: message",
 	"VoidUI_chat_name_character" : "Player (heister): message"
 
