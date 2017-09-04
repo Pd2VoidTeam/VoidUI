@@ -6,7 +6,7 @@
 	"blt_version" : 2,
 	"priority" : 10,
     "image" : "icon.png",
-    "color" : "0 255 255",
+    "color" : "0.5 0 1",
     "updates" : [
         {
             "revision" : 1,
