@@ -2,9 +2,25 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 0.6.0 (2017.09.01)
-- Now compatible with BLT2
-- Until a fix from BLT, our mod menu is now directly in Options (can be used ingame instead of only in mainmenu)
+## What's new in 0.6 (2017.09.09)
+- Updated the hud to support BLT 2.0
+- Updated mod definition file
+- Cleaned up some code
+- Updated highlight textures
+- Updated localization files
+- Made the assault panel on a custom panel to avoid crashes with other mods
+- Bot healths will no longer get stuck when they replace a leaving player
+- Added new tab panel with scoreboard
+- Added pulsing animation to the captain buff icon when the badge animation is enabled
+- Added the option to resize the interaction panel
+- Added the option to verticaly move the interaction panel
+- Added the option to disable interaction timers
+- Added the option to resize the suspicion panel
+- Added the option to verticaly move the suspicion panel
+- Fixed crash related to chat messages and getting disconnected from the game
+- Fixed the secured loot panel not being the correct size
+- Fixed captains buff icon overlapping with the assault ticker when the police badge is disabled
+- Fixed interaction complete animation being slightly off
 
 ## Credits
 - Most part of the hud made by Xeletron
