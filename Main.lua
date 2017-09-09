@@ -9,7 +9,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudblackscreen"] = {"HudBlackscreen.lua"},
 	["lib/managers/hud/hudsuspicion"] = {"HudSuspicion.lua"},
 	["lib/states/ingamewaitingforplayers"] = {"HudBlackscreen.lua"},
-	["lib/managers/hudmanagerpd2"] = {"HudManager.lua"},
+	["lib/managers/hudmanagerpd2"] = {"HudManager.lua", "HudScoreboard.lua"},
 	["lib/units/beings/player/huskplayermovement"] = {"HudPlayerDowned.lua"},
 	["lib/units/beings/player/states/playerbleedout"] = {"HudPlayerDowned.lua"},
 	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "Jokers.lua"},
@@ -29,19 +29,13 @@ VoidUI.hook_files = {
 	["lib/units/equipment/ecm_jammer/ecmjammerbase"] = {"HudAssaultCorner.lua"},
 	["lib/units/contourext"] = {"Jokers.lua"},
 	["lib/units/enemies/cop/huskcopbrain"] = {"Jokers.lua"},
-	["lib/units/enemies/cop/copdamage"] = {"Jokers.lua"},
+	["lib/units/enemies/cop/copdamage"] = {"Jokers.lua", "HudScoreboard.lua"},
 	["lib/units/player_team/teamaidamage"] = {"HudManager.lua"},
 	["lib/units/player_team/huskteamaidamage"] = {"HudManager.lua"},
 	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"},
-	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"}
-}
-VoidUI.menu_names = {
-	"VoidUI_options",
-	"VoidUI_hudteammate",
-	"VoidUI_objectives",
-	"VoidUI_assault",
-	"VoidUI_chat",
-	"VoidUI_label"
+	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"},
+	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
+	["lib/managers/hud/hudstatsscreen"] = {"HudScoreboard.lua"}
 }
 VoidUI.disable_list = {
 	["anim_badge"] = "show_badge",
@@ -119,7 +113,7 @@ function VoidUI:DefaultConfig()
 		pagers = true,
 		outlines = true,
 		health_jokers = true,
-		assault_lines = 2,
+		show_interact = true,
 		jammers = 2,
 		hud_scale = 1,
 		hud_main_scale = 1,
@@ -127,6 +121,8 @@ function VoidUI:DefaultConfig()
 		hud_chat_scale = 1,
 		hud_assault_scale = 1,
 		hud_objectives_scale = 1,
+		suspicion_scale = 1,
+		interact_scale = 1,
 		waypoint_scale = 0.8,
 		label_minscale = 1,
 		label_scale = 1,
@@ -139,13 +135,17 @@ function VoidUI:DefaultConfig()
 		chattime = 1,
 		main_armor = 2,
 		mate_armor = 1,
-		waypoint_radius = 200 
+		assault_lines = 3,
+		waypoint_radius = 200,
+		suspicion_y = 160,
+		interact_y = 40
 	}
 
 end
 
 function VoidUI:UpdateMenu()
-	for _, menu_name in pairs(VoidUI.menu_names) do 
+	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
+		local menu_name = "VoidUI_".. file:gsub(".json", "")
 		for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 			if VoidUI.disable_list[item:parameters().name] then
 				local disable_list_entry = VoidUI.disable_list[item:parameters().name]
@@ -163,6 +163,7 @@ function VoidUI:UpdateMenu()
 		end
 	end
 end
+
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu_manager)
 	MenuCallbackHandler.callback_VoidUI_hudscale = function(self, item)
 		VoidUI.options.hud_scale = item:value()
@@ -204,7 +205,8 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 				text = managers.localization:text("dialog_yes"), 
 				callback = function(self, item)
 					VoidUI:DefaultConfig()
-					for _, menu_name in pairs(VoidUI.menu_names) do 
+					for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
+						local menu_name = "VoidUI_".. file:gsub(".json", "")
 						for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 							local value = VoidUI.options[item:parameters().name]
 							if value then 
@@ -233,37 +235,37 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 	
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/chat.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/assaultcorner.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/labels.json", VoidUI, VoidUI.options)
+	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/interact.json", VoidUI, VoidUI.options)
+	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/assault.json", VoidUI, VoidUI.options)
+	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/label.json", VoidUI, VoidUI.options)
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/objectives.json", VoidUI, VoidUI.options)
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/hudteammate.json", VoidUI, VoidUI.options)
-
-    function MenuManager:toggle_chatinput()
-        if Application:editor() then
-            return
-        end
-        if SystemInfo:platform() ~= Idstring("WIN32") then
-            return
-        end
-        if self:active_menu() then
-            return
-        end
-        if not managers.network:session() then
-            return
-        end
-        if managers.hud then
-            managers.hud:toggle_chatinput()
-            return true
-        end
-    end
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
-    MenuHelper:AddMenuItem( nodes.options, "VoidUI_options", "VoidUI_options_title", "VoidUI_options_desc", "user_interface", "after" )
 	VoidUI:UpdateMenu()
 	VoidUI:LoadTextures()
 end)
 	
+function MenuManager:toggle_chatinput()
+	if Application:editor() then
+		return
+	end
+	if SystemInfo:platform() ~= Idstring("WIN32") then
+		return
+	end
+	if self:active_menu() then
+		return
+	end
+	if not managers.network:session() then
+		return
+	end
+	if managers.hud then
+		managers.hud:toggle_chatinput()
+		return true
+	end
+end
+
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
 		if VoidUI.hook_files[requiredScript] then

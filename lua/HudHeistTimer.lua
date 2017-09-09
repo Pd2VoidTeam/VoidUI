@@ -108,7 +108,7 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		local bags_panel = self._heist_timer_panel:panel({
 			visible = false,
 			name = "bags_panel",
-			w = 60 * self._scale,
+			w = 70 * self._scale,
 			h = name_h + 8 * self._scale,
 		})
 		bags_panel:set_left(level_name_bg_right:right() - 5)

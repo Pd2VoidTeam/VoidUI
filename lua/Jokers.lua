@@ -29,9 +29,9 @@ elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 				label.interact:set_w(label.interact_bg:w())
 			end
 			
-			unit:base().owner_peer_id = player_unit:network():peer():id()
 			unit:unit_data().label_id = panel_id
 		end
+		unit:base().owner_peer_id = player_unit:network():peer():id()
 	end
 
 	local remove_minion = GroupAIStateBase.remove_minion
@@ -67,9 +67,9 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 				label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(true)
 				label.interact:set_w(label.interact_bg:w())
 			end
-			unit:base().owner_peer_id = minion_owner_peer_id
 			unit:unit_data().label_id = panel_id
 		end
+		unit:base().owner_peer_id = minion_owner_peer_id
 	end
 	
 	local hostage_trade = UnitNetworkHandler.hostage_trade

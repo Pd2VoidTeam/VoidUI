@@ -1,6 +1,14 @@
 if RequiredScript == "lib/managers/hud/hudassaultcorner" then
+	local init = HUDAssaultCorner.init
 	function HUDAssaultCorner:init(hud, full_hud, tweak_hud)
-		self._hud_panel = hud.panel
+		init(self, hud, full_hud, tweak_hud)
+		hud.panel:child("assault_panel"):set_alpha(0)
+		hud.panel:child("hostages_panel"):set_alpha(0)
+		if hud.panel:child("wave_panel") then hud.panel:child("wave_panel"):set_alpha(0) end
+		hud.panel:child("point_of_no_return_panel"):set_alpha(0)
+		hud.panel:child("casing_panel"):set_alpha(0)
+		hud.panel:child("buffs_panel"):set_alpha(0)
+		self._hud_panel = hud.panel:panel({name = "custom_assault_panel"})
 		self._full_hud_panel = full_hud.panel
 		self._pagers = 4
 		self._noreturn_time = 0
@@ -734,31 +742,34 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:set_buff_enabled(buff_name, enabled)
 		local vip_icon = self._hud_panel:child("buffs_panel"):child("vip_icon")
+		local size_w = VoidUI.options.show_badge and 60 * self._scale or 30 * self._scale
+		local size_h = VoidUI.options.show_badge and 70 * self._scale or 35 * self._scale
 		if enabled == true then 
 			self._hud_panel:child("buffs_panel"):set_visible(true)
 		else
 			self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(true) 
 		end
-		
-		if (enabled == true and self._hud_panel:child("assault_panel"):child("icon_assaultbox"):visible() == true) or (enabled == false and self._hud_panel:child("buffs_panel"):visible() == true) then
-			vip_icon:animate(function(o)
-				local centerx = vip_icon:center_x()
-				local centery = vip_icon:center_y()
-				over(0.4, function(p)
-					if alive(vip_icon) then
-						vip_icon:set_size(math.lerp(enabled and 150 * self._scale or 60 * self._scale, enabled and 60 * self._scale or 150 * self._scale, p), math.lerp(enabled and 160 * self._scale or 70 * self._scale, enabled and 70 * self._scale or 160 * self._scale, p))
-						vip_icon:set_alpha(math.lerp(enabled and 0 or 1, enabled and 1 or 0, p))
-						vip_icon:set_center_x(centerx) vip_icon:set_center_y(centery)
-					end
-				end)
-				
-				if enabled == false then 
-					self._hud_panel:child("buffs_panel"):set_visible(false)
-				else
-					self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
+		vip_icon:set_size(size_w, size_h)
+		vip_icon:set_right(VoidUI.options.show_badge and vip_icon:parent():w() - 10 * self._scale or - 40 * self._scale)
+		vip_icon:set_y(VoidUI.options.show_badge and 10 * self._scale or -2 * self._scale)
+		vip_icon:stop()
+		vip_icon:animate(function(o)
+			local centerx = vip_icon:center_x()
+			local centery = vip_icon:center_y()
+			over(0.4, function(p)
+				if alive(vip_icon) then
+					vip_icon:set_size(math.lerp(enabled and 150 * self._scale or size_w, enabled and size_w or 150 * self._scale, p), math.lerp(enabled and 160 * self._scale or size_h, enabled and size_h or 160 * self._scale, p))
+					vip_icon:set_alpha(math.lerp(enabled and 0 or 1, enabled and 1 or 0, p))
+					vip_icon:set_center_x(centerx) vip_icon:set_center_y(centery)
 				end
 			end)
-		end
+			if VoidUI.options.show_badge and VoidUI.options.anim_badge then vip_icon:animate(callback(self, self, "_animate_icon"), false) end
+			if enabled == false then 
+				self._hud_panel:child("buffs_panel"):set_visible(false)
+			else
+				self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
+			end
+		end)
 	end
 	function HUDAssaultCorner:sync_set_assault_mode(mode)
 		if self._assault_mode == mode then
@@ -1064,7 +1075,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_center_y(center_y)
 		end
 		if VoidUI.options.show_badge and VoidUI.options.anim_badge and big_logo then
-			icon_assaultbox:animate(callback(self, self, "_animate_icon")) 
+			icon_assaultbox:animate(callback(self, self, "_animate_icon"), true) 
 		end
 	end
 	function HUDAssaultCorner:_hide_icon_assaultbox(icon_assaultbox, big_logo)
@@ -1122,7 +1133,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			self:_show_hostages()
 		end
 	end
-	function HUDAssaultCorner:_animate_icon(icon_assaultbox)
+	function HUDAssaultCorner:_animate_icon(icon_assaultbox, skulls)
 		local TOTAL_T = 1
 		local t = 0
 		local d = true
@@ -1137,14 +1148,16 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_size(math.lerp(d and 60 * self._scale or 70 * self._scale, d and 70 * self._scale or 60 * self._scale, t / TOTAL_T), math.lerp(d and 70 * self._scale or 80 * self._scale, d and 80 * self._scale or 70 * self._scale, t / TOTAL_T))
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
-			for i = 1, difficulty do
-				local skull = assault_panel:child("skull_"..i)
-				local position = self._skulls_position[i]
-				skull:set_font_size(math.lerp(d and 12 * self._scale or 14 * self._scale, d and 14 * self._scale or 12 * self._scale, t / TOTAL_T))
-				skull:set_visible(icon_assaultbox:visible() and VoidUI.options.show_badge or false)
-				if position then
-					skull:set_center_x(math.lerp(d and icon_assaultbox:center_x() + position[1] * self._scale or icon_assaultbox:center_x() + position[1] * self._scale * 1.16, d and icon_assaultbox:center_x() + position[1] * self._scale * 1.16 or icon_assaultbox:center_x() + position[1] * self._scale, t / TOTAL_T))
-					skull:set_bottom(math.lerp(d and icon_assaultbox:bottom() + position[2] * self._scale or icon_assaultbox:bottom() + position[2] * self._scale * 1.16, d and icon_assaultbox:bottom() + position[2] * self._scale * 1.16 or icon_assaultbox:bottom() + position[2] * self._scale, t / TOTAL_T)) 
+			if skulls then
+				for i = 1, difficulty do
+					local skull = assault_panel:child("skull_"..i)
+					local position = self._skulls_position[i]
+					skull:set_font_size(math.lerp(d and 12 * self._scale or 14 * self._scale, d and 14 * self._scale or 12 * self._scale, t / TOTAL_T))
+					skull:set_visible(icon_assaultbox:visible() and VoidUI.options.show_badge or false)
+					if position then
+						skull:set_center_x(math.lerp(d and icon_assaultbox:center_x() + position[1] * self._scale or icon_assaultbox:center_x() + position[1] * self._scale * 1.16, d and icon_assaultbox:center_x() + position[1] * self._scale * 1.16 or icon_assaultbox:center_x() + position[1] * self._scale, t / TOTAL_T))
+						skull:set_bottom(math.lerp(d and icon_assaultbox:bottom() + position[2] * self._scale or icon_assaultbox:bottom() + position[2] * self._scale * 1.16, d and icon_assaultbox:bottom() + position[2] * self._scale * 1.16 or icon_assaultbox:bottom() + position[2] * self._scale, t / TOTAL_T)) 
+					end
 				end
 			end
 			

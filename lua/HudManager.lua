@@ -73,6 +73,23 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
+	
+	local update = HUDManager.update
+	function HUDManager:update(t, dt)
+		update(self, t, dt)
+		self._last_sc_update = self._last_sc_update or t
+		local peers = managers.network:session() and managers.network:session():peers()
+		if self._hud_statsscreen and peers and self._last_sc_update + 5 < t then
+			self._last_sc_update = t
+			for _, peer in pairs(peers) do
+				if peer and peer:id() and peer:rpc() then
+					local panel = self._hud_statsscreen:get_scoreboard_panel_by_peer_id(peer:id())
+					if panel then panel:set_ping(math.floor(Network:qos(peer:rpc()).ping)) end
+				end
+			end
+		end
+	end
+	
 	local show = HUDManager.show
 	function HUDManager:show(name)
 		show(self, name)
@@ -255,6 +272,21 @@ if RequiredScript == "lib/managers/hudmanager" then
 			self._hud_player_downed:start_timer(data.time or 10)
 		end
 	end
+	local reset_player_hpbar = HUDManager.reset_player_hpbar
+	function HUDManager:reset_player_hpbar()
+		reset_player_hpbar(self)
+		local character_name = managers.criminals:local_character_name()
+		local crim_entry = managers.criminals:character_static_data_by_name(character_name)
+		if not self._hud_statsscreen then
+			self:_setup_stats_screen()
+			self:show_stats_screen()
+			self:hide_stats_screen()
+		end
+		
+		if self._hud_statsscreen then
+			self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
+		end
+	end
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
@@ -262,11 +294,46 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		return 300
 	end
 	
+	local add_teammate_panel = HUDManager.add_teammate_panel
+	function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
+		local add_panel = add_teammate_panel(self, character_name, player_name, ai, peer_id)
+		if not self._hud_statsscreen then
+			self:_setup_stats_screen()
+			self:show_stats_screen()
+			self:hide_stats_screen()
+		end
+		self._hud_statsscreen:add_scoreboard_panel(character_name, player_name, ai, peer_id)
+		return add_panel
+	end
+	
+	function HUDManager:scoreboard_unit_killed(killer_unit, stat)
+		if killer_unit and self._hud_statsscreen then
+			if killer_unit:base().thrower_unit then
+				killer_unit = killer_unit:base():thrower_unit()
+			elseif killer_unit:base().get_owner_id then
+				killer_unit = managers.criminals:character_unit_by_peer_id(killer_unit:base():get_owner_id())
+			end
+			
+			local character_data = managers.criminals:character_data_by_unit(killer_unit)
+			if character_data then
+				local panel_id = (managers.criminals:character_peer_id_by_unit(killer_unit) == managers.network:session():local_peer():id() and HUDManager.PLAYER_PANEL) or (character_data and character_data.panel_id and character_data.panel_id)
+				self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat(stat)
+			end
+		end
+	end
+	
+	local remove_teammate_panel = HUDManager.remove_teammate_panel
+	function HUDManager:remove_teammate_panel(id)
+		self._hud_statsscreen:remove_scoreboard_panel(id)
+		remove_teammate_panel(self, id)
+	end
+	
 	local create_teammates_panel = HUDManager._create_teammates_panel
 	function HUDManager:_create_teammates_panel(...)
 		self._main_scale = VoidUI.options.hud_main_scale
 		self._mate_scale = VoidUI.options.hud_mate_scale
 		create_teammates_panel(self, ...)
+		self:align_teammate_panels()
 	end
 	
 	function HUDManager:align_teammate_panels()
@@ -329,6 +396,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		end
 		interact:set_w(interact_bg:w())
 	end
+	
 	function HUDManager:set_ai_stopped(ai_id, stopped)
 		local teammate_panel = self._teammate_panels[ai_id]
 		if not teammate_panel or stopped and not teammate_panel._ai then
@@ -872,11 +940,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			self._teammate_panels[HUDManager.PLAYER_PANEL]:set_bodybags()
 			self._teammate_panels[HUDManager.PLAYER_PANEL]:set_info_visible()
 		end
-		return ext_inventory_changed(self)
-	end
-
-	function HUDManager:show_local_player_gear()
-		self:show_player_gear(HUDManager.PLAYER_PANEL)
+		ext_inventory_changed(self)
 	end
 
 	function HUDManager:hide_player_gear(panel_id)
@@ -884,6 +948,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
 			player_panel:child("weapons_panel"):set_visible(false)
 			self:align_teammate_panels()
+
 		end
 	end
 	function HUDManager:show_player_gear(panel_id)
@@ -915,6 +980,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	HUDManager.player_downed = HUDManager.player_downed or function(self, i)
 		self._teammate_panels[i]:downed()
+		if self._hud_statsscreen then
+			self._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
+		end
 	end
 
 	HUDManager.player_reset_downs = HUDManager.player_reset_downs or function(self, i)
@@ -932,8 +1000,7 @@ elseif RequiredScript == "lib/units/player_team/teamaidamage" then
 	local apply_damage_orig = TeamAIDamage._apply_damage
 	function TeamAIDamage:_apply_damage(attack_data, result)
 		local damage_percent, health_subtracted = apply_damage_orig(self, attack_data, result)
-		local char_name = managers.criminals:character_name_by_unit(self._unit)
-		local i = managers.criminals:character_data_by_name(char_name).panel_id
+		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 		managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
 		return damage_percent, health_subtracted
 	end	
@@ -941,11 +1008,29 @@ elseif RequiredScript == "lib/units/player_team/teamaidamage" then
 	local regenerated = TeamAIDamage._regenerated
 	function TeamAIDamage:_regenerated()
 		regenerated(self)
-		local char_name = managers.criminals:character_name_by_unit(self._unit)
-		local i = managers.criminals:character_data_by_name(char_name).panel_id
+		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 		managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
 	end
+	local check_bleed_out = TeamAIDamage._check_bleed_out
+	function TeamAIDamage:_check_bleed_out()
+		if self._health <= 0 then
+			local i = managers.criminals:character_data_by_unit(self._unit).panel_id
+			if managers.hud._hud_statsscreen then
+				managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
+			end
+		end
+		check_bleed_out(self)
+	end
 
+elseif RequiredScript == "lib/units/player_team/huskteamaidamage" then
+	local on_bleedout = HuskTeamAIDamage._on_bleedout
+	function HuskTeamAIDamage:_on_bleedout()
+		on_bleedout(self)
+		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
+		if managers.hud._hud_statsscreen then
+			managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
+		end
+	end
 elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" then
 	
 	core:module("CoreSubtitlePresenter")

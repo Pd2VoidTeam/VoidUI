@@ -157,7 +157,7 @@ end
 function HUDChat:receive_message(name, message, color, icon)
 	local output_panel = self._panel:child("output_panel")
 	local scrollbar = self._panel:child("scrollbar_panel"):child("scrollbar")
-	local peer = managers.network:session():local_peer():name() == name and managers.network:session():local_peer() or managers.network:session():peer_by_name(name)
+	local peer = (managers.network and managers.network:session() and managers.network:session():local_peer():name() == name and managers.network:session():local_peer()) or (managers.network and managers.network:session() and managers.network:session():peer_by_name(name))
 	local character = peer and " (".. managers.localization:text("menu_" ..peer:character())..")" or ""
 	local full_message = name .. (VoidUI.options.show_charactername and peer and peer:character() and character or "") .. ": " .. message
 	if name == managers.localization:to_upper_text("menu_system_message") then 

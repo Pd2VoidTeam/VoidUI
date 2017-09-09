@@ -118,6 +118,7 @@ if RequiredScript == "lib/managers/hud/hudplayerdowned" then
 		local downed_panel = self._hud_panel:child("downed_panel")
 		self._hud.timer:set_visible(false)
 	end
+	
 elseif RequiredScript == "lib/units/beings/player/huskplayermovement" then
 	
 	local start_bleedout = HuskPlayerMovement._perform_movement_action_enter_bleedout

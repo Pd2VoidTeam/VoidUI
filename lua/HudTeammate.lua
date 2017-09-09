@@ -737,6 +737,7 @@ function HUDTeammate:set_state(state)
 			name:set_bottom(health_panel:top() - 1)
 			name:set_x(9 * self._mate_scale)
 			name_shadow:set_position(name:x() + 1, name:y() + 1)
+			self:set_health({current = 100, total = 100})
 			name:show()
 			name_shadow:show()
 			weapons_panel:hide()
@@ -2036,6 +2037,20 @@ function HUDTeammate:set_info_meter(data)
 			health_stored_bg:set_left(health_panel:right() - (5 * self._mate_scale))
 			health_stored:set_left(health_panel:right() - (5 * self._mate_scale))
 			weapons_panel:set_x(health_stored_bg:x() + (8 * self._mate_scale))
+		
+		end
+	else
+		if self._main_player then
+			health_stored_bg:set_visible(false)
+			health_stored:set_visible(false)
+			health_stored_bg:set_y(health_panel:x())
+			weapons_panel:set_x(health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale))
+		else
+			health_stored_bg:set_visible(false)
+			health_stored:set_visible(false)
+			health_stored_bg:set_left(health_panel:right() - (5 * self._mate_scale))
+			health_stored:set_left(health_panel:right() - (5 * self._mate_scale))
+			weapons_panel:set_x(health_panel:right() - (6 * self._mate_scale))
 		
 		end
 	end

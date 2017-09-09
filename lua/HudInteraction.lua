@@ -1,7 +1,6 @@
 function HUDInteraction:init(hud, child_name)
 	self._hud_panel = hud.panel
-	self._circle_radius = 24
-	self._sides = 24
+	self._scale = VoidUI.options.interact_scale
 	self._child_name_text = (child_name or "interact") .. "_text"
 	self._child_ivalid_name_text = (child_name or "interact") .. "_invalid_text"
 	if self._hud_panel:child(self._child_name_text) then
@@ -19,8 +18,8 @@ function HUDInteraction:init(hud, child_name)
 		layer = 12,
 		color = Color.white,
 		font = "fonts/font_medium_shadow_mf",
-		font_size = tweak_data.hud_present.text_size / 1.2,
-		h = 64
+		font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
+		h = 64 * self._scale
 	})
 	local invalid_text = self._hud_panel:text({
 		name = self._child_ivalid_name_text,
@@ -33,8 +32,8 @@ function HUDInteraction:init(hud, child_name)
 		color = Color(1, 0.3, 0.3),
 		blend_mode = "normal",
 		font = "fonts/font_medium_shadow_mf",
-		font_size = tweak_data.hud_present.text_size / 1.2,
-		h = 32
+		font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
+		h = 32 * self._scale
 	})
 	local interaction_time = self._hud_panel:text({
 		name = "interaction_time",
@@ -46,16 +45,20 @@ function HUDInteraction:init(hud, child_name)
 		layer = 2,
 		color = Color.white,
 		font = "fonts/font_medium_shadow_mf",
-		font_size = tweak_data.hud_present.text_size / 1.4,
-		h = 32
+		font_size = tweak_data.hud_present.text_size / 1.4 * self._scale,
+		h = 32 * self._scale
 	})
 	
-	interact_text:set_y(self._hud_panel:h() / 2 + 40)
+	interact_text:set_y(self._hud_panel:h() / 2 + VoidUI.options.interact_y)
 	invalid_text:set_bottom(interact_text:bottom())
-	interaction_time:set_top(interact_text:bottom() + 10)
+	interaction_time:set_top(interact_text:bottom() + 10 * self._scale)
 end
 
 function HUDInteraction:show_interact(data)
+	self._hud_panel:child(self._child_name_text):set_y(self._hud_panel:h() / 2 + VoidUI.options.interact_y)
+	self._hud_panel:child(self._child_ivalid_name_text):set_bottom(self._hud_panel:child(self._child_name_text):bottom())
+	self._hud_panel:child("interaction_time"):set_top(self._hud_panel:child(self._child_name_text):bottom() + 10 * self._scale)
+	
 	local text = utf8.to_upper(data.text or "Press 'F' to pay respects")
 	self._hud_panel:child(self._child_name_text):set_visible(true)
 	self._hud_panel:child(self._child_name_text):set_text(text)
@@ -103,13 +106,13 @@ function HUDInteraction:show_interaction_bar(current, total)
 	self._interact_bar_bg = self._hud_panel:bitmap({
 		layer = 12,
 		w = text_w,
-		h = 10,
+		h = 10 * self._scale,
 		color = Color.black:with_alpha(0.9)
 	})	
 	self._interact_bar = self._hud_panel:bitmap({
 		layer = 13,
 		w = 0,
-		h = 6,
+		h = 6 * self._scale,
 		color = Color.white:with_alpha(1)
 	})
 	self._interact_circle = CircleBitmapGuiObject:new(self._hud_panel, {
@@ -123,8 +126,8 @@ function HUDInteraction:show_interaction_bar(current, total)
 		blend_mode = "add",
 		layer = 2
 	})
-	self._interact_bar_bg:set_position(self._hud_panel:w() / 2 - (text_w / 2), self._hud_panel:h() / 2 + 104)
-	self._interact_bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:h() / 2 + 106)
+	self._interact_bar_bg:set_position(self._hud_panel:w() / 2 - (text_w / 2), self._hud_panel:child(self._child_name_text):y() + 64 * self._scale)
+	self._interact_bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:child(self._child_name_text):y() + 66 * self._scale)
 end
 function HUDInteraction:set_interaction_bar_width(current, total)
 	if not self._interact_circle then
@@ -132,14 +135,14 @@ function HUDInteraction:set_interaction_bar_width(current, total)
 	end
 	local _, _, text_w, _ = self._hud_panel:child(self._child_name_text):text_rect()
 	self._interact_bar_bg:set_w(text_w)
-	self._interact_bar:set_w((text_w - 4) * (current / total))
+	self._interact_bar:set_w((text_w - (4 * self._scale)) * (current / total))
 	self._interact_bar_bg:set_x(self._hud_panel:w() / 2 - (text_w / 2))
 	if VoidUI.options.center_interaction and VoidUI.options.center_interaction or false then 
 		self._interact_bar:set_center_x(self._interact_bar_bg:center_x())
 	else
-		self._interact_bar:set_x(self._hud_panel:w() / 2 - ((text_w - 4) / 2))
+		self._interact_bar:set_x(self._hud_panel:w() / 2 - ((text_w - (4 * self._scale)) / 2))
 	end
-	self._hud_panel:child("interaction_time"):set_visible(total - current > 0)
+	self._hud_panel:child("interaction_time"):set_visible(total - current > 0 and VoidUI.options.show_interact or false)
 	if total - current > 0 then self._hud_panel:child("interaction_time"):set_text(string.format("%.1fs", total - current)) end
 	local bg = self._interact_circle._bg_circle
 	if bg and alive(bg) and bg:alpha() ~= 1 then
@@ -155,7 +158,7 @@ function HUDInteraction:hide_interaction_bar(complete)
 			h = 6,
 			color = Color.white:with_alpha(1)
 		})
-		bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:h() / 2 + 106)
+		bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:child(self._child_name_text):y() + 66 * self._scale)
 		bar:animate(callback(self, self, "_animate_interaction_complete"), bar)
 	end
 	if self._interact_circle then
