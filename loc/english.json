@@ -29,7 +29,7 @@
 	"VoidUI_options_desc" : "Customize the behavior of Void UI",  
 	"VoidUI_hud_scale_title" : "HUD Scale",
 	"VoidUI_hud_scale_desc" : "Set the scale of every hud element together. Elements can also be resized separately",
-	"VoidUI_outlines_title" : "Joker outlines",
+	"VoidUI_outlines_title" : "Convert outlines",
 	"VoidUI_outlines_desc" : "Make the outline of converted cops the same color as their owner",
 	"VoidUI_assault_lines_title" : "Assault alerts",
 	"VoidUI_assault_lines_desc" : "Add back bain responses stating how long until the next assault \nStandard: 30 seconds, 20 seconds, 10 seconds. Verbrose: 30 seconds",
@@ -102,7 +102,7 @@
 	
 	"VoidUI_chat_clipboard" : "Message copied to clipboard",
 	"VoidUI_chat_title" : "Player chat",
-	"VoidUI_chat_desc" : "Options related to the player chat"	
+	"VoidUI_chat_desc" : "Options related to the player chat",
 	"VoidUI_chat_scale_title" : "Chat Scale",
 	"VoidUI_chat_scale_desc" : "Set the scale of the player chat",
 	"VoidUI_chat_mouse_title" : "Enable mouse",
@@ -158,17 +158,20 @@
 	
 	"VoidUI_disabled" : "Hide",
 	"VoidUI_ecm_first" : "First placed",
-	"VoidUI_ecm_last" : "Last placed"
+	"VoidUI_ecm_last" : "Last placed",
 	"VoidUI_health_percentage" : "Percentage",
-	"VoidUI_health_real" : "Real Value"
+	"VoidUI_health_real" : "Real Value",
 	"VoidUI_gametime" : "Game Time",
-	"VoidUI_realtime" : "Real Time"
+	"VoidUI_realtime" : "Real Time",
 	"VoidUI_disable" : "Disabled",
-	"VoidUI_chat_message" : "Player's message only"
-	"VoidUI_chat_name" : "Player: message"
+	"VoidUI_chat_message" : "Player's message only",
+	"VoidUI_chat_name" : "Player: message",
 	"VoidUI_chat_character" : "Heister: message",
 	"VoidUI_chat_name_character" : "Player (heister): message",
 	"VoidUI_assault_lines_30sec" : "Standard",
-	"VoidUI_assault_lines_every10sec" : "Verbrose"
-
+	"VoidUI_assault_lines_every10sec" : "Verbrose",
+	
+	"VoidUI_trophy" : "Trophy completed!",
+	"VoidUI_challenge" : "Side job completed!",
+	"VoidUI_daily" : "Safe house daily completed!"
 }

@@ -189,52 +189,56 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			present_panel:set_alpha(math.lerp(0,1, t / TOTAL_T))
 			present_panel:set_x(math.lerp(x2,x, t / TOTAL_T))
 		end
+		present_panel:set_alpha(1)
+		present_panel:set_x(x)
 	end
 	function HUDPresenter:_animate_hide_panel(present_panel)
 		local x = present_panel:x()
-		local x2 = present_panel:x()
+		local x2 = present_panel:x() + present_panel:w()
 		local TOTAL_T = 0.5
 		local t = 0
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
-			present_panel:set_alpha(math.lerp(1,0, t / TOTAL_T))
+			present_panel:set_alpha(math.lerp(1, 0, t / TOTAL_T))
 			present_panel:set_x(math.lerp(x,x2, t / TOTAL_T))
-			x2 = x2 + 5
+			x2 = x2 + (dt > 0 and 0.1 or 0)
 		end
+		present_panel:set_alpha(0)
+		present_panel:set_x(x2)
 	end
 elseif RequiredScript == "lib/managers/customsafehousemanager" then
 	
-	--[[
-	function CustomSafehouseManager:_update_trophy_progress(trophy, key, id, amount, complete_func)
-		for obj_idx, objective in ipairs(trophy.objectives) do
-			if not objective.completed and objective[key] == id then
-				local pass = true
-				if objective.verify then
-					pass = tweak_data.safehouse[objective.verify](tweak_data.safehouse, objective)
-				end
-				if pass then
-					objective.progress = math.floor(math.min((objective.progress or 0) + amount, objective.max_progress))
-					objective.completed = objective.progress >= objective.max_progress
-					for _, objective in ipairs(trophy.objectives) do
-						if not objective.completed then
-							pass = false
-						else
-							local name = objective.name_id
-						end
-					end
-					if pass then
-						complete_func(self, trophy)
-						if managers.hud then
-							managers.hud:post_event("Achievement_challenge")
-							managers.hud:present({present_mid_text = true, title = "LEL", text = name})
-						end
-					end
-				end
-			else
-			end
+	local complete_trophy = CustomSafehouseManager.complete_trophy
+	function CustomSafehouseManager:complete_trophy(trophy_or_id)
+		complete_trophy(self, trophy_or_id)
+		local trophy = type(trophy_or_id) == "table" and trophy_or_id or self:get_trophy(trophy_or_id)
+		if managers.hud and trophy and trophy.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_trophy"), text = managers.localization:text(trophy.name_id)})
 		end
 	end
-	]]--
+	
+	local complete_daily = CustomSafehouseManager.complete_daily
+	function CustomSafehouseManager:complete_daily()
+		complete_daily(self)
+		if not self:unlocked() then
+			return
+		end
+		
+		if managers.hud and self._global.daily and self._global.daily.trophy.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_daily"), text = managers.localization:text(self._global.daily.trophy.name_id)})
+		end
+	end
+	
+elseif RequiredScript == "lib/managers/challengemanager" then
+	
+	local check_challenge_completed = ChallengeManager._check_challenge_completed
+	function ChallengeManager:_check_challenge_completed(id, key)
+		check_challenge_completed(self, id, key)
+		local active_challenge = self:get_active_challenge(id, key)
+		if managers.hud and active_challenge and active_challenge.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_challenge"), text = managers.localization:text(active_challenge.name_id)})
+		end
+	end
 	
 end

@@ -46,8 +46,19 @@ function HUDTemp:init(hud)
 		vertical = "center",
 		align = "right",
 		layer = 1,
-		color = Color.white,
-		font = "fonts/font_medium_shadow_mf",
+		font = "fonts/font_medium_mf",
+		font_size = 25
+	})
+	local bag_text_bg = bag_text_panel:text({
+		name = "bag_text_bg",
+		text = "Jewlery",
+		vertical = "center",
+		align = "right",
+		layer = 0,
+		x = 1,
+		y = 1,
+		color = Color.black,
+		font = "fonts/font_medium_mf",
 		font_size = 25
 	})
 	self._bag_panel_w = bag_panel:w()
@@ -125,12 +136,16 @@ function HUDTemp:show_carry_bag(carry_id, value)
 	local type_text = carry_data.name_id and managers.localization:text(carry_data.name_id)
 	local bag_text_panel = bag_panel:child("bag_text_panel")
 	local bag_text = bag_text_panel:child("bag_text")
+	local bag_text_bg = bag_text_panel:child("bag_text_bg")
 	local bag_icon = bag_panel:child("bag_icon")
 	bag_text:set_font_size(25)
+	bag_text_bg:set_font_size(25)
 	bag_text:set_text(type_text)
+	bag_text_bg:set_text(type_text)
 	local x,_,w,h = bag_text:text_rect()
 	bag_text_panel:set_size(w, h * 2)
 	bag_text:set_size(w, h * 2)
+	bag_text_bg:set_size(w, h * 2)
 	bag_text_panel:set_x(bag_panel:w() / 2 - w / 2)
 	bag_icon:set_center(bag_text_panel:center())
 	
@@ -146,9 +161,10 @@ end
 function HUDTemp:_animate_hide_bag_panel(bag_panel)
 	local bag_text_panel = bag_panel:child("bag_text_panel")
 	local bag_text = bag_text_panel:child("bag_text")
+	local bag_text_bg = bag_text_panel:child("bag_text_bg")
 	local bag_icon = bag_panel:child("bag_icon")
 	bag_text_panel:stop()
-	bag_text_panel:animate(callback(self, self, "_animate_hide_text"), bag_text, bag_icon)
+	bag_text_panel:animate(callback(self, self, "_animate_hide_text"), bag_text, bag_text_bg, bag_icon)
 	wait(1)
 	bag_panel:set_visible(false)
 end
@@ -162,27 +178,29 @@ function HUDTemp:_animate_show_bag_panel(bag_panel)
 	local center_y = bag_panel:center_y()
 	local bag_text_panel = bag_panel:child("bag_text_panel")
 	local bag_text = bag_text_panel:child("bag_text")
+	local bag_text_bg = bag_text_panel:child("bag_text_bg")
 	local bag_icon = bag_panel:child("bag_icon")
 	bag_text_panel:stop()
 	bag_text_panel:set_visible(true)
-	bag_text_panel:animate(callback(self, self, "_animate_show_text"), bag_text, bag_icon)
+	bag_text_panel:animate(callback(self, self, "_animate_show_text"), bag_text, bag_text_bg, bag_icon)
 	
-	bag_panel:set_size(w, h)
+	bag_panel:set_size(w, h + 2)
 	bag_panel:set_center_x(scx)
 	bag_panel:set_center_y(scy)
 	wait(1.5)
 	local TOTAL_T = 0.5
-	local t = TOTAL_T
+	local t = 0
 	local x = bag_icon:x()
 	local y = bag_icon:y()
-	while t > 0 do
+	while t < TOTAL_T do
 		local dt = coroutine.yield()
-		t = t - dt
-		bag_panel:set_center_x(math.lerp(scx, ecx, 1 - t / TOTAL_T))
-		bag_panel:set_center_y(math.lerp(scy, ecy, 1 - t / TOTAL_T))
-		bag_icon:set_x(math.lerp(x, bag_panel:w() - bag_icon:w(), 1 - t / TOTAL_T))
-		bag_icon:set_y(math.lerp(y, bag_panel:h() - bag_icon:h(), 1 - t / TOTAL_T))
-		bag_text:set_font_size(math.lerp(25, 20, 1 - t / TOTAL_T))
+		t = t + dt
+		bag_panel:set_center_x(math.lerp(scx, ecx, t / TOTAL_T))
+		bag_panel:set_center_y(math.lerp(scy, ecy, t / TOTAL_T))
+		bag_icon:set_x(math.lerp(x, bag_panel:w() - bag_icon:w(), t / TOTAL_T))
+		bag_icon:set_y(math.lerp(y, bag_panel:h() - bag_icon:h(), t / TOTAL_T))
+		bag_text:set_font_size(math.lerp(25, 20, t / TOTAL_T))
+		bag_text_bg:set_font_size(math.lerp(25, 20, t / TOTAL_T))
 		bag_text_panel:set_right(bag_icon:left())
 		bag_text_panel:set_center_y(bag_icon:center_y())
 	end
@@ -190,9 +208,10 @@ function HUDTemp:_animate_show_bag_panel(bag_panel)
 	bag_panel:set_center_x(ecx)
 	bag_panel:set_center_y(ecy)
 end
-function HUDTemp:_animate_show_text(panel, text, icon)
+function HUDTemp:_animate_show_text(panel, text, bg, icon)
 
 	text:set_left(panel:right())
+	bg:set_left(panel:right() + 1)
 	local text_x = text:x()
 	icon:set_alpha(1)
 	
@@ -210,6 +229,7 @@ function HUDTemp:_animate_show_text(panel, text, icon)
 	local center_y = panel:center_y()
 	panel:set_w(panel:w() * 2)
 	text:set_w(text:w() * 2)
+	bg:set_w(text:w())
 	TOTAL_T = 0.5
 	t = 0
 	while TOTAL_T > t do
@@ -220,16 +240,21 @@ function HUDTemp:_animate_show_text(panel, text, icon)
 		icon:set_size(math.lerp(40, 25, t / TOTAL_T), math.lerp(40, 25, t / TOTAL_T))
 		panel:set_right(icon:left())
 		text:set_x(math.lerp(text_x, 1, t / TOTAL_T))
+		bg:set_x(math.lerp(text_x + 1, 2, t / TOTAL_T))
 	end
+	text:set_x(0)
+	bg:set_x(1)
 	text:set_alpha(1)
+	bg:set_alpha(1)
 end
-function HUDTemp:_animate_hide_text(panel, text, icon)
+function HUDTemp:_animate_hide_text(panel, text, bg, icon)
 	local TOTAL_T = 0.5
 	local t = 0
 	while TOTAL_T > t do
 		local dt = coroutine.yield()
 		t = t + dt
 		text:set_x(math.lerp(0, panel:w(), t / TOTAL_T))
+		bg:set_x(math.lerp(1, panel:w() + 1, t / TOTAL_T))
 	end
 	
 	TOTAL_T = 0.3
@@ -249,4 +274,6 @@ function HUDTemp:_animate_hide_text(panel, text, icon)
 	end
 	text:set_alpha(1)
 	text:set_font_size(25)
+	bg:set_alpha(1)
+	bg:set_font_size(25)
 end

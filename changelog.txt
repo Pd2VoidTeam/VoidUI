@@ -1,3 +1,12 @@
+Version 0.6.1 (2017.09.11)
+- Updated interaction panel to support cyrillic characters
+- Updated carried bag panel to support cyrillic characters
+- Added presenter popup when completing a trophy or a side job
+- Fixed captain buff icon looping the show animation.
+- Fixed presenter panel animating when the game is paused
+- Fixed crash related to bot weapons
+- Fixed a crash related to scoreboard kills
+
 Verion 0.6 (2017.09.09)
 - Updated the hud to support BLT 2.0
 - Updated mod definition file

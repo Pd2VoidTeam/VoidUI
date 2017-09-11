@@ -2070,7 +2070,7 @@ end
 function HUDTeammate:downed()
 	local health_panel = self._custom_player_panel:child("health_panel")
 	local downs_value = health_panel:child("downs_value")
-	if (self._downs > -1) then self._downs = self._downs - 1 end
+	self._downs = math.clamp(self._downs - 1, 0, self._downs_max)
 	downs_value:set_text("x".. tostring(self._downs))
 end
 

@@ -307,12 +307,13 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 	
 	function HUDManager:scoreboard_unit_killed(killer_unit, stat)
-		if killer_unit and self._hud_statsscreen then
+		if alive(killer_unit) and self._hud_statsscreen then
 			if killer_unit:base().thrower_unit then
 				killer_unit = killer_unit:base():thrower_unit()
 			elseif killer_unit:base().get_owner_id then
 				killer_unit = managers.criminals:character_unit_by_peer_id(killer_unit:base():get_owner_id())
 			end
+			if killer_unit == nil then return end
 			
 			local character_data = managers.criminals:character_data_by_unit(killer_unit)
 			if character_data then

@@ -659,10 +659,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		for i, panel in ipairs(self._scoreboard_panels) do
 			if panel._taken == false then
 				self._scoreboard_panels[i]:set_player(character_name, player_name, ai, peer_id)
-				self:align_scoreboard_panels()
-				return
+				break
 			end
 		end
+		self:align_scoreboard_panels()
 	end
 
 	function HUDStatsScreen:get_scoreboard_panel_by_peer_id(peer_id)
@@ -1138,7 +1138,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local unit = managers.criminals:character_unit_by_name(character_name)
 			local loadout = unit and unit:base()._loadout
 			if loadout then
-				local primary =	managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", ""))
+				local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", ""))
 				local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m14", unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
 				primary_icon:set_image(texture)
 				primary_rarity:set_visible(rarity and true or false)

@@ -18,6 +18,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
 	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
 	["lib/managers/customsafehousemanager"] = {"HudPresenter.lua"},
+	["lib/managers/challengemanager"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudpresenter"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudhint"] = {"HudHint.lua"},
 	["lib/managers/hintmanager"] = {"HudHint.lua"},

@@ -752,24 +752,26 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		vip_icon:set_size(size_w, size_h)
 		vip_icon:set_right(VoidUI.options.show_badge and vip_icon:parent():w() - 10 * self._scale or - 40 * self._scale)
 		vip_icon:set_y(VoidUI.options.show_badge and 10 * self._scale or -2 * self._scale)
-		vip_icon:stop()
-		vip_icon:animate(function(o)
-			local centerx = vip_icon:center_x()
-			local centery = vip_icon:center_y()
-			over(0.4, function(p)
-				if alive(vip_icon) then
-					vip_icon:set_size(math.lerp(enabled and 150 * self._scale or size_w, enabled and size_w or 150 * self._scale, p), math.lerp(enabled and 160 * self._scale or size_h, enabled and size_h or 160 * self._scale, p))
-					vip_icon:set_alpha(math.lerp(enabled and 0 or 1, enabled and 1 or 0, p))
-					vip_icon:set_center_x(centerx) vip_icon:set_center_y(centery)
+		if enabled and self._hud_panel:child("buffs_panel"):visible() == false or not enabled and self._hud_panel:child("buffs_panel"):visible() == true then 
+			vip_icon:stop()
+			vip_icon:animate(function(o)
+				local centerx = vip_icon:center_x()
+				local centery = vip_icon:center_y()
+				over(0.4, function(p)
+					if alive(vip_icon) then
+						vip_icon:set_size(math.lerp(enabled and 150 * self._scale or size_w, enabled and size_w or 150 * self._scale, p), math.lerp(enabled and 160 * self._scale or size_h, enabled and size_h or 160 * self._scale, p))
+						vip_icon:set_alpha(math.lerp(enabled and 0 or 1, enabled and 1 or 0, p))
+						vip_icon:set_center_x(centerx) vip_icon:set_center_y(centery)
+					end
+				end)
+				if VoidUI.options.show_badge and VoidUI.options.anim_badge then vip_icon:animate(callback(self, self, "_animate_icon"), false) end
+				if enabled == false then 
+					self._hud_panel:child("buffs_panel"):set_visible(false)
+				else
+					self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
 				end
 			end)
-			if VoidUI.options.show_badge and VoidUI.options.anim_badge then vip_icon:animate(callback(self, self, "_animate_icon"), false) end
-			if enabled == false then 
-				self._hud_panel:child("buffs_panel"):set_visible(false)
-			else
-				self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
-			end
-		end)
+		end
 	end
 	function HUDAssaultCorner:sync_set_assault_mode(mode)
 		if self._assault_mode == mode then

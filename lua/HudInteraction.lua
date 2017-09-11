@@ -2,13 +2,31 @@ function HUDInteraction:init(hud, child_name)
 	self._hud_panel = hud.panel
 	self._scale = VoidUI.options.interact_scale
 	self._child_name_text = (child_name or "interact") .. "_text"
+	self._child_name_bg = (child_name or "interact") .. "_bg"
 	self._child_ivalid_name_text = (child_name or "interact") .. "_invalid_text"
 	if self._hud_panel:child(self._child_name_text) then
 		self._hud_panel:remove(self._hud_panel:child(self._child_name_text))
 	end
+	if self._hud_panel:child(self._child_name_bg) then
+		self._hud_panel:remove(self._hud_panel:child(self._child_name_bg))
+	end
 	if self._hud_panel:child(self._child_ivalid_name_text) then
 		self._hud_panel:remove(self._hud_panel:child(self._child_ivalid_name_text))
 	end
+	local interact_bg = self._hud_panel:text({
+		name = self._child_name_bg,
+		alpha = 0,
+		x = 1,
+		y = 1,
+		text = "HELLO",
+		vertical = "bottom",
+		align = "center",
+		layer = 11,
+		color = Color.black,
+		font = "fonts/font_large_mf",
+		font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
+		h = 64 * self._scale
+	})
 	local interact_text = self._hud_panel:text({
 		name = self._child_name_text,
 		alpha = 0,
@@ -16,8 +34,7 @@ function HUDInteraction:init(hud, child_name)
 		vertical = "bottom",
 		align = "center",
 		layer = 12,
-		color = Color.white,
-		font = "fonts/font_medium_shadow_mf",
+		font = "fonts/font_large_mf",
 		font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 		h = 64 * self._scale
 	})
@@ -31,7 +48,7 @@ function HUDInteraction:init(hud, child_name)
 		layer = 13,
 		color = Color(1, 0.3, 0.3),
 		blend_mode = "normal",
-		font = "fonts/font_medium_shadow_mf",
+		font = "fonts/font_large_mf",
 		font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 		h = 32 * self._scale
 	})
@@ -55,6 +72,7 @@ function HUDInteraction:init(hud, child_name)
 end
 
 function HUDInteraction:show_interact(data)
+	self._hud_panel:child(self._child_name_bg):set_y(self._hud_panel:h() / 2 + VoidUI.options.interact_y + 1)
 	self._hud_panel:child(self._child_name_text):set_y(self._hud_panel:h() / 2 + VoidUI.options.interact_y)
 	self._hud_panel:child(self._child_ivalid_name_text):set_bottom(self._hud_panel:child(self._child_name_text):bottom())
 	self._hud_panel:child("interaction_time"):set_top(self._hud_panel:child(self._child_name_text):bottom() + 10 * self._scale)
@@ -62,12 +80,10 @@ function HUDInteraction:show_interact(data)
 	local text = utf8.to_upper(data.text or "Press 'F' to pay respects")
 	self._hud_panel:child(self._child_name_text):set_visible(true)
 	self._hud_panel:child(self._child_name_text):set_text(text)
+	self._hud_panel:child(self._child_name_bg):set_text(text)
 		
 	self._hud_panel:child(self._child_name_text):stop()
-	self._hud_panel:child(self._child_name_text):animate(callback(self, self, "_animate_interaction"), 1)
-	
-	self._hud_panel:child(self._child_ivalid_name_text):stop()
-	self._hud_panel:child(self._child_ivalid_name_text):animate(callback(self, self, "_animate_interaction"), 1)
+	self._hud_panel:child(self._child_name_text):animate(callback(self, self, "_animate_interaction"),self._hud_panel:child(self._child_name_bg), self._hud_panel:child(self._child_ivalid_name_text), 1)
 end
 
 function HUDInteraction:remove_interact()
@@ -75,20 +91,20 @@ function HUDInteraction:remove_interact()
 		return
 	end
 	self._hud_panel:child(self._child_name_text):stop()
-	self._hud_panel:child(self._child_name_text):animate(callback(self, self, "_animate_interaction"), 0)
-	
-	self._hud_panel:child(self._child_ivalid_name_text):stop()
-	self._hud_panel:child(self._child_ivalid_name_text):animate(callback(self, self, "_animate_interaction"), 0)
+	self._hud_panel:child(self._child_name_text):animate(callback(self, self, "_animate_interaction"),self._hud_panel:child(self._child_name_bg), self._hud_panel:child(self._child_ivalid_name_text), 0)
 end
 
-function HUDInteraction:_animate_interaction(interact_text, goal)
+function HUDInteraction:_animate_interaction(interact_text, interact_bg, invalid_text, goal)
 	local current = self._hud_panel:child(self._child_name_text):alpha()
 	local TOTAL_T = 0.2
 	local t = 0
 	while TOTAL_T > t do
 		local dt = coroutine.yield()
 		t = t + dt
-		interact_text:set_alpha(math.lerp(current,goal, t / TOTAL_T))
+		local a = math.lerp(current,goal, t / TOTAL_T)
+		interact_text:set_alpha(a)
+		interact_bg:set_alpha(a)
+		invalid_text:set_alpha(a)
 	end
 end
 function HUDInteraction:show_interaction_bar(current, total)
@@ -181,10 +197,12 @@ function HUDInteraction:set_bar_valid(valid, text_id)
 	self._interact_bar:set_color(color)
 	self._hud_panel:child(self._child_name_text):set_visible(valid)
 	local invalid_text = self._hud_panel:child(self._child_ivalid_name_text)
+	local valid_text = self._hud_panel:child(self._child_name_text)
 	if text_id then
 		invalid_text:set_text(managers.localization:to_upper_text(text_id))
 	end
 	invalid_text:set_visible(not valid)
+	self._hud_panel:child(self._child_name_bg):set_text(valid and valid_text:text() or invalid_text:text())
 end
 function HUDInteraction:destroy()
 	self._hud_panel:remove(self._hud_panel:child(self._child_name_text))
