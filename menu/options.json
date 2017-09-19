@@ -35,6 +35,15 @@
 			"priority" : 3
 		},
 		{
+			"type" : "toggle",
+			"id" : "trophies",
+			"title" : "VoidUI_trophies_title",
+			"description" : "VoidUI_trophies_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "trophies"
+			"priority" : 3
+		},
+		{
 			"type" : "multiple_choice",
 			"id" : "assault_lines",
 			"title" : "VoidUI_assault_lines_title",

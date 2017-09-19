@@ -1,3 +1,16 @@
+- Reworked how the police badge works
+- Added a crime spree version of the police badge
+- Added golden text and border for completed trophy and side-job presenters
+- Added options for the scoreboard
+- Updated the texture of the police badge
+- Changed the ping update frequency from 5 seconds to 2 seconds
+- Global scale now modifies the interaction and detection scales as well
+- Bots armor will default to full when they replace a leaving player
+- Bot health will always show up as a percentage
+- Fixed scoreboard not correctly displaying the difficulty in crime spree
+- Fixed wave panel being missaligned when the police badge is disabled
+- Fixed stat panel sometimes showing mission bags as 0/0
+
 Version 0.6.1 (2017.09.11)
 - Updated interaction panel to support cyrillic characters
 - Updated carried bag panel to support cyrillic characters

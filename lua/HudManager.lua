@@ -7,6 +7,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			self:script("guis/mask_off_hud").mask_on_text:set_font_size(0)
 		end
 	end
+	
 	local sync_start_anticipation_music = HUDManager.sync_start_anticipation_music
 	function HUDManager:sync_start_anticipation_music()
 		sync_start_anticipation_music(self)
@@ -79,7 +80,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 		update(self, t, dt)
 		self._last_sc_update = self._last_sc_update or t
 		local peers = managers.network:session() and managers.network:session():peers()
-		if self._hud_statsscreen and peers and self._last_sc_update + 5 < t then
+		if self._hud_statsscreen and peers and self._last_sc_update + VoidUI.options.ping_frequency < t then
 			self._last_sc_update = t
 			for _, peer in pairs(peers) do
 				if peer and peer:id() and peer:rpc() then
@@ -319,6 +320,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			if character_data then
 				local panel_id = (managers.criminals:character_peer_id_by_unit(killer_unit) == managers.network:session():local_peer():id() and HUDManager.PLAYER_PANEL) or (character_data and character_data.panel_id and character_data.panel_id)
 				self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat(stat)
+				if stat == "specials" and VoidUI.options.scoreboard_kills == 3 then self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat("kills") end
 			end
 		end
 	end
@@ -1032,6 +1034,7 @@ elseif RequiredScript == "lib/units/player_team/huskteamaidamage" then
 			managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 		end
 	end
+	
 elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" then
 	
 	core:module("CoreSubtitlePresenter")

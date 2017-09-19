@@ -2,11 +2,13 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	
 	local init = HUDStatsScreen.init
 	function HUDStatsScreen:init()
+		self._scoreboard_enabled = VoidUI.options.scoreboard
+		self._scale = VoidUI.options.scoreboard_scale
 		init(self)
 		self._full_hud_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel
 		self._full_hud_panel:set_alpha(0)
 		self:create_scoreboards()
-		self._full_hud_panel:bitmap({
+		self._blur = self._full_hud_panel:bitmap({
 			name = "blur_bg",
 			texture = "guis/textures/test_blur_df",
 			render_template = "VertexColorTexturedBlur3D",
@@ -36,7 +38,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		})
 		local loot_stats = top_panel:text({
 			name = "loot_stats",
-			font_size = 18,
+			font_size = 18 * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			text = managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount()),
 			align = "center",
@@ -46,11 +48,11 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		loot_stats:set_bottom(top_panel:h())
 		local loot_stats_shadow = top_panel:text({
 			name = "loot_stats_shadow",
-			font_size = 18,
+			font_size = 18 * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			text = loot_stats:text(),
-			x = 2,
-			y = loot_stats:y() + 2,
+			x = 2 * self._scale,
+			y = loot_stats:y() + 2 * self._scale,
 			h = loot_stats:h(),
 			align = "center",
 			color = Color.black,
@@ -64,14 +66,14 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			local difficulty_color = tweak_data.screen_colors.risk
 			
 			if managers.crime_spree:is_active() then
-				difficulty_string = managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
+				difficulty_string = managers.localization:to_upper_text("cn_crime_spree")..": "..managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 				difficulty_color = tweak_data.screen_colors.crime_spree_risk
 			end
 		
 			local risk_text = risk_panel:text({
 				name = "risk_text",
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 25,
+				font_size = 25 * self._scale,
 				y = 2,
 				text = difficulty_string,
 				color = tweak_data.screen_colors.text
@@ -80,10 +82,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			if difficulty_stars > 0 then risk_text:set_color(difficulty_color) end
 			local risk_text_shadow = risk_panel:text({
 				name = "risk_text_shadow",
-				x = 2,
-				y = 4,
+				x = 2 * self._scale,
+				y = 2 + (2 * self._scale),
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 25,
+				font_size = 25 * self._scale,
 				text = difficulty_string,
 				color = Color.black,
 				layer = -2,
@@ -100,8 +102,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 						name = "risk_star"..i,
 						texture = texture,
 						color = tweak_data.screen_colors.text,
-						w = 25,
-						h = 25,
+						w = 25 * self._scale,
+						h = 25 * self._scale,
 						color = Color(0.5,0.5,0.5)
 					})
 					risk_star:set_x(risk_text_shadow:right() + (i - 1) * risk_star:w())
@@ -110,14 +112,14 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 						name = "risk_star_shadow"..i,
 						texture = texture,
 						color = tweak_data.screen_colors.text,
-						y = 2,
-						w = 25,
-						h = 25,
+						y = 2 * self._scale,
+						w = 25 * self._scale,
+						h = 25 * self._scale,
 						layer = -2,
 						rotation = 360,
 						color = Color.black
 					})
-					risk_star_shadow:set_x(risk_star:x() + 2)
+					risk_star_shadow:set_x(risk_star:x() + 2 * self._scale)
 				end
 				risk_panel:set_size(risk_star_shadow:right(), risk_star_shadow:bottom())
 			else
@@ -129,8 +131,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		
 		local day_title = top_panel:text({
 			name = "day_title",
-			font_size = 35,
-			h = 35,
+			font_size = 35 * self._scale,
+			h = 35 * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			text = "Jewlery Store",
 			align = "center",
@@ -140,19 +142,19 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local day_title_shadow = top_panel:text({
 			name = "day_title_shadow",
 			color = Color.black,
-			font_size = 35,
-			x = 2,
-			h = 35,
+			font_size = 35 * self._scale,
+			x = 2 * self._scale,
+			h = 35 * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			text = "Jewlery Store",
 			align = "center",
 			vertical = "center",
 			layer = -2
 		})
-		day_title_shadow:set_bottom(risk_panel:top() + 2)
+		day_title_shadow:set_bottom(risk_panel:top() + 2 * self._scale)
 		local days_title = top_panel:text({
 			name = "days_title",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			font = tweak_data.hud_stats.objectives_font,
 			text = "Day 1 of 3",
 			align = "center",
@@ -165,7 +167,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local days_title_shadow = top_panel:text({
 			name = "days_title_shadow",
 			color = Color.black,
-			font_size = 15,
+			font_size = 15 * self._scale,
 			font = tweak_data.hud_stats.objectives_font,
 			text = "Day 1 of 3",
 			align = "center",
@@ -174,15 +176,15 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			layer = -2
 		})
 		managers.hud:make_fine_text(days_title_shadow)
-		days_title_shadow:move(days_title:x() + 2, days_title:y() + 2)
+		days_title_shadow:move(days_title:x() + 2 * self._scale, days_title:y() + 2 * self._scale)
 		
 		local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
 		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
 		local ghost_icon = top_panel:bitmap({
 			name = "ghost_icon",
 			texture = "guis/textures/pd2/cn_minighost",
-			w = 12,
-			h = 12,
+			w = 12 * self._scale,
+			h = 12 * self._scale,
 		})
 		ghost_icon:set_left(days_title_shadow:right())
 		ghost_icon:set_center_y(days_title:center_y())
@@ -191,10 +193,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local ghost_icon_shadow = top_panel:bitmap({
 			name = "ghost_icon_shadow",
 			texture = "guis/textures/pd2/cn_minighost",
-			x = ghost_icon:x() + 2,
-			y = ghost_icon:y() + 2,
-			w = 12,
-			h = 12,
+			x = ghost_icon:x() + 2 * self._scale,
+			y = ghost_icon:y() + 2 * self._scale,
+			w = 12 * self._scale,
+			h = 12 * self._scale,
 			color = Color.black,
 			layer = -2,
 			visible = ghost_icon:visible()
@@ -212,16 +214,16 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local next_level_data = managers.experience:next_level_data() or {}
 		local experience_bg = extras_panel:bitmap({
 			name = "experience_bg",
-			h = 15,
+			h = 15 * self._scale,
 			color = Color.black,
 			alpha = 0.6
 		})
 		local experience_bar = extras_panel:bitmap({
 			name = "experience_bg",
-			x = 4,
-			y = 4,
-			w = ((next_level_data.current_points or 1) / (next_level_data.points or 1)) * (extras_panel:w() - 8),
-			h = 7,
+			x = 4 * self._scale,
+			y = 4 * self._scale,
+			w = ((next_level_data.current_points or 1) / (next_level_data.points or 1)) * (extras_panel:w() - 8 * self._scale),
+			h = 7 * self._scale,
 			alpha = 0.6
 		})
 		local gain_xp = managers.experience:get_xp_dissected(true, 0, true)
@@ -232,10 +234,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local gain_progress = math.min(1, (gain_xp or 1) / (next_level_data.points or 1))
 		local exp_gain_bar = extras_panel:bitmap({
 			name = "exp_gain_bar",
-			y = 4,
-			x = progress * (extras_panel:w() - 8) + 4,
-			w = gain_progress * (extras_panel:w() - experience_bar:w() - 8),
-			h = 7,
+			y = 4 * self._scale,
+			x = progress * (extras_panel:w() - 8 * self._scale) + 4 * self._scale,
+			w = gain_progress * (extras_panel:w() - experience_bar:w() - 8 * self._scale),
+			h = 7 * self._scale,
 			color = tweak_data.hud_stats.potential_xp_color,
 			alpha = 0.6
 		})
@@ -244,15 +246,15 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			font = tweak_data.menu.pd2_large_font,
 			x = 2,
 			y = experience_bg:bottom(),
-			font_size = tweak_data.hud_stats.day_description_size,
+			font_size = tweak_data.hud_stats.day_description_size * self._scale,
 			text = at_max_level and tostring(current_level - 1) or tostring(current_level)
 		})
 		local current_level_text_shadow = extras_panel:text({
 			name = "current_level_text_shadow",
 			font = tweak_data.menu.pd2_large_font,
-			x = 4,
-			y = experience_bg:bottom() + 2,
-			font_size = tweak_data.hud_stats.day_description_size,
+			x = 2 + 2 * self._scale,
+			y = experience_bg:bottom() + 2 * self._scale,
+			font_size = tweak_data.hud_stats.day_description_size * self._scale,
 			text = at_max_level and tostring(current_level - 1) or tostring(current_level),
 			layer = -2,
 			color = Color.black
@@ -262,7 +264,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			font = tweak_data.menu.pd2_large_font,
 			x = -2,
 			y = experience_bg:bottom(),
-			font_size = tweak_data.hud_stats.day_description_size,
+			font_size = tweak_data.hud_stats.day_description_size * self._scale,
 			text = at_max_level and tostring(current_level) or tostring(current_level + 1),
 			align = "right"
 		})
@@ -270,7 +272,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			name = "next_level_text_shadow",
 			font = tweak_data.menu.pd2_large_font,
 			y = experience_bg:bottom() + 2,
-			font_size = tweak_data.hud_stats.day_description_size,
+			font_size = tweak_data.hud_stats.day_description_size * self._scale,
 			text = at_max_level and tostring(current_level) or tostring(current_level + 1),
 			layer = -2,
 			color = Color.black,
@@ -297,16 +299,16 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				name = "next_level_in",
 				font = tweak_data.menu.pd2_large_font,
 				y = experience_bg:bottom(),
-				font_size = tweak_data.hud_stats.day_description_size,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
 				text = text,
 				align = "center"
 			})
 			local next_level_in_shadow = extras_panel:text({
 				name = "next_level_in_shadow",
 				font = tweak_data.menu.pd2_large_font,
-				x = 2,
-				y = experience_bg:bottom() + 2,
-				font_size = tweak_data.hud_stats.day_description_size,
+				x = 2 * self._scale,
+				y = experience_bg:bottom() + 2 * self._scale,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
 				text = text,
 				layer = -2,
 				color = Color.black,
@@ -331,7 +333,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			t = t + dt
 			local fast = math.abs((math.sin(t * 90 * 1)))
 			local slow = math.abs((math.sin(t * 45 * 1)))
-			text:set_font_size(math.lerp(tweak_data.hud_stats.day_description_size, tweak_data.hud_stats.day_description_size + 3, fast * fast))
+			text:set_font_size(math.lerp(tweak_data.hud_stats.day_description_size * self._scale, tweak_data.hud_stats.day_description_size * self._scale + 3 * self._scale, fast * fast))
 			shadow:set_font_size(text:font_size())
 			shadow:set_x(math.lerp(-4,0, slow * slow))
 		end
@@ -342,20 +344,20 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local payday = extras_panel:text({
 				name = "payday",
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 30,
+				font_size = 30 * self._scale,
 				text = managers.localization:text("hud_day_payout", {MONEY = managers.experience:cash_string(payout)}),
-				h = extras_panel:h() / 3,
+				h = extras_panel:h() / (3 / self._scale),
 				align = "center",
 				vertical = "bottom"
 		})
 		local payday_shadow = extras_panel:text({
 				name = "payday_shadow",
-				x = 2,
-				y = 2,
+				x = 2 * self._scale,
+				y = 2 * self._scale,
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 30,
+				font_size = 30 * self._scale,
 				text = managers.localization:text("hud_day_payout", {MONEY = managers.experience:cash_string(payout)}),
-				h = extras_panel:h() / 3,
+				h = extras_panel:h() / (3 / self._scale),
 				color = Color.black,
 				layer = -2,
 				align = "center",
@@ -371,7 +373,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local small_loot = managers.loot:get_real_total_small_loot_value()
 
 		local body_bag = managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount())
-		local mission_bags = mandatory_bags_data and mandatory_bags_data.amount and " Ї "..managers.localization:text("hud_mission_bags")..": "..tostring(mission_amount) .. "/"..tostring(mandatory_bags_data.amount) or ""
+		local mission_bags = mandatory_bags_data and mandatory_bags_data.amount and mandatory_bags_data.amount > 0 and " Ї "..managers.localization:text("hud_mission_bags")..": "..tostring(mission_amount) .. "/"..tostring(mandatory_bags_data.amount) or ""
 		local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
 		local bonus_bags = bonus_amount > 0 and " Ї "..managers.localization:text("hud_bonus_bags")..": ".. tostring(bonus_amount) or ""
 		
@@ -380,7 +382,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		
 		local track_text  = extras_panel:text({
 			name = "track_text ",
-			font_size = 20,
+			font_size = 20 * self._scale,
 			font = "fonts/font_medium_mf",
 			text = managers.localization:to_upper_text("menu_es_playing_track") .. " " .. managers.music:current_track_string(),
 			align = "center",
@@ -388,10 +390,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		})
 		managers.hud:make_fine_text(track_text)
 		track_text:set_center_x(extras_panel:w() / 2)
-		track_text:set_top(extras_panel:h() / 3)
+		track_text:set_top(extras_panel:h() / (3 / self._scale))
 		local track_text_shadow = extras_panel:text({
 			name = "track_text_shadow",
-			font_size = 20,
+			font_size = 20 * self._scale,
 			font = "fonts/font_medium_mf",
 			text = track_text:text(),
 			align = "center",
@@ -400,8 +402,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			rotation = 360,
 		})
 		managers.hud:make_fine_text(track_text_shadow)
-		track_text_shadow:set_center_x(extras_panel:w() / 2 + 2)
-		track_text_shadow:set_top(extras_panel:h() / 3 + 2)
+		track_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
+		track_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
 	end
 	function HUDStatsScreen:_create_mutators_list(mutators_panel)
 		mutators_panel:clear()
@@ -411,7 +413,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local title = mutators_panel:text({
 			name = "title",
 			text = managers.localization:text("menu_mutators"),
-			font_size = tweak_data.hud_stats.loot_title_size,
+			font_size = tweak_data.hud_stats.loot_title_size * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			align = "right",
 			vertical = "center",
@@ -419,11 +421,11 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			h = tweak_data.hud_stats.loot_title_size
 		})
 		managers.hud:make_fine_text(title)
-		title:set_right(mutators_panel:w() - 2)
+		title:set_right(mutators_panel:w() - 2 * self._scale)
 		local title_shadow = mutators_panel:text({
 			name = "title_shadow",
 			text = managers.localization:text("menu_mutators"),
-			font_size = tweak_data.hud_stats.loot_title_size,
+			font_size = tweak_data.hud_stats.loot_title_size * self._scale,
 			font = tweak_data.menu.pd2_large_font,
 			color = Color.black,
 			align = "right",
@@ -431,7 +433,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			layer = -2,
 			w = mutators_panel:w(),
 			h = tweak_data.hud_stats.loot_title_size,
-			y = 2
+			y = 2 * self._scale
 		})
 		managers.hud:make_fine_text(title_shadow)
 		title_shadow:set_right(mutators_panel:w())
@@ -444,9 +446,9 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				text = active_mutator.mutator:name(),
 				align = "right",
 				w = mutators_panel:w(),
-				h = tweak_data.hud_stats.day_description_size,
-				x = -2,
-				y = 15 + tweak_data.hud_stats.day_description_size * i
+				h = tweak_data.hud_stats.day_description_size * self._scale,
+				x = -2 * self._scale,
+				y = 15 + (tweak_data.hud_stats.day_description_size * self._scale) * i
 			})
 			local mutator_text_shadow = mutators_panel:text({
 				name = "mutator_shadow_" .. tostring(i),
@@ -457,7 +459,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				align = "right",
 				w = mutator_text:w(),
 				h = mutator_text:h(),
-				y = mutator_text:y() + 2,
+				y = mutator_text:y() + 2 * self._scale,
 				layer = -2
 			})
 		end
@@ -494,6 +496,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		self:_update_stats_screen_day(top_panel)
 		self:_create_mutators_list(mutators_panel)
 		left_panel:set_alpha(0)
+		self._blur:set_visible(VoidUI.options.scoreboard_blur)
 		left_panel:stop()
 		left_panel:animate(callback(self, self, "_animate_show_stats_left_panel"), self._full_hud_panel, top_panel, scoreboard_panel, extras_panel, mutators_panel)
 		self:align_scoreboard_panels()
@@ -590,35 +593,40 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		
 		local scoreboard_panel = self._full_hud_panel:panel({
 			name = "scoreboard_panel",
-			w = self._full_hud_panel:w() / 1.55,
-			y = self._full_hud_panel:h() / 2.5
-		})
-		scoreboard_panel:set_center_x(self._full_hud_panel:w() / 2)
-		local h = 35
-		local score
-		for i = 1, 4 do
-			local is_player = i == HUDManager.PLAYER_PANEL
-			score = HUDScoreboard:new(i, scoreboard_panel, is_player, h)
-			table.insert(self._scoreboard_panels, score)
-		end
-		local labels = {
-			{parent = "name_bg", name = "name", text = managers.localization:text("menu_preferred_character").. " / Player Name / " ..managers.localization:text("menu_st_skilltree"), align = "left"},
-			{parent = "kills_bg", name = "kills", text = "Kills"},
-			{parent = "specials_bg", name = "specials", text = "Specials"},
-			{parent = "civs_bg", name = "civs", text = "Civs"},
-			{parent = "downs_bg", name = "downs", text = "Downs"},
-			{parent = "primary_bg", name = "primary", text = managers.localization:text("bm_menu_primaries")},
-			{parent = "secondary_bg", name = "secondary", text = managers.localization:text("bm_menu_secondaries")},
-			{parent = "melee_bg", name = "melee", text = managers.localization:text("bm_menu_melee_weapons")},
-			{parent = "armor_bg", name = "armor", text = managers.localization:text("bm_menu_armors")},
-			{parent = "perk_bg", name = "perk", text = "Perk"},
-			{parent = "hours_bg", name = "hours", text = "Playtime"},
-			{parent = "ping_bg", name = "ping", text = "Ping"}
-		}
-		self:create_scoreboard_labels(scoreboard_panel, score._panel, labels)
+			w = (self._full_hud_panel:w() / 1.55) * self._scale,
+			y = (self._full_hud_panel:h() / 2.5) * self._scale
+			})
+			scoreboard_panel:set_center_x(self._full_hud_panel:w() / 2)
+			local h = self._scoreboard_enabled and 35 * self._scale or 0
+			local score
+			for i = 1, 4 do
+				local is_player = i == HUDManager.PLAYER_PANEL
+				score = HUDScoreboard:new(i, scoreboard_panel, is_player, h)
+				table.insert(self._scoreboard_panels, score)
+			end
+			local labels = {
+				{parent = "name_bg", name = "name", text = (VoidUI.options.scoreboard_character and (managers.localization:text("menu_preferred_character").. " / ") or "" ) .."Player / " .. (VoidUI.options.scoreboard_skills and managers.localization:text("menu_st_skilltree") or ""), align = "left"},
+				{parent = "kills_bg", name = "kills", text = "Kills"},
+				{parent = "specials_bg", name = "specials", text = "Specials"},
+				{parent = "civs_bg", name = "civs", text = "Civs"},
+				{parent = "downs_bg", name = "downs", text = "Downs"},
+				{parent = "primary_bg", name = "primary", text = managers.localization:text("bm_menu_primaries")},
+				{parent = "secondary_bg", name = "secondary", text = managers.localization:text("bm_menu_secondaries")},
+				{parent = "melee_bg", name = "melee", text = managers.localization:text("bm_menu_melee_weapons")},
+				{parent = "armor_bg", name = "armor", text = managers.localization:text("bm_menu_armors")},
+				{parent = "perk_bg", name = "perk", text = "Perk"},
+				{parent = "hours_bg", name = "hours", text = "Playtime"},
+				{parent = "ping_bg", name = "ping", text = "Ping"}
+			}
+			self:create_scoreboard_labels(scoreboard_panel, score._panel, labels)
+			scoreboard_panel:set_w(score._panel:child("ping_bg"):right())
+			scoreboard_panel:set_center_x(self._full_hud_panel:w() / 2)
 	end
 	
 	function HUDStatsScreen:create_scoreboard_labels(scoreboard_panel, score_panel, labels)
+		if not self._scoreboard_enabled then
+			return
+		end
 		for index, data in ipairs(labels) do
 			local parent = score_panel:child(labels[index]["parent"])
 			local name = labels[index]["name"]
@@ -630,8 +638,9 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				y = -parent:h(),
 				w = parent:w(),
 				h = parent:h(),
+				visible = parent:w() > 0,
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 15,
+				font_size = 15 * self._scale,
 				text = text,
 				vertical = "bottom",
 				align = align and align or "center",
@@ -640,14 +649,15 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			
 			scoreboard_panel:text({
 				name = name.."_text_shadow",
-				x = parent:x() + 2,
-				y = -parent:h() + 2,
+				x = parent:x() + 2 * self._scale,
+				y = -parent:h() + 2 * self._scale,
 				w = parent:w(),
 				h = parent:h(),
+				visible = parent:w() > 0,
 				font = tweak_data.menu.pd2_large_font,
 				color = Color.black,
 				layer = -2,
-				font_size = 15,
+				font_size = 15 * self._scale,
 				text = text,
 				vertical = "bottom",
 				align = align and align or "center",
@@ -657,7 +667,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	end
 	function HUDStatsScreen:add_scoreboard_panel(character_name, player_name, ai, peer_id)
 		for i, panel in ipairs(self._scoreboard_panels) do
-			if panel._taken == false then
+			if self._scoreboard_enabled and panel._taken == false then
 				self._scoreboard_panels[i]:set_player(character_name, player_name, ai, peer_id)
 				break
 			end
@@ -666,12 +676,14 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	end
 
 	function HUDStatsScreen:get_scoreboard_panel_by_peer_id(peer_id)
-		if self._scoreboard_panels then 
+		if self._scoreboard_enabled and self._scoreboard_panels then 
 			for i, panel in ipairs(self._scoreboard_panels) do
 				if panel._peer_id == peer_id then
 					return panel
 				end
 			end
+		else
+			return nil
 		end
 	end
 	
@@ -689,7 +701,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				panel._panel:set_h(panel._taken and panel._h or 0)
 				panel._panel:set_visible(panel._taken)
 				panel._panel:set_y(i == 1 and 0 or self._scoreboard_panels[i - 1]._panel:bottom() + 5)
-				extras_panel:set_position(panel._panel:world_x(), panel._panel:world_bottom() + 5)
+				extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
+				extras_panel:set_y(panel._panel:world_bottom() + 5)
 			end
 
 		end
@@ -718,7 +731,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			days_title_shadow:set_text(utf8.to_upper(managers.localization:text("hud_days_title", {DAY = day, DAYS = days})))
 			managers.hud:make_fine_text(days_title_shadow)
 			ghost_icon:set_x(days_title_shadow:right())
-			ghost_icon_shadow:set_x(ghost_icon:x() + 2)
+			ghost_icon_shadow:set_x(ghost_icon:x() + 2 * self._scale)
 			ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
 			local level_data = managers.job:current_level_data()
 			if level_data then
@@ -739,6 +752,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDScoreboard = HUDScoreboard or class()
 	function HUDScoreboard:init(i, scoreboard_panel, is_player, h)
+		self._scale = VoidUI.options.scoreboard_scale
 		self._i = i
 		self._main_player = i == HUDManager.PLAYER_PANEL
 		self._taken = false
@@ -762,7 +776,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		local character_icon = self._panel:bitmap({
 			name = "character_icon",
 			texture = tweak_data.blackmarket:get_character_icon("dallas"),
-			w = h,
+			w = VoidUI.options.scoreboard_character and h or 0,
 			h = h,
 			layer = 2
 		})
@@ -772,10 +786,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			color = Color.white,
 			vertical = "center",
-			font_size = 20,
-			x = character_icon:right(),
+			font_size = 20 * self._scale,
+			x = VoidUI.options.scoreboard_character and character_icon:right() or 5 * self._scale,
 			y = 2,
-			w = 230,
+			w = 230 * self._scale,
 			h = self._h / 2,
 			font = "fonts/font_medium_mf",
 		})
@@ -785,8 +799,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			color = Color.white,
 			vertical = "bottom",
-			font_size = 13,
-			x = character_icon:right(),
+			font_size = 13 * self._scale,
+			x = VoidUI.options.scoreboard_character and character_icon:right() or 5 * self._scale,
 			w = name:w(),
 			h = h - 2,
 			font = "fonts/font_medium_mf",
@@ -803,8 +817,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "kills_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = name_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_kills > 1 and name_bg:right() + 5 * self._scale or name_bg:right(),
+			w = VoidUI.options.scoreboard_kills > 1 and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -814,9 +828,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = kills_bg:x(),
-			w = h,
+			w = VoidUI.options.scoreboard_kills > 1 and h or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
@@ -824,8 +838,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "specials_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = kills_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_specials and kills_bg:right() + 5 * self._scale or kills_bg:right(),
+			w = VoidUI.options.scoreboard_specials and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -835,9 +849,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = specials_bg:x(),
-			w = h,
+			w = VoidUI.options.scoreboard_specials and h or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
@@ -845,8 +859,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "civs_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = specials_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_civs and specials_bg:right() + 5 * self._scale or specials_bg:right(),
+			w = VoidUI.options.scoreboard_civs and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -856,9 +870,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = civs_bg:x(),
-			w = h,
+			w = VoidUI.options.scoreboard_civs and h or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
@@ -866,8 +880,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "downs_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = civs_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_downs and civs_bg:right() + 5 * self._scale or civs_bg:right(),
+			w = VoidUI.options.scoreboard_downs and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -877,9 +891,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = downs_bg:x(),
-			w = h,
+			w = VoidUI.options.scoreboard_downs and h or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
@@ -887,8 +901,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "primary_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = downs_bg:right() + 5,
-			w = h * 2,
+			x = VoidUI.options.scoreboard_weapons and downs_bg:right() + 5 * self._scale or downs_bg:right(),
+			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h,
 			layer = 1
 		})
@@ -896,7 +910,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "primary_icon",
 			texture = managers.blackmarket:get_weapon_icon_path("new_m14"),
 			w = h * 1.8,
-			h = h * 0.8,
+			h = VoidUI.options.scoreboard_weapons and h * 0.8 or 0,
 			layer = 3
 		})
 		primary_icon:set_center(primary_bg:center())
@@ -904,7 +918,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "primary_rarity",
 			texture = managers.blackmarket:get_cosmetic_rarity_bg("common"),
 			visible = false,
-			w = h * 2,
+			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h * 0.8,
 			rotation = 360,
 			blend_mode = "add",
@@ -915,7 +929,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "primary_silencer",
 			texture = "guis/textures/pd2/blackmarket/inv_mod_silencer",
 			visible = false,
-			w = h * 0.3,
+			w = VoidUI.options.scoreboard_weapons and h * 0.3 or 0,
 			h = h * 0.3,
 			layer = 4
 		})
@@ -924,15 +938,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "secondary_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = primary_bg:right() + 5,
-			w = h * 2,
+			x = VoidUI.options.scoreboard_weapons and primary_bg:right() + 5 * self._scale or primary_bg:x(),
+			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h,
 			layer = 1
 		})
 		local secondary_icon = self._panel:bitmap({
 			name = "secondary_icon",
 			texture = managers.blackmarket:get_weapon_icon_path("glock_17"),
-			w = h * 1.8,
+			w = VoidUI.options.scoreboard_weapons and h * 1.8 or 0,
 			h = h * 0.8,
 			layer = 3
 		})
@@ -941,7 +955,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "secondary_rarity",
 			texture = managers.blackmarket:get_cosmetic_rarity_bg("common"),
 			visible = false,
-			w = h * 2,
+			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h * 0.8,
 			rotation = 360,
 			blend_mode = "add",
@@ -952,7 +966,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "secondary_silencer",
 			texture = "guis/textures/pd2/blackmarket/inv_mod_silencer",
 			visible = false,
-			w = h * 0.3,
+			w = VoidUI.options.scoreboard_weapons and h * 0.3 or 0,
 			h = h * 0.3,
 			layer = 4
 		})
@@ -961,15 +975,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "melee_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = secondary_bg:right() + 5,
-			w = h * 2,
+			x = VoidUI.options.scoreboard_weapons and secondary_bg:right() + 5 * self._scale or secondary_bg:x(),
+			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h,
 			layer = 1
 		})
 		local melee_icon = self._panel:bitmap({
 			name = "melee_icon",
 			texture = "guis/textures/pd2/blackmarket/icons/melee_weapons/brass_knuckles",
-			w = h * 1.8,
+			w = VoidUI.options.scoreboard_weapons and h * 1.8 or 0,
 			h = h * 0.8,
 			layer = 2
 		})
@@ -978,15 +992,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "armor_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = melee_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_armor and melee_bg:right() + 5 * self._scale or melee_bg:right(),
+			w = VoidUI.options.scoreboard_armor and h or 0,
 			h = h,
 			layer = 1
 		})
 		local armor_icon = self._panel:bitmap({
 			name = "armor_icon",
 			texture = "guis/textures/pd2/blackmarket/icons/armors/level_1",
-			w = h,
+			w = VoidUI.options.scoreboard_armor and h or 0,
 			h = h,
 			layer = 2
 		})
@@ -995,8 +1009,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "perk_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = armor_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_perk and armor_bg:right() + 5 * self._scale or armor_bg:right(),
+			w = VoidUI.options.scoreboard_perk and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -1004,7 +1018,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "perk_icon",
 			texture = tweak_data.skilltree:get_specialization_icon_data(1),
 			texture_rect = select(2, tweak_data.skilltree:get_specialization_icon_data(1)),
-			w = h * 0.8,
+			w = VoidUI.options.scoreboard_perk and h * 0.8 or 0,
 			h = h * 0.8,
 			layer = 2,
 			alpha = 0.6
@@ -1017,9 +1031,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 3,
 			vertical = "bottom",
 			align = "right",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = perk_bg:x(),
-			w = h / 1.1,
+			w = VoidUI.options.scoreboard_perk and h / 1.1 or 0,
 			h = h / 1.1,
 			font = "fonts/font_medium_shadow_mf",
 		})
@@ -1027,8 +1041,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "hours_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = perk_bg:right() + 5,
-			w = h * 1.5,
+			x = VoidUI.options.scoreboard_playtime and perk_bg:right() + 5 * self._scale or perk_bg:right(),
+			w = VoidUI.options.scoreboard_playtime and h * 1.5 or 0,
 			h = h,
 			layer = 1
 		})
@@ -1038,16 +1052,16 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = hours_bg:x(),
-			w = h * 1.5,
+			w = VoidUI.options.scoreboard_playtime and h * 1.5 or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
 		local skill_icon = self._panel:bitmap({
 			name = "skill_icon",
 			texture = "guis/textures/pd2/add_icon",
-			w = h * 0.8,
+			w = VoidUI.options.scoreboard_playtime and h * 0.8 or 0,
 			h = h * 0.8,
 			layer = 2,
 			alpha = 0.6,
@@ -1058,8 +1072,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			name = "ping_bg",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			texture_rect = {69,0,416,150},
-			x = hours_bg:right() + 5,
-			w = h,
+			x = VoidUI.options.scoreboard_ping and hours_bg:right() + 5 * self._scale or hours_bg:right(),
+			w = VoidUI.options.scoreboard_ping and h or 0,
 			h = h,
 			layer = 1
 		})
@@ -1069,10 +1083,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			layer = 2,
 			vertical = "center",
 			align = "center",
-			font_size = 15,
+			font_size = 15 * self._scale,
 			x = ping_bg:x(),
 			color = Color.green,
-			w = h,
+			w = VoidUI.options.scoreboard_ping and h or 0,
 			h = h,
 			font = "fonts/font_medium_mf",
 		})
@@ -1115,21 +1129,21 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			level = rank..lvl.." "
 		end
 		name:set_text(level .. player_name)
-		name:set_h(ai and self._h or self._h / 2)
-		name:set_y(ai and 0 or 2)
+		if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end
 		name:set_color(color)
 		name:set_range_color(0, math.max(0, utf8.len(level)), Color.white:with_alpha(1))
-		name:set_font_size(20)
+		local size = (20 * self._scale)
+		name:set_font_size(size)
 		local name_w = select(3, name:text_rect())
 		if name_w > name:w() then 
-			name:set_font_size(20 * (name:w()/name_w))
+			name:set_font_size(size * (name:w()/name_w))
 		end
 		character_icon:set_image(tweak_data.blackmarket:get_character_icon(character_name or "dallas"))
-		skills_text:set_visible(not ai)
+		skills_text:set_visible(VoidUI.options.scoreboard_skills and not ai or false)
 		perk_count:set_visible(not ai)
 		hours:set_visible(not ai)
 		skill_icon:set_visible(ai)
-		secondary_icon:set_w(ai and self._h * 0.8 or self._h * 1.8)
+		secondary_icon:set_w(VoidUI.options.scoreboard_weapons and (ai and self._h * 0.8 or self._h * 1.8) or 0)
 		secondary_icon:set_center_x(secondary_bg:center_x())
 		
 		if ai then 
@@ -1139,9 +1153,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local loadout = unit and unit:base()._loadout
 			if loadout then
 				local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", ""))
-				local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m14", unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
+				local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m14", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
 				primary_icon:set_image(texture)
-				primary_rarity:set_visible(rarity and true or false)
+				primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
 				primary_rarity:set_image(rarity and rarity)
 				secondary_icon:set_image(managers.blackmarket:get_mask_icon(loadout.mask))
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
@@ -1163,14 +1177,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				end
 			end
 		elseif outfit then
-			local texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m14", outfit.primary and outfit.primary.cosmetics)
+			local texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m14", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
 			primary_icon:set_image(texture)
-			primary_rarity:set_visible(rarity and true or false)
+			primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
 			primary_rarity:set_image(rarity and rarity)
 			primary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.primary and outfit.primary.factory_id, outfit.primary and outfit.primary.blueprint)["silencer"] and true or false)
-			texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", outfit.secondary and outfit.secondary.cosmetics)
+			texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", VoidUI.options.scoreboard_skins > 1 and outfit.secondary and outfit.secondary.cosmetics)
 			secondary_icon:set_image(texture)
-			secondary_rarity:set_visible(rarity and true or false)
+			secondary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
 			secondary_rarity:set_image(rarity and rarity)
 			secondary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.secondary and outfit.secondary.factory_id, outfit.secondary and outfit.secondary.blueprint)["silencer"] and true or false)
 			melee_icon:set_image(self:get_melee_weapon(outfit.melee_weapon and outfit.melee_weapon or "weapon"))
@@ -1215,10 +1229,11 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			hours:set_wrap(true)
 		end
 		hours:set_text(hours_played)
-		hours:set_font_size(15)
+		local size = 15 * self._scale
+		hours:set_font_size(size)
 		local hours_w = select(3, hours:text_rect())
 		if hours_w > hours:w() then
-			hours:set_font_size(15 * (hours:w()/ hours_w))
+			hours:set_font_size(size * (hours:w()/ hours_w))
 		end
 	end
 	function HUDScoreboard:set_ping(ping)

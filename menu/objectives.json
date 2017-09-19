@@ -4,8 +4,8 @@
 	"title" : "VoidUI_objectives_title",
 	"description" : "VoidUI_objectives_desc",
 	"back_callback" : "VoidUI_save",
-	"localized" :  true,
 	"priority" : 10,
+	"localized" :  true,
 	"items" : [
 		{
 			"type" : "slider",

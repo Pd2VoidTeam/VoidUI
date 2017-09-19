@@ -75,7 +75,7 @@ function HUDSuspicion:init(hud, sound_source)
 	local left_shade = self._suspicion_panel:bitmap({
 		name = "left_shade",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {309,239,-309,88},
+		texture_rect = {710,150,-309,88},
 		layer = 6,
 		w = 130 * self._scale,
 		h = 20 * self._scale,
@@ -85,7 +85,7 @@ function HUDSuspicion:init(hud, sound_source)
 	local right_shade = self._suspicion_panel:bitmap({
 		name = "right_shade",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {0,239,309,88},
+		texture_rect = {401,150,309,88},
 		layer = 6,
 		w = 130 * self._scale,
 		h = 20 * self._scale,

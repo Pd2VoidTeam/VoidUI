@@ -44,7 +44,20 @@ VoidUI.disable_list = {
 	["label_minscale"] = "label_minmode",
 	["label_minrank"] = "label_minmode",
 	["label_minmode_dist"] = "label_minmode",
-	["label_minmode_dot"] = "label_minmode"
+	["label_minmode_dot"] = "label_minmode",
+	["scoreboard_character"] = "scoreboard",
+	["scoreboard_skills"] = "scoreboard",
+	["scoreboard_kills"] = "scoreboard",
+	["scoreboard_specials"] = "scoreboard",
+	["scoreboard_civs"] = "scoreboard",
+	["scoreboard_downs"] = "scoreboard",
+	["scoreboard_weapons"] = "scoreboard",
+	["scoreboard_skins"] = "scoreboard",
+	["scoreboard_armor"] = "scoreboard",
+	["scoreboard_perk"] = "scoreboard",
+	["scoreboard_playtime"] = "scoreboard",
+	["scoreboard_ping"] = "scoreboard",
+	["ping_frequency"] = "scoreboard"	
 }
 
 function VoidUI:Save()
@@ -115,11 +128,28 @@ function VoidUI:DefaultConfig()
 		outlines = true,
 		health_jokers = true,
 		show_interact = true,
+		scoreboard_blur = true,
+		scoreboard = true,
+		scoreboard_character = true,
+		scoreboard_skills = true,
+		scoreboard_specials = true,
+		scoreboard_civs = true,
+		scoreboard_downs = true,
+		scoreboard_weapons = true,
+		scoreboard_armor = true,
+		scoreboard_perk = true,
+		scoreboard_playtime = true,
+		scoreboard_ping = true,
+		trophies = true,
+		scoreboard_skins = 2,
+		scoreboard_kills = 3,
+		ping_frequency = 2,
 		jammers = 2,
 		hud_scale = 1,
 		hud_main_scale = 1,
 		hud_mate_scale = 1,
 		hud_chat_scale = 1,
+		scoreboard_scale = 1,
 		hud_assault_scale = 1,
 		hud_objectives_scale = 1,
 		suspicion_scale = 1,
@@ -190,6 +220,15 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 		if assault then
 			chat._items_list[1]:set_value(item:value())
 		end
+		local interact = MenuHelper:GetMenu("VoidUI_interact")
+		if interact then 
+			interact._items_list[2]:set_value(item:value())
+			interact._items_list[7]:set_value(item:value())
+		end
+		local scoreboard = MenuHelper:GetMenu("VoidUI_scoreboard")
+		if scoreboard then 
+			scoreboard._items_list[1]:set_value(item:value())
+		end
 	end
 	MenuCallbackHandler.basic_option_clbk = function(self, item)
 		VoidUI.options[item:parameters().name] = item:value()
@@ -235,12 +274,9 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 	VoidUI:Load()
 	
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/chat.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/interact.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/assault.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/label.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/objectives.json", VoidUI, VoidUI.options)
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/hudteammate.json", VoidUI, VoidUI.options)
+	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
+		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..file, VoidUI, VoidUI.options)
+	end
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)

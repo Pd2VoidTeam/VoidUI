@@ -2,14 +2,19 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 0.6.1 (2017.09.11)
-- Updated interaction panel to support cyrillic characters
-- Updated carried bag panel to support cyrillic characters
-- Added presenter popup when completing a trophy or a side job
-- Fixed captain buff icon looping the show animation.
-- Fixed presenter panel animating when the game is paused
-- Fixed crash related to bot weapons
-- Fixed a crash related to scoreboard kills
+## What's new in 0.7 (2017.09.19)
+- Reworked how the police badge works
+- Added a crime spree version of the police badge
+- Added golden text and border for completed trophy and side-job presenters
+- Added options for the scoreboard
+- Updated the texture of the police badge
+- Changed the ping update frequency from 5 seconds to 2 seconds
+- Global scale now modifies the interaction and detection scales as well
+- Bots armor will default to full when they replace a leaving player
+- Bot health will always show up as a percentage
+- Fixed scoreboard not correctly displaying the difficulty in crime spree
+- Fixed wave panel being missaligned when the police badge is disabled
+- Fixed stat panel sometimes showing mission bags as 0/0
 
 ## Credits
 - Most part of the hud made by Xeletron
@@ -34,3 +39,5 @@ Copyright (C) 2017 Xeletron
 
     You should have received a copy of the GNU General Public License
     along with this program (LICENSE file). If not, see <http://www.gnu.org/licenses/>.
+	
+

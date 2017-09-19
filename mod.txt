@@ -5,7 +5,7 @@
 	"contact" : "xeletron1@gmail.com",
     "version" : "0.6.1",
 	"blt_version" : 2,
-	"image" : "guis/textures/VoidUI/mod_icon.texture",
+	"image" : "guis/textures/mod_icon.texture",
     "color" : "0.3 0.3 0.3",
 	"priority" : 100,
     "updates" : [
@@ -13,7 +13,7 @@
             "revision" : 1,
             "identifier" : "VoidUI"
         }
-    ]
+    ],
     "hooks" : [  
         {"hook_id" : "lib/managers/menumanager", "script_path" : "main.lua"},
         {"hook_id" : "lib/managers/hud/Hudteammate", "script_path" : "main.lua"},

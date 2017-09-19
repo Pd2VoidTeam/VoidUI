@@ -1,6 +1,6 @@
-CloneClass(HUDTeammate)
+local init = HUDTeammate.init
 function HUDTeammate:init(i, teammates_panel, is_player, width) 
-	self.orig.init(self, i, teammates_panel, is_player, width)
+	init(self, i, teammates_panel, is_player, width)
 	local teammate_panel = self._panel
 	self._teammates_panel = teammates_panel
 	self._main_scale = VoidUI.options.hud_main_scale
@@ -738,6 +738,7 @@ function HUDTeammate:set_state(state)
 			name:set_x(9 * self._mate_scale)
 			name_shadow:set_position(name:x() + 1, name:y() + 1)
 			self:set_health({current = 100, total = 100})
+			self:set_armor({current = 100, total = 100})
 			name:show()
 			name_shadow:show()
 			weapons_panel:hide()
@@ -852,6 +853,11 @@ function HUDTeammate:round(number)
 	end
 end
 function HUDTeammate:set_health(data)
+	if self:ai() then 
+		data.current = (data.current / data.total) * 10
+		data.total = 10
+	end
+	
 	self._health_data = data
 	local health_stored = self._custom_player_panel:child("health_stored")
 	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
@@ -859,7 +865,6 @@ function HUDTeammate:set_health(data)
 	local health_background = health_panel:child("health_background")
 	local health_bar = health_panel:child("health_bar")
 	local health_value = health_panel:child("health_value")
-	
 	local show_health_value = self._main_player and VoidUI.options.main_health or VoidUI.options.mate_health
 	local amount = math.clamp(data.current / data.total, 0, 1)
 	if amount < math.clamp(health_bar:h() / self._bg_h, 0, 1) then self:_damage_taken() end

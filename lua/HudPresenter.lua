@@ -33,7 +33,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 		local w = 100
 		local x = self._hud_panel:w() - 200
 		local y = self._hud_panel:h() / 2 - (h / 2)
-		
+		local color = params.color or Color.white
 		local present_panel = self._hud_panel:panel({
 			visible = false,
 			name = "present_panel_"..id,
@@ -61,7 +61,18 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			w = 35,
 			h = h,
 			rotation = 360,
-			alpha = 1
+		})
+		local present_border_left = present_panel:bitmap({
+			name = "present_border_left",
+			texture = "guis/textures/VoidUI/hud_highlights",
+			texture_rect = {0,0,23,157},
+			layer = 2,
+			y = 0,
+			w = 15,
+			h = h,
+			rotation = 360,
+			color = color,
+			visible = params.border and true or false,
 		})
 		local present_bg = present_panel:bitmap({
 			name = "present_bg",
@@ -73,7 +84,19 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			x = 35,
 			y = 0,
 			rotation = 360,
-			alpha = 1
+		})	
+		local present_border = present_panel:bitmap({
+			name = "present_border",
+			texture = "guis/textures/VoidUI/hud_highlights",
+			texture_rect = {23,0,480,157},
+			layer = 2,
+			w = w,
+			h = h,
+			x = 15,
+			y = 0,
+			rotation = 360,
+			color = color,
+			visible = params.border and true or false,
 		})	
 		local present_bg_right = present_panel:bitmap({
 			name = "present_bg_right",
@@ -84,10 +107,8 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			w = 35,
 			h = h,
 			rotation = 360,
-			alpha = 1
 		})
 		present_bg_right:set_left(present_bg:right())
-		
 		local title = present_panel:text({
 			name = "title",
 			text = params.title or "ERROR",
@@ -95,7 +116,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			valign = "left",
 			layer = 2,
 			x = 15,
-			color = Color.white:with_alpha(1),
+			color = color,
 			rotation = 360,
 			font = tweak_data.hud_present.title_font,
 			font_size = tweak_data.hud_present.title_size / 1.5
@@ -109,7 +130,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			valign = "top",
 			layer = 2,
 			x = 9,
-			color = Color.white,
+			color = color,
 			rotation = 360,
 			font = tweak_data.hud_present.text_font,
 			font_size = tweak_data.hud_present.text_size / 1.5
@@ -213,8 +234,8 @@ elseif RequiredScript == "lib/managers/customsafehousemanager" then
 	function CustomSafehouseManager:complete_trophy(trophy_or_id)
 		complete_trophy(self, trophy_or_id)
 		local trophy = type(trophy_or_id) == "table" and trophy_or_id or self:get_trophy(trophy_or_id)
-		if managers.hud and trophy and trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_trophy"), text = managers.localization:text(trophy.name_id)})
+		if VoidUI.options.trophies and managers.hud and trophy and trophy.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_trophy"), text = managers.localization:text(trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
 		end
 	end
 	
@@ -225,8 +246,8 @@ elseif RequiredScript == "lib/managers/customsafehousemanager" then
 			return
 		end
 		
-		if managers.hud and self._global.daily and self._global.daily.trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_daily"), text = managers.localization:text(self._global.daily.trophy.name_id)})
+		if VoidUI.options.trophies and managers.hud and self._global.daily and self._global.daily.trophy.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_daily"), text = managers.localization:text(self._global.daily.trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
 		end
 	end
 	
@@ -236,8 +257,8 @@ elseif RequiredScript == "lib/managers/challengemanager" then
 	function ChallengeManager:_check_challenge_completed(id, key)
 		check_challenge_completed(self, id, key)
 		local active_challenge = self:get_active_challenge(id, key)
-		if managers.hud and active_challenge and active_challenge.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:text("VoidUI_challenge"), text = managers.localization:text(active_challenge.name_id)})
+		if VoidUI.options.trophies and managers.hud and active_challenge and active_challenge.completed then
+			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_challenge"), text = managers.localization:text(active_challenge.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
 		end
 	end
 	

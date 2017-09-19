@@ -8,42 +8,23 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		hud.panel:child("point_of_no_return_panel"):set_alpha(0)
 		hud.panel:child("casing_panel"):set_alpha(0)
 		hud.panel:child("buffs_panel"):set_alpha(0)
-		self._hud_panel = hud.panel:panel({name = "custom_assault_panel"})
-		self._full_hud_panel = full_hud.panel
+		self._custom_hud_panel = hud.panel:panel({name = "custom_assault_panel"})
 		self._pagers = 4
 		self._noreturn_time = 0
 		self._noreturn_time_current = 0
 		self._assault_phase = 0
 		self._scale = VoidUI.options.hud_assault_scale
-		if managers.job:current_difficulty_stars() % 2 == 0 then
-			self._skulls_position = {
-				{6, -5},
-				{-6, -5},
-				{-15, -13},
-				{15, -13},
-				{-21, -25},
-				{21, -25}
-			}
-		else
-			self._skulls_position = {
-				{0, -2},
-				{11, -9},
-				{-11, -9},
-				{19, -20},
-				{-19, -20}
-			}
+		if self._custom_hud_panel:child("assault_panel") then
+			self._custom_hud_panel:remove(self._custom_hud_panel:child("assault_panel"))
 		end
-		if self._hud_panel:child("assault_panel") then
-			self._hud_panel:remove(self._hud_panel:child("assault_panel"))
-		end
-		local assault_panel = self._hud_panel:panel({
+		local assault_panel = self._custom_hud_panel:panel({
 			visible = false,
 			name = "assault_panel",
 			w = 400 * self._scale,
 			h = 100 * self._scale
 		})
 		assault_panel:set_top(0)
-		assault_panel:set_right(self._hud_panel:w())
+		assault_panel:set_right(self._custom_hud_panel:w())
 		self._assault_mode = "normal"
 		self._assault_color = Color(1, 1, 1, 0)
 		self._vip_assault_color = Color(1, 1, 0.5019608, 0)
@@ -61,7 +42,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			visible = VoidUI.options.show_badge,
 			layer = 3,
 			texture = extras_texture,
-			texture_rect = {111, 8, 116, 140},
+			texture_rect = {0, 0, 116, 140},
 			x = 0,
 			y = 10 * self._scale,
 			w = 60 * self._scale,
@@ -71,46 +52,32 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		
 		local difficulty = managers.job:current_difficulty_stars()
 		if managers.crime_spree:is_active() then 
-			local skull = assault_panel:text({
-					name = "skull_1",
+			icon_assaultbox:set_texture_rect(812, 0, 116, 140)
+			local assaultbox_skulls = assault_panel:text({
+					name = "assaultbox_skulls",
 					align = "center",
 					vertical = "center",
 					color = self._assault_color,
-					text = managers.localization:to_upper_text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")}),
-					font_size =	12,
+					text = managers.crime_spree:server_spree_level(),
+					font_size =	20,
 					font = tweak_data.hud_corner.assault_font,
-					w = 100 * self._scale,
-					h = 14 * self._scale,
+					w = assault_panel:w() / 2,
+					h = assault_panel:h(),
 					alpha = 0,
 					layer = 4
-				})
-				local position = self._skulls_position[1]
-				if position then
-					skull:set_center_x(icon_assaultbox:center_x() + position[1])
-					skull:set_bottom(icon_assaultbox:bottom() + position[2]) 
-				end
+			})
+			assaultbox_skulls:set_center(icon_assaultbox:center_x() - 1, icon_assaultbox:center_y())
 		elseif difficulty > 0 then
-			for i = 1, difficulty do
-				local skull = assault_panel:text({
-					name = "skull_"..i,
-					align = "center",
-					vertical = "center",
-					color = self._assault_color,
-					text = managers.localization:get_default_macro("BTN_SKULL"),
-					font_size =	12,
-					font = tweak_data.hud_corner.assault_font,
-					w = 12 * self._scale,
-					h = 12 * self._scale,
-					alpha = 0,
-					layer = 4,
-					visible = VoidUI.options.show_badge
-				})
-				local position = self._skulls_position[i]
-				if position then
-					skull:set_center_x(icon_assaultbox:center_x() + position[1] * self._scale)
-					skull:set_bottom(icon_assaultbox:bottom() + position[2] * self._scale) 
-				end
-			end
+			local assaultbox_skulls = assault_panel:bitmap({
+				name = "assaultbox_skulls",
+				visible = VoidUI.options.show_badge,
+				layer = 4,
+				texture = extras_texture,
+				texture_rect = {difficulty * 116, 0, 116, 140},
+				w = 60 * self._scale,
+				h = 70 * self._scale
+			})
+			assaultbox_skulls:set_center(icon_assaultbox:center())
 		end
 		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 		local assaultbox_panel = assault_panel:panel({
@@ -149,12 +116,12 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			w = VoidUI.options.show_badge and background:w() or background:w() - 20 * self._scale
 		}):set_center(background:center())
 		
-		local icons_panel = self._hud_panel:panel({
+		local icons_panel = self._custom_hud_panel:panel({
 			name = "icons_panel",
 			w = 240 * self._scale,
 			h = 64 * self._scale,
 		})
-		icons_panel:set_right(self._hud_panel:w())
+		icons_panel:set_right(self._custom_hud_panel:w())
 			
 		local panel_w, panel_h = 44 * self._scale, 38 * self._scale
 		local hostages_panel = icons_panel:panel({
@@ -347,19 +314,19 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			font_size = panel_h / 2
 		})
 		
-		if self._hud_panel:child("wave_panel") then
-			self._hud_panel:remove(self._hud_panel:child("wave_panel"))
+		if self._custom_hud_panel:child("wave_panel") then
+			self._custom_hud_panel:remove(self._custom_hud_panel:child("wave_panel"))
 		end
 		self._max_waves = tweak_data.safehouse.combat.waves[Global.game_settings.difficulty or "normal"]
 		self._wave_number = 0
 		if self:is_safehouse_raid() then
 			hostages_panel:hide()
-			local wave_panel = self._hud_panel:panel({
+			local wave_panel = self._custom_hud_panel:panel({
 				name = "wave_panel",
 				w = panel_w,
 				h = panel_h
 			})
-			wave_panel:set_right(self._hud_panel:w() - 5)
+			wave_panel:set_right(self._custom_hud_panel:w() - 5)
 			local waves_background = wave_panel:bitmap({
 				name = "waves_background",
 				texture = highlight_texture,
@@ -407,15 +374,15 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			})
 		end
 		
-		if self._hud_panel:child("point_of_no_return_panel") then
-			self._hud_panel:remove(self._hud_panel:child("point_of_no_return_panel"))
+		if self._custom_hud_panel:child("point_of_no_return_panel") then
+			self._custom_hud_panel:remove(self._custom_hud_panel:child("point_of_no_return_panel"))
 		end
-		local point_of_no_return_panel = self._hud_panel:panel({
+		local point_of_no_return_panel = self._custom_hud_panel:panel({
 			visible = false,
 			name = "point_of_no_return_panel",
 			w = 300 * self._scale,
 			h = 60 * self._scale,
-			x = self._hud_panel:w() - 300 * self._scale
+			x = self._custom_hud_panel:w() - 300 * self._scale
 		})
 		self._noreturn_color = Color(1, 1, 0, 0)
 		local noreturnbox_panel = point_of_no_return_panel:panel({
@@ -471,7 +438,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			visible = true,
 			layer = 2,
 			texture = extras_texture,
-			texture_rect = {231,0,148,148},
+			texture_rect = {1038,0,148,148},
 			x = 0,
 			y = 2 * self._scale,
 			w = 56 * self._scale,
@@ -502,15 +469,15 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			w = 240 * self._scale
 		})
 		
-		if self._hud_panel:child("casing_panel") then
-			self._hud_panel:remove(self._hud_panel:child("casing_panel"))
+		if self._custom_hud_panel:child("casing_panel") then
+			self._custom_hud_panel:remove(self._custom_hud_panel:child("casing_panel"))
 		end
-		local casing_panel = self._hud_panel:panel({
+		local casing_panel = self._custom_hud_panel:panel({
 			visible = false,
 			name = "casing_panel",
 			w = 300 * self._scale,
 			h = 40 * self._scale,
-			x = self._hud_panel:w() - 300 * self._scale
+			x = self._custom_hud_panel:w() - 300 * self._scale
 		})
 		local casingbox_panel = casing_panel:panel({
 			visible = false,
@@ -560,24 +527,24 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			layer = 1,
 			w = 260 * self._scale
 		})
-		if self._hud_panel:child("buffs_panel") then
-			self._hud_panel:remove(self._hud_panel:child("buffs_panel"))
+		if self._custom_hud_panel:child("buffs_panel") then
+			self._custom_hud_panel:remove(self._custom_hud_panel:child("buffs_panel"))
 		end
 		local width = 200 * self._scale
-		local buffs_panel = self._hud_panel:panel({
+		local buffs_panel = self._custom_hud_panel:panel({
 			visible = false,
 			name = "buffs_panel",
 			w = 200 * self._scale,
 			h = 100 * self._scale,
 		})
-		buffs_panel:set_right(self._hud_panel:w())
+		buffs_panel:set_right(self._custom_hud_panel:w())
 		
 		local vip_icon = buffs_panel:bitmap({
 			name = "vip_icon",
 			visible = true,
 			layer = 5,
 			texture = extras_texture,
-			texture_rect = {0, 0, 110, 149},
+			texture_rect = {929, 0, 109, 148},
 			x = 0,
 			y = 10 * self._scale,
 			w = 60 * self._scale,
@@ -622,7 +589,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 
 	function HUDAssaultCorner:_animate_text(text_panel, bg_box, color, color_function)
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local text = assault_panel:child("text_panel")
 		local text_list = bg_box or text:script().text_list
 		local text_index = 0
@@ -724,7 +691,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:set_assault_wave_number(assault_number)
 		self._wave_number = assault_number
-		local panel = self._hud_panel:child("wave_panel")
+		local panel = self._custom_hud_panel:child("wave_panel")
 		local current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or self._wave_number
 		local max = self._max_waves or 0
 		if panel then
@@ -736,40 +703,52 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:_update_assault_hud_color(color)
 		self._current_assault_color = color
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local assaultbox_border = assault_panel:child("assaultbox_panel"):child("border")
 		assaultbox_border:set_color(color)
 	end
 	function HUDAssaultCorner:set_buff_enabled(buff_name, enabled)
-		local vip_icon = self._hud_panel:child("buffs_panel"):child("vip_icon")
-		local size_w = VoidUI.options.show_badge and 60 * self._scale or 30 * self._scale
-		local size_h = VoidUI.options.show_badge and 70 * self._scale or 35 * self._scale
-		if enabled == true then 
-			self._hud_panel:child("buffs_panel"):set_visible(true)
-		else
-			self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(true) 
-		end
-		vip_icon:set_size(size_w, size_h)
-		vip_icon:set_right(VoidUI.options.show_badge and vip_icon:parent():w() - 10 * self._scale or - 40 * self._scale)
-		vip_icon:set_y(VoidUI.options.show_badge and 10 * self._scale or -2 * self._scale)
-		if enabled and self._hud_panel:child("buffs_panel"):visible() == false or not enabled and self._hud_panel:child("buffs_panel"):visible() == true then 
+		local buffs_panel = self._custom_hud_panel:child("buffs_panel")
+		local vip_icon = buffs_panel:child("vip_icon")
+		local assaultbox_skulls = self._custom_hud_panel:child("assault_panel"):child("assaultbox_skulls")
+		
+		if enabled and not buffs_panel:visible() then
+			local size_w = VoidUI.options.show_badge and 60 * self._scale or 30 * self._scale
+			local size_h = VoidUI.options.show_badge and 70 * self._scale or 35 * self._scale
+			vip_icon:set_size(size_w, size_h)
+			vip_icon:set_right(VoidUI.options.show_badge and vip_icon:parent():w() - 10 * self._scale or - 40 * self._scale)
+			vip_icon:set_y(VoidUI.options.show_badge and 10 * self._scale or -2 * self._scale)
+			local centerx, centery = vip_icon:center()
+			buffs_panel:set_visible(true)
 			vip_icon:stop()
 			vip_icon:animate(function(o)
-				local centerx = vip_icon:center_x()
-				local centery = vip_icon:center_y()
 				over(0.4, function(p)
 					if alive(vip_icon) then
-						vip_icon:set_size(math.lerp(enabled and 150 * self._scale or size_w, enabled and size_w or 150 * self._scale, p), math.lerp(enabled and 160 * self._scale or size_h, enabled and size_h or 160 * self._scale, p))
-						vip_icon:set_alpha(math.lerp(enabled and 0 or 1, enabled and 1 or 0, p))
-						vip_icon:set_center_x(centerx) vip_icon:set_center_y(centery)
+						vip_icon:set_size(math.lerp(150 * self._scale, size_w, p), math.lerp(160 * self._scale, size_h, p))
+						vip_icon:set_alpha(math.lerp(0, 1, p))
+						vip_icon:set_center(centerx, centery) 
 					end
 				end)
 				if VoidUI.options.show_badge and VoidUI.options.anim_badge then vip_icon:animate(callback(self, self, "_animate_icon"), false) end
-				if enabled == false then 
-					self._hud_panel:child("buffs_panel"):set_visible(false)
-				else
-					self._hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
-				end
+				self._custom_hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(false) 
+				if assaultbox_skulls then assaultbox_skulls:set_visible(false) end
+			end)
+		elseif not enabled and buffs_panel:visible() then
+			local size_w = vip_icon:w()
+			local size_h = vip_icon:h()
+			local centerx, centery = vip_icon:center()
+			self._custom_hud_panel:child("assault_panel"):child("icon_assaultbox"):set_visible(true) 
+			if assaultbox_skulls then assaultbox_skulls:set_visible(true) end
+			vip_icon:stop()
+			vip_icon:animate(function(o)
+				over(0.4, function(p)
+					if alive(vip_icon) then
+						vip_icon:set_size(math.lerp(size_w, 150 * self._scale, p), math.lerp(size_h, 160 * self._scale, p))
+						vip_icon:set_alpha(math.lerp(1, 0, p))
+						vip_icon:set_center(centerx, centery) 
+					end
+				end)
+				buffs_panel:set_visible(false)
 			end)
 		end
 	end
@@ -880,7 +859,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		end
 	end
 	function HUDAssaultCorner:_set_text_list(text_list)
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local text_panel = assault_panel:child("text_panel")
 		text_panel:script().text_list = text_panel:script().text_list or {}
 		while #text_panel:script().text_list > 0 do
@@ -892,9 +871,19 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:_start_assault(text_list)
 		text_list = text_list or {""}
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local assaultbox_panel = assault_panel:child("assaultbox_panel")
 		local icon_assaultbox = assault_panel:child("icon_assaultbox")
+		local assaultbox_skulls = assault_panel:child("assaultbox_skulls")
+		
+		if managers.crime_spree:is_active() then
+			assaultbox_skulls:set_font_size(15)
+			assaultbox_skulls:set_text(managers.crime_spree:server_spree_level())
+			local w = select(3, assaultbox_skulls:text_rect())
+			if w > assaultbox_skulls:w() then
+				assaultbox_skulls:set_font_size(15 * (15 / w))
+			end
+		end
 		
 		self:_set_text_list(text_list)
 		if self._assault == true then 
@@ -920,6 +909,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		
 		assault_panel:set_visible(true)
 		icon_assaultbox:set_visible(VoidUI.options.show_badge)
+		if assaultbox_skulls then assaultbox_skulls:set_visible(VoidUI.options.show_badge) end
 		icon_assaultbox:stop()
 		icon_assaultbox:animate(callback(self, self, "_show_icon_assaultbox"), true)
 		assaultbox_panel:stop()
@@ -940,7 +930,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			return
 		end
 		
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local assaultbox_panel = assault_panel:child("assaultbox_panel")
 		local text_panel = assaultbox_panel:child("text_panel")
 		local icon_assaultbox = assault_panel:child("icon_assaultbox")
@@ -949,7 +939,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		
 		self._remove_hostage_offset = true
 		self._start_assault_after_hostage_offset = nil
-		local icon_assaultbox = self._hud_panel:child("assault_panel"):child("icon_assaultbox")
+		local icon_assaultbox = self._custom_hud_panel:child("assault_panel"):child("icon_assaultbox")
 		icon_assaultbox:stop()
 		if self:is_safehouse_raid() then
 			self:_update_assault_hud_color(self._assault_survived_color)
@@ -962,8 +952,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		end
 	end
 	function HUDAssaultCorner:_close_assault_box()
-		local icon_assaultbox = self._hud_panel:child("assault_panel"):child("icon_assaultbox")
-		local assaultbox_panel = self._hud_panel:child("assault_panel"):child("assaultbox_panel")
+		local icon_assaultbox = self._custom_hud_panel:child("assault_panel"):child("icon_assaultbox")
+		local assaultbox_panel = self._custom_hud_panel:child("assault_panel"):child("assaultbox_panel")
 		assaultbox_panel:stop()
 		assaultbox_panel:animate(callback(self, self, "_hide_assaultbox"))
 		icon_assaultbox:stop()
@@ -975,7 +965,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local background = assaultbox:child("background")
 		local border = assaultbox:child("border")
 		local text_panel = assaultbox:child("text_panel")
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
 		local icon_assaultbox = assault_panel:child("icon_assaultbox")
 		
 		assaultbox:set_right(offsetted and (VoidUI.options.show_badge and icon_assaultbox:left() + 20 * self._scale or assaultbox:parent():w()) or assaultbox:parent():w())
@@ -1022,50 +1012,31 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		end
 		self:sync_set_assault_mode("normal")
 	end
-	function HUDAssaultCorner:_animate_skull(skull, show, delay, i)
-		skull:set_alpha(show and 0 or 1)
-		wait(delay)
-		local TOTAL_T = 0.2
-		local t = 0
-		local icon_assaultbox = self._hud_panel:child("assault_panel"):child("icon_assaultbox")
-		skull:set_visible(VoidUI.options.show_badge)
-		local position = self._skulls_position[i]
-		if position then
-			skull:set_center_x(icon_assaultbox:center_x() + position[1] * self._scale)
-			skull:set_bottom(icon_assaultbox:bottom() + position[2] * self._scale) 
-		end
-		if show then skull:set_font_size(12 * self._scale) end
-		while TOTAL_T > t do
-			local dt = coroutine.yield()
-			t = t + dt
-			skull:set_alpha(math.lerp(show and 0 or 1, show and 1 or 0, t / TOTAL_T))
-		end
-	end
 	function HUDAssaultCorner:_show_icon_assaultbox(icon_assaultbox, big_logo)
 		local TOTAL_T = 0.5
 		local t = 0
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
+		local assaultbox_skulls = assault_panel:child("assaultbox_skulls")
 		icon_assaultbox:set_size(big_logo and 60 * self._scale or 30 * self._scale,big_logo and 70 * self._scale or 30 * self._scale)
 		icon_assaultbox:set_right(big_logo and (icon_assaultbox:parent():w() - 10 * self._scale) or (icon_assaultbox:parent():w() - 8 * self._scale))
 		icon_assaultbox:set_y(big_logo and 10 * self._scale or 0)
 		local center_x = icon_assaultbox:center_x()
 		local center_y = icon_assaultbox:center_y()
+		local crime_spree = managers.crime_spree:is_active()
+		local spree_size = crime_spree and assaultbox_skulls:font_size() or 0
 		icon_assaultbox:set_alpha(1)
-		local difficulty = managers.crime_spree:is_active() and 1 or managers.job:current_difficulty_stars()
-		
-		if VoidUI.options.show_badge and big_logo then
-			for i = 1, difficulty do
-				assault_panel:child("skull_"..i):stop()
-				assault_panel:child("skull_"..i):animate(callback(self, self, "_animate_skull"), true, 0.8 + ((i - 1) / 20), i) 
-			end
-		end
-		
+		if assaultbox_skulls then assaultbox_skulls:set_alpha(1) end
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
-			icon_assaultbox:set_size(math.lerp(0, big_logo and 70 * self._scale or 35 * self._scale, t / TOTAL_T), math.lerp(0, big_logo and 80 * self._scale or 35 * self._scale, t / TOTAL_T))
+			icon_assaultbox:set_size(math.lerp(0, big_logo and 70 * self._scale or 35 * self._scale, t / TOTAL_T), math.lerp(0, big_logo and 80 * self._scale or 35 * self._scale, t / TOTAL_T))			
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
+			if assaultbox_skulls then 
+				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+				assaultbox_skulls:set_center(icon_assaultbox:center())
+				if crime_spree then assaultbox_skulls:set_font_size(math.lerp(0, (spree_size + 2) * self._scale, t / TOTAL_T)) end
+			end
 		end
 		local TOTAL_T = 0.3
 		local t = 0
@@ -1075,6 +1046,11 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_size(math.lerp(big_logo and 70 * self._scale or 35 * self._scale, big_logo and 60 * self._scale or 30 * self._scale, t / TOTAL_T), math.lerp(big_logo and 80 * self._scale or 35 * self._scale, big_logo and 70 * self._scale or 30 * self._scale, t / TOTAL_T))
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
+			if assaultbox_skulls then 
+				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+				assaultbox_skulls:set_center(icon_assaultbox:center())
+				if crime_spree then assaultbox_skulls:set_font_size(math.lerp((spree_size + 2) * self._scale, spree_size, t / TOTAL_T)) end
+			end
 		end
 		if VoidUI.options.show_badge and VoidUI.options.anim_badge and big_logo then
 			icon_assaultbox:animate(callback(self, self, "_animate_icon"), true) 
@@ -1084,20 +1060,15 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local TOTAL_T = 0.4
 		local t = 0
 		
-		local assault_panel = self._hud_panel:child("assault_panel")
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
+		local assaultbox_skulls = assault_panel:child("assaultbox_skulls")
 		local w = icon_assaultbox:w()
 		local h = icon_assaultbox:h()
 		local center_x = icon_assaultbox:center_x()
 		local center_y = icon_assaultbox:center_y()
-		local difficulty = managers.crime_spree:is_active() and 1 or managers.job:current_difficulty_stars()
+		local crime_spree = managers.crime_spree:is_active()
 		
 		if VoidUI.options.show_badge and big_logo then
-		
-			for i = 1, difficulty do
-				assault_panel:child("skull_"..i):stop()
-				assault_panel:child("skull_"..i):animate(callback(self, self, "_animate_skull"), false, 0.1, i) 
-			end
-			
 			while TOTAL_T > t do
 				local dt = coroutine.yield()
 				t = t + dt
@@ -1105,6 +1076,11 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				icon_assaultbox:set_h(math.lerp(h, 70 * self._scale, t / TOTAL_T))
 				icon_assaultbox:set_center_x(center_x)
 				icon_assaultbox:set_center_y(center_y)
+				if assaultbox_skulls then 
+					assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+					assaultbox_skulls:set_center(icon_assaultbox:center())
+					if crime_spree then assaultbox_skulls:set_alpha(math.lerp(1,0, t / TOTAL_T)) end
+				end
 			end
 		end
 		
@@ -1118,6 +1094,10 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_h(math.lerp(big_logo and 70 * self._scale or 30 * self._scale, big_logo and 80 * self._scale or 35 * self._scale, t / TOTAL_T))
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
+			if assaultbox_skulls then 
+				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+				assaultbox_skulls:set_center(icon_assaultbox:center())
+			end
 		end
 		self:_set_hostage_offseted(false, false)
 		local t = 0
@@ -1128,9 +1108,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_h(math.lerp(big_logo and 80 * self._scale or 35 * self._scale, 0, t / TOTAL_T))
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
+			if assaultbox_skulls then 
+				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+				assaultbox_skulls:set_center(icon_assaultbox:center())
+			end
 		end
 		
 		icon_assaultbox:set_alpha(0)
+		if assaultbox_skulls then assaultbox_skulls:set_alpha(0) end
 		if not self._casing then
 			self:_show_hostages()
 		end
@@ -1141,8 +1126,10 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local d = true
 		local center_x = icon_assaultbox:center_x()
 		local center_y = icon_assaultbox:center_y()
-		local assault_panel = self._hud_panel:child("assault_panel")
-		local difficulty = managers.crime_spree:is_active() and 1 or managers.job:current_difficulty_stars()
+		local assault_panel = self._custom_hud_panel:child("assault_panel")
+		local assaultbox_skulls = assault_panel:child("assaultbox_skulls")
+		local crime_spree = managers.crime_spree:is_active()
+		if crime_spree then spree_size = assaultbox_skulls:font_size() end
 		wait(0.5)
 		while true do
 			local dt = coroutine.yield()
@@ -1150,17 +1137,10 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			icon_assaultbox:set_size(math.lerp(d and 60 * self._scale or 70 * self._scale, d and 70 * self._scale or 60 * self._scale, t / TOTAL_T), math.lerp(d and 70 * self._scale or 80 * self._scale, d and 80 * self._scale or 70 * self._scale, t / TOTAL_T))
 			icon_assaultbox:set_center_x(center_x)
 			icon_assaultbox:set_center_y(center_y)
-			if skulls then
-				for i = 1, difficulty do
-					local skull = assault_panel:child("skull_"..i)
-					local position = self._skulls_position[i]
-					skull:set_font_size(math.lerp(d and 12 * self._scale or 14 * self._scale, d and 14 * self._scale or 12 * self._scale, t / TOTAL_T))
-					skull:set_visible(icon_assaultbox:visible() and VoidUI.options.show_badge or false)
-					if position then
-						skull:set_center_x(math.lerp(d and icon_assaultbox:center_x() + position[1] * self._scale or icon_assaultbox:center_x() + position[1] * self._scale * 1.16, d and icon_assaultbox:center_x() + position[1] * self._scale * 1.16 or icon_assaultbox:center_x() + position[1] * self._scale, t / TOTAL_T))
-						skull:set_bottom(math.lerp(d and icon_assaultbox:bottom() + position[2] * self._scale or icon_assaultbox:bottom() + position[2] * self._scale * 1.16, d and icon_assaultbox:bottom() + position[2] * self._scale * 1.16 or icon_assaultbox:bottom() + position[2] * self._scale, t / TOTAL_T)) 
-					end
-				end
+			if skulls and assaultbox_skulls then 
+				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
+				assaultbox_skulls:set_center(icon_assaultbox:center())
+				if crime_spree then assaultbox_skulls:set_font_size(math.lerp(d and spree_size * self._scale or (spree_size + 2) * self._scale, d and (spree_size + 2) * self._scale or spree_size * self._scale, t / TOTAL_T)) end
 			end
 			
 			if 
@@ -1170,37 +1150,37 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		end
 	end
 	function HUDAssaultCorner:_show_hostages()
-		self._hud_panel:child("icons_panel"):animate(function(o)
-			local alpha = self._hud_panel:child("icons_panel"):alpha()
+		self._custom_hud_panel:child("icons_panel"):animate(function(o)
+			local alpha = self._custom_hud_panel:child("icons_panel"):alpha()
 			over(0.2, function(p)
-				if alive(self._hud_panel:child("icons_panel")) then
-					self._hud_panel:child("icons_panel"):set_alpha(math.lerp(alpha, 1, p))
+				if alive(self._custom_hud_panel:child("icons_panel")) then
+					self._custom_hud_panel:child("icons_panel"):set_alpha(math.lerp(alpha, 1, p))
 				end
 			end)
 		end)
 	end
 	function HUDAssaultCorner:_hide_hostages()
-		self._hud_panel:child("icons_panel"):animate(function(o)
-			local alpha = self._hud_panel:child("icons_panel"):alpha()
+		self._custom_hud_panel:child("icons_panel"):animate(function(o)
+			local alpha = self._custom_hud_panel:child("icons_panel"):alpha()
 			over(0.2, function(p)
-				if alive(self._hud_panel:child("icons_panel")) then
-					self._hud_panel:child("icons_panel"):set_alpha(math.lerp(alpha, 0, p))
+				if alive(self._custom_hud_panel:child("icons_panel")) then
+					self._custom_hud_panel:child("icons_panel"):set_alpha(math.lerp(alpha, 0, p))
 				end
 			end)
 		end)
 	end
 	function HUDAssaultCorner:_set_hostage_offseted(is_offseted, big_logo)
-		local hostage_panel = self._hud_panel:child("icons_panel"):child("hostages_panel")
+		local hostage_panel = self._custom_hud_panel:child("icons_panel"):child("hostages_panel")
 		self._remove_hostage_offset = nil
 		hostage_panel:stop()
-		self._hud_panel:child("icons_panel"):stop()
+		self._custom_hud_panel:child("icons_panel"):stop()
 		hostage_panel:animate(callback(self, self, "_offset_hostage", is_offseted), VoidUI.options.show_badge and big_logo or false)
-		local wave_panel = self._hud_panel:child("wave_panel")
+		local wave_panel = self._custom_hud_panel:child("wave_panel")
 	end
 	function HUDAssaultCorner:_offset_hostage(is_offseted, hostage_panel, big_logo)
 		local TOTAL_T = 0.18
-		local icons_panel = self._hud_panel:child("icons_panel")
-		local wave_panel = self._hud_panel:child("wave_panel")
+		local icons_panel = self._custom_hud_panel:child("icons_panel")
+		local wave_panel = self._custom_hud_panel:child("wave_panel")
 		local cuffed_panel = icons_panel:child("cuffed_panel")
 		local pagers_panel = icons_panel:child("pagers_panel")
 		local panel_right = icons_panel:right()
@@ -1214,13 +1194,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				icons_panel:set_alpha(math.lerp(1,0,lerp))
 				if wave_panel then wave_panel:set_alpha(math.lerp(1,0,lerp)) end
 			else
-				icons_panel:set_right(math.lerp(panel_right, self._hud_panel:w(),lerp))
+				icons_panel:set_right(math.lerp(panel_right, self._custom_hud_panel:w(),lerp))
 				icons_panel:set_y(math.lerp(panel_y, 0, lerp))
 				hostage_panel:set_y(0)
 				cuffed_panel:set_y(0)
 				pagers_panel:set_y(0)
 				if wave_panel then 
-					wave_panel:set_right(math.lerp(self._hud_panel:w() - 75 * self._scale, self._hud_panel:w() - 5 * self._scale,lerp))
+					wave_panel:set_right(math.lerp(self._custom_hud_panel:w() - 75 * self._scale, self._custom_hud_panel:w() - 5 * self._scale,lerp))
 					wave_panel:set_y(math.lerp(47 * self._scale, 0, lerp))
 				end
 			end
@@ -1233,14 +1213,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			if big_logo then wait(0.6) end
 			TOTAL_T = 0.3
 			t = 0
-			icons_panel:set_right(big_logo and self._hud_panel:w() - 70 * self._scale or self._hud_panel:w() - 2 * self._scale)
+			icons_panel:set_right(big_logo and self._custom_hud_panel:w() - 70 * self._scale or self._custom_hud_panel:w() - 2 * self._scale)
 			icons_panel:set_y(big_logo and 47 * self._scale or 32 * self._scale)
 			hostage_panel:set_y(-hostage_panel:h())
 			cuffed_panel:set_y(-cuffed_panel:h() * 2 * self._scale)
 			pagers_panel:set_y(-pagers_panel:h() * 2 * self._scale)
 			if wave_panel then 
-				wave_panel:set_right(self._hud_panel:w() - 75 * self._scale)
-				wave_panel:set_y(47 * self._scale)
+				wave_panel:set_right(big_logo and self._custom_hud_panel:w() - 75 * self._scale or self._custom_hud_panel:w() - 7 * self._scale)
+				wave_panel:set_y(big_logo and 47 * self._scale or 32 * self._scale)
 			end
 			icons_panel:set_alpha(1)
 			while TOTAL_T > t do
@@ -1262,7 +1242,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:show_casing(mode)
 		self:_end_assault()
-		local casing_panel = self._hud_panel:child("casing_panel")
+		local casing_panel = self._custom_hud_panel:child("casing_panel")
 		local casingbox_panel = casing_panel:child("casingbox_panel")
 		local icon_casingbox = casing_panel:child("icon_casingbox")
 		local text_panel = casing_panel:child("text_panel")
@@ -1310,7 +1290,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._casing = true
 	end
 	function HUDAssaultCorner:hide_casing()
-		local casing_panel = self._hud_panel:child("casing_panel")
+		local casing_panel = self._custom_hud_panel:child("casing_panel")
 		local casingbox_panel = casing_panel:child("casingbox_panel")
 		local icon_casingbox = casing_panel:child("icon_casingbox")
 		
@@ -1322,9 +1302,9 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._casing = false
 	end
 	function HUDAssaultCorner:set_control_info(data)
-		local hostages_panel = self._hud_panel:child("icons_panel"):child("hostages_panel")
-		local cuffed_panel = self._hud_panel:child("icons_panel"):child("cuffed_panel")
-		local pagers_panel = self._hud_panel:child("icons_panel"):child("pagers_panel")
+		local hostages_panel = self._custom_hud_panel:child("icons_panel"):child("hostages_panel")
+		local cuffed_panel = self._custom_hud_panel:child("icons_panel"):child("cuffed_panel")
+		local pagers_panel = self._custom_hud_panel:child("icons_panel"):child("pagers_panel")
 		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
 		local hostages = string.sub(hostages_panel:child("num_hostages"):text(), 2)
 		local cuffed = string.sub(cuffed_panel:child("num_cuffed"):text(), 2)
@@ -1369,7 +1349,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		local minutes = math.floor(time / 60)
 		local seconds = math.round(time - minutes * 60)
 		local text = (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
-		self._hud_panel:child("point_of_no_return_panel"):child("point_of_no_return_timer"):set_text(text)
+		self._custom_hud_panel:child("point_of_no_return_panel"):child("point_of_no_return_timer"):set_text(text)
 		self._noreturn_time_current = time
 	end
 
@@ -1383,7 +1363,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 	function HUDAssaultCorner:show_point_of_no_return_timer()
 		local delay_time = self._assault and 1.2 or 0
-		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
+		local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
 		local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
 		local text_panel = point_of_no_return_panel:child("text_panel")
 		text_panel:script().text_list = {}
@@ -1414,13 +1394,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 		self._point_of_no_return = true
 	end
 	function HUDAssaultCorner:hide_point_of_no_return_timer()
-		local point_of_no_return_panel = self._hud_panel:child("point_of_no_return_panel")
+		local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
 		local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
 		if noreturnbox_panel:child("text_panel") then
 			noreturnbox_panel:child("text_panel"):stop()
 			noreturnbox_panel:child("text_panel"):clear()
 		end
-		self._hud_panel:child("point_of_no_return_panel"):set_visible(false)
+		self._custom_hud_panel:child("point_of_no_return_panel"):set_visible(false)
 		self._point_of_no_return = false
 		self:_show_hostages()
 		self:_set_feedback_color(nil)
@@ -1438,7 +1418,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 				o:set_font_size(math.lerp(20 * self._scale, 25 * self._scale, n))
 			end
 		end
-		local point_of_no_return_timer = self._hud_panel:child("point_of_no_return_panel"):child("point_of_no_return_timer")
+		local point_of_no_return_timer = self._custom_hud_panel:child("point_of_no_return_panel"):child("point_of_no_return_timer")
 		point_of_no_return_timer:animate(flash_timer)
 	end
 	function HUDAssaultCorner:_animate_show_noreturn(point_of_no_return_panel, delay_time)
@@ -1483,13 +1463,13 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			t = t + dt
 			self._timer_noreturnbox:set_current(t / TOTAL_T)
 		end
-		self._hud_panel:child("point_of_no_return_panel"):child("timer_panel"):animate(callback(self, self, "_animate_noreturn_timer"))
+		self._custom_hud_panel:child("point_of_no_return_panel"):child("timer_panel"):animate(callback(self, self, "_animate_noreturn_timer"))
 	end
 
 	function HUDAssaultCorner:whisper_mode_changed()
 		local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
-		local cuffed_panel = self._hud_panel:child("icons_panel"):child("cuffed_panel")
-		local pagers_panel = self._hud_panel:child("icons_panel"):child("pagers_panel")
+		local cuffed_panel = self._custom_hud_panel:child("icons_panel"):child("cuffed_panel")
+		local pagers_panel = self._custom_hud_panel:child("icons_panel"):child("pagers_panel")
 		cuffed_panel:stop()
 		cuffed_panel:animate(function(o)
 			local cuffed_alpha = cuffed_panel:alpha()
@@ -1505,11 +1485,11 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 	end
 
 	function HUDAssaultCorner:pager_used()
-		local pagers_count = self._hud_panel:child("icons_panel"):child("pagers_panel"):child("num_pagers")
+		local pagers_count = self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("num_pagers")
 		self._pagers = self._pagers - 1
 		if self._pagers < 2 then 
-			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("pagers_border"):set_color(Color(1,0,0))
-			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("pagers_icon"):set_color(Color(1,0,0))
+			self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("pagers_border"):set_color(Color(1,0,0))
+			self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("pagers_icon"):set_color(Color(1,0,0))
 			pagers_count:set_color(Color(1,0,0))
 		end
 		pagers_count:set_text("x".. self._pagers)
@@ -1517,14 +1497,14 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 
 	function HUDAssaultCorner:ecm_timer(time)
 		if managers.hud and managers.hud._jammers then
-			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
-			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):animate(callback(self, self, "_animate_jammer"), time, self._hud_panel:child("icons_panel"):child("pagers_panel"))
+			self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
+			self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):animate(callback(self, self, "_animate_jammer"), time, self._custom_hud_panel:child("icons_panel"):child("pagers_panel"))
 		end
 	end
 	
 	function HUDAssaultCorner:stop_ecm()
 		if managers.hud and managers.hud._jammers then
-			self._hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
+			self._custom_hud_panel:child("icons_panel"):child("pagers_panel"):child("ecm_icon"):stop()
 		end
 	end
 	
