@@ -115,7 +115,7 @@ function HUDSuspicion:init(hud, sound_source)
 		name = "left_background",
 		texture = "guis/textures/VoidUI/hud_extras",
 		texture_rect = {309,150, -309,88},
-		alpha = 0.3,
+		alpha = 0.2,
 		layer = 0,
 		w = 130 * self._scale,
 		h = 20 * self._scale,
@@ -125,7 +125,7 @@ function HUDSuspicion:init(hud, sound_source)
 		name = "right_background",
 		texture = "guis/textures/VoidUI/hud_extras",
 		texture_rect = {0,150,309,88},
-		alpha = 0.3,
+		alpha = 0.2,
 		layer = 0,
 		w = 130 * self._scale,
 		h = 20 * self._scale,
@@ -143,7 +143,7 @@ function HUDSuspicion:init(hud, sound_source)
 		valign = "center",
 		layer = 1
 	})
-	suspicion_detected:set_center(self._suspicion_fill_panel:center())
+	suspicion_detected:set_center(suspicion_rate:center())
 	self._eye_animation = nil
 	self._suspicion_value = 0
 	self._hud_timeout = 0

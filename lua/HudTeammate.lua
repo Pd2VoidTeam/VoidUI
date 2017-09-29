@@ -1932,6 +1932,9 @@ function HUDTeammate:set_stored_health_max(stored_health_ratio)
 				h = self._bg_h,
 				alpha = 1,
 			})
+			health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
+			health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))
+			health_stored_max:set_bottom(self._custom_player_panel:h())
 		else
 			health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
 			health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))

@@ -254,6 +254,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 				self._hud_interaction:set_interaction_bar_width(t, total)
 				self._hud_interaction:show_interact({text = utf8.to_upper(managers.localization:text(msg))})
 			end
+			self._hud_interaction:remove_interact()
+			self._hud_interaction:hide_interaction_bar(true)
 		end
 		self._hud_interaction._interact_bar:stop()
 		self._hud_interaction._interact_bar:animate(feed_circle, total)
@@ -263,7 +265,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			return
 		end
 		self._hud_interaction:remove_interact()
-		self._hud_interaction:hide_interaction_bar(true)
+		self._hud_interaction:hide_interaction_bar(false)
 		self._hud_player_downed:show_timer()
 	end
 	function HUDManager:pd_start_timer(data)
@@ -320,7 +322,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			if character_data then
 				local panel_id = (managers.criminals:character_peer_id_by_unit(killer_unit) == managers.network:session():local_peer():id() and HUDManager.PLAYER_PANEL) or (character_data and character_data.panel_id and character_data.panel_id)
 				self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat(stat)
-				if stat == "specials" and VoidUI.options.scoreboard_kills == 3 then self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat("kills") end
+				if stat == "civs" or (stat == "specials" and VoidUI.options.scoreboard_kills == 3) then self._hud_statsscreen._scoreboard_panels[panel_id]:add_stat("kills") end
 			end
 		end
 	end

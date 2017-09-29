@@ -700,7 +700,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			for i, panel in ipairs(self._scoreboard_panels) do
 				panel._panel:set_h(panel._taken and panel._h or 0)
 				panel._panel:set_visible(panel._taken)
-				panel._panel:set_y(i == 1 and 0 or self._scoreboard_panels[i - 1]._panel:bottom() + 5)
+				panel._panel:set_y(i == 1 and 0 or (panel._taken and self._scoreboard_panels[i - 1]._panel:bottom() + 5 or self._scoreboard_panels[i - 1]._panel:bottom()))
 				extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
 				extras_panel:set_y(panel._panel:world_bottom() + 5)
 			end
@@ -1145,10 +1145,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		skill_icon:set_visible(ai)
 		secondary_icon:set_w(VoidUI.options.scoreboard_weapons and (ai and self._h * 0.8 or self._h * 1.8) or 0)
 		secondary_icon:set_center_x(secondary_bg:center_x())
-		
+		ping:set_color(ai and Color.white or Color.green)
 		if ai then 
 			ping:set_text("AI") 
-			ping:set_color(Color.white)
 			local unit = managers.criminals:character_unit_by_name(character_name)
 			local loadout = unit and unit:base()._loadout
 			if loadout then

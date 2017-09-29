@@ -40,6 +40,9 @@
 	"VoidUI_reset_title" : "Reset Options",
 	"VoidUI_reset_desc" : "Reset every option to their default configuration",
 	"VoidUI_reset_confirm" : "Are you sure you want to reset Void UI to the default configuration? This can not be undone.",
+	"VoidUI_warning_title" : "Options changed",
+	"VoidUI_warning_desc" : "Some options might not take effect immediately and will require a game reload",
+	"VoidUI_warning_confirm" : "Dont show again",
 	
 	"VoidUI_hudteammate_title" : "Player and Teammate panels",
 	"VoidUI_hudteammate_desc" : "Options related to the main player and teammates panels",
@@ -146,7 +149,7 @@
 	"VoidUI_waypoint_offscreen_desc" : "Show waypoints when their source is out of view",
 	
 	"VoidUI_interact_title" : "Interaction and Detection",
-	"VoidUI_options_desc" : "Options related to the interaction panel and the stealth detection panel",
+	"VoidUI_interact_desc" : "Options related to the interaction panel and the stealth detection panel",
 	"VoidUI_interact" : "Interaction panel",
 	"VoidUI_interact_scale_title" : "Interaction Scale",
 	"VoidUI_interact_scale_desc" : "Set the scale of the interaction panel",

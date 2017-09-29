@@ -1,3 +1,13 @@
+Version 1.0
+- Civilian kills now increment the normal kill counter as well
+- Fixed ex-president heal bar being retarded
+- Fixed scoreboard panels not being correctly aligned when there are no bots
+- Fixed main players ping sometimes having the wrong color
+- Fixed downed interaction showing the complete animation even when the interaction didnt complete
+- Fixed crime spree level not being the correct size on the police badge when the assault panel is not the default size
+- Made the background of the suspicion panel a bit more transparent
+
+Version 0.7 (2017.09.19)
 - Reworked how the police badge works
 - Added a crime spree version of the police badge
 - Added golden text and border for completed trophy and side-job presenters

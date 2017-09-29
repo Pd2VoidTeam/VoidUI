@@ -3,14 +3,13 @@
 	"description" : "A hud modification that aims to give the in game hud a fresh new look with some additional features.",
     "author" : "Xeletron, Fanged Hex, VxWolf. \nSpecial thanks: Canada, B.Costa, CrafterBlade",
 	"contact" : "xeletron1@gmail.com",
-    "version" : "0.7.0",
+    "version" : "1.0",
 	"blt_version" : 2,
-	"image" : "guis/textures/mod_icon.texture",
+	"image" : "guis/textures/VoidUI/mod_icon.texture",
     "color" : "0.3 0.3 0.3",
 	"priority" : 100,
     "updates" : [
         {
-            "revision" : 1,
             "identifier" : "VoidUI"
         }
     ],

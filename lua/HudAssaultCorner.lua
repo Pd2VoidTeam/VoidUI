@@ -1049,7 +1049,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			if assaultbox_skulls then 
 				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
 				assaultbox_skulls:set_center(icon_assaultbox:center())
-				if crime_spree then assaultbox_skulls:set_font_size(math.lerp((spree_size + 2) * self._scale, spree_size, t / TOTAL_T)) end
+				if crime_spree then assaultbox_skulls:set_font_size(math.lerp((spree_size + 2) * self._scale, spree_size * self._scale, t / TOTAL_T)) end
 			end
 		end
 		if VoidUI.options.show_badge and VoidUI.options.anim_badge and big_logo then
@@ -1140,7 +1140,7 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			if skulls and assaultbox_skulls then 
 				assaultbox_skulls:set_size(icon_assaultbox:w(), icon_assaultbox:h())
 				assaultbox_skulls:set_center(icon_assaultbox:center())
-				if crime_spree then assaultbox_skulls:set_font_size(math.lerp(d and spree_size * self._scale or (spree_size + 2) * self._scale, d and (spree_size + 2) * self._scale or spree_size * self._scale, t / TOTAL_T)) end
+				if crime_spree then assaultbox_skulls:set_font_size(math.lerp(d and spree_size or spree_size + (2 * self._scale), d and spree_size + (2 * self._scale) or spree_size, t / TOTAL_T)) end
 			end
 			
 			if 

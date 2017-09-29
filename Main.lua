@@ -1,4 +1,5 @@
 _G.VoidUI = _G.VoidUI or {}
+VoidUI.Warning = 0
 VoidUI.mod_path = ModPath
 VoidUI.options_path = SavePath .. "VoidUI.txt"
 VoidUI.options = {} 
@@ -141,6 +142,7 @@ function VoidUI:DefaultConfig()
 		scoreboard_playtime = true,
 		scoreboard_ping = true,
 		trophies = true,
+		save_warning = false,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
 		ping_frequency = 2,
@@ -229,17 +231,21 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 		if scoreboard then 
 			scoreboard._items_list[1]:set_value(item:value())
 		end
+		if VoidUI.Warning == 0 then VoidUI.Warning = 1 end
 	end
 	MenuCallbackHandler.basic_option_clbk = function(self, item)
 		VoidUI.options[item:parameters().name] = item:value()
+		if VoidUI.Warning == 0 then VoidUI.Warning = 1 end
 		VoidUI:UpdateMenu()
 	end
 	MenuCallbackHandler.toggle_option_clbk = function(self, item)
 		VoidUI.options[item:parameters().name] = (item:value() == "on" and true or false)
+		if VoidUI.Warning == 0 then VoidUI.Warning = 1 end
 		VoidUI:UpdateMenu()
 	end
 	
 	MenuCallbackHandler.callback_VoidUI_reset = function(self, item)
+		VoidUI.Warning = 0
 		local buttons = {
 			[1] = { 
 				text = managers.localization:text("dialog_yes"), 
@@ -265,9 +271,30 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 		}
 		QuickMenu:new( managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true )
 	end
-	
 	MenuCallbackHandler.VoidUI_save = function(self, item)
 		VoidUI:Save()
+	end
+	
+	MenuCallbackHandler.VoidUI_warning_save = function(self, item)
+		VoidUI:Save()
+		if managers.hud and not VoidUI.options.save_warning and VoidUI.Warning == 1 then
+			local buttons = {
+				[1] = { 
+					text = managers.localization:text("dialog_ok"), 
+					callback = function(self, item)
+						VoidUI.Warning = 2	
+					end
+					},
+				[2] = { 
+					text = managers.localization:text("VoidUI_warning_confirm"), 
+					callback = function(self, item)
+						VoidUI.options.save_warning = true	
+						VoidUI:Save()
+					end
+				 }
+			}
+			QuickMenu:new(managers.localization:text("VoidUI_warning_title"), managers.localization:text("VoidUI_warning_desc"), buttons, true )
+		end
 	end	
 	
 	VoidUI:DefaultConfig()
