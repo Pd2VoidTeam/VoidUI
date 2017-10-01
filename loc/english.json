@@ -41,7 +41,7 @@
 	"VoidUI_reset_desc" : "Reset every option to their default configuration",
 	"VoidUI_reset_confirm" : "Are you sure you want to reset Void UI to the default configuration? This can not be undone.",
 	"VoidUI_warning_title" : "Options changed",
-	"VoidUI_warning_desc" : "Some options might not take effect immediately and will require a game reload",
+	"VoidUI_warning_desc" : "Some options might not take effect until the next heist",
 	"VoidUI_warning_confirm" : "Dont show again",
 	
 	"VoidUI_hudteammate_title" : "Player and Teammate panels",
@@ -217,7 +217,7 @@
 	"VoidUI_rarity" : "With rarity",
 	"VoidUI_norarity" : "Without rarity",
 	
-	"VoidUI_trophy" : "Trophy completed!",
+	"VoidUI_trophy" : "Trophy achieved!",
 	"VoidUI_challenge" : "Side Job completed!",
 	"VoidUI_daily" : "Safe House daily completed!"
 }

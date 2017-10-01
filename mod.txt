@@ -5,8 +5,8 @@
 	"contact" : "xeletron1@gmail.com",
     "version" : "1.0",
 	"blt_version" : 2,
-	"image" : "guis/textures/VoidUI/mod_icon.texture",
-    "color" : "0.3 0.3 0.3",
+	"image" : "mod_icon.png",
+    "color" : "25 25 25",
 	"priority" : 100,
     "updates" : [
         {
