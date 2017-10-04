@@ -1,6 +1,7 @@
 function HUDInteraction:init(hud, child_name)
 	self._hud_panel = hud.panel
 	self._scale = VoidUI.options.interact_scale
+	self._circle_radius = 0
 	self._child_name_text = (child_name or "interact") .. "_text"
 	self._child_name_bg = (child_name or "interact") .. "_bg"
 	self._child_ivalid_name_text = (child_name or "interact") .. "_invalid_text"
@@ -123,7 +124,7 @@ function HUDInteraction:show_interaction_bar(current, total)
 		layer = 12,
 		w = text_w,
 		h = 10 * self._scale,
-		color = Color.black:with_alpha(0.9)
+		color = Color.black:with_alpha(1)
 	})	
 	self._interact_bar = self._hud_panel:bitmap({
 		layer = 13,
@@ -161,7 +162,9 @@ function HUDInteraction:set_interaction_bar_width(current, total)
 	self._hud_panel:child("interaction_time"):set_visible(total - current > 0 and VoidUI.options.show_interact or false)
 	if total - current > 0 then self._hud_panel:child("interaction_time"):set_text(string.format("%.1fs", total - current)) end
 	local bg = self._interact_circle._bg_circle
-	if bg and alive(bg) and bg:alpha() ~= 1 then
+	if self._interact_circle_locked and self._interact_circle_locked._circle:alpha() > 0 then
+		self._interact_bar_bg:set_color(Color(0.015,0.1,0.015))
+	elseif bg and alive(bg) and bg:alpha() ~= 1 then
 		self._interact_bar_bg:set_color(Color(bg:alpha(),0,0))
 	end
 end

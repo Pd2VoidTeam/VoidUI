@@ -379,12 +379,12 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		
 		top_panel:child("loot_stats"):set_text(body_bag..mission_bags..instant_cash..bonus_bags)
 		top_panel:child("loot_stats_shadow"):set_text(body_bag..mission_bags..instant_cash..bonus_bags)
-		
+		local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or "Music Error"
 		local track_text  = extras_panel:text({
 			name = "track_text ",
 			font_size = 20 * self._scale,
 			font = "fonts/font_medium_mf",
-			text = managers.localization:to_upper_text("menu_es_playing_track") .. " " .. managers.music:current_track_string(),
+			text = managers.localization:to_upper_text("menu_es_playing_track") .. " " .. music,
 			align = "center",
 			layer = 1,
 		})
@@ -482,10 +482,30 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		self:_create_stats_screen_profile(extras_panel)
 		self:_update_stats_screen_loot(extras_panel, top_panel)
 	end
+	
+	function HUDStatsScreen:key_press(o, k)
+		if k == Idstring("page up") then
+			self._full_hud_panel:set_y(25)
+		elseif k == Idstring("page down") then
+			self._full_hud_panel:set_y(205)
+		end
+	end
+		
+	function HUDStatsScreen:key_release(o, k)
+		if k == Idstring("page up") then
+			self._full_hud_panel:set_y(25)
+		elseif k == Idstring("page down") then
+			self._full_hud_panel:set_y(205)
+		end
+	end
+	
 	function HUDStatsScreen:show()
 		local safe = managers.hud.STATS_SCREEN_SAFERECT
 		local full = managers.hud.STATS_SCREEN_FULLSCREEN
 		managers.hud:show(full)
+		managers.hud._saferect:connect_keyboard(Input:keyboard())
+		self._full_hud_panel:key_press(callback(self, self, "key_press"))
+		self._full_hud_panel:key_release(callback(self, self, "key_release"))
 		local left_panel = self._full_hud_panel:child("left_panel")
 		local top_panel = self._full_hud_panel:child("top_panel")
 		local extras_panel = self._full_hud_panel:child("extras_panel")
@@ -517,6 +537,9 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			return
 		end
 		managers.hud:hide(safe)
+		managers.hud._saferect:disconnect_keyboard()
+		self._full_hud_panel:key_press(nil)
+		self._full_hud_panel:key_release(nil)
 		local left_panel = self._full_hud_panel:child("left_panel")
 		local top_panel = self._full_hud_panel:child("top_panel")
 		local extras_panel = self._full_hud_panel:child("extras_panel")
@@ -535,6 +558,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local start_x = left_panel:x()
 		local start_a = 1 - start_x / -left_panel:w()
 		local TOTAL_T = 0.2 * (start_x / -left_panel:w())
+		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
+		local offset = scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale) > self._full_hud_panel:h() and (scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale)) - self._full_hud_panel:h() or 0
 		local t = 0
 		while TOTAL_T > t do
 			local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
@@ -542,14 +567,14 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			left_panel:set_x(math.lerp(start_x, 0, t / TOTAL_T))
 			local a = math.clamp(math.lerp(start_a, 1, t / TOTAL_T), 0, 1)
 			full_hud_panel:set_alpha(a)
-			top_panel:set_top(math.lerp(-(top_panel:h() / 2), 0, t / TOTAL_T))
-			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2, self._full_hud_panel:h() / 2.5, t / TOTAL_T))
+			top_panel:set_top(math.lerp(-(top_panel:h() / 2)-offset, 0-offset, t / TOTAL_T))
+			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2, self._full_hud_panel:h() / 2.5-offset, t / TOTAL_T))
 			mutators_panel:set_right(math.lerp(full_hud_panel:w() + mutators_panel:w(), full_hud_panel:w(), t / TOTAL_T))
 			self:align_scoreboard_panels()
 		end
 		full_hud_panel:set_alpha(1)
-		top_panel:set_top(0)
-		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
+		top_panel:set_top(0-offset)
+		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5-offset)
 		mutators_panel:set_right(full_hud_panel:w())
 		self:align_scoreboard_panels()
 	end
@@ -558,6 +583,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local start_x = left_panel:x()
 		local start_a = 1 - start_x / -left_panel:w()
 		local TOTAL_T = 0.2 * (1 - start_x / -left_panel:w())
+		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
+		local offset = scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale) > self._full_hud_panel:h() and (scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale)) - self._full_hud_panel:h() or 0
 		local t = 0
 		while TOTAL_T > t do
 			local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
@@ -565,12 +592,12 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			left_panel:set_x(math.lerp(start_x, -left_panel:w(), t / TOTAL_T))
 			local a = math.clamp(math.lerp(start_a, 0, t / TOTAL_T), 0, 1)
 			full_hud_panel:set_alpha(a)
-			top_panel:set_top(math.lerp(0, -(top_panel:h() / 2), t / TOTAL_T))
-			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2.5, self._full_hud_panel:h() / 2, t / TOTAL_T))
+			top_panel:set_top(math.lerp(0-offset, -(top_panel:h() / 2)-offset, t / TOTAL_T))
+			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2.5-offset, self._full_hud_panel:h() / 2, t / TOTAL_T))
 			mutators_panel:set_right(math.lerp(full_hud_panel:w(), full_hud_panel:w() + mutators_panel:w(), t / TOTAL_T))
 			self:align_scoreboard_panels()
 		end
-		full_hud_panel:set_alpha(0)
+		full_hud_panel:set_alpha(0-offset)
 		top_panel:set_top(-top_panel:h())
 		scoreboard_panel:set_top(self._full_hud_panel:h() / 1.5)
 		mutators_panel:set_right(full_hud_panel:w() + mutators_panel:w())
@@ -590,18 +617,18 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		if self._full_hud_panel:child("scoreboard_panel") then
 			self._full_hud_panel:remove(hud.panel:child("scoreboard_panel"))
 		end
-		
+		local scale = self._scale * (HUDManager.PLAYER_PANEL > 8 and 8/HUDManager.PLAYER_PANEL or 1)
 		local scoreboard_panel = self._full_hud_panel:panel({
 			name = "scoreboard_panel",
-			w = (self._full_hud_panel:w() / 1.55) * self._scale,
-			y = (self._full_hud_panel:h() / 2.5) * self._scale
+			w = (self._full_hud_panel:w() / 1.55) * scale,
+			y = (self._full_hud_panel:h() / 2.5) * scale
 			})
 			scoreboard_panel:set_center_x(self._full_hud_panel:w() / 2)
-			local h = self._scoreboard_enabled and 35 * self._scale or 0
+			local h = self._scoreboard_enabled and 35 * scale or 0
 			local score
-			for i = 1, 4 do
+			for i = 1, HUDManager.PLAYER_PANEL do
 				local is_player = i == HUDManager.PLAYER_PANEL
-				score = HUDScoreboard:new(i, scoreboard_panel, is_player, h)
+				score = HUDScoreboard:new(i, scoreboard_panel, is_player, h, scale)
 				table.insert(self._scoreboard_panels, score)
 			end
 			local labels = {
@@ -618,12 +645,12 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				{parent = "hours_bg", name = "hours", text = "Playtime"},
 				{parent = "ping_bg", name = "ping", text = "Ping"}
 			}
-			self:create_scoreboard_labels(scoreboard_panel, score._panel, labels)
+			self:create_scoreboard_labels(scoreboard_panel, score._panel, labels, scale)
 			scoreboard_panel:set_w(score._panel:child("ping_bg"):right())
 			scoreboard_panel:set_center_x(self._full_hud_panel:w() / 2)
 	end
 	
-	function HUDStatsScreen:create_scoreboard_labels(scoreboard_panel, score_panel, labels)
+	function HUDStatsScreen:create_scoreboard_labels(scoreboard_panel, score_panel, labels, scale)
 		if not self._scoreboard_enabled then
 			return
 		end
@@ -640,7 +667,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				h = parent:h(),
 				visible = parent:w() > 0,
 				font = tweak_data.menu.pd2_large_font,
-				font_size = 15 * self._scale,
+				font_size = 15 * scale,
 				text = text,
 				vertical = "bottom",
 				align = align and align or "center",
@@ -657,7 +684,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				font = tweak_data.menu.pd2_large_font,
 				color = Color.black,
 				layer = -2,
-				font_size = 15 * self._scale,
+				font_size = 15 * scale,
 				text = text,
 				vertical = "bottom",
 				align = align and align or "center",
@@ -701,10 +728,10 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 				panel._panel:set_h(panel._taken and panel._h or 0)
 				panel._panel:set_visible(panel._taken)
 				panel._panel:set_y(i == 1 and 0 or (panel._taken and self._scoreboard_panels[i - 1]._panel:bottom() + 5 or self._scoreboard_panels[i - 1]._panel:bottom()))
-				extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
-				extras_panel:set_y(panel._panel:world_bottom() + 5)
 			end
-
+			self._full_hud_panel:child("scoreboard_panel"):set_h(self._scoreboard_panels[#self._scoreboard_panels]._panel:bottom())
+			extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
+			extras_panel:set_y(self._full_hud_panel:child("scoreboard_panel"):bottom() + 5)
 		end
 	end
 	
@@ -751,8 +778,8 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	HUDScoreboard = HUDScoreboard or class()
-	function HUDScoreboard:init(i, scoreboard_panel, is_player, h)
-		self._scale = VoidUI.options.scoreboard_scale
+	function HUDScoreboard:init(i, scoreboard_panel, is_player, h, scale)
+		self._scale = scale
 		self._i = i
 		self._main_player = i == HUDManager.PLAYER_PANEL
 		self._taken = false
@@ -1097,6 +1124,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		self._peer_id = peer_id
 		self._ai = ai
 		self._color_id = ai and tweak_data.max_players + 1 or peer_id
+		if bkin_bl__menu and self._ai then self._color_id = 6 end
 
 		local name = self._panel:child("name")
 		local skills_text = self._panel:child("skills")
@@ -1151,7 +1179,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local unit = managers.criminals:character_unit_by_name(character_name)
 			local loadout = unit and unit:base()._loadout
 			if loadout then
-				local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", ""))
+				local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", "")) or (unit:inventory() and unit:inventory():equipped_unit() and unit:inventory():equipped_unit():base() and unit:inventory():equipped_unit():base()._factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(unit:inventory():equipped_unit():base()._factory_id:gsub("_npc","")))
 				local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m14", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
 				primary_icon:set_image(texture)
 				primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)

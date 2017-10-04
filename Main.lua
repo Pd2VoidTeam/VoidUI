@@ -171,7 +171,9 @@ function VoidUI:DefaultConfig()
 		assault_lines = 3,
 		waypoint_radius = 200,
 		suspicion_y = 160,
-		interact_y = 40
+		interact_y = 40,
+		main_anim_time = 0.2,
+		mate_anim_time = 0.2
 	}
 
 end
@@ -208,7 +210,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 		local hudteammate = MenuHelper:GetMenu("VoidUI_hudteammate")
 		if hudteammate then 
 			hudteammate._items_list[2]:set_value(item:value())
-			hudteammate._items_list[11]:set_value(item:value())
+			hudteammate._items_list[13]:set_value(item:value())
 		end
 		local objectives = MenuHelper:GetMenu("VoidUI_objectives")
 		if objectives then

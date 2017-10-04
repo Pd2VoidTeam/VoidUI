@@ -1,4 +1,14 @@
-Version 1.0
+Version Dev1.1
+- Modified how the icons panel of the assault ticker works for better addon support
+- Added the option to change the speed of the health gain/loss animation
+- Fixed a crash related to the assault panel
+- Fixed the hostages panel sometimes not playing the assault end animation
+- Fixed a rare crash related to beardlib custom music
+- Added compatibility with Press2Hold
+- Added compatibility with Big Lobby
+- Added compatibility with Assault States
+
+Version 1.0 (2017.09.29)
 - Civilian kills now increment the normal kill counter as well
 - Fixed ex-president heal bar being retarded
 - Fixed scoreboard panels not being correctly aligned when there are no bots

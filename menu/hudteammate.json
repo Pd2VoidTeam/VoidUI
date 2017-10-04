@@ -11,7 +11,7 @@
 			"type" : "button",
 			"id" : "voidui_player",
 			"title" : "VoidUI_main_panel",
-			"priority" : 17
+			"priority" : 19
 		},
 		{
 			"type" : "slider",
@@ -25,7 +25,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 16
+			"priority" : 18
 		},
 		{
 			"type" : "multiple_choice",
@@ -39,7 +39,21 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_health",
-			"priority" : 15
+			"priority" : 17
+		},
+		{
+			"type" : "slider",
+			"id" : "main_anim_time",
+			"title" : "VoidUI_main_anim_time_title",
+			"description" : "VoidUI_main_anim_time_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "main_anim_time",
+			"default_value" : 0.2,
+			"max" : 0.5,
+			"min" : 0.0,
+			"step" : 0.01,
+			"localized" :  true
+			"priority" : 16
 		},
 		{
 			"type" : "multiple_choice",
@@ -53,7 +67,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_armor",
-			"priority" : 14
+			"priority" : 15
 		},
 		{
 			"type" : "toggle",
@@ -62,7 +76,7 @@
 			"description" : "VoidUI_total_decs",
 			"callback" : "toggle_option_clbk",
 			"value" : "totalammo"
-			"priority" : 13
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -71,7 +85,7 @@
 			"description" : "VoidUI_main_loud_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_loud"
-			"priority" : 12
+			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -80,7 +94,7 @@
 			"description" : "VoidUI_main_stealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_stealth"
-			"priority" : 11
+			"priority" : 12
 		},
 		{
 			"type" : "toggle",
@@ -89,19 +103,19 @@
 			"description" : "VoidUI_ammo_pickup_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "ammo_pickup"
-			"priority" : 10
+			"priority" : 11
 		},
 		
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 9
+			"priority" : 10
 		},
 		{
 			"type" : "button",
 			"id" : "voidui_teammate",
 			"title" : "VoidUI_mate_panel",
-			"priority" : 8
+			"priority" : 9
 		},
 		{
 			"type" : "slider",
@@ -115,7 +129,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true,
-			"priority" : 7
+			"priority" : 8
 		},
 		{
 			"type" : "multiple_choice",
@@ -129,6 +143,20 @@
 				"VoidUI_health_real"
 			],
 			"value" : "mate_health",
+			"priority" : 7
+		},
+		{
+			"type" : "slider",
+			"id" : "mate_anim_time",
+			"title" : "VoidUI_main_anim_time_title",
+			"description" : "VoidUI_mate_anim_time_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "mate_anim_time",
+			"default_value" : 0.2,
+			"max" : 0.5,
+			"min" : 0.0,
+			"step" : 0.01,
+			"localized" :  true
 			"priority" : 6
 		},
 		{

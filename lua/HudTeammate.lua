@@ -754,8 +754,8 @@ function HUDTeammate:color_id()
 end
 
 function HUDTeammate:set_callsign(id)
+	if bkin_bl__menu and self._ai then id = 6 end
 	self._color_id = id
-	
 	local name = self._custom_player_panel:child("name")
 	local health_panel = self._custom_player_panel:child("health_panel")
 	local health_background = health_panel:child("health_background")
@@ -859,6 +859,7 @@ function HUDTeammate:set_health(data)
 	end
 	
 	self._health_data = data
+	local anim_time = self._main_player and VoidUI.options.main_anim_time or VoidUI.options.mate_anim_time
 	local health_stored = self._custom_player_panel:child("health_stored")
 	local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
 	local health_panel = self._custom_player_panel:child("health_panel")
@@ -872,7 +873,7 @@ function HUDTeammate:set_health(data)
 	health_bar:animate(function(o)
 		local s = math.clamp(health_bar:h() / self._bg_h, 0, 1)
 		local c = s
-		over(0.2, function(p)
+		over(anim_time, function(p)
 			if alive(health_bar) then
 				c =	math.lerp(s, amount, p)
 				health_bar:set_h(self._bg_h * c)

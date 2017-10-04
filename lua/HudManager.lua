@@ -280,17 +280,19 @@ if RequiredScript == "lib/managers/hudmanager" then
 		reset_player_hpbar(self)
 		local character_name = managers.criminals:local_character_name()
 		local crim_entry = managers.criminals:character_static_data_by_name(character_name)
+		if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
+			self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
+		end
+	end
+	local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
+	function HUDManager:_setup_player_info_hud_pd2()
+		setup_player_info_hud_pd2(self)
 		if not self._hud_statsscreen then
 			self:_setup_stats_screen()
 			self:show_stats_screen()
 			self:hide_stats_screen()
 		end
-		
-		if self._hud_statsscreen then
-			self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
-		end
 	end
-	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	function HUDManager:teampanels_height()
@@ -300,11 +302,6 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	local add_teammate_panel = HUDManager.add_teammate_panel
 	function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
 		local add_panel = add_teammate_panel(self, character_name, player_name, ai, peer_id)
-		if not self._hud_statsscreen then
-			self:_setup_stats_screen()
-			self:show_stats_screen()
-			self:hide_stats_screen()
-		end
 		self._hud_statsscreen:add_scoreboard_panel(character_name, player_name, ai, peer_id)
 		return add_panel
 	end
