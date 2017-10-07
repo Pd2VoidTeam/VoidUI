@@ -1,43 +1,44 @@
 _G.VoidUI = _G.VoidUI or {}
 VoidUI.Warning = 0
+VoidUI.loaded = false
 VoidUI.mod_path = ModPath
 VoidUI.options_path = SavePath .. "VoidUI.txt"
 VoidUI.options = {} 
 VoidUI.hook_files = {
-	["lib/managers/hudmanager"] = {"HudManager.lua"},
-	["lib/managers/hud/hudteammate"] = {"HudTeammate.lua"},
-	["lib/managers/hud/hudtemp"] = {"HudTemp.lua"},
-	["lib/managers/hud/hudblackscreen"] = {"HudBlackscreen.lua"},
-	["lib/managers/hud/hudsuspicion"] = {"HudSuspicion.lua"},
-	["lib/states/ingamewaitingforplayers"] = {"HudBlackscreen.lua"},
-	["lib/managers/hudmanagerpd2"] = {"HudManager.lua", "HudScoreboard.lua"},
-	["lib/units/beings/player/huskplayermovement"] = {"HudPlayerDowned.lua"},
-	["lib/units/beings/player/states/playerbleedout"] = {"HudPlayerDowned.lua"},
-	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "Jokers.lua"},
-	["lib/units/equipment/doctor_bag/doctorbagbase"] = {"HudPlayerDowned.lua"},
-	["lib/managers/hud/hudplayerdowned"] = {"HudPlayerDowned.lua"},
-	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
-	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
-	["lib/managers/customsafehousemanager"] = {"HudPresenter.lua"},
-	["lib/managers/challengemanager"] = {"HudPresenter.lua"},
-	["lib/managers/hud/hudpresenter"] = {"HudPresenter.lua"},
-	["lib/managers/hud/hudhint"] = {"HudHint.lua"},
-	["lib/managers/hintmanager"] = {"HudHint.lua"},
-	["lib/managers/hud/hudinteraction"] = {"HudInteraction.lua"},
-	["lib/managers/hud/hudchat"] = {"HudChat.lua"},
-	["lib/managers/hud/hudassaultcorner"] = {"HudAssaultCorner.lua"},
-	["lib/managers/group_ai_states/groupaistatebase"] = {"HudAssaultCorner.lua", "Jokers.lua"},
-	["lib/managers/objectinteractionmanager"] = {"HudAssaultCorner.lua"},
-	["lib/units/equipment/ecm_jammer/ecmjammerbase"] = {"HudAssaultCorner.lua"},
-	["lib/units/contourext"] = {"Jokers.lua"},
-	["lib/units/enemies/cop/huskcopbrain"] = {"Jokers.lua"},
-	["lib/units/enemies/cop/copdamage"] = {"Jokers.lua", "HudScoreboard.lua"},
-	["lib/units/player_team/teamaidamage"] = {"HudManager.lua"},
-	["lib/units/player_team/huskteamaidamage"] = {"HudManager.lua"},
-	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"},
-	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"},
-	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
-	["lib/managers/hud/hudstatsscreen"] = {"HudScoreboard.lua"}
+	["lib/managers/hudmanager"] = {"hudmanager.lua"},
+	["lib/managers/hud/hudteammate"] = {"hudteammate.lua"},
+	["lib/managers/hud/hudtemp"] = {"hudtemp.lua"},
+	["lib/managers/hud/hudblackscreen"] = {"hudblackscreen.lua"},
+	["lib/managers/hud/hudsuspicion"] = {"hudsuspicion.lua"},
+	["lib/states/ingamewaitingforplayers"] = {"hudblackscreen.lua"},
+	["lib/managers/hudmanagerpd2"] = {"hudmanager.lua", "hudscoreboard.lua"},
+	["lib/units/beings/player/huskplayermovement"] = {"hudplayerdowned.lua"},
+	["lib/units/beings/player/states/playerbleedout"] = {"hudplayerdowned.lua"},
+	["lib/network/handlers/unitnetworkhandler"] = {"hudplayerdowned.lua", "jokers.lua"},
+	["lib/units/equipment/doctor_bag/doctorbagbase"] = {"hudplayerdowned.lua"},
+	["lib/managers/hud/hudplayerdowned"] = {"hudplayerdowned.lua"},
+	["lib/managers/hud/hudobjectives"] = {"hudobjectives.lua"},
+	["lib/managers/hud/hudheisttimer"] = {"hudheisttimer.lua"},
+	["lib/managers/customsafehousemanager"] = {"hudpresenter.lua"},
+	["lib/managers/challengemanager"] = {"hudpresenter.lua"},
+	["lib/managers/hud/hudpresenter"] = {"hudpresenter.lua"},
+	["lib/managers/hud/hudhint"] = {"hudhint.lua"},
+	["lib/managers/hintmanager"] = {"hudhint.lua"},
+	["lib/managers/hud/hudinteraction"] = {"hudinteraction.lua"},
+	["lib/managers/hud/hudchat"] = {"hudchat.lua"},
+	["lib/managers/hud/hudassaultcorner"] = {"hudassaultcorner.lua"},
+	["lib/managers/group_ai_states/groupaistatebase"] = {"hudassaultcorner.lua", "jokers.lua"},
+	["lib/managers/objectinteractionmanager"] = {"hudassaultcorner.lua"},
+	["lib/units/equipment/ecm_jammer/ecmjammerbase"] = {"hudassaultcorner.lua"},
+	["lib/units/contourext"] = {"jokers.lua"},
+	["lib/units/enemies/cop/huskcopbrain"] = {"jokers.lua"},
+	["lib/units/enemies/cop/copdamage"] = {"jokers.lua", "hudscoreboard.lua"},
+	["lib/units/player_team/teamaidamage"] = {"hudmanager.lua"},
+	["lib/units/player_team/huskteamaidamage"] = {"hudmanager.lua"},
+	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"hudmanager.lua"},
+	["lib/managers/hud/hudwaitinglegend"] = {"hudmanager.lua"},
+	["lib/units/civilians/civiliandamage"] = {"hudscoreboard.lua"},
+	["lib/managers/hud/hudstatsscreen"] = {"hudscoreboard.lua"}
 }
 VoidUI.disable_list = {
 	["anim_badge"] = "show_badge",
@@ -143,8 +144,15 @@ function VoidUI:DefaultConfig()
 		scoreboard_ping = true,
 		trophies = true,
 		save_warning = false,
+		enable_interact = true,
+		enable_suspicion = true,
+		presenter_sound = true,
+		hint_color = true,
+		hint_anim = true,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
+		show_objectives = 3,
+		show_timer = 3,
 		ping_frequency = 2,
 		jammers = 2,
 		hud_scale = 1,
@@ -154,12 +162,15 @@ function VoidUI:DefaultConfig()
 		scoreboard_scale = 1,
 		hud_assault_scale = 1,
 		hud_objectives_scale = 1,
+		presenter_scale = 1,
 		suspicion_scale = 1,
 		interact_scale = 1,
 		waypoint_scale = 0.8,
 		label_minscale = 1,
 		label_scale = 1,
 		hud_objective_history = 3,
+		presenter_buffer = 5,
+		hint_scale = 1,
 		label_minmode_dist = 7,
 		label_minmode_dot = 1,
 		chat_copy = 5,
@@ -176,6 +187,13 @@ function VoidUI:DefaultConfig()
 		mate_anim_time = 0.2
 	}
 
+end
+
+if not VoidUI.loaded then
+	VoidUI.loaded = true
+	VoidUI:DefaultConfig()
+	VoidUI:Load()
+	VoidUI:LoadTextures()
 end
 
 function VoidUI:UpdateMenu()
@@ -298,10 +316,6 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 			QuickMenu:new(managers.localization:text("VoidUI_warning_title"), managers.localization:text("VoidUI_warning_desc"), buttons, true )
 		end
 	end	
-	
-	VoidUI:DefaultConfig()
-	VoidUI:Load()
-	
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
 	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
 		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..file, VoidUI, VoidUI.options)
@@ -310,7 +324,6 @@ end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
-	VoidUI:LoadTextures()
 end)
 	
 function MenuManager:toggle_chatinput()

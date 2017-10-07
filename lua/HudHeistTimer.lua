@@ -4,9 +4,11 @@ function HUDHeistTimer:init(hud, tweak_hud)
 		self._hud_panel:remove(self._hud_panel:child("heist_timer_panel"))
 	end
 	self._scale = VoidUI.options.hud_objectives_scale
+	local visible = VoidUI.options.show_timer
 		
 	self._heist_timer_panel = self._hud_panel:panel({
-		visible = true,
+		visible = visible == 3,
+		alpha = visible and 1 or 0,
 		name = "heist_timer_panel",
 		h = 150 * self._scale,
 		y = 0,
@@ -237,6 +239,7 @@ end
 local timer_set_time = HUDHeistTimer.set_time
 function HUDHeistTimer:set_time(time)
 	timer_set_time(self, time)
+	self._timer_text:set_font_size(tweak_data.hud.active_objective_title_font_size * self._scale)
 	local w = select(3, self._timer_text:text_rect())
 	if w > 40 * self._scale then
 		self._timer_text:set_font_size((tweak_data.hud.active_objective_title_font_size * self._scale) * (40 * self._scale) / w)

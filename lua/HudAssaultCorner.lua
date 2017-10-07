@@ -22,7 +22,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			visible = false,
 			name = "assault_panel",
 			w = 400 * self._scale,
-			h = 100 * self._scale
+			h = 100 * self._scale,
+			layer = 4
 		})
 		assault_panel:set_top(0)
 		assault_panel:set_right(self._custom_hud_panel:w())
@@ -129,7 +130,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "point_of_no_return_panel",
 			w = 300 * self._scale,
 			h = 60 * self._scale,
-			x = self._custom_hud_panel:w() - 300 * self._scale
+			x = self._custom_hud_panel:w() - 300 * self._scale,
+			layer = 4
 		})
 		self._noreturn_color = Color(1, 1, 0, 0)
 		local noreturnbox_panel = point_of_no_return_panel:panel({
@@ -224,7 +226,8 @@ if RequiredScript == "lib/managers/hud/hudassaultcorner" then
 			name = "casing_panel",
 			w = 300 * self._scale,
 			h = 40 * self._scale,
-			x = self._custom_hud_panel:w() - 300 * self._scale
+			x = self._custom_hud_panel:w() - 300 * self._scale,
+			layer = 4
 		})
 		local casingbox_panel = casing_panel:panel({
 			visible = false,

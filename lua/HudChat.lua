@@ -169,7 +169,7 @@ function HUDChat:receive_message(name, message, color, icon)
 		full_message =  time .. full_message
 		name = time .. name
 	end
-	local len = utf8.len(name) + utf8.len(character) + 1 
+	local len = utf8.len(name) + (VoidUI.options.show_charactername and utf8.len(character) or 0) + 1 
 	local panel = output_panel:panel({
 		name = tostring(#self._lines),
 		w = self._output_width

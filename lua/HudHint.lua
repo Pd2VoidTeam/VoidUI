@@ -9,7 +9,6 @@ function HUDHint:init(hud)
 		name = "hint_panel",
 		h = 30,
 		y = 0,
-		valign = {0.3125, 0},
 		layer = 3
 	})
 	local y = self._hud_panel:h() / 3.5
@@ -58,79 +57,109 @@ function HUDHint:stop()
 	self._stop = true
 end
 function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
+	local scale = VoidUI.options.hint_scale
 	local clip_panel = hint_panel:child("clip_panel")
 	local hint_text = clip_panel:child("hint_text")
 	local hint_text_shadow = clip_panel:child("hint_text_shadow")
 	hint_panel:set_visible(true)
 	hint_panel:set_alpha(1)
-	local target_s = 25
+	local target_s = math.ceil(25 * scale)
 	local start_s = hint_text:text() ~= text and 0 or target_s
+	local add = 5 * scale
 	hint_text:set_text(text)
 	hint_text_shadow:set_text(text)
 	hint_text:set_color(Color.white)
-	hint_text:set_font_size(target_s + 5)
-	hint_text_shadow:set_font_size(target_s + 5)
+	hint_text:set_font_size(target_s + add)
+	hint_text_shadow:set_font_size(target_s + add)
 	local _, _, w, h = hint_text:text_rect()
 	hint_text:set_w(w)
 	hint_text_shadow:set_w(w)
 	clip_panel:set_w(w)
 	clip_panel:set_center_x(clip_panel:parent():w() / 2)
 	clip_panel:set_w(w)
-		
-	for peer_id, peer in pairs(managers.network:session():all_peers()) do
-		if peer then
-			local name = peer:name()
-			if string.find(hint_text:text(), name) ~= nil then 
-				local length = utf8.len(name)
-				local x = select(1, string.find(hint_text:text(), name, 1, true)) - 1
-				if x > 5 then x = x - ((#text - utf8.len(text)) - (#name - length)) end
-				hint_text:set_range_color(x, x + length, tweak_data.chat_colors[managers.criminals:character_color_id_by_unit(peer:unit())])
+	hint_panel:set_h(h)
+	clip_panel:set_h(h)
+	hint_text:set_h(h)
+	hint_text_shadow:set_h(h)
+	
+	if VoidUI.options.hint_color then
+		for peer_id, peer in pairs(managers.network:session():all_peers()) do
+			if peer then
+				local name = peer:name()
+				if string.find(hint_text:text(), name) ~= nil then 
+					local length = utf8.len(name)
+					local x = select(1, string.find(hint_text:text(), name, 1, true)) - 1
+					if x > 5 then x = x - ((#text - utf8.len(text)) - (#name - length)) end
+					hint_text:set_range_color(x, x + length, tweak_data.chat_colors[managers.criminals:character_color_id_by_unit(peer:unit())])
+				end
 			end
-		end
-	end	
+		end	
+	end
 	
 	local s = 0
 	local t = seconds
 	local forever = t == -1
-	local st = 1
-	local cs = 0
-	local speed = 150
 	local presenting = true
-	while presenting do
-		local dt = coroutine.yield()
-		s = math.clamp(s + dt * speed, start_s, target_s + 5)
-		presenting = s ~= target_s + 5
-		hint_text:set_font_size(s)
-		hint_text_shadow:set_font_size(s)
-	end
-	presenting = true
-	while presenting do
-		local dt = coroutine.yield()
-		s = math.clamp(s - dt * speed / 5, target_s, target_s + 5)
-		presenting = s ~= target_s
-		hint_text:set_font_size(s)
-		hint_text_shadow:set_font_size(s)
-	end
-	while (t > 0 or forever) and not self._stop do
-		local dt = coroutine.yield()
-		t = t - dt
-	end
-	self._stop = false
-	local removing = true
-	while removing do
-		local dt = coroutine.yield()
-		s = math.clamp(s + dt * speed / 5, target_s, target_s + 5)
-		removing = s ~= target_s + 5
-		hint_text:set_font_size(s)
-		hint_text_shadow:set_font_size(s)
-	end
-	removing = true
-	while removing do
-		local dt = coroutine.yield()
-		s = math.clamp(s - dt * speed, 0, target_s + 3)
-		hint_text:set_font_size(s)
-		hint_text_shadow:set_font_size(s)
-		removing = s ~= 0
+	if VoidUI.options.hint_anim then
+		local speed = 150 * scale
+		while presenting do
+			local dt = coroutine.yield()
+			s = math.clamp(s + dt * speed, start_s, target_s + add)
+			presenting = s ~= target_s + add
+			hint_text:set_font_size(s)
+			hint_text_shadow:set_font_size(s)
+		end
+		presenting = true
+		while presenting do
+			local dt = coroutine.yield()
+			s = math.clamp(s - dt * speed / 5, target_s, target_s + add)
+			presenting = s ~= target_s
+			hint_text:set_font_size(s)
+			hint_text_shadow:set_font_size(s)
+		end
+		while (t > 0 or forever) and not self._stop do
+			local dt = coroutine.yield()
+			t = t - dt
+		end
+		self._stop = false
+		local removing = true
+		while removing do
+			local dt = coroutine.yield()
+			s = math.clamp(s + dt * speed / 5, target_s, target_s + add)
+			removing = s ~= target_s + add
+			hint_text:set_font_size(s)
+			hint_text_shadow:set_font_size(s)
+		end
+		removing = true
+		while removing do
+			local dt = coroutine.yield()
+			s = math.clamp(s - dt * speed, 0, target_s + add)
+			hint_text:set_font_size(s)
+			hint_text_shadow:set_font_size(s)
+			removing = s ~= 0
+		end
+	else
+		local speed = 400
+		hint_text:set_font_size(target_s)
+		hint_text_shadow:set_font_size(target_s)
+		while presenting do
+			local dt = coroutine.yield()
+			s = math.clamp(s + dt * speed, 0, 100)
+			presenting = s < 100
+			hint_panel:set_alpha(s/100)
+		end
+		while (t > 0 or forever) and not self._stop do
+			local dt = coroutine.yield()
+			t = t - dt
+		end
+		self._stop = false
+		local removing = true
+		while removing do
+			local dt = coroutine.yield()
+			s = math.clamp(s - dt * speed, 0, 100)
+			hint_panel:set_alpha(s/100)
+			removing = s ~= 0
+		end
 	end
 	hint_panel:set_visible(false)
 	hint_text:set_font_size(25)

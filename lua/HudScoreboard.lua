@@ -5,7 +5,9 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		self._scoreboard_enabled = VoidUI.options.scoreboard
 		self._scale = VoidUI.options.scoreboard_scale
 		init(self)
+		self._mouse = managers.mouse_pointer:get_id()
 		self._full_hud_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel
+		self._scroll = 0
 		self._full_hud_panel:set_alpha(0)
 		self:create_scoreboards()
 		self._blur = self._full_hud_panel:bitmap({
@@ -203,7 +205,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		})
 		local extras_panel = self._full_hud_panel:panel({
 			name = "extras_panel",
-			w = self._scoreboard_panels[4]._panel:w(),
+			w = self._scoreboard_panels[#self._scoreboard_panels]._panel:w(),
 			h = self._full_hud_panel:h() / 3
 		})
 	end
@@ -211,6 +213,35 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	function HUDStatsScreen:_create_stats_screen_profile(extras_panel)
 		extras_panel:stop()
 		extras_panel:clear()
+		if HUDManager.PLAYER_PANEL > 7 and self._scoreboard_enabled then
+			local scroll_text = extras_panel:text({
+				name = "scroll_text",
+				x = -self._scoreboard_panels[1]._h,
+				w = self._scoreboard_panels[1]._h,
+				h = -self._full_hud_panel:child("scoreboard_panel"):h(),
+				font = tweak_data.menu.pd2_large_font,
+				font_size = 15 * self._scale,
+				align = "center",
+				vertical = "center",
+				rotation = 270,
+				text = "< MOUSE WHEEL >"
+			})
+			local scroll_text_shadow = extras_panel:text({
+				name = "scroll_textt_shadow",
+				font = tweak_data.menu.pd2_large_font,
+				x = -self._scoreboard_panels[1]._h + 2,
+				y = 2,
+				w = self._scoreboard_panels[1]._h,
+				h = -self._full_hud_panel:child("scoreboard_panel"):h(),
+				font_size = 15 * self._scale,
+				align = "center",
+				vertical = "center",
+				rotation = 270,
+				text = "< MOUSE WHEEL >",
+				layer = -2,
+				color = Color.black
+			})
+		end
 		local next_level_data = managers.experience:next_level_data() or {}
 		local experience_bg = extras_panel:bitmap({
 			name = "experience_bg",
@@ -441,7 +472,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		for i, active_mutator in ipairs(managers.mutators:active_mutators()) do
 			mutator_text = mutators_panel:text({
 				name = "mutator_" .. tostring(i),
-				font_size = tweak_data.hud_stats.day_description_size,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
 				font = tweak_data.hud_stats.objectives_font,
 				text = active_mutator.mutator:name(),
 				align = "right",
@@ -453,7 +484,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			local mutator_text_shadow = mutators_panel:text({
 				name = "mutator_shadow_" .. tostring(i),
 				color = Color.black,
-				font_size = tweak_data.hud_stats.day_description_size,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
 				font = tweak_data.hud_stats.objectives_font,
 				text = mutator_text:text(),
 				align = "right",
@@ -483,19 +514,15 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		self:_update_stats_screen_loot(extras_panel, top_panel)
 	end
 	
-	function HUDStatsScreen:key_press(o, k)
-		if k == Idstring("page up") then
-			self._full_hud_panel:set_y(25)
-		elseif k == Idstring("page down") then
-			self._full_hud_panel:set_y(205)
-		end
-	end
-		
-	function HUDStatsScreen:key_release(o, k)
-		if k == Idstring("page up") then
-			self._full_hud_panel:set_y(25)
-		elseif k == Idstring("page down") then
-			self._full_hud_panel:set_y(205)
+	function HUDStatsScreen:mouse_pressed(o, k)
+		if HUDManager.PLAYER_PANEL > 7 then
+			if k == Idstring("mouse wheel up") then
+				self._scroll = math.max(self._scroll-1,0)
+				self:align_scoreboard_panels()
+			elseif k == Idstring("mouse wheel down") then
+				self._scroll = math.min(self._scroll+1, HUDManager.PLAYER_PANEL - 7)
+				self:align_scoreboard_panels()
+			end
 		end
 	end
 	
@@ -503,9 +530,13 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local safe = managers.hud.STATS_SCREEN_SAFERECT
 		local full = managers.hud.STATS_SCREEN_FULLSCREEN
 		managers.hud:show(full)
-		managers.hud._saferect:connect_keyboard(Input:keyboard())
-		self._full_hud_panel:key_press(callback(self, self, "key_press"))
-		self._full_hud_panel:key_release(callback(self, self, "key_release"))
+		if #self._scoreboard_panels > 7 then
+			managers.mouse_pointer:use_mouse{
+				id = self._mouse,
+				mouse_press = callback(self, self, 'mouse_pressed')
+			}
+			managers.mouse_pointer._mouse:child("pointer"):set_visible(false)
+		end
 		local left_panel = self._full_hud_panel:child("left_panel")
 		local top_panel = self._full_hud_panel:child("top_panel")
 		local extras_panel = self._full_hud_panel:child("extras_panel")
@@ -530,6 +561,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	end
 	
 	function HUDStatsScreen:hide()
+		if self._showing_stats_screen == false then return end
 		self._showing_stats_screen = false
 		local safe = managers.hud.STATS_SCREEN_SAFERECT
 		local full = managers.hud.STATS_SCREEN_FULLSCREEN
@@ -537,9 +569,11 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			return
 		end
 		managers.hud:hide(safe)
-		managers.hud._saferect:disconnect_keyboard()
-		self._full_hud_panel:key_press(nil)
-		self._full_hud_panel:key_release(nil)
+		if #self._scoreboard_panels > 7 and self._mouse then 
+			managers.mouse_pointer:set_pointer_image("arrow")
+			managers.mouse_pointer:remove_mouse(self._mouse) 
+			managers.mouse_pointer._mouse:child("pointer"):set_visible(true)
+		end
 		local left_panel = self._full_hud_panel:child("left_panel")
 		local top_panel = self._full_hud_panel:child("top_panel")
 		local extras_panel = self._full_hud_panel:child("extras_panel")
@@ -559,7 +593,24 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local start_a = 1 - start_x / -left_panel:w()
 		local TOTAL_T = 0.2 * (start_x / -left_panel:w())
 		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
-		local offset = scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale) > self._full_hud_panel:h() and (scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale)) - self._full_hud_panel:h() or 0
+		local timer_panel
+		local obj_panel
+		local timer_a
+		local obj_a
+		if managers.hud._hud_heist_timer and managers.hud._hud_heist_timer._enabled then 
+			timer_panel = managers.hud._hud_heist_timer._heist_timer_panel
+			timer_a = timer_panel:alpha()
+			timer_panel:set_layer(VoidUI.options.show_timer == 2 and self._full_hud_panel:layer() + 1 or 0)
+			timer_panel:set_visible(VoidUI.options.show_timer > 1)
+		end
+		if managers.hud._hud_objectives then
+			obj_panel = managers.hud._hud_objectives._hud_panel:child("objectives_panel")
+			obj_a = obj_panel:alpha()
+			obj_panel:set_layer(VoidUI.options.show_objectives == 2 and self._full_hud_panel:layer() + 1 or 0)
+			obj_panel:set_visible(VoidUI.options.show_objectives > 1)
+			obj_panel:set_y(VoidUI.options.show_timer > 1 and 0 or -(32 * managers.hud._hud_objectives._scale))
+		end
+		
 		local t = 0
 		while TOTAL_T > t do
 			local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
@@ -567,14 +618,20 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			left_panel:set_x(math.lerp(start_x, 0, t / TOTAL_T))
 			local a = math.clamp(math.lerp(start_a, 1, t / TOTAL_T), 0, 1)
 			full_hud_panel:set_alpha(a)
-			top_panel:set_top(math.lerp(-(top_panel:h() / 2)-offset, 0-offset, t / TOTAL_T))
-			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2, self._full_hud_panel:h() / 2.5-offset, t / TOTAL_T))
+			top_panel:set_top(math.lerp(-(top_panel:h() / 2), 0, t / TOTAL_T))
+			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2, self._full_hud_panel:h() / 2.5, t / TOTAL_T))
 			mutators_panel:set_right(math.lerp(full_hud_panel:w() + mutators_panel:w(), full_hud_panel:w(), t / TOTAL_T))
 			self:align_scoreboard_panels()
+			if managers.hud._hud_heist_timer and managers.hud._hud_heist_timer._enabled then 
+				timer_panel:set_alpha(math.lerp(timer_a, VoidUI.options.show_timer > 1 and 1 or 0, t / TOTAL_T))
+			end
+			if managers.hud._hud_objectives then 
+				obj_panel:set_alpha(math.lerp(obj_a, VoidUI.options.show_objectives > 1 and 1 or 0, t / TOTAL_T))
+			end
 		end
 		full_hud_panel:set_alpha(1)
-		top_panel:set_top(0-offset)
-		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5-offset)
+		top_panel:set_top(0)
+		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
 		mutators_panel:set_right(full_hud_panel:w())
 		self:align_scoreboard_panels()
 	end
@@ -584,7 +641,19 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		local start_a = 1 - start_x / -left_panel:w()
 		local TOTAL_T = 0.2 * (1 - start_x / -left_panel:w())
 		scoreboard_panel:set_top(self._full_hud_panel:h() / 2.5)
-		local offset = scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale) > self._full_hud_panel:h() and (scoreboard_panel:bottom() + extras_panel:h() / (2 / self._scale)) - self._full_hud_panel:h() or 0
+		local timer_panel
+		local obj_panel
+		local timer_a
+		local obj_a
+		if managers.hud._hud_heist_timer and managers.hud._hud_heist_timer._enabled then 
+				timer_panel = managers.hud._hud_heist_timer._heist_timer_panel
+				timer_a = timer_panel:alpha()
+		end
+		if managers.hud._hud_objectives then
+			obj_panel = managers.hud._hud_objectives._hud_panel:child("objectives_panel")
+			obj_a = obj_panel:alpha()
+			obj_panel:set_y(VoidUI.options.show_timer == 2 and VoidUI.options.show_objectives == 3 and -(32 * managers.hud._hud_objectives._scale) or 0)
+		end
 		local t = 0
 		while TOTAL_T > t do
 			local dt = coroutine.yield() * (1 / TimerManager:game():multiplier())
@@ -592,12 +661,26 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 			left_panel:set_x(math.lerp(start_x, -left_panel:w(), t / TOTAL_T))
 			local a = math.clamp(math.lerp(start_a, 0, t / TOTAL_T), 0, 1)
 			full_hud_panel:set_alpha(a)
-			top_panel:set_top(math.lerp(0-offset, -(top_panel:h() / 2)-offset, t / TOTAL_T))
-			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2.5-offset, self._full_hud_panel:h() / 2, t / TOTAL_T))
+			top_panel:set_top(math.lerp(0, -(top_panel:h() / 2), t / TOTAL_T))
+			scoreboard_panel:set_top(math.lerp(self._full_hud_panel:h() / 2.5, self._full_hud_panel:h() / 2, t / TOTAL_T))
 			mutators_panel:set_right(math.lerp(full_hud_panel:w(), full_hud_panel:w() + mutators_panel:w(), t / TOTAL_T))
 			self:align_scoreboard_panels()
+			if managers.hud._hud_heist_timer and managers.hud._hud_heist_timer._enabled then 
+				timer_panel:set_alpha(math.lerp(timer_a, VoidUI.options.show_timer == 3 and 1 or 0, t / TOTAL_T))
+			end
+			if managers.hud._hud_objectives then 
+				obj_panel:set_alpha(math.lerp(obj_a, VoidUI.options.show_objectives == 3 and 1 or 0, t / TOTAL_T))
+			end
 		end
-		full_hud_panel:set_alpha(0-offset)
+		if managers.hud._hud_heist_timer and managers.hud._hud_heist_timer._enabled then 
+			timer_panel:set_layer(0)
+			timer_panel:set_visible(VoidUI.options.show_timer == 3)
+		end
+		if managers.hud._hud_objectives then 
+			obj_panel:set_layer(0)
+			obj_panel:set_visible(VoidUI.options.show_objectives == 3)
+		end
+		full_hud_panel:set_alpha(0)
 		top_panel:set_top(-top_panel:h())
 		scoreboard_panel:set_top(self._full_hud_panel:h() / 1.5)
 		mutators_panel:set_right(full_hud_panel:w() + mutators_panel:w())
@@ -617,7 +700,7 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 		if self._full_hud_panel:child("scoreboard_panel") then
 			self._full_hud_panel:remove(hud.panel:child("scoreboard_panel"))
 		end
-		local scale = self._scale * (HUDManager.PLAYER_PANEL > 8 and 8/HUDManager.PLAYER_PANEL or 1)
+		local scale = self._scale
 		local scoreboard_panel = self._full_hud_panel:panel({
 			name = "scoreboard_panel",
 			w = (self._full_hud_panel:w() / 1.55) * scale,
@@ -723,15 +806,17 @@ if RequiredScript == "lib/managers/hud/hudstatsscreen" then
 	
 	function HUDStatsScreen:align_scoreboard_panels()
 		if self._scoreboard_panels then
+			local taken_panels = 0
 			local extras_panel = self._full_hud_panel:child("extras_panel")
 			for i, panel in ipairs(self._scoreboard_panels) do
 				panel._panel:set_h(panel._taken and panel._h or 0)
 				panel._panel:set_visible(panel._taken)
-				panel._panel:set_y(i == 1 and 0 or (panel._taken and self._scoreboard_panels[i - 1]._panel:bottom() + 5 or self._scoreboard_panels[i - 1]._panel:bottom()))
+				panel._panel:set_y(i == 1 and -(self._scroll * (panel._panel:h() + 5)) or (panel._taken and self._scoreboard_panels[i - 1]._panel:bottom() + 5 or self._scoreboard_panels[i - 1]._panel:bottom()))
+				taken_panels = taken_panels + (panel._taken and 1 or 0)
 			end
-			self._full_hud_panel:child("scoreboard_panel"):set_h(self._scoreboard_panels[#self._scoreboard_panels]._panel:bottom())
+			self._full_hud_panel:child("scoreboard_panel"):set_h(self._scoreboard_panels[1]._h * math.min(taken_panels,7) + math.min(taken_panels,7) * 5)
 			extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
-			extras_panel:set_y(self._full_hud_panel:child("scoreboard_panel"):bottom() + 5)
+			extras_panel:set_y(self._full_hud_panel:child("scoreboard_panel"):bottom())
 		end
 	end
 	
@@ -947,7 +1032,6 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			visible = false,
 			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h * 0.8,
-			rotation = 360,
 			blend_mode = "add",
 			layer = 2
 		})
@@ -984,7 +1068,6 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			visible = false,
 			w = VoidUI.options.scoreboard_weapons and h * 2 or 0,
 			h = h * 0.8,
-			rotation = 360,
 			blend_mode = "add",
 			layer = 2
 		})

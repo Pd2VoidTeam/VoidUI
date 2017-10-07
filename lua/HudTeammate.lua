@@ -218,7 +218,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		visible = false,
 		w = self._health_value,
 		h = health_panel:h(),
-		font_size = self._health_value / 1.4,
+		font_size = self._health_value / 1.4 * self._mate_scale,
 		x = health_panel:x(),
 		text = "15",
 		vertical = "bottom",
@@ -634,7 +634,7 @@ function HUDTeammate:init(i, teammates_panel, is_player, width)
 		color = Color.white,
 		vertical = "bottom",
 		align = "left",
-		font_size = 19,
+		font_size = 19 * self._mate_scale,
 		font = "fonts/font_medium_shadow_mf"
 	})
 	interact_text:set_bottom(health_panel:top() - 1)
@@ -1687,7 +1687,7 @@ function HUDTeammate:teammate_progress(enabled, type_index, tweak_data_id, timer
 	interact_text:set_text(" ".. action_text)
 	interact_text:set_font_size(19)
 	local _,_,text_w,_ = interact_text:text_rect()
-	if text_w > 140 then interact_text:set_font_size(interact_text:font_size() * (140/text_w)) end
+	if text_w > 140 * self._mate_scale then interact_text:set_font_size(interact_text:font_size() * (140 * self._mate_scale/text_w)) end
 	self._custom_player_panel:child("health_panel"):child("health_bar"):set_alpha(enabled and 0.3 or 1)
 	self._custom_player_panel:child("health_panel"):child("armor_bar"):set_visible(not enabled)
 	self._custom_player_panel:child("health_panel"):child("armor_value"):set_visible(not enabled)
@@ -1803,7 +1803,7 @@ function HUDTeammate:start_timer(time)
 	self._timer = time
 	self._timer_total = time
 	self._custom_player_panel:child("condition_timer"):set_color(Color(1, 0.7, 0.7))
-	self._custom_player_panel:child("condition_timer"):set_font_size(30)
+	self._custom_player_panel:child("condition_timer"):set_font_size(30 * self._mate_scale)
 	self._custom_player_panel:child("condition_timer"):stop()
 	self._custom_player_panel:child("condition_timer"):set_visible(true)
 	self._custom_player_panel:child("health_panel"):child("custom_bar"):set_visible(true)
@@ -1870,9 +1870,9 @@ function HUDTeammate:_animate_timer_flash()
 		local b = math.lerp(0.7 or self._point_of_no_return_color.b, 0.1, n)
 		condition_timer:set_color(Color(r, g, b))
 		condition_timer:set_alpha(1)
-		condition_timer:set_font_size(math.lerp(30, 45, n))
+		condition_timer:set_font_size(math.lerp(30 * self._mate_scale, 45 * self._mate_scale, n))
 	end
-	condition_timer:set_font_size(30)
+	condition_timer:set_font_size(30 * self._mate_scale)
 end
 
 

@@ -8,10 +8,11 @@ function HUDObjectives:init(hud)
 	self._max_objectives = math.floor(VoidUI.options.hud_objective_history)
 	
 	local objectives_panel = self._hud_panel:panel({
-		visible = true,
+		visible = VoidUI.options.show_objectives == 3,
 		name = "objectives_panel",
 		h = 200 * self._scale,
-		w = 500 * self._scale
+		w = 500 * self._scale,
+		y = VoidUI.options.show_timer == 2 and VoidUI.options.show_objectives == 3 and -(32 * self._scale) or 0
 	})
 end
 
