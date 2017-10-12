@@ -1,4 +1,4 @@
-if RequiredScript == "lib/managers/hud/hudpresenter" then
+if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_presenter then
 	function HUDPresenter:init(hud)
 		self._hud_panel = hud.panel
 		self._id = 0
@@ -148,7 +148,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 
 		present_panel:animate(callback(self, self, "_animate_present_information"))
 		
-		if params.event and VoidUI.options.presenter_sound then
+		if params.event and not VoidUI.options.presenter_sound then
 			managers.hud._sound_source:post_event(params.event)
 		end
 	end

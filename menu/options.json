@@ -27,6 +27,15 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "enable_blackscreen",
+			"title" : "VoidUI_enable_blackscreen_title",
+			"description" : "VoidUI_enable_blackscreen_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_blackscreen"
+			"priority" : 4
+		},
+		{
+			"type" : "toggle",
 			"id" : "outlines",
 			"title" : "VoidUI_outlines_title",
 			"description" : "VoidUI_outlines_desc",

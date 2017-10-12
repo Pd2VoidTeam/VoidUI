@@ -20,13 +20,13 @@ elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		if unit_data and VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = player_unit})
 			
-			if VoidUI.options.health_jokers then
+			if VoidUI.options.health_jokers and VoidUI.options.enable_labels then
 				local label = managers.hud:_get_name_label(panel_id)
 				label.interact:set_visible(true)
-				label.interact_bg:set_visible(true)
-				label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
-				label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(true)
-				label.interact:set_w(label.interact_bg:w())
+					label.interact_bg:set_visible(true)
+					label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
+					label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(true)
+					label.interact:set_w(label.interact_bg:w())
 			end
 			
 			unit:unit_data().label_id = panel_id
@@ -59,7 +59,7 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 		
 		if VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = managers.network:session():peer(minion_owner_peer_id):unit()})
-			if VoidUI.options.health_jokers then
+			if VoidUI.options.health_jokers and VoidUI.options.enable_labels then
 				local label = managers.hud:_get_name_label(panel_id)
 				label.interact:set_visible(true)
 				label.interact_bg:set_visible(true)
@@ -95,7 +95,7 @@ elseif RequiredScript == "lib/units/enemies/cop/huskcopbrain" then
 		clbk_death(self, my_unit, damage_info)
 	end
 	
-elseif RequiredScript == "lib/units/enemies/cop/copdamage" then
+elseif RequiredScript == "lib/units/enemies/cop/copdamage" and VoidUI.options.enable_labels then
 
 	local on_damage_received = CopDamage._on_damage_received
 	function CopDamage:_on_damage_received(damage_info)

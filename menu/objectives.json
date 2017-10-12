@@ -19,11 +19,20 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 20
+			"priority" : 21
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
+			"priority" : 20
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_timer",
+			"title" : "VoidUI_enable_timer_title",
+			"description" : "VoidUI_enable_timer_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_timer"
 			"priority" : 19
 		},
 		{
@@ -85,6 +94,15 @@
 			"priority" : 12
 		},
 		{
+			"type" : "toggle",
+			"id" : "enable_objectives",
+			"title" : "VoidUI_enable_objectives_title",
+			"description" : "VoidUI_enable_objectives_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_objectives"
+			"priority" : 11
+		},
+		{
 			"type" : "multiple_choice",
 			"id" : "show_objectives",
 			"title" : "VoidUI_objectives_show_title",
@@ -96,7 +114,7 @@
 				"VoidUI_show"
 			],
 			"value" : "show_objectives",
-			"priority" : 11
+			"priority" : 10
 		},
 		{
 			"type" : "slider",
@@ -110,7 +128,7 @@
 			"min" : 0,
 			"step" : 1,
 			"localized" :  true
-			"priority" : 10
+			"priority" : 9
 		}
 		
 	]

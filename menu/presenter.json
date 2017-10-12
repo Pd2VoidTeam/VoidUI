@@ -11,6 +11,15 @@
 			"type" : "button",
 			"id" : "voidui_presenter",
 			"title" : "VoidUI_presenter_panel",
+			"priority" : 20
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_presenter",
+			"title" : "VoidUI_enable_presenter_title",
+			"description" : "VoidUI_enable_presenter_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_presenter"
 			"priority" : 19
 		},
 		{
@@ -71,6 +80,15 @@
 			"priority" : 13
 		},
 		{
+			"type" : "toggle",
+			"id" : "enable_hint",
+			"title" : "VoidUI_enable_hint_title",
+			"description" : "VoidUI_enable_hint_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_hint"
+			"priority" : 12
+		},
+		{
 			"type" : "slider",
 			"id" : "hint_scale",
 			"title" : "VoidUI_hint_scale_title",
@@ -82,7 +100,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 12
+			"priority" : 11
 		},
 		{
 			"type" : "toggle",
@@ -91,7 +109,7 @@
 			"description" : "VoidUI_hint_color_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "hint_color"
-			"priority" : 11
+			"priority" : 10
 		},
 		{
 			"type" : "toggle",
@@ -100,7 +118,7 @@
 			"description" : "VoidUI_hint_anim_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "hint_anim"
-			"priority" : 10
+			"priority" : 9
 		}
 		
 	]

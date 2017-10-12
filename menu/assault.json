@@ -8,6 +8,15 @@
 	"priority" : 15,
 	"items" : [
 		{
+			"type" : "toggle",
+			"id" : "enable_assault",
+			"title" : "VoidUI_enable_assault_title",
+			"description" : "VoidUI_enable_assault_decs",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_assault"
+			"priority" : 7
+		},
+		{
 			"type" : "slider",
 			"id" : "hud_assault_scale",
 			"title" : "VoidUI_assault_scale_title",
@@ -70,6 +79,7 @@
 			"description" : "VoidUI_badge_anim_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "anim_badge",
+			"parent" : "show_badge",
 			"priority" : 1
 		}
 		
