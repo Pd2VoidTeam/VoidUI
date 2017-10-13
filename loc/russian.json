@@ -143,7 +143,7 @@
 	"VoidUI_label" : "Ярлыки имен",
 	"VoidUI_enable_labels_title" : "Включить ярлыки имен",
 	"VoidUI_enable_labels_desc" : "Показывать ярлыки имен",
-	"VoidUI_jokernames_title" : "Ярдык конверта",
+	"VoidUI_jokernames_title" : "Ярлык конверта",
 	"VoidUI_jokernames_desc" : "Показывать ярлык с именем переведенного на вашу строну копа",
 	"VoidUI_jokerhealth_title" : "Здоровье конверта",
 	"VoidUI_jokerhealth_desc" : "Показывать полосу здоровья переведенного на вашу сторону копа",
