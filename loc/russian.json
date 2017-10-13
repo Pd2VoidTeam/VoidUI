@@ -149,7 +149,7 @@
 	"VoidUI_jokerhealth_desc" : "Показывать полосу здоровья переведенного на вашу сторону копа",
 	"VoidUI_label_scale_title" : "Размер ярлыков",
 	"VoidUI_label_scale_desc" : "Установите размер ярлыков имен команды, ботов и переведенных на вашу сторону копов",
-	"VoidUI_label_upper_title" : "Режим заглывых букв",
+	"VoidUI_label_upper_title" : "Режим заглавных букв",
 	"VoidUI_label_upper_desc" : "Показывать ярлыки имен отображаемые заглавными буквами",
 	"VoidUI_label_minscale_title" : "Размер ярлыков в мин-режиме",
 	"VoidUI_label_minscale_desc" : "Установите размер ярлыков имен в минимальном режиме",
