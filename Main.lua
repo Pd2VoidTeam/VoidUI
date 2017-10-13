@@ -4,6 +4,7 @@ VoidUI.loaded = false
 VoidUI.mod_path = ModPath
 VoidUI.options_path = SavePath .. "VoidUI.txt"
 VoidUI.options = {} 
+VoidUI.menus = {}
 VoidUI.hook_files = {
 	["lib/managers/hudmanager"] = {"HudManager.lua"},
 	["lib/managers/hud/hudteammate"] = {"HudTeammate.lua"},
@@ -194,43 +195,39 @@ if not VoidUI.loaded then
 end
 
 VoidUI.disable_list = {
-	["anim_badge"] = "show_badge",
-	["health_jokers"] = "label_jokers",
-	["label_minscale"] = "label_minmode",
-	["label_minrank"] = "label_minmode",
-	["label_minmode_dist"] = "label_minmode",
-	["label_minmode_dot"] = "label_minmode",
-	["scoreboard_character"] = "scoreboard",
-	["scoreboard_skills"] = "scoreboard",
-	["scoreboard_kills"] = "scoreboard",
-	["scoreboard_specials"] = "scoreboard",
-	["scoreboard_civs"] = "scoreboard",
-	["scoreboard_downs"] = "scoreboard",
-	["scoreboard_weapons"] = "scoreboard",
-	["scoreboard_skins"] = "scoreboard",
-	["scoreboard_armor"] = "scoreboard",
-	["scoreboard_perk"] = "scoreboard",
-	["scoreboard_playtime"] = "scoreboard",
-	["scoreboard_ping"] = "scoreboard",
-	["ping_frequency"] = "scoreboard"	
+	["show_badge"] = 1	,
+	["enable_assault"] = 6,
+	["enable_chat"] = 5,
+	["chat_mouse"] = 1,
+	["teammate_panels"] = 21,
+	["enable_interact"] = 3,
+	["enable_suspicion"] = 2,
+	["enable_labels"] = 9,
+	["label_minmode"] = 4,
+	["enable_timer"] = 4,
+	["enable_objectives"] = 2,
+	["enable_presenter"] = 3,
+	["enable_hint"] = 3,
+	["enable_stats"] = 17,
+	["scoreboard"] = 14,
+	["enable_subtitles"] = 2,
 }
 
 function VoidUI:UpdateMenu()
-	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-		local menu_name = "VoidUI_".. file:gsub(".json", "")
-		for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
-			if VoidUI.disable_list[item:parameters().name] then
-				local disable_list_entry = VoidUI.disable_list[item:parameters().name]
-				item:set_enabled(VoidUI.options[disable_list_entry])
+		for _, menu_name in pairs(VoidUI.menus) do
+		local menu_list = MenuHelper:GetMenu(menu_name)._items_list
+		for key, item in pairs(menu_list) do
+			if item:enabled() and VoidUI.disable_list[item:parameters().name] then
+				for i = key + 1, key + VoidUI.disable_list[item:parameters().name] do
+					if menu_list[i]._type ~= "divider" then menu_list[i]:set_enabled(VoidUI.options[item:parameters().name]) end
+				end
 			end
 			if item._type == "slider" then
-				local value = VoidUI.options[item:parameters().name]
 				local step = item:parameters().step
-				if step >= 1 and value ~= nil and step ~= nil then
-					if value % step ~= 0 then
-						item:set_value(value + (value % step >= 0.5 and 1 - value % step or -(value % step)))
-					end
-				end
+				local decimals = 0
+				if string.find(tostring(step), "0.") ~= nil then decimals = utf8.len(step) - 2 end
+				item:set_decimal_count(decimals)
+				item:set_value(item:raw_value_string())
 			end
 		end
 	end
@@ -240,8 +237,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 	MenuCallbackHandler.callback_VoidUI_hudscale = function(self, item)
 		VoidUI.options.hud_scale = item:value()
 		local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale"}
-		for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-			local menu_name = "VoidUI_".. file:gsub(".json", "")
+		for _, menu_name in pairs(VoidUI.menus) do
 			for _, menu_item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 				for _, v in pairs(scales) do
 					if v == menu_item:parameters().name then
@@ -252,6 +248,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 			end
 		end
 		if VoidUI.Warning == 0 then VoidUI.Warning = 1 end
+		VoidUI:UpdateMenu()
 	end
 	MenuCallbackHandler.basic_option_clbk = function(self, item)
 		VoidUI.options[item:parameters().name] = item:value()
@@ -271,8 +268,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 				text = managers.localization:text("dialog_yes"), 
 				callback = function(self, item)
 					VoidUI:DefaultConfig()
-					for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-						local menu_name = "VoidUI_".. file:gsub(".json", "")
+						for _, menu_name in pairs(VoidUI.menus) do
 						for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 							local value = VoidUI.options[item:parameters().name]
 							if value then 
@@ -318,8 +314,10 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 	end	
 	local menus = SystemFS:list(VoidUI.mod_path.. "menu/")
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
+	table.insert(VoidUI.menus, "VoidUI_options")
 	for i=#menus, 1, -1 do
 		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..menus[i], VoidUI, VoidUI.options)
+		table.insert(VoidUI.menus, "VoidUI_"..menus[i]:gsub(".json", ""))
 	end
 end )
 

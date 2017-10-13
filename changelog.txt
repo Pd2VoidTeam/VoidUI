@@ -7,12 +7,13 @@ Version Dev1.1
 - Added the option to show names in uppercase
 - Added notification and hint text options
 - Added subtitle options
-- Added Russian localization by Skyfrost
+- Added Russian localization made by Skyfrost
 - Added compatibility with Press2Hold
 - Added compatibility with Big Lobby
 - Added compatibility with Assault States
 - Added compatibility with Burst Fire
 - Added compatibility with Death Wish+
+- Improved options menu
 - Fixed bot weapons sometimes not showing correctly (?)
 - Fixed textures and default options not loading when another mod breaks the options menu
 - Fixed a crash related to the assault panel

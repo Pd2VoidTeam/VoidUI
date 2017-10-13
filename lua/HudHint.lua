@@ -63,7 +63,7 @@ if VoidUI.options.enable_hint then
 		local hint_text_shadow = clip_panel:child("hint_text_shadow")
 		hint_panel:set_visible(true)
 		hint_panel:set_alpha(1)
-		local target_s = math.ceil(25 * scale)
+		local target_s = 25 * scale
 		local start_s = hint_text:text() ~= text and 0 or target_s
 		local add = 5 * scale
 		hint_text:set_text(text)
@@ -96,56 +96,55 @@ if VoidUI.options.enable_hint then
 			end	
 		end
 		
-		local s = 0
+		local s = start_s
 		local t = seconds
 		local forever = t == -1
-		local presenting = true
 		if VoidUI.options.hint_anim then
 			local speed = 150 * scale
-			while presenting do
+			while s < target_s + add do
 				local dt = coroutine.yield()
-				s = math.clamp(s + dt * speed, start_s, target_s + add)
-				presenting = s ~= target_s + add
+				s = s + dt * speed
 				hint_text:set_font_size(s)
 				hint_text_shadow:set_font_size(s)
 			end
-			presenting = true
-			while presenting do
+			hint_text:set_font_size(target_s + add)
+			hint_text_shadow:set_font_size(target_s + add)
+			while s > target_s do
 				local dt = coroutine.yield()
-				s = math.clamp(s - dt * speed / 5, target_s, target_s + add)
-				presenting = s ~= target_s
+				s = s - dt * (speed / 5)
 				hint_text:set_font_size(s)
 				hint_text_shadow:set_font_size(s)
 			end
+			hint_text:set_font_size(target_s)
+			hint_text_shadow:set_font_size(target_s)
 			while (t > 0 or forever) and not self._stop do
 				local dt = coroutine.yield()
 				t = t - dt
 			end
 			self._stop = false
-			local removing = true
-			while removing do
+			while s < target_s + add do
 				local dt = coroutine.yield()
-				s = math.clamp(s + dt * speed / 5, target_s, target_s + add)
-				removing = s ~= target_s + add
+				s = s + dt * speed / 5
 				hint_text:set_font_size(s)
 				hint_text_shadow:set_font_size(s)
 			end
-			removing = true
-			while removing do
+			hint_text:set_font_size(target_s + add)
+			hint_text_shadow:set_font_size(target_s + add)
+			while s > 0 do
 				local dt = coroutine.yield()
-				s = math.clamp(s - dt * speed, 0, target_s + add)
+				s = s - dt * speed
 				hint_text:set_font_size(s)
 				hint_text_shadow:set_font_size(s)
-				removing = s ~= 0
 			end
+			hint_text:set_font_size(0)
+			hint_text_shadow:set_font_size(0)
 		else
 			local speed = 400
 			hint_text:set_font_size(target_s)
 			hint_text_shadow:set_font_size(target_s)
-			while presenting do
+			while s < 100 do
 				local dt = coroutine.yield()
 				s = math.clamp(s + dt * speed, 0, 100)
-				presenting = s < 100
 				hint_panel:set_alpha(s/100)
 			end
 			while (t > 0 or forever) and not self._stop do
@@ -153,12 +152,10 @@ if VoidUI.options.enable_hint then
 				t = t - dt
 			end
 			self._stop = false
-			local removing = true
-			while removing do
+			while s > 0 do
 				local dt = coroutine.yield()
 				s = math.clamp(s - dt * speed, 0, 100)
 				hint_panel:set_alpha(s/100)
-				removing = s ~= 0
 			end
 		end
 		hint_panel:set_visible(false)

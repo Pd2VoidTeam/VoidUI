@@ -229,7 +229,7 @@ if VoidUI.options.enable_objectives then
 		local _, y, w, h = objective_panel:child("objective_text"):text_rect()
 		objective_text_bg:set_size(w - 17 * self._scale, 30 * self._scale)
 		objective_text_bg_right:set_left(objective_text_bg:right())
-		objective_border:set_w(w + 8 * self._scale)
+		objective_border:set_w(w + 10 * self._scale)
 	end
 		
 	function HUDObjectives:_animate_objective_count(objective_text)

@@ -27,18 +27,18 @@
 			"priority" : 20
 		},
 		{
+			"type" : "button",
+			"id" : "voidui_timer",
+			"title" : "VoidUI_timer_panel",
+			"priority" : 19
+		},
+		{
 			"type" : "toggle",
 			"id" : "enable_timer",
 			"title" : "VoidUI_enable_timer_title",
 			"description" : "VoidUI_enable_timer_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "enable_timer"
-			"priority" : 19
-		},
-		{
-			"type" : "button",
-			"id" : "voidui_timer",
-			"title" : "VoidUI_timer_panel",
 			"priority" : 18
 		},
 		{
