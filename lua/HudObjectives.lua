@@ -247,4 +247,12 @@ if VoidUI.options.enable_objectives then
 
 	function HUDObjectives:remind_objective(id)
 	end
+else
+	local init = HUDObjectives.init
+	function HUDObjectives:init(hud)
+		init(self, hud)
+		if VoidUI.options.enable_timer then
+			hud.panel:child("objectives_panel"):set_y(VoidUI.options.show_timer < 3 and 0 or 40 * VoidUI.options.hud_objectives_scale)
+		end
+	end
 end

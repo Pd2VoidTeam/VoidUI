@@ -617,15 +617,15 @@ if VoidUI.options.enable_stats then
 				timer_panel:set_layer(VoidUI.options.show_timer == 2 and self._full_hud_panel:layer() + 1 or 0)
 				timer_panel:set_visible(VoidUI.options.show_timer > 1)
 			end
-			if self._objective and managers.hud._hud_objectives then
+			if managers.hud._hud_objectives then
 				obj_panel = managers.hud._hud_objectives._hud_panel:child("objectives_panel")
 				obj_a = obj_panel:alpha()
-				obj_panel:set_layer(VoidUI.options.show_objectives == 2 and self._full_hud_panel:layer() + 1 or 0)
-				obj_panel:set_visible(VoidUI.options.show_objectives > 1)
+				obj_panel:set_layer(self._objective and (VoidUI.options.show_objectives == 2 and self._full_hud_panel:layer() + 1 or 0) or 0)
+				obj_panel:set_visible(self._objective and VoidUI.options.show_objectives > 1 or true)
 				if self._timer and VoidUI.options.show_timer > 1 then
-					obj_panel:set_y(0)
+					obj_panel:set_y(self._objective and 0 or 40 * managers.hud._hud_heist_timer._scale)
 				elseif (self._timer and not VoidUI.options.show_timer > 1) or not self._timer then
-					obj_panel:set_y(-(32 * managers.hud._hud_objectives._scale))
+					obj_panel:set_y(self._objective and -(32 * managers.hud._hud_objectives._scale) or 0)
 				end	
 			end
 			
@@ -667,13 +667,13 @@ if VoidUI.options.enable_stats then
 					timer_panel = managers.hud._hud_heist_timer._heist_timer_panel
 					timer_a = timer_panel:alpha()
 			end
-			if self._objective and managers.hud._hud_objectives then
+			if managers.hud._hud_objectives then
 				obj_panel = managers.hud._hud_objectives._hud_panel:child("objectives_panel")
 				obj_a = obj_panel:alpha()
 				if (self._timer and VoidUI.options.show_timer == 2 and VoidUI.options.show_objectives == 3) or not self._timer then
-					obj_panel:set_y(-(32 * managers.hud._hud_objectives._scale))
+					obj_panel:set_y(self._objective and -(32 * managers.hud._hud_objectives._scale) or 0)
 				elseif self._timer and not VoidUI.options.show_timer == 2 and not VoidUI.options.show_objectives == 3 then
-					obj_panel:set_y(0)
+					obj_panel:set_y(self._objective and 0 or 40 * managers.hud._hud_heist_timer._scale)
 				end
 			end
 			local t = 0

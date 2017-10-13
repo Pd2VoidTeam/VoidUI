@@ -78,7 +78,7 @@ if VoidUI.options.enable_suspicion then
 			texture = "guis/textures/VoidUI/hud_extras",
 			texture_rect = {710,150,-309,88},
 			layer = 6,
-			alpha = 0.5,
+			alpha = 0.3,
 			w = 130 * self._scale,
 			h = 20 * self._scale,
 		})
@@ -89,7 +89,7 @@ if VoidUI.options.enable_suspicion then
 			texture = "guis/textures/VoidUI/hud_extras",
 			texture_rect = {401,150,309,88},
 			layer = 6,
-			alpha = 0.5,
+			alpha = 0.3,
 			w = 130 * self._scale,
 			h = 20 * self._scale,
 		})
