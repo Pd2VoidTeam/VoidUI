@@ -226,6 +226,7 @@
 	"VoidUI_scoreboard_ping_desc" : "Показывать пинг игроков",
 	"VoidUI_ping_frequency_title" : "Частота обновления",
 	"VoidUI_ping_frequency_desc" : "Укажите, как часто значения пинг будут обновляться в секундах",
+	"VoidUI_player" : "Player",
 	"VoidUI_kills" : "Убито",
 	"VoidUI_specials" : "Спецы",
 	"VoidUI_civs" : "Гражд",

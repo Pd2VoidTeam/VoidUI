@@ -739,7 +739,7 @@ if VoidUI.options.enable_stats then
 					table.insert(self._scoreboard_panels, score)
 				end
 				local labels = {
-					{parent = "name_bg", name = "name", text = (VoidUI.options.scoreboard_character and (managers.localization:text("menu_preferred_character").. " / ") or "" ) .."Player / " .. (VoidUI.options.scoreboard_skills and managers.localization:text("menu_st_skilltree") or ""), align = "left"},
+					{parent = "name_bg", name = "name", text = (VoidUI.options.scoreboard_character and (managers.localization:text("menu_preferred_character").. " / ") or "" ) ..managers.localization:text("VoidUI_player").. " / " .. (VoidUI.options.scoreboard_skills and managers.localization:text("menu_st_skilltree") or ""), align = "left"},
 					{parent = "kills_bg", name = "kills", text = managers.localization:text("VoidUI_kills")},
 					{parent = "specials_bg", name = "specials", text = managers.localization:text("VoidUI_specials")},
 					{parent = "civs_bg", name = "civs", text = managers.localization:text("VoidUI_civs")},

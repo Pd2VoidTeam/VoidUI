@@ -226,6 +226,7 @@
 	"VoidUI_scoreboard_ping_desc" : "Show a player's latency to you",
 	"VoidUI_ping_frequency_title" : "Latency update fequency",
 	"VoidUI_ping_frequency_desc" : "Set how often should ping values update in seconds",
+	"VoidUI_player" : "Player",
 	"VoidUI_kills" : "Kills",
 	"VoidUI_specials" : "Specials",
 	"VoidUI_civs" : "Civs",
