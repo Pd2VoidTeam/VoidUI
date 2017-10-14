@@ -203,7 +203,7 @@
 	"VoidUI_scoreboard_character_title" : "Маски персонажей",
 	"VoidUI_scoreboard_character_desc" : "Показывать маски выбранных игроками персонажей",
 	"VoidUI_scoreboard_skills_title" : "Навыки",
-	"VoidUI_scoreboard_skills_desc" : "Показывать количество очков умений, которые игроки потратили в выбранных перках",
+	"VoidUI_scoreboard_skills_desc" : "Показывать количество очков умений, которые игроки потратили в каждом древе навыков",
 	"VoidUI_scoreboard_kills_title" : "Убийства",
 	"VoidUI_scoreboard_kills_desc" : "Показывать количество обычных юнитов, убитых игроками",
 	"VoidUI_scoreboard_specials_title" : "Убийства спец-юнитов",
