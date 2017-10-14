@@ -226,6 +226,7 @@
 	"VoidUI_scoreboard_ping_desc" : "Montre la latence de connection d'un joueur par rapport à vous",
 	"VoidUI_ping_frequency_title" : "Fréquence de mise à jour du ping",
 	"VoidUI_ping_frequency_desc" : "Permet de définir à quel rythme d'intervalle la latence est mise à jour",
+	"VoidUI_player" : "Joueur",
 	"VoidUI_kills" : "Kills",
 	"VoidUI_specials" : "Specials",
 	"VoidUI_civs" : "Civs",
