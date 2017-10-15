@@ -1,4 +1,4 @@
-Version Dev1.1
+Version 1.1
 - Modified how the icons panel of the assault ticker works for better addon support
 - Added the option to disable hud elements
 - Added main player accuracy to scoreboard panel
@@ -8,13 +8,14 @@ Version Dev1.1
 - Added notification and hint text options
 - Added subtitle options
 - Added Russian localization made by Skyfrost
+- Added French localization made by Esawo
 - Added compatibility with Press2Hold
 - Added compatibility with Big Lobby
 - Added compatibility with Assault States
 - Added compatibility with Burst Fire
 - Added compatibility with Death Wish+
 - Improved options menu
-- Fixed bot weapons sometimes not showing correctly (?)
+- Fixed bot loadout sometimes not showing correctly
 - Fixed textures and default options not loading when another mod breaks the options menu
 - Fixed a crash related to the assault panel
 - Fixed the hostages panel sometimes not playing the assault end animation
