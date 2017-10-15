@@ -1,8 +1,10 @@
 _G.VoidUI = _G.VoidUI or {}
 VoidUI.Warning = 0
+VoidUI.loaded = false
 VoidUI.mod_path = ModPath
 VoidUI.options_path = SavePath .. "VoidUI.txt"
 VoidUI.options = {} 
+VoidUI.menus = {}
 VoidUI.hook_files = {
 	["lib/managers/hudmanager"] = {"HudManager.lua"},
 	["lib/managers/hud/hudteammate"] = {"HudTeammate.lua"},
@@ -13,8 +15,9 @@ VoidUI.hook_files = {
 	["lib/managers/hudmanagerpd2"] = {"HudManager.lua", "HudScoreboard.lua"},
 	["lib/units/beings/player/huskplayermovement"] = {"HudPlayerDowned.lua"},
 	["lib/units/beings/player/states/playerbleedout"] = {"HudPlayerDowned.lua"},
-	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "Jokers.lua"},
+	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "jokers.lua"},
 	["lib/units/equipment/doctor_bag/doctorbagbase"] = {"HudPlayerDowned.lua"},
+	["lib/states/ingamemaskoff"] = {"HudManager.lua"},
 	["lib/managers/hud/hudplayerdowned"] = {"HudPlayerDowned.lua"},
 	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
 	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
@@ -26,7 +29,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudinteraction"] = {"HudInteraction.lua"},
 	["lib/managers/hud/hudchat"] = {"HudChat.lua"},
 	["lib/managers/hud/hudassaultcorner"] = {"HudAssaultCorner.lua"},
-	["lib/managers/group_ai_states/groupaistatebase"] = {"HudAssaultCorner.lua", "Jokers.lua"},
+	["lib/managers/group_ai_states/groupaistatebase"] = {"HudAssaultCorner.lua", "jokers.lua"},
 	["lib/managers/objectinteractionmanager"] = {"HudAssaultCorner.lua"},
 	["lib/units/equipment/ecm_jammer/ecmjammerbase"] = {"HudAssaultCorner.lua"},
 	["lib/units/contourext"] = {"Jokers.lua"},
@@ -37,28 +40,8 @@ VoidUI.hook_files = {
 	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"},
 	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"},
 	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
-	["lib/managers/hud/hudstatsscreen"] = {"HudScoreboard.lua"}
-}
-VoidUI.disable_list = {
-	["anim_badge"] = "show_badge",
-	["health_jokers"] = "label_jokers",
-	["label_minscale"] = "label_minmode",
-	["label_minrank"] = "label_minmode",
-	["label_minmode_dist"] = "label_minmode",
-	["label_minmode_dot"] = "label_minmode",
-	["scoreboard_character"] = "scoreboard",
-	["scoreboard_skills"] = "scoreboard",
-	["scoreboard_kills"] = "scoreboard",
-	["scoreboard_specials"] = "scoreboard",
-	["scoreboard_civs"] = "scoreboard",
-	["scoreboard_downs"] = "scoreboard",
-	["scoreboard_weapons"] = "scoreboard",
-	["scoreboard_skins"] = "scoreboard",
-	["scoreboard_armor"] = "scoreboard",
-	["scoreboard_perk"] = "scoreboard",
-	["scoreboard_playtime"] = "scoreboard",
-	["scoreboard_ping"] = "scoreboard",
-	["ping_frequency"] = "scoreboard"	
+	["lib/managers/hud/hudstatsscreen"] = {"HudScoreboard.lua"},
+	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
 }
 
 function VoidUI:Save()
@@ -105,6 +88,32 @@ Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 end)
 function VoidUI:DefaultConfig()
 	VoidUI.options = {
+		hud_scale = 1,
+		hud_main_scale = 1,
+		hud_mate_scale = 1,
+		hud_chat_scale = 1,
+		scoreboard_scale = 1,
+		hud_assault_scale = 1,
+		hud_objectives_scale = 1,
+		presenter_scale = 1,
+		suspicion_scale = 1,
+		interact_scale = 1,
+		hint_scale = 1,
+		label_scale = 1,
+		waypoint_scale = 0.8,
+		subtitle_scale = 0.9,
+		teammate_panels = true,
+		enable_interact = true,
+		enable_suspicion = true,
+		enable_assault = true,
+		enable_chat = true,
+		enable_labels = true,
+		enable_timer = true,
+		enable_objectives = true,
+		enable_presenter = true,
+		enable_hint = true,
+		enable_blackscreen = true,
+		enable_subtitles = true,
 		totalammo = true,
 		main_loud = true,
 		main_stealth = true,
@@ -119,6 +128,8 @@ function VoidUI:DefaultConfig()
 		label_jokers = true,
 		label_minmode = true,
 		label_minrank = true,
+		label_upper = false,
+		mate_upper = false,
 		label_waypoint_offscreen = true,
 		chat_mouse = true,
 		mate_interact = true,
@@ -130,7 +141,9 @@ function VoidUI:DefaultConfig()
 		health_jokers = true,
 		show_interact = true,
 		scoreboard_blur = true,
+		enable_stats = true,
 		scoreboard = true,
+		scoreboard_accuracy = true,
 		scoreboard_character = true,
 		scoreboard_skills = true,
 		scoreboard_specials = true,
@@ -143,23 +156,19 @@ function VoidUI:DefaultConfig()
 		scoreboard_ping = true,
 		trophies = true,
 		save_warning = false,
+		presenter_sound = false,
+		hint_color = true,
+		hint_anim = true,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
+		show_objectives = 3,
+		subtitles_bg = 2,
+		show_timer = 3,
 		ping_frequency = 2,
 		jammers = 2,
-		hud_scale = 1,
-		hud_main_scale = 1,
-		hud_mate_scale = 1,
-		hud_chat_scale = 1,
-		scoreboard_scale = 1,
-		hud_assault_scale = 1,
-		hud_objectives_scale = 1,
-		suspicion_scale = 1,
-		interact_scale = 1,
-		waypoint_scale = 0.8,
 		label_minscale = 1,
-		label_scale = 1,
 		hud_objective_history = 3,
+		presenter_buffer = 5,
 		label_minmode_dist = 7,
 		label_minmode_dot = 1,
 		chat_copy = 5,
@@ -171,27 +180,54 @@ function VoidUI:DefaultConfig()
 		assault_lines = 3,
 		waypoint_radius = 200,
 		suspicion_y = 160,
-		interact_y = 40
+		interact_y = 40,
+		main_anim_time = 0.2,
+		mate_anim_time = 0.2
 	}
 
 end
 
+if not VoidUI.loaded then
+	VoidUI.loaded = true
+	VoidUI:DefaultConfig()
+	VoidUI:Load()
+	VoidUI:LoadTextures()
+end
+
+VoidUI.disable_list = {
+	["show_badge"] = 1	,
+	["enable_assault"] = 6,
+	["enable_chat"] = 5,
+	["chat_mouse"] = 1,
+	["teammate_panels"] = 21,
+	["enable_interact"] = 3,
+	["enable_suspicion"] = 2,
+	["enable_labels"] = 9,
+	["label_minmode"] = 4,
+	["enable_timer"] = 4,
+	["enable_objectives"] = 2,
+	["enable_presenter"] = 3,
+	["enable_hint"] = 3,
+	["enable_stats"] = 17,
+	["scoreboard"] = 14,
+	["enable_subtitles"] = 2,
+}
+
 function VoidUI:UpdateMenu()
-	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-		local menu_name = "VoidUI_".. file:gsub(".json", "")
-		for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
-			if VoidUI.disable_list[item:parameters().name] then
-				local disable_list_entry = VoidUI.disable_list[item:parameters().name]
-				item:set_enabled(VoidUI.options[disable_list_entry])
+		for _, menu_name in pairs(VoidUI.menus) do
+		local menu_list = MenuHelper:GetMenu(menu_name)._items_list
+		for key, item in pairs(menu_list) do
+			if item:enabled() and VoidUI.disable_list[item:parameters().name] then
+				for i = key + 1, key + VoidUI.disable_list[item:parameters().name] do
+					if menu_list[i]._type ~= "divider" then menu_list[i]:set_enabled(VoidUI.options[item:parameters().name]) end
+				end
 			end
 			if item._type == "slider" then
-				local value = VoidUI.options[item:parameters().name]
 				local step = item:parameters().step
-				if step >= 1 and value ~= nil and step ~= nil then
-					if value % step ~= 0 then
-						item:set_value(value + (value % step >= 0.5 and 1 - value % step or -(value % step)))
-					end
-				end
+				local decimals = 0
+				if string.find(tostring(step), "0.") ~= nil then decimals = utf8.len(step) - 2 end
+				item:set_decimal_count(decimals)
+				item:set_value(item:raw_value_string())
 			end
 		end
 	end
@@ -200,38 +236,19 @@ end
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu_manager)
 	MenuCallbackHandler.callback_VoidUI_hudscale = function(self, item)
 		VoidUI.options.hud_scale = item:value()
-		VoidUI.options.hud_main_scale = item:value()
-		VoidUI.options.hud_mate_scale = item:value()
-		VoidUI.options.hud_objectives_scale = item:value()
-		VoidUI.options.hud_assault_scale = item:value()
-		VoidUI.options.hud_chat_scale = item:value()
-		local hudteammate = MenuHelper:GetMenu("VoidUI_hudteammate")
-		if hudteammate then 
-			hudteammate._items_list[2]:set_value(item:value())
-			hudteammate._items_list[11]:set_value(item:value())
-		end
-		local objectives = MenuHelper:GetMenu("VoidUI_objectives")
-		if objectives then
-			objectives._items_list[1]:set_value(item:value())
-		end
-		local assault = MenuHelper:GetMenu("VoidUI_assault")
-		if assault then
-			assault._items_list[1]:set_value(item:value())
-		end
-		local chat = MenuHelper:GetMenu("VoidUI_chat")
-		if assault then
-			chat._items_list[1]:set_value(item:value())
-		end
-		local interact = MenuHelper:GetMenu("VoidUI_interact")
-		if interact then 
-			interact._items_list[2]:set_value(item:value())
-			interact._items_list[7]:set_value(item:value())
-		end
-		local scoreboard = MenuHelper:GetMenu("VoidUI_scoreboard")
-		if scoreboard then 
-			scoreboard._items_list[1]:set_value(item:value())
+		local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale"}
+		for _, menu_name in pairs(VoidUI.menus) do
+			for _, menu_item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
+				for _, v in pairs(scales) do
+					if v == menu_item:parameters().name then
+						menu_item:set_value(item:value())
+						VoidUI.options[menu_item:parameters().name] = item:value()
+					end
+				end
+			end
 		end
 		if VoidUI.Warning == 0 then VoidUI.Warning = 1 end
+		VoidUI:UpdateMenu()
 	end
 	MenuCallbackHandler.basic_option_clbk = function(self, item)
 		VoidUI.options[item:parameters().name] = item:value()
@@ -251,8 +268,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 				text = managers.localization:text("dialog_yes"), 
 				callback = function(self, item)
 					VoidUI:DefaultConfig()
-					for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-						local menu_name = "VoidUI_".. file:gsub(".json", "")
+						for _, menu_name in pairs(VoidUI.menus) do
 						for _, item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 							local value = VoidUI.options[item:parameters().name]
 							if value then 
@@ -296,19 +312,17 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 			QuickMenu:new(managers.localization:text("VoidUI_warning_title"), managers.localization:text("VoidUI_warning_desc"), buttons, true )
 		end
 	end	
-	
-	VoidUI:DefaultConfig()
-	VoidUI:Load()
-	
+	local menus = SystemFS:list(VoidUI.mod_path.. "menu/")
 	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
-	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "menu/")) do
-		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..file, VoidUI, VoidUI.options)
+	table.insert(VoidUI.menus, "VoidUI_options")
+	for i=#menus, 1, -1 do
+		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..menus[i], VoidUI, VoidUI.options)
+		table.insert(VoidUI.menus, "VoidUI_"..menus[i]:gsub(".json", ""))
 	end
 end )
 
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
-	VoidUI:LoadTextures()
 end)
 	
 function MenuManager:toggle_chatinput()

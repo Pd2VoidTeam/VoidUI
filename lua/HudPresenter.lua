@@ -1,12 +1,13 @@
-if RequiredScript == "lib/managers/hud/hudpresenter" then
+if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_presenter then
 	function HUDPresenter:init(hud)
 		self._hud_panel = hud.panel
 		self._id = 0
 		self._active = 0
+		self._scale = VoidUI.options.presenter_scale
 	end
 	function HUDPresenter:present(params)
 		self._present_queue = self._present_queue or {}
-		if self._active > 5 then
+		if self._active > (VoidUI.options.presenter_buffer-1) then
 			table.insert(self._present_queue, params)
 			return
 		end
@@ -29,9 +30,9 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 		local id = self._id
 		self._active = self._active + 1
 		self._id = self._id + 1
-		local h = 40
-		local w = 100
-		local x = self._hud_panel:w() - 200
+		local h = 40 * self._scale
+		local w = 100 * self._scale
+		local x = self._hud_panel:w() - 200 * self._scale
 		local y = self._hud_panel:h() / 2 - (h / 2)
 		local color = params.color or Color.white
 		local present_panel = self._hud_panel:panel({
@@ -58,7 +59,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			texture_rect = {26,0,43,150},
 			layer = 1,
 			y = 0,
-			w = 35,
+			w = 35 * self._scale,
 			h = h,
 			rotation = 360,
 		})
@@ -68,7 +69,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			texture_rect = {0,0,23,157},
 			layer = 2,
 			y = 0,
-			w = 15,
+			w = 15 * self._scale,
 			h = h,
 			rotation = 360,
 			color = color,
@@ -81,7 +82,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			layer = 1,
 			w = w,
 			h = h,
-			x = 35,
+			x = 35 * self._scale,
 			y = 0,
 			rotation = 360,
 		})	
@@ -92,7 +93,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			layer = 2,
 			w = w,
 			h = h,
-			x = 15,
+			x = 15 * self._scale,
 			y = 0,
 			rotation = 360,
 			color = color,
@@ -104,7 +105,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			texture_rect = {485,0,43,150},
 			layer = 1,
 			y = 0,
-			w = 35,
+			w = 35 * self._scale,
 			h = h,
 			rotation = 360,
 		})
@@ -115,11 +116,11 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			vertical = "top",
 			valign = "left",
 			layer = 2,
-			x = 15,
+			x = 15 * self._scale,
 			color = color,
 			rotation = 360,
 			font = tweak_data.hud_present.title_font,
-			font_size = tweak_data.hud_present.title_size / 1.5
+			font_size = tweak_data.hud_present.title_size / 1.5 * self._scale
 		})
 		local _, _, title_w, title_h = title:text_rect()
 		title:set_h(title_h)
@@ -129,17 +130,17 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 			vertical = "top",
 			valign = "top",
 			layer = 2,
-			x = 9,
+			x = 9 * self._scale,
 			color = color,
 			rotation = 360,
 			font = tweak_data.hud_present.text_font,
-			font_size = tweak_data.hud_present.text_size / 1.5
+			font_size = tweak_data.hud_present.text_size / 1.5 * self._scale
 		})
 		local _, _, text_w, text_h = text:text_rect()
 		text:set_top(title:bottom())
 		text:set_h(text_h)
 		w = math.max(title_w, text_w)
-		present_bg:set_w(w - 35)
+		present_bg:set_w(w - 35 * self._scale)
 		present_bg_right:set_left(present_bg:right())
 		present_panel:set_w(present_bg_left:w() + present_bg:w() + present_bg_right:w())
 		present_panel:set_right(self._hud_panel:right())
@@ -147,7 +148,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 
 		present_panel:animate(callback(self, self, "_animate_present_information"))
 		
-		if params.event then
+		if params.event and not VoidUI.options.presenter_sound then
 			managers.hud._sound_source:post_event(params.event)
 		end
 	end
@@ -188,7 +189,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" then
 	end
 	function HUDPresenter:_animate_move_queue(present_panel, goal)
 		local y = present_panel:y()
-		local y2 = (self._hud_panel:h() / 2 - (40 / 2)) - (goal * 45)
+		local y2 = (self._hud_panel:h() / 2 - ((40 * self._scale ) / 2)) - (goal * (45 * self._scale))
 		local TOTAL_T = 0.2
 		local t = 0
 		while TOTAL_T > t do

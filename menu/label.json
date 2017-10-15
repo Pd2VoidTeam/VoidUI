@@ -11,7 +11,16 @@
 			"type" : "button",
 			"id" : "voidui_labels",
 			"title" : "VoidUI_label",
-			"priority" : 14
+			"priority" : 16
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_labels",
+			"title" : "VoidUI_enable_labels_title",
+			"description" : "VoidUI_enable_labels_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_labels"
+			"priority" : 15
 		},
 		{
 			"type" : "toggle",
@@ -20,7 +29,7 @@
 			"description" : "VoidUI_jokernames_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_jokers"
-			"priority" : 13
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -29,7 +38,7 @@
 			"description" : "VoidUI_jokerhealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "health_jokers"
-			"priority" : 12
+			"priority" : 13
 		},
 		{
 			"type" : "slider",
@@ -43,6 +52,15 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
+			"priority" : 12
+		},
+		{
+			"type" : "toggle",
+			"id" : "label_upper",
+			"title" : "VoidUI_label_upper_title",
+			"description" : "VoidUI_label_upper_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "label_upper"
 			"priority" : 11
 		},
 		{
@@ -149,7 +167,7 @@
 			"default_value" : 160,
 			"max" : 340,
 			"min" : 100,
-			"step" : 0.01,
+			"step" : 0.1,
 			"localized" :  true
 			"priority" : 1
 		}

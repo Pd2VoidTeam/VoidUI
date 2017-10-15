@@ -19,17 +19,40 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 19
+			"priority" : 21
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 18
+			"priority" : 20
 		},
 		{
 			"type" : "button",
 			"id" : "voidui_timer",
 			"title" : "VoidUI_timer_panel",
+			"priority" : 19
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_timer",
+			"title" : "VoidUI_enable_timer_title",
+			"description" : "VoidUI_enable_timer_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_timer"
+			"priority" : 18
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "show_timer",
+			"title" : "VoidUI_objectives_show_timer_title",
+			"description" : "VoidUI_objectives_show_timer_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"VoidUI_disabled", 
+				"VoidUI_on_scoreboard", 
+				"VoidUI_show"
+			],
+			"value" : "show_timer",
 			"priority" : 17
 		},
 		{
@@ -71,6 +94,29 @@
 			"priority" : 12
 		},
 		{
+			"type" : "toggle",
+			"id" : "enable_objectives",
+			"title" : "VoidUI_enable_objectives_title",
+			"description" : "VoidUI_enable_objectives_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_objectives"
+			"priority" : 11
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "show_objectives",
+			"title" : "VoidUI_objectives_show_title",
+			"description" : "VoidUI_objectives_show_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"VoidUI_disabled", 
+				"VoidUI_on_scoreboard", 
+				"VoidUI_show"
+			],
+			"value" : "show_objectives",
+			"priority" : 10
+		},
+		{
 			"type" : "slider",
 			"id" : "hud_objective_history",
 			"title" : "VoidUI_objective_history_title",
@@ -82,7 +128,7 @@
 			"min" : 0,
 			"step" : 1,
 			"localized" :  true
-			"priority" : 11
+			"priority" : 9
 		}
 		
 	]

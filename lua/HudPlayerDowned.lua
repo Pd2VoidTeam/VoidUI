@@ -1,4 +1,4 @@
-if RequiredScript == "lib/managers/hud/hudplayerdowned" then
+if RequiredScript == "lib/managers/hud/hudplayerdowned" and VoidUI.options.teammate_panels then
 	
 	function HUDPlayerDowned:init(hud)
 		self._hud = hud
@@ -119,7 +119,7 @@ if RequiredScript == "lib/managers/hud/hudplayerdowned" then
 		self._hud.timer:set_visible(false)
 	end
 	
-elseif RequiredScript == "lib/units/beings/player/huskplayermovement" then
+elseif RequiredScript == "lib/units/beings/player/huskplayermovement" and VoidUI.options.teammate_panels then
 	
 	local start_bleedout = HuskPlayerMovement._perform_movement_action_enter_bleedout
 	
@@ -132,7 +132,7 @@ elseif RequiredScript == "lib/units/beings/player/huskplayermovement" then
 		return start_bleedout(self, ...)
 	end
 	
-elseif RequiredScript == "lib/units/beings/player/states/playerbleedout" then
+elseif RequiredScript == "lib/units/beings/player/states/playerbleedout" and VoidUI.options.teammate_panels then
 	local start_bleedout = PlayerBleedOut._enter
 	
 	function PlayerBleedOut:_enter(...)
@@ -162,7 +162,7 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 		return teammate_interact(self, type_index, enabled, tweak_data_id, timer, success, sender)
 	end
 
-elseif RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" then
+elseif RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" and VoidUI.options.teammate_panels then
 	
 	local doctor_bag_taken = DoctorBagBase.take
 

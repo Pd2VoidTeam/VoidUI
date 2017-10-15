@@ -1,0 +1,125 @@
+{
+	"menu_id" : "VoidUI_presenter",
+	"parent_menu_id" : "VoidUI_options",
+	"title" : "VoidUI_presenter_title",
+	"description" : "VoidUI_presenter_desc",
+	"back_callback" : "VoidUI_save",
+	"priority" : 10,
+	"localized" :  true,
+	"items" : [
+		{
+			"type" : "button",
+			"id" : "voidui_presenter",
+			"title" : "VoidUI_presenter_panel",
+			"priority" : 20
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_presenter",
+			"title" : "VoidUI_enable_presenter_title",
+			"description" : "VoidUI_enable_presenter_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_presenter"
+			"priority" : 19
+		},
+		{
+			"type" : "slider",
+			"id" : "presenter_scale",
+			"title" : "VoidUI_presenter_scale_title",
+			"description" : "VoidUI_presenter_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "presenter_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.01,
+			"localized" :  true
+			"priority" : 18
+		},
+		{
+			"type" : "slider",
+			"id" : "presenter_buffer",
+			"title" : "VoidUI_presenter_buffer_title",
+			"description" : "VoidUI_presenter_buffer_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "presenter_buffer",
+			"default_value" : 5,
+			"max" : 10,
+			"min" : 1,
+			"step" : 1,
+			"localized" :  true
+			"priority" : 17
+		},
+		{
+			"type" : "toggle",
+			"id" : "presenter_sound",
+			"title" : "VoidUI_presenter_sound_title",
+			"description" : "VoidUI_presenter_sound_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "presenter_sound"
+			"priority" : 16
+		},
+		{
+			"type" : "toggle",
+			"id" : "trophies",
+			"title" : "VoidUI_trophies_title",
+			"description" : "VoidUI_trophies_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "trophies"
+			"priority" : 15
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 14
+		},
+		{
+			"type" : "button",
+			"id" : "voidui_hint",
+			"title" : "VoidUI_hint_panel",
+			"priority" : 13
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_hint",
+			"title" : "VoidUI_enable_hint_title",
+			"description" : "VoidUI_enable_hint_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_hint"
+			"priority" : 12
+		},
+		{
+			"type" : "slider",
+			"id" : "hint_scale",
+			"title" : "VoidUI_hint_scale_title",
+			"description" : "VoidUI_hint_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "hint_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.01,
+			"localized" :  true
+			"priority" : 11
+		},
+		{
+			"type" : "toggle",
+			"id" : "hint_color",
+			"title" : "VoidUI_hint_color_title",
+			"description" : "VoidUI_hint_color_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "hint_color"
+			"priority" : 10
+		},
+		{
+			"type" : "toggle",
+			"id" : "hint_anim",
+			"title" : "VoidUI_hint_anim_title",
+			"description" : "VoidUI_hint_anim_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "hint_anim"
+			"priority" : 9
+		}
+		
+	]
+}

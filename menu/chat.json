@@ -8,6 +8,15 @@
 	"priority" : 10,
 	"items" : [
 		{
+			"type" : "toggle",
+			"id" : "enable_chat",
+			"title" : "VoidUI_enable_chat_title",
+			"description" : "VoidUI_enable_chat_decs",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_chat"
+			"priority" : 15
+		},
+		{
 			"type" : "slider",
 			"id" : "hud_chat_scale",
 			"title" : "VoidUI_chat_scale_title",
