@@ -35,6 +35,8 @@ Copyright (C) 2017 Xeletron
 - Most part of the hud made by Xeletron
 - Small lua tweaks made by Fanged Hex
 - English language localization tweaks made by VxWolf
+- Russian localization made by Skyfrost
+- French localization made by Esawo
 
 ## Installing
 - Download and install BLT from https://github.com/JamesWilko/Payday-2-BLT/releases
