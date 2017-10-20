@@ -138,6 +138,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 			for _, data in pairs(self._hud.name_labels) do
 				if data.id == label_id then
 					local name = VoidUI.options.label_upper and utf8.to_upper(data.character_name) or data.character_name
+					if num_players > 0 then
+						name = name.." (" .. num_players .. ")"
+					end
 					data.text:set_text(name)
 					self:align_teammate_name_label(data.panel, data.interact)
 				else
@@ -308,6 +311,128 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
+	if VoidUI.options.teammate_panels or VoidUI.options.enable_labels then 
+		local set_ai_stopped = HUDManager.set_ai_stopped
+		function HUDManager:set_ai_stopped(ai_id, stopped)
+			set_ai_stopped(self, ai_id, stopped)
+			local teammate_panel = self._teammate_panels[ai_id]
+			if not teammate_panel or stopped and not teammate_panel._ai then
+				return
+			end
+			local panel = teammate_panel._panel:child("custom_player_panel") and teammate_panel._panel:child("custom_player_panel"):child("health_panel")
+			local name = panel and teammate_panel._panel:child("custom_player_panel"):child("name") and string.gsub(teammate_panel._panel:child("custom_player_panel"):child("name"):text(), "%W", "") or (teammate_panel._panel:child("name") and string.gsub(teammate_panel._panel:child("name"):text(), "%W", ""))
+			local label
+			for _, lbl in ipairs(self._hud.name_labels) do
+				if string.gsub(lbl.character_name, "%W", "") == name then
+					label = lbl
+					break
+				end
+			end
+			if stopped then
+				if panel then
+					local downs_value = panel:child("downs_value")
+					local stop_icon = panel:bitmap({
+						name = "stopped",
+						texture = tweak_data.hud_icons.ai_stopped.texture,
+						texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect,
+						layer = 6
+					})
+					stop_icon:set_w(downs_value:w() / 2.2)
+					stop_icon:set_h(downs_value:h() / 1.3)
+					stop_icon:set_center_x(downs_value:center_x())
+					stop_icon:set_top(downs_value:top())
+				end
+				if label and label.panel:child("extended_panel") then
+					local label_stop_icon = label.panel:child("extended_panel"):bitmap({
+						name = "stopped",
+						texture = tweak_data.hud_icons.ai_stopped.texture,
+						texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect,
+						rotation = 360
+					})
+					label_stop_icon:set_right(label.text:left())
+					label_stop_icon:set_center_y(label.text:center_y())
+				end
+			else
+				if panel and panel:child("stopped") then
+					panel:remove(panel:child("stopped"))
+				end
+				if label and label.panel:child("extended_panel") and label.panel:child("extended_panel"):child("stopped") then
+					label.panel:child("extended_panel"):remove(label.panel:child("extended_panel"):child("stopped"))
+				end
+			end
+		end
+		
+		function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success)
+			local name_label = self:_name_label_by_peer_id(peer_id)
+			if name_label then
+				name_label.interact:set_visible(enabled)
+				if name_label.panel:child("extended_panel") then
+					name_label.panel:child("extended_panel"):child("action"):set_visible(enabled)
+					name_label.panel:child("extended_panel"):child("interact_bg"):set_visible(enabled)
+					name_label.panel:child("minmode_panel"):child("min_interact"):set_visible(enabled)
+					name_label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(enabled)
+				else
+					name_label.panel:child("action"):set_visible(enabled)
+				end
+				local action_text = ""
+				if type_index == 1 then
+					action_text = managers.localization:text(tweak_data.interaction[tweak_data_id].action_text_id or "hud_action_generic")
+				elseif type_index == 2 then
+					if enabled then
+						local equipment_name = managers.localization:text(tweak_data.equipments[tweak_data_id].text_id)
+						local deploying_text = tweak_data.equipments[tweak_data_id].deploying_text_id and managers.localization:text(tweak_data.equipments[tweak_data_id].deploying_text_id) or false
+						action_text = deploying_text or managers.localization:text("hud_deploying_equipment", {EQUIPMENT = equipment_name})
+					end
+				elseif type_index == 3 then
+					action_text = managers.localization:text("hud_starting_heist")
+				end
+				if name_label.panel:child("extended_panel") then
+					name_label.panel:child("extended_panel"):child("action"):set_text(action_text .. string.format(" (%.1fs)", timer))
+					name_label.panel:child("extended_panel"):stop()
+				else
+					name_label.panel:child("action"):set_text(utf8.to_upper(action_text))
+					name_label.panel:stop()
+				end
+				if enabled and name_label.panel:child("extended_panel") then
+					name_label.panel:animate(callback(self, self, "_animate_label_interact_custom"), name_label.interact, name_label.panel:child("minmode_panel"):child("min_interact"), name_label.panel:child("extended_panel"):child("interact_bg"), name_label.panel:child("minmode_panel"):child("min_interact_bg"), name_label.panel:child("extended_panel"):child("action"), action_text, timer)
+				elseif enabled and not name_label.panel:child("extended_panel") then
+					name_label.panel:animate(callback(self, self, "_animate_label_interact"), name_label.interact, timer)
+				elseif success and not name_label.panel:child("extended_panel") then
+					local panel = name_label.panel
+					local bitmap = panel:bitmap({
+						blend_mode = "add",
+						texture = "guis/textures/pd2/hud_progress_active",
+						layer = 2,
+						align = "center",
+						rotation = 360,
+						valign = "center"
+					})
+
+					bitmap:set_size(name_label.interact:size())
+					bitmap:set_position(name_label.interact:position())
+
+					local radius = name_label.interact:radius()
+					local circle = CircleBitmapGuiObject:new(panel, {
+						blend_mode = "normal",
+						rotation = 360,
+						layer = 3,
+						radius = radius,
+						color = Color.white:with_alpha(1)
+					})
+
+					circle:set_position(name_label.interact:position())
+					bitmap:animate(callback(HUDInteraction, HUDInteraction, "_animate_interaction_complete"), circle)
+				end
+			end
+			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+			if character_data and self._teammate_panels[character_data.panel_id]._custom_player_panel then
+				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
+			elseif character_data and not self._teammate_panels[character_data.panel_id]._custom_player_panel then 
+				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
+			end
+		end
+	end
+	
 	--Player and Teammate Panels
 	if VoidUI.options.teammate_panels then 
 		function HUDManager:teampanels_height()
@@ -336,85 +461,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					panel._panel:set_x(i == 1 and 0 or self._teammate_panels[i - 1]._panel:right() -  9 * self._mate_scale)
 				end
 			end
-		end
-		
-		function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success)
-			local name_label = self:_name_label_by_peer_id(peer_id)
-			if name_label then
-				name_label.interact:set_visible(enabled)
-				name_label.panel:child("extended_panel"):child("action"):set_visible(enabled)
-				name_label.panel:child("extended_panel"):child("interact_bg"):set_visible(enabled)
-				name_label.panel:child("minmode_panel"):child("min_interact"):set_visible(enabled)
-				name_label.panel:child("minmode_panel"):child("min_interact_bg"):set_visible(enabled)
-				local action_text = ""
-				if type_index == 1 then
-					action_text = managers.localization:text(tweak_data.interaction[tweak_data_id].action_text_id or "hud_action_generic")
-				elseif type_index == 2 then
-					if enabled then
-						local equipment_name = managers.localization:text(tweak_data.equipments[tweak_data_id].text_id)
-						local deploying_text = tweak_data.equipments[tweak_data_id].deploying_text_id and managers.localization:text(tweak_data.equipments[tweak_data_id].deploying_text_id) or false
-						action_text = deploying_text or managers.localization:text("hud_deploying_equipment", {EQUIPMENT = equipment_name})
-					end
-				elseif type_index == 3 then
-					action_text = managers.localization:text("hud_starting_heist")
-				end
-				name_label.panel:child("extended_panel"):child("action"):set_text(action_text .. string.format(" (%.1fs)", timer))
-				name_label.panel:child("extended_panel"):stop()
-				if enabled then
-					name_label.panel:animate(callback(self, self, "_animate_label_interact"), name_label.interact, name_label.panel:child("minmode_panel"):child("min_interact"), name_label.panel:child("extended_panel"):child("interact_bg"), name_label.panel:child("minmode_panel"):child("min_interact_bg"), name_label.panel:child("extended_panel"):child("action"), action_text, timer)
-				end
-			end
-			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
-			if character_data then
-				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
-			end
-		end
-		
-		function HUDManager:set_ai_stopped(ai_id, stopped)
-			local teammate_panel = self._teammate_panels[ai_id]
-			if not teammate_panel or stopped and not teammate_panel._ai then
-				return
-			end
-			local panel = teammate_panel._panel:child("custom_player_panel"):child("health_panel")
-			local name = teammate_panel._panel:child("custom_player_panel"):child("name") and string.gsub(teammate_panel._panel:child("custom_player_panel"):child("name"):text(), "%W", "")
-			local label
-			for _, lbl in ipairs(self._hud.name_labels) do
-				if string.gsub(lbl.character_name, "%W", "") == name then
-					label = lbl
-				else
-				end
-			end
-			if stopped then
-				local downs_value = panel:child("downs_value")
-				local stop_icon = panel:bitmap({
-					name = "stopped",
-					texture = tweak_data.hud_icons.ai_stopped.texture,
-					texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect,
-					layer = 6
-				})
-				stop_icon:set_w(downs_value:w() / 2.2)
-				stop_icon:set_h(downs_value:h() / 1.3)
-				stop_icon:set_center_x(downs_value:center_x())
-				stop_icon:set_top(downs_value:top())
-				if label then
-					local label_stop_icon = label.panel:child("extended_panel"):bitmap({
-						name = "stopped",
-						texture = tweak_data.hud_icons.ai_stopped.texture,
-						texture_rect = tweak_data.hud_icons.ai_stopped.texture_rect,
-						rotation = 360
-					})
-					label_stop_icon:set_right(label.text:left())
-					label_stop_icon:set_center_y(label.text:center_y())
-				end
-			else
-				if panel:child("stopped") then
-					panel:remove(panel:child("stopped"))
-				end
-				if label and label.panel:child("extended_panel"):child("stopped") then
-					label.panel:child("extended_panel"):remove(label.panel:child("extended_panel"):child("stopped"))
-				end
-			end
-		end
+		end	
 
 		local ext_inventory_changed = HUDManager.on_ext_inventory_changed
 		function HUDManager:on_ext_inventory_changed()
@@ -439,19 +486,25 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					player_panel:child("weapons_panel"):set_visible(true)
 					self:align_teammate_panels()
 				end
-			end
+			end		
+	end		
+	
+	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then	
 		HUDManager.player_downed = HUDManager.player_downed or function(self, i)
-			self._teammate_panels[i]:downed()
-			if self._hud_statsscreen then
+			if self._teammate_panels and self._teammate_panels[i].downed then
+				self._teammate_panels[i]:downed()
+			end
+			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels then
 				self._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 			end
 		end
 
 		HUDManager.player_reset_downs = HUDManager.player_reset_downs or function(self, i)
-			self._teammate_panels[i]:reset_downs()
+			if self._teammate_panels and self._teammate_panels[i].reset_downs then
+				self._teammate_panels[i]:reset_downs()
+			end
 		end
-		
-	end		
+	end
 	
 	--Stat Screen and Scoreboard
 	if VoidUI.options.scoreboard and VoidUI.options.enable_stats then
@@ -519,7 +572,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	--Name Labels
 	if VoidUI.options.enable_labels then
-		function HUDManager:_animate_label_interact(panel, interact, minmode_interact, interact_bg, minmode_bg, action, action_text, timer)
+		function HUDManager:_animate_label_interact_custom(panel, interact, minmode_interact, interact_bg, minmode_bg, action, action_text, timer)
 			local t = 0
 			interact:set_x(interact_bg:x())
 			while timer >= t do
@@ -742,7 +795,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local _, _, cw, ch = cheater:text_rect()
 			local _, _, mtw, mth = min_text:text_rect()
 			
-			panel:set_size(math.max(tw, cw, aw) + 32, th + ah + ch)
+			panel:set_size(math.max(tw, cw, aw) + 4, th + ah + ch)
 			cheater:set_size(panel:w(), ch)
 			cheater:set_position(0, 0)
 					
@@ -761,7 +814,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			action:set_size(panel:w(), ah)
 			action:set_y(interact:bottom())
 			bag:set_size(th, th * 0.8)
-			bag:set_right(panel:left() - 2)
+			bag:set_right(0)
 			bag:set_center_y(text:center_y())
 			panel:child("text"):set_x(panel:x())
 			panel:child("text"):set_center_y(text:center_y())

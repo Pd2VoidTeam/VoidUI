@@ -255,7 +255,7 @@
 	"VoidUI_hint_scale_desc" : "Установите размер текста подсказок",
 	"VoidUI_hint_anim_title" : "Анимация подсказок",
 	"VoidUI_hint_anim_desc" : "Анимировать подсказки эффектом выпрыгивания",
-	"VoidUI_hint_color_title" : "Цветные имена в подсказках",
+	"VoidUI_hint_color_title" : "Цветные подсказки",
 	"VoidUI_hint_color_desc" : "Показывать цветные имена ваших товарищей по команде в подсказках",
 	
 	"VoidUI_subtitles_title" : "Субтитры",

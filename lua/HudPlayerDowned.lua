@@ -119,7 +119,7 @@ if RequiredScript == "lib/managers/hud/hudplayerdowned" and VoidUI.options.teamm
 		self._hud.timer:set_visible(false)
 	end
 	
-elseif RequiredScript == "lib/units/beings/player/huskplayermovement" and VoidUI.options.teammate_panels then
+elseif RequiredScript == "lib/units/beings/player/huskplayermovement" and (VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats)) then
 	
 	local start_bleedout = HuskPlayerMovement._perform_movement_action_enter_bleedout
 	
@@ -132,7 +132,7 @@ elseif RequiredScript == "lib/units/beings/player/huskplayermovement" and VoidUI
 		return start_bleedout(self, ...)
 	end
 	
-elseif RequiredScript == "lib/units/beings/player/states/playerbleedout" and VoidUI.options.teammate_panels then
+elseif RequiredScript == "lib/units/beings/player/states/playerbleedout" and (VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats)) then
 	local start_bleedout = PlayerBleedOut._enter
 	
 	function PlayerBleedOut:_enter(...)
@@ -141,28 +141,31 @@ elseif RequiredScript == "lib/units/beings/player/states/playerbleedout" and Voi
 	end
 	
 elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
-	
-	local doctor_bag_taken = UnitNetworkHandler.sync_doctor_bag_taken
+	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then
+		local doctor_bag_taken = UnitNetworkHandler.sync_doctor_bag_taken
 
-	function UnitNetworkHandler:sync_doctor_bag_taken(unit, amount, sender, ...)
-		local peer = self._verify_sender(sender)
-		if peer then
-			local data = managers.criminals:character_data_by_peer_id(peer:id())
-			if data and data.panel_id then
-				managers.hud:player_reset_downs(data.panel_id)
+		function UnitNetworkHandler:sync_doctor_bag_taken(unit, amount, sender, ...)
+			local peer = self._verify_sender(sender)
+			if peer then
+				local data = managers.criminals:character_data_by_peer_id(peer:id())
+				if data and data.panel_id then
+					managers.hud:player_reset_downs(data.panel_id)
+				end
 			end
+			
+			return doctor_bag_taken(self, unit, amount, sender, ...)
 		end
-		
-		return doctor_bag_taken(self, unit, amount, sender, ...)
 	end
 	
-	local teammate_interact = UnitNetworkHandler.sync_teammate_progress
-	function UnitNetworkHandler:sync_teammate_progress(type_index, enabled, tweak_data_id, timer, success, sender)
-		if tweak_data_id == "corpse_alarm_pager" and success == true then managers.hud:pager_used() end
-		return teammate_interact(self, type_index, enabled, tweak_data_id, timer, success, sender)
+	if VoidUI.options.enable_assault then
+		local teammate_interact = UnitNetworkHandler.sync_teammate_progress
+		function UnitNetworkHandler:sync_teammate_progress(type_index, enabled, tweak_data_id, timer, success, sender)
+			if tweak_data_id == "corpse_alarm_pager" and success == true then managers.hud:pager_used() end
+			return teammate_interact(self, type_index, enabled, tweak_data_id, timer, success, sender)
+		end
 	end
-
-elseif RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" and VoidUI.options.teammate_panels then
+	
+elseif RequiredScript == "lib/units/equipment/doctor_bag/doctorbagbase" and (VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats)) then
 	
 	local doctor_bag_taken = DoctorBagBase.take
 

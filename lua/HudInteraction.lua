@@ -179,7 +179,7 @@ if VoidUI.options.enable_interact then
 				color = Color.white:with_alpha(1)
 			})
 			bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:child(self._child_name_text):y() + 66 * self._scale)
-			bar:animate(callback(self, self, "_animate_interaction_complete"), bar)
+			bar:animate(callback(self, self, "_animate_interaction_complete_custom"), bar)
 		end
 		if self._interact_circle then
 			self._interact_circle:remove()
@@ -218,7 +218,7 @@ if VoidUI.options.enable_interact then
 			self._interact_bar = nil
 		end
 	end
-	function HUDInteraction:_animate_interaction_complete(bar)
+	function HUDInteraction:_animate_interaction_complete_custom(bar)
 		local TOTAL_T = 0.2
 		local t = 0
 		local w = bar:w()
