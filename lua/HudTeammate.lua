@@ -634,12 +634,12 @@ if VoidUI.options.teammate_panels then
 			layer = 3,
 			color = Color.white,
 			vertical = "bottom",
-			align = "left",
+			align = self._main_player and "right" or "left",
 			font_size = 19 * self._mate_scale,
 			font = "fonts/font_medium_shadow_mf"
 		})
-		interact_text:set_bottom(health_panel:top() - 1)
-		interact_text:set_x(9 * self._mate_scale)
+		interact_text:set_bottom(self._main_player and health_panel:top() - self._equipment_panel_h or health_panel:top() - 1)
+		interact_text:set_x(self._main_player and 0 or 9 * self._mate_scale)
 		local interact_bar = interact_panel:bitmap({
 			name = "interact_bar",
 			texture = health_texture,
@@ -649,6 +649,7 @@ if VoidUI.options.teammate_panels then
 			h = health_panel:h(),
 			alpha = 1,
 		})
+		interact_bar:set_x(self._main_player and interact_panel:w() - interact_bar:w() or 0)
 		local interact_time = interact_panel:text({
 			name = "interact_time",
 			w = self._health_value,
@@ -661,6 +662,7 @@ if VoidUI.options.teammate_panels then
 			layer = 6,
 			color = Color.white
 		})	
+		interact_time:set_x(self._main_player and interact_panel:w() - health_panel:w() or 0)
 		interact_time:set_bottom(self._custom_player_panel:bottom() - 3)
 		self:create_custom_waiting_panel(teammates_panel)
 		self:set_info_visible()
@@ -784,8 +786,9 @@ if VoidUI.options.teammate_panels then
 		end
 		self:set_detection()
 	end
-
+	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
+		set_name(self, teammate_name)
 		teammate_name = VoidUI.options.mate_upper and utf8.to_upper(teammate_name) or teammate_name
 		local name = self._custom_player_panel:child("name")
 		local name_shadow = self._custom_player_panel:child("name_shadow")
@@ -799,7 +802,7 @@ if VoidUI.options.teammate_panels then
 		name:set_text(level .. teammate_name)
 		name_shadow:set_text(level .. teammate_name)
 		local _, _, name_w,name_h = name:text_rect()
-		if not self:ai() and name_w > (self._mate_scale < 1 and 140 * self._mate_scale or 140) then 
+		if not self:ai() and name_w > (140 * self._mate_scale) then 
 			name:set_font_size(name:font_size() * ((self._mate_scale < 1 and 140 * self._mate_scale or 140)/name_w)) 	
 		elseif self:ai() and name_w > 40 then name:set_font_size(name:font_size() * (40/name_w)) name:set_x(0) name_shadow:set_x(1) end
 		if not self:ai() then name:set_range_color(0, utf8.len(level), Color.white:with_alpha(1)) end
@@ -1398,7 +1401,7 @@ if VoidUI.options.teammate_panels then
 						end
 					end)
 				end)
-				panel:set_bottom(self._custom_player_panel:child("health_panel"):top() - 19)
+				panel:set_bottom(self._custom_player_panel:child("health_panel"):top() - (self._mate_scale < 1 and 19 * self._mate_scale or 19))
 			end
 		end
 	end

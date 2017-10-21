@@ -1,3 +1,15 @@
+Version 1.1.1 (2017.10.21)
+- Fixed a crash related to stopping ai when custom name labels are disabled
+- Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
+- Fixed pager count not updating when the player panels are disabled
+- Fixed a crash with teammate interactions when the player panels are disabled
+- Fixed teammate interaction panel not being aligned correctly as a drop-in spectator
+- Fixed crash when AI returns from custody
+- Fixed teammate names getting too small on lower resolutions when the teammate panels are scaled up
+- Fixed bag count on vehicle labels appearing at the right side of the screen
+- Fixed vehicle labels not showing passenger count
+- Fixed special equipments overlapping with the carried bag info on teammate panels
+
 Version 1.1 (2017.10.15)
 - Modified how the icons panel of the assault ticker works for better addon support
 - Added the option to disable hud elements

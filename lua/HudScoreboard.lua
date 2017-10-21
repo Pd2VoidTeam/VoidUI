@@ -1348,14 +1348,14 @@ if VoidUI.options.enable_stats then
 			local unit = managers.criminals:character_unit_by_name(character_name)
 			if unit then
 				local loadout = unit:base() and unit:base()._loadout
-				local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", "")) or (unit:inventory() and unit:inventory():equipped_unit() and unit:inventory():equipped_unit():base() and unit:inventory():equipped_unit():base()._factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(unit:inventory():equipped_unit():base()._factory_id:gsub("_npc","")))
-				local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m4", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
-				primary_icon:set_image(texture)
-				primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
-				primary_rarity:set_image(rarity and rarity)
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
 				armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/level_1")
 				if loadout then
+					local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", "")) or (unit:inventory() and unit:inventory():equipped_unit() and unit:inventory():equipped_unit():base() and unit:inventory():equipped_unit():base()._factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(unit:inventory():equipped_unit():base()._factory_id:gsub("_npc","")))
+					local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m4", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
+					primary_icon:set_image(texture)
+					primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
+					primary_rarity:set_image(rarity and rarity)
 					secondary_icon:set_image(managers.blackmarket:get_mask_icon(loadout.mask))
 					local ability = tweak_data.upgrades.crew_ability_definitions[loadout.ability]
 					if ability then 

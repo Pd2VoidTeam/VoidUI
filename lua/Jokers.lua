@@ -19,9 +19,8 @@ elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		
 		if unit_data and VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = player_unit})
-			
-			if VoidUI.options.health_jokers and VoidUI.options.enable_labels then
-				local label = managers.hud:_get_name_label(panel_id)
+			local label = managers.hud:_get_name_label(panel_id)
+			if VoidUI.options.health_jokers and VoidUI.options.enable_labels and label.panel:child("minmode_panel") then
 				label.interact:set_visible(true)
 					label.interact_bg:set_visible(true)
 					label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
@@ -59,8 +58,8 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 		
 		if VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = managers.network:session():peer(minion_owner_peer_id):unit()})
-			if VoidUI.options.health_jokers and VoidUI.options.enable_labels then
-				local label = managers.hud:_get_name_label(panel_id)
+			local label = managers.hud:_get_name_label(panel_id)
+			if VoidUI.options.health_jokers and VoidUI.options.enable_labels and label.panel:child("minmode_panel") then
 				label.interact:set_visible(true)
 				label.interact_bg:set_visible(true)
 				label.panel:child("minmode_panel"):child("min_interact"):set_visible(true)
