@@ -2,34 +2,17 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 1.1 (2017.10.15)
-- Modified how the icons panel of the assault ticker works for better addon support
-- Added the option to disable hud elements
-- Added main player accuracy to scoreboard panel
-- Added the option to change the speed of the health gain/loss animation
-- Added the option to hide the timer and objective panels or only show them when the tabpanel is open
-- Added the option to show names in uppercase
-- Added notification and hint text options
-- Added subtitle options
-- Added Russian localization made by Skyfrost
-- Added French localization made by Esawo
-- Added compatibility with Press2Hold
-- Added compatibility with Big Lobby
-- Added compatibility with Assault States
-- Added compatibility with Burst Fire
-- Added compatibility with Death Wish+
-- Improved options menu
-- Fixed bot loadout sometimes not showing correctly
-- Fixed textures and default options not loading when another mod breaks the options menu
-- Fixed a crash related to the assault panel
-- Fixed the hostages panel sometimes not playing the assault end animation
-- Fixed a rare crash related to beardlib custom music
-- Fixed chat messages not being colored correctly when the heister names are turned off
-- Fixed teammates bleedout timers and interaction texts not being effected by hud scale
-- Fixed mutators list on the tab panel not being affected by hud scale
-- Fixed the heist timer going nuts after the one hour mark when the panel is scaled
-- Fixed waypoints being infront of some parts of the assault panel
-- Fixed police badge appearing after you kill the captain when the badge is turned off
+## What's new in 1.1.1 (2017.10.21)
+- Fixed a crash related to stopping ai when custom name labels are disabled
+- Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
+- Fixed pager count not updating when the player panels are disabled
+- Fixed a crash with teammate interactions when the player panels are disabled
+- Fixed teammate interaction panel not being aligned correctly as a drop-in spectator
+- Fixed crash when AI returns from custody
+- Fixed teammate names getting too small on lower resolutions when the teammate panels are scaled up
+- Fixed bag count on vehicle labels appearing at the right side of the screen
+- Fixed vehicle labels not showing passenger count
+- Fixed special equipments overlapping with the carried bag info on teammate panels
 
 ## Credits
 - Most part of the hud made by Xeletron
