@@ -874,7 +874,7 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDStatsScreen:toggle_panels()
-			if self._tracked_items and #self._tracked_items > 0 and self._scoreboard_panels and #self._scoreboard_panels > 0 then
+			if managers.achievment and #managers.achievment:get_tracked_fill() > 0 and self._scoreboard_panels and #self._scoreboard_panels > 0 then
 				self._visible_panel = self._visible_panel == "scoreboard_panel" and "achievements_panel" or "scoreboard_panel"
 				self._toggle_text = self._visible_panel == "scoreboard_panel" and managers.localization:text("hud_stats_tracked") or managers.localization:to_upper_text("VoidUI_scoreboard")
 				self._full_hud_panel:child("achievements_panel"):set_visible(not self._full_hud_panel:child("achievements_panel"):visible())
