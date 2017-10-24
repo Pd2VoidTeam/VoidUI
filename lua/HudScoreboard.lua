@@ -566,7 +566,7 @@ if VoidUI.options.enable_stats then
 			managers.hud:make_fine_text(track_text_shadow)
 			track_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
 			track_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
-			if self._scoreboard_panels and #self._scoreboard_panels > 0 and self._tracked_items and #self._tracked_items > 0 then
+			if self._scoreboard_panels and #self._scoreboard_panels > 0 and managers.achievment and #managers.achievment:get_tracked_fill() then
 				local toggle_text = extras_panel:text({
 					name = "track_text",
 					font_size = 15 * self._scale,
@@ -907,12 +907,14 @@ if VoidUI.options.enable_stats then
 				self._toggle_text = managers.localization:text("hud_stats_tracked")
 				local t
 				for i, id in pairs(tracked) do 
-					t = HudTrackedAchievement:new(achievements_panel, id, i, 35 * self._scale, self._scale)
-					if t._progress and t._progress.update and table.contains({
-						"realtime",
-						"second"
-					}, t._progress.update) then
-						table.insert(self._tracked_items, t)
+					if 	i <= AchievmentManager.MAX_TRACKED then
+						t = HudTrackedAchievement:new(achievements_panel, id, i, 35 * self._scale, self._scale)
+						if t._progress and t._progress.update and table.contains({
+							"realtime",
+							"second"
+						}, t._progress.update) then
+							table.insert(self._tracked_items, t)
+						end
 					end
 				end
 				achievements_panel:set_h(t._panel:bottom() + 5)
@@ -1058,7 +1060,7 @@ if VoidUI.options.enable_stats then
 				end
 				self._full_hud_panel:child("scoreboard_panel"):set_h(self._scoreboard_panels[1]._h * math.min(taken_panels,7) + math.min(taken_panels,7) * 5)
 			end
-			if self._tracked_items and #self._tracked_items > 0 then self._full_hud_panel:child("achievements_panel"):set_y(self._full_hud_panel:child("scoreboard_panel"):y()) end
+			if managers.achievment and #managers.achievment:get_tracked_fill() > 0 then self._full_hud_panel:child("achievements_panel"):set_y(self._full_hud_panel:child("scoreboard_panel"):y()) end
 			extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
 			extras_panel:set_y(self._full_hud_panel:child(self._visible_panel):bottom())
 		end

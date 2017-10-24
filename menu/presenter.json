@@ -60,15 +60,6 @@
 			"priority" : 16
 		},
 		{
-			"type" : "toggle",
-			"id" : "trophies",
-			"title" : "VoidUI_trophies_title",
-			"description" : "VoidUI_trophies_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "trophies"
-			"priority" : 15
-		},
-		{
 			"type" : "divider",
 			"size" : 25,
 			"priority" : 14
