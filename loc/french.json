@@ -196,6 +196,7 @@
 	"VoidUI_scoreboard_scale_desc" : "Permet de définir la taille du panneau statistique",
 	"VoidUI_blur_title" : "Rendre l'arrière plan flou",
 	"VoidUI_blur_desc" : "Rend l'arrière plan flou lorsque le panneau statistique est ouvert",
+	"VoidUI_scoreboard" : "Scoreboard",
 	"VoidUI_scoreboard_title" : "Activer le scoreboard",
 	"VoidUI_scoreboard_desc" : "Ajoute un scoreboard dans lequel vous pouvez voir des statistiques sur vous et vos coéquipiers",
 	"VoidUI_scoreboard_accuracy_title" : "Montrer la précision",
@@ -245,8 +246,6 @@
 	"VoidUI_presenter_buffer_desc" : "Permet de définir le nombre de notifications maximales visibles en même temps",
 	"VoidUI_presenter_sound_title" : "Ne pas jouer les sons de notifications",
 	"VoidUI_presenter_sound_desc" : "Désactive les effets sonores lorsqu'il y a une notification",
-	"VoidUI_trophies_title" : "Notification des trophés/side jobs",
-	"VoidUI_trophies_desc" : "Affiche une notification à droite de l'écran lorsqu'un trophé ou un side job est complété",
 	"VoidUI_presenter_panel" : "Panneau de notification",
 	"VoidUI_hint_panel" : "Panneau d'astuces",
 	"VoidUI_enable_hint_title" : "Activer le panneau d'astuces",
@@ -290,7 +289,4 @@
 	"VoidUI_subtitles_shadow" : "Ombre",
 	"VoidUI_subtitles_fill" : "Couleur Solide",
 	
-	"VoidUI_trophy" : "Trophé débloqué!",
-	"VoidUI_challenge" : "Side Job complété!",
-	"VoidUI_daily" : "Safe House daily complété!"
 }

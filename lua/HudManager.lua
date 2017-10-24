@@ -142,6 +142,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 						name = name.." (" .. num_players .. ")"
 					end
 					data.text:set_text(name)
+					data.panel:child("extended_panel"):child("text_shadow"):set_text(name)
+					data.minmode_panel:child("text"):set_text(name)
+					data.minmode_panel:child("text_shadow"):set_text(name)
 					self:align_teammate_name_label(data.panel, data.interact)
 				else
 				end
@@ -1033,6 +1036,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			table.insert(self._hud.name_labels, {
 				vehicle = data.unit,
 				panel = panel,
+				minmode_panel = minmode_panel,
 				text = text,
 				id = id,
 				character_name = vehicle_name,
@@ -1082,34 +1086,39 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		end	
 	end
 	
-elseif RequiredScript == "lib/units/player_team/teamaidamage" and VoidUI.options.teammate_panels then
+elseif RequiredScript == "lib/units/player_team/teamaidamage" then
 	
-	local apply_damage_orig = TeamAIDamage._apply_damage
-	function TeamAIDamage:_apply_damage(attack_data, result)
-		local damage_percent, health_subtracted = apply_damage_orig(self, attack_data, result)
-		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
-		managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
-		return damage_percent, health_subtracted
-	end	
-	
-	local regenerated = TeamAIDamage._regenerated
-	function TeamAIDamage:_regenerated()
-		regenerated(self)
-		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
-		managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
-	end
-	local check_bleed_out = TeamAIDamage._check_bleed_out
-	function TeamAIDamage:_check_bleed_out()
-		if self._health <= 0 then
+	if VoidUI.options.teammate_panels then
+		local apply_damage_orig = TeamAIDamage._apply_damage
+		function TeamAIDamage:_apply_damage(attack_data, result)
+			local damage_percent, health_subtracted = apply_damage_orig(self, attack_data, result)
 			local i = managers.criminals:character_data_by_unit(self._unit).panel_id
-			if managers.hud._hud_statsscreen then
-				managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
-			end
+			managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
+			return damage_percent, health_subtracted
+		end	
+		
+		local regenerated = TeamAIDamage._regenerated
+		function TeamAIDamage:_regenerated()
+			regenerated(self)
+			local i = managers.criminals:character_data_by_unit(self._unit).panel_id
+			managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
 		end
-		check_bleed_out(self)
 	end
-
-elseif RequiredScript == "lib/units/player_team/huskteamaidamage" and VoidUI.options.teammate_panels then
+	
+	if VoidUI.options.enable_stats and VoidUI.options.scoreboard then
+		local check_bleed_out = TeamAIDamage._check_bleed_out
+		function TeamAIDamage:_check_bleed_out()
+			if self._health <= 0 then
+				local i = managers.criminals:character_data_by_unit(self._unit).panel_id
+				if managers.hud._hud_statsscreen then
+					managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
+				end
+			end
+			check_bleed_out(self)
+		end
+	end
+	
+elseif RequiredScript == "lib/units/player_team/huskteamaidamage" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
 	local on_bleedout = HuskTeamAIDamage._on_bleedout
 	function HuskTeamAIDamage:_on_bleedout()
 		on_bleedout(self)
@@ -1273,4 +1282,6 @@ elseif RequiredScript == "lib/states/ingamemaskoff" and VoidUI.options.enable_as
 		at_enter(self)
 		managers.hud:hide(self._MASK_OFF_HUD)
 	end
+elseif RequiredScript == "lib/managers/achievmentmanager" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
+	AchievmentManager.MAX_TRACKED = 7
 end

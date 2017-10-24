@@ -1,5 +1,114 @@
 if VoidUI.options.enable_stats then
-	if RequiredScript == "lib/managers/hud/hudstatsscreen" then
+	if RequiredScript == "lib/managers/hud/newhudstatsscreen" then
+		function HudTrackedAchievement:init(parent, id, i, h, scale)
+			self._scale = scale
+			self._panel = parent:panel({
+				name = "achievement_panel",
+				w = parent:w(),
+				y = (35 * self._scale) * (i - 1) + (i - 1) * 5,
+				h = h
+			})
+			self._panel:bitmap({
+				name = "background",
+				w = self._panel:w(),
+				h = self._panel:h(),
+				color = Color.black,
+				alpha = 0.6,
+				layer = 1
+			})
+			self._panel:bitmap({
+				texture = "guis/textures/VoidUI/hud_weapons",
+				texture_rect = {69,0,416,150},
+				w = self._panel:w(),
+				h = self._panel:h(),
+				layer = 2
+			})
+			self._info = managers.achievment:get_info(id)
+			self._visual = tweak_data.achievement.visual[id]
+			self._progress = self._visual and self._visual.progress
+			local texture, texture_rect = tweak_data.hud_icons:get_icon_or(self._visual.icon_id, "guis/dlcs/unfinished/textures/placeholder")
+			local bitmap = self._panel:bitmap({
+				w = h,
+				h = h,
+				texture = texture,
+				texture_rect = texture_rect,
+				layer = 3
+			})
+			local awarded = self._info.awarded
+
+			if not awarded then
+				bitmap:set_color(Color.white:with_alpha(0.1))
+				self._panel:bitmap({
+					texture = "guis/dlcs/trk/textures/pd2/lock",
+					w = bitmap:w(),
+					h = bitmap:h(),
+					x = bitmap:x(),
+					y = bitmap:y(),
+					layer = 4
+				})
+			end
+			
+			self._name = self._panel:text({
+				text = managers.localization:text(self._visual.name_id),
+				font = "fonts/font_medium_mf",
+				font_size = 14 * self._scale,
+				x = bitmap:right() + 5,
+				w = self._panel:w() - bitmap:w() - 5,
+				h = self._panel:h() / 2.3,
+				layer = 3,
+				vertical = "bottom"
+			})
+			local desc = self._panel:text({
+				wrap = true,
+				word_wrap = true,
+				text = managers.localization:text(self._visual.desc_id),
+				font = "fonts/font_medium_mf",
+				font_size = 12 * self._scale,
+				color = tweak_data.screen_colors.achievement_grey,
+				y = self._name:bottom(),
+				x = bitmap:right() + 5,
+				w = self._panel:w() - bitmap:w() - 5,
+				h = self._panel:h() / 1.7,
+				layer = 3,
+				vertical = "middle"
+			})
+			if self._progress then
+				self._count = self._panel:text({
+					text = self._progress:get().."/"..self._progress.max,
+					name = "progress_count",
+					font = "fonts/font_small_mf",
+					font_size = 12 * self._scale,
+					w = bitmap:w(),
+					h = bitmap:h(),
+					x = bitmap:x(),
+					y = bitmap:y(),
+					layer = 5,
+					align = "right",
+					vertical = "bottom"
+				})
+				
+				self._bar = self._panel:bitmap({
+				name = "progress_bg",
+				w = self._panel:w() * (self._progress:get() / self._progress.max),
+				h = self._panel:h(),
+				alpha = 0.8,
+			})
+				
+			end
+		end
+
+		function HudTrackedAchievement:update_progress()
+			if self._bar then
+				if self._info.awarded then
+					self._bar:set_w(self._panel:w())
+					self._count:set_text(self._progress.max.."/"..self._progress.max)
+					self._name:set_color(Color.green)
+				else
+					self._bar:set_w(self._panel:w() * (self._progress:get() / self._progress.max))
+					self._count:set_text(self._progress:get().."/"..self._progress.max)
+				end
+			end
+		end
 		
 		local init = HUDStatsScreen.init
 		function HUDStatsScreen:init()
@@ -7,9 +116,11 @@ if VoidUI.options.enable_stats then
 			self._scale = VoidUI.options.scoreboard_scale
 			self._timer = VoidUI.options.enable_timer
 			self._objective = VoidUI.options.enable_objectives
-			init(self)
 			self._mouse = managers.mouse_pointer:get_id()
 			self._full_hud_panel = managers.hud:script(managers.hud.STATS_SCREEN_FULLSCREEN).panel
+			self._visible_panel = self._scoreboard_enabled and "scoreboard_panel" or "achievements_panel"
+			self._toggle_text = ""
+			init(self)
 			self._scroll = 0
 			self._full_hud_panel:set_alpha(0)
 			self:create_scoreboards()
@@ -367,6 +478,7 @@ if VoidUI.options.enable_stats then
 				
 			end
 		end
+
 		
 		function HUDStatsScreen:_animate_text_pulse(text, shadow)
 			local t = 0
@@ -413,20 +525,25 @@ if VoidUI.options.enable_stats then
 			local mission_vis = mission_amount > 0 or secured_amount > 0
 			local mandatory_cash = managers.money:get_secured_mandatory_bags_money()
 			local bonus_amount = managers.loot:get_secured_bonus_bags_amount()
+			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount
 			local small_loot = managers.loot:get_real_total_small_loot_value()
 			local hit_accuracy = managers.statistics:session_hit_accuracy()
 
 			local body_bag = managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount())
-			local mission_bags = mandatory_bags_data and mandatory_bags_data.amount and mandatory_bags_data.amount > 0 and " Ї "..managers.localization:text("hud_mission_bags")..": "..tostring(mission_amount) .. "/"..tostring(mandatory_bags_data.amount) or ""
+			local bags = ""
+			if mandatory_amount and mandatory_amount > 0 then
+				bags = " Ї "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": ".. (bonus_amount > 0 and string.format("%d/%d +%d", secured_amount, mandatory_amount, bonus_amount) or string.format("%d/%d", secured_amount, mandatory_amount))
+			else
+				bags = " Ї "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": "..tostring(bonus_amount)
+			end
 			local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
-			local bonus_bags = bonus_amount > 0 and " Ї "..managers.localization:text("hud_bonus_bags")..": ".. tostring(bonus_amount) or ""
 			local accuracy = VoidUI.options.scoreboard_accuracy and hit_accuracy and " Ї "..utf8.to_lower(managers.localization:text("menu_stats_hit_accuracy")):gsub("^%l", string.upper).." ".. hit_accuracy.."%" or ""
 			
-			top_panel:child("loot_stats"):set_text(body_bag..accuracy..mission_bags..instant_cash..bonus_bags)
-			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..mission_bags..instant_cash..bonus_bags)
+			top_panel:child("loot_stats"):set_text(body_bag..accuracy..bags..instant_cash)
+			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..bags..instant_cash)
 			local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or "NOTHING"
-			local track_text  = extras_panel:text({
-				name = "track_text ",
+			local track_text = extras_panel:text({
+				name = "track_text",
 				font_size = 20 * self._scale,
 				font = "fonts/font_medium_mf",
 				text = managers.localization:to_upper_text("menu_es_playing_track") .. " " .. music,
@@ -449,6 +566,43 @@ if VoidUI.options.enable_stats then
 			managers.hud:make_fine_text(track_text_shadow)
 			track_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
 			track_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
+			if self._scoreboard_panels and #self._scoreboard_panels > 0 and self._tracked_items and #self._tracked_items > 0 then
+				local toggle_text = extras_panel:text({
+					name = "track_text",
+					font_size = 15 * self._scale,
+					font = "fonts/font_medium_mf",
+					text = self._toggle_text,
+					vertical = "top",
+					align = "center",
+					layer = 1,
+				})
+				toggle_text:set_top(track_text_shadow:bottom())
+				managers.hud:make_fine_text(toggle_text)
+				toggle_text:set_center_x(extras_panel:w() / 2 + toggle_text:h() / 2)
+				local toggle_text_shadow = extras_panel:text({
+					name = "toggle_text_shadow",
+					font_size = 15 * self._scale,
+					font = "fonts/font_medium_mf",
+					text = self._toggle_text,
+					vertical = "top",
+					align = "center",
+					color = Color.black,
+					layer = -2
+				})
+				toggle_text_shadow:set_top(toggle_text:top() + 2 * self._scale)
+				managers.hud:make_fine_text(toggle_text_shadow)
+				toggle_text_shadow:set_center_x(extras_panel:w() / 2 + toggle_text_shadow:h() / 2 + 2 * self._scale)
+				local toggle_image = extras_panel:bitmap({
+					name = "toggle_image",
+					texture = "guis/textures/pd2/mouse_buttons",
+					texture_rect = {19,2,15,21},
+					w = toggle_text:h() / 1.5,
+					h = toggle_text:h(),
+					layer = 2
+				})
+				toggle_image:set_right(toggle_text:left() - toggle_text:h() / 2)
+				toggle_image:set_top(toggle_text:top())
+			end
 		end
 		function HUDStatsScreen:_create_mutators_list(mutators_panel)
 			mutators_panel:clear()
@@ -538,24 +692,26 @@ if VoidUI.options.enable_stats then
 					self:align_scoreboard_panels()
 				end
 			end
+			if k == Idstring("1") then
+				self:toggle_panels()
+			end
 		end
-		
+
 		function HUDStatsScreen:show()
 			local safe = managers.hud.STATS_SCREEN_SAFERECT
 			local full = managers.hud.STATS_SCREEN_FULLSCREEN
 			managers.hud:show(full)
-			if self._scoreboard_panels and #self._scoreboard_panels > 7 then
-				managers.mouse_pointer:use_mouse{
-					id = self._mouse,
-					mouse_press = callback(self, self, 'mouse_pressed')
-				}
-				managers.mouse_pointer._mouse:child("pointer"):set_visible(false)
-			end
-			local left_panel = self._full_hud_panel:child("left_panel")
+			managers.mouse_pointer:use_mouse{
+				id = self._mouse,
+				mouse_press = callback(self, self, 'mouse_pressed')
+			}
+			managers.mouse_pointer._mouse:child("pointer"):set_visible(false)
+			local left_panel = self._left
 			local top_panel = self._full_hud_panel:child("top_panel")
 			local extras_panel = self._full_hud_panel:child("extras_panel")
 			local scoreboard_panel = self._full_hud_panel:child("scoreboard_panel")
 			local mutators_panel = self._full_hud_panel:child("mutators_panel")
+			self:recreate_right()
 			self:_create_stats_screen_profile(extras_panel)
 			self:_update_stats_screen_loot(extras_panel, top_panel)
 			self:_update_stats_screen_day(top_panel)
@@ -583,12 +739,12 @@ if VoidUI.options.enable_stats then
 				return
 			end
 			managers.hud:hide(safe)
-			if self._scoreboard_panels and #self._scoreboard_panels > 7 and self._mouse then 
+			if self._mouse then 
 				managers.mouse_pointer:set_pointer_image("arrow")
 				managers.mouse_pointer:remove_mouse(self._mouse) 
 				managers.mouse_pointer._mouse:child("pointer"):set_visible(true)
 			end
-			local left_panel = self._full_hud_panel:child("left_panel")
+			local left_panel = self._left
 			local top_panel = self._full_hud_panel:child("top_panel")
 			local extras_panel = self._full_hud_panel:child("extras_panel")
 			local scoreboard_panel = self._full_hud_panel:child("scoreboard_panel")
@@ -717,9 +873,59 @@ if VoidUI.options.enable_stats then
 			end
 		end
 		
+		function HUDStatsScreen:toggle_panels()
+			if self._tracked_items and #self._tracked_items > 0 and self._scoreboard_panels and #self._scoreboard_panels > 0 then
+				self._visible_panel = self._visible_panel == "scoreboard_panel" and "achievements_panel" or "scoreboard_panel"
+				self._toggle_text = self._visible_panel == "scoreboard_panel" and managers.localization:text("hud_stats_tracked") or managers.localization:to_upper_text("VoidUI_scoreboard")
+				self._full_hud_panel:child("achievements_panel"):set_visible(not self._full_hud_panel:child("achievements_panel"):visible())
+				self._full_hud_panel:child("scoreboard_panel"):set_visible(not self._full_hud_panel:child("scoreboard_panel"):visible())
+				local extras_panel = self._full_hud_panel:child("extras_panel")
+				local top_panel = self._full_hud_panel:child("top_panel")
+				self:_create_stats_screen_profile(extras_panel)
+				self:_update_stats_screen_loot(extras_panel, top_panel)
+				self:align_scoreboard_panels()
+			end
+		end
+		
+		function HUDStatsScreen:recreate_right()
+			if self._full_hud_panel:child("achievements_panel") then
+				self._full_hud_panel:remove(self._full_hud_panel:child("achievements_panel"))
+			end
+			local achievements_panel = self._full_hud_panel:panel({
+				name = "achievements_panel",
+				w = (self._full_hud_panel:w() / 1.55) * self._scale,
+				y = (self._full_hud_panel:h() / 2.5) * self._scale,
+				h = (35 * self._scale) * 4,
+				visible = self._visible_panel == "achievements_panel" and true or false
+			})
+			achievements_panel:set_center_x(self._full_hud_panel:w() / 2)
+			local tracked = managers.achievment:get_tracked_fill()
+			if #tracked == 0 then
+				self._visible_panel = "scoreboard_panel"
+			else
+				self._tracked_items = {}
+				self._toggle_text = managers.localization:text("hud_stats_tracked")
+				local t
+				for i, id in pairs(tracked) do 
+					t = HudTrackedAchievement:new(achievements_panel, id, i, 35 * self._scale, self._scale)
+					if t._progress and t._progress.update and table.contains({
+						"realtime",
+						"second"
+					}, t._progress.update) then
+						table.insert(self._tracked_items, t)
+					end
+				end
+				achievements_panel:set_h(t._panel:bottom() + 5)
+				local labels = {
+					{parent = "background", name = "name", text = utf8.to_lower(managers.localization:text("hud_stats_tracked")):gsub("^%l", string.upper)}
+				}
+				self:create_scoreboard_labels(achievements_panel, t._panel, labels, self._scale)
+			end
+		end
+		
 		function HUDStatsScreen:create_scoreboards()
 			if self._full_hud_panel:child("scoreboard_panel") then
-				self._full_hud_panel:remove(hud.panel:child("scoreboard_panel"))
+				self._full_hud_panel:remove(self._full_hud_panel:child("scoreboard_panel"))
 			end
 			local scale = self._scale
 			local scoreboard_panel = self._full_hud_panel:panel({
@@ -759,7 +965,7 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDStatsScreen:create_scoreboard_labels(scoreboard_panel, score_panel, labels, scale)
-			if not self._scoreboard_enabled then
+			if not score_panel then
 				return
 			end
 			for index, data in ipairs(labels) do
@@ -852,8 +1058,9 @@ if VoidUI.options.enable_stats then
 				end
 				self._full_hud_panel:child("scoreboard_panel"):set_h(self._scoreboard_panels[1]._h * math.min(taken_panels,7) + math.min(taken_panels,7) * 5)
 			end
+			if self._tracked_items and #self._tracked_items > 0 then self._full_hud_panel:child("achievements_panel"):set_y(self._full_hud_panel:child("scoreboard_panel"):y()) end
 			extras_panel:set_center_x(self._full_hud_panel:child("scoreboard_panel"):center_x())
-			extras_panel:set_y(self._full_hud_panel:child("scoreboard_panel"):bottom())
+			extras_panel:set_y(self._full_hud_panel:child(self._visible_panel):bottom())
 		end
 		
 		function HUDStatsScreen:_update_stats_screen_day(top_panel)

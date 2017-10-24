@@ -40,8 +40,9 @@ VoidUI.hook_files = {
 	["core/lib/managers/subtitle/coresubtitlepresenter"] = {"HudManager.lua"},
 	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"},
 	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
-	["lib/managers/hud/hudstatsscreen"] = {"HudScoreboard.lua"},
+	["lib/managers/hud/newhudstatsscreen"] = {"HudScoreboard.lua"},
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
+	["lib/managers/achievmentmanager"] = {"HudManager.lua"}
 }
 
 function VoidUI:Save()
@@ -113,6 +114,7 @@ function VoidUI:DefaultConfig()
 		enable_presenter = true,
 		enable_hint = true,
 		enable_blackscreen = true,
+		enable_stats = true,
 		enable_subtitles = true,
 		totalammo = true,
 		main_loud = true,
@@ -141,7 +143,6 @@ function VoidUI:DefaultConfig()
 		health_jokers = true,
 		show_interact = true,
 		scoreboard_blur = true,
-		enable_stats = true,
 		scoreboard = true,
 		scoreboard_accuracy = true,
 		scoreboard_character = true,
@@ -154,7 +155,6 @@ function VoidUI:DefaultConfig()
 		scoreboard_perk = true,
 		scoreboard_playtime = true,
 		scoreboard_ping = true,
-		trophies = true,
 		save_warning = false,
 		presenter_sound = false,
 		hint_color = true,

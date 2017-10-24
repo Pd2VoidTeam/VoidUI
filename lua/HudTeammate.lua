@@ -1401,7 +1401,7 @@ if VoidUI.options.teammate_panels then
 						end
 					end)
 				end)
-				panel:set_bottom(self._custom_player_panel:child("health_panel"):top() - 19)
+				panel:set_bottom(self._custom_player_panel:child("health_panel"):top() - (self._mate_scale < 1 and 19 * self._mate_scale or 19))
 			end
 		end
 	end

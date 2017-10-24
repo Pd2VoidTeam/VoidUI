@@ -229,38 +229,5 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 		present_panel:set_alpha(0)
 		present_panel:set_x(x2)
 	end
-elseif RequiredScript == "lib/managers/customsafehousemanager" then
-	
-	local complete_trophy = CustomSafehouseManager.complete_trophy
-	function CustomSafehouseManager:complete_trophy(trophy_or_id)
-		complete_trophy(self, trophy_or_id)
-		local trophy = type(trophy_or_id) == "table" and trophy_or_id or self:get_trophy(trophy_or_id)
-		if VoidUI.options.trophies and managers.hud and trophy and trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_trophy"), text = managers.localization:text(trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
-	end
-	
-	local complete_daily = CustomSafehouseManager.complete_daily
-	function CustomSafehouseManager:complete_daily()
-		complete_daily(self)
-		if not self:unlocked() then
-			return
-		end
-		
-		if VoidUI.options.trophies and managers.hud and self._global.daily and self._global.daily.trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_daily"), text = managers.localization:text(self._global.daily.trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
-	end
-	
-elseif RequiredScript == "lib/managers/challengemanager" then
-	
-	local check_challenge_completed = ChallengeManager._check_challenge_completed
-	function ChallengeManager:_check_challenge_completed(id, key)
-		check_challenge_completed(self, id, key)
-		local active_challenge = self:get_active_challenge(id, key)
-		if VoidUI.options.trophies and managers.hud and active_challenge and active_challenge.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_challenge"), text = managers.localization:text(active_challenge.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
-	end
 	
 end

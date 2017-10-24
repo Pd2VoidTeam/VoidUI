@@ -196,6 +196,7 @@
 	"VoidUI_scoreboard_scale_desc" : "Set the scale of the stat panel",
 	"VoidUI_blur_title" : "Blur background",
 	"VoidUI_blur_desc" : "Blur the background when the stat panel is open",
+	"VoidUI_scoreboard" : "Scoreboard",
 	"VoidUI_scoreboard_title" : "Enable scoreboard",
 	"VoidUI_scoreboard_desc" : "Add a scoreboard to the stat screen where you can see statistics about you and your teammates",
 	"VoidUI_scoreboard_accuracy_title" : "Show Accuracy",
@@ -245,8 +246,6 @@
 	"VoidUI_presenter_buffer_desc" : "Set the maximum amount of notifications visible at the same time",
 	"VoidUI_presenter_sound_title" : "Don't play notification sounds",
 	"VoidUI_presenter_sound_desc" : "Disable playing sound effects when a certain notification appears",
-	"VoidUI_trophies_title" : "Trophy/Side Job notifications",
-	"VoidUI_trophies_desc" : "Display a notification when you complete a Trophy or Side Job",
 	"VoidUI_presenter_panel" : "Notification Panel",
 	"VoidUI_hint_panel" : "Hint Panel",
 	"VoidUI_enable_hint_title" : "Enable Hint Panel",
@@ -289,8 +288,4 @@
 	"VoidUI_show" : "Show",
 	"VoidUI_subtitles_shadow" : "Dropshadow",
 	"VoidUI_subtitles_fill" : "Solid Color",
-	
-	"VoidUI_trophy" : "Trophy achieved!",
-	"VoidUI_challenge" : "Side Job completed!",
-	"VoidUI_daily" : "Safe House daily completed!"
 }
