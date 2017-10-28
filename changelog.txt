@@ -1,6 +1,7 @@
 Version 1.1.1
 - Removed the option to show completed trophies/side-jobs since they've been implemented in the vanilla game
 - Added tracked achievements to the stats screen (right click to toggle between scoreboard and achievements)
+- Added support for te Stoic perk deck
 - Changed the vanilla value for maximum number of tracked achievements from 4 to 7
 - Fixed a crash related to stopping ai when custom name labels are disabled
 - Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
@@ -13,6 +14,7 @@ Version 1.1.1
 - Fixed vehicle labels not showing passenger count
 - Fixed special equipments overlapping with the carried bag info on teammate panels
 - Fixed crash related to AI getting downed while the scoreboard is disabled
+- Fixed cooldown not showing for perk-deck abilities
 
 Version 1.1 (2017.10.15)
 - Modified how the icons panel of the assault ticker works for better addon support
