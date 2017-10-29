@@ -2259,4 +2259,13 @@ if VoidUI.options.teammate_panels then
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
 	end
+
+	function HUDTeammate:set_absorb_active(absorb_amount)
+		self._absorb_active_amount = absorb_amount
+		
+		if self._main_player and managers.network and managers.network:session() then
+			managers.network:session():send_to_peers("sync_damage_absorption_hud", self._absorb_active_amount)
+		end
+	end
+		
 end
