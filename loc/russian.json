@@ -225,8 +225,8 @@
 	"VoidUI_scoreboard_playtime_desc" : "Показывать количество наигранных часов (командный бонус для ботов)",
 	"VoidUI_scoreboard_ping_title" : "Пинг",
 	"VoidUI_scoreboard_ping_desc" : "Показывать пинг игроков",
-	"VoidUI_scoreboard_toggle_title" : "Toggle button",
-	"VoidUI_scoreboard_toggle_desc" : "Set the button thats toggles between scoreboard and tracked achievements",
+	"VoidUI_scoreboard_toggle_title" : "Переключатель",
+	"VoidUI_scoreboard_toggle_desc" : "Установите кнопку, которая переключает между табло и отслеживаемыми достижениями",
 	"VoidUI_ping_frequency_title" : "Частота обновления",
 	"VoidUI_ping_frequency_desc" : "Укажите, как часто значения пинг будут обновляться в секундах",
 	"VoidUI_player" : "Игрок",
@@ -258,10 +258,10 @@
 	"VoidUI_hint_anim_desc" : "Анимировать подсказки эффектом выпрыгивания",
 	"VoidUI_hint_color_title" : "Цветные имена в подсказках",
 	"VoidUI_hint_color_desc" : "Показывать цветные имена ваших товарищей по команде в подсказках",
-	"VoidUI_challanges_panel" : "Challange Notifications",
-	"VoidUI_enable_challanges_title" : "Enable Challange Notifications",
-	"VoidUI_enable_challanges_desc" : "Enable the Void UI challange notifications",
-	"VoidUI_hint_challanges_desc" : "Set the scale of the challange notification panels",
+	"VoidUI_challanges_panel" : "Уведомления о вызовах",
+	"VoidUI_enable_challanges_title" : "Включить уведомления о вызовах",
+	"VoidUI_enable_challanges_desc" : "Показывать Void UI уведомления о вызовах",
+	"VoidUI_hint_challanges_desc" : "Установите размер панелей уведомления о вызове",
 	
 	"VoidUI_subtitles_title" : "Субтитры",
 	"VoidUI_subtitles_desc" : "Параметрысвязанные с субтитрами",
@@ -294,7 +294,7 @@
 	"VoidUI_show" : "Показывать",
 	"VoidUI_subtitles_shadow" : "Отбрасывать тень",
 	"VoidUI_subtitles_fill" : "Сплошной цвет",
-	"VoidUI_jump" : "Jump Key",
-	"VoidUI_crouch" : "Crouch Key",
-	"VoidUI_rmb" : "Right Click"
+	"VoidUI_jump" : "Кнопка прыжка",
+	"VoidUI_crouch" : "Кнопка приседания",
+	"VoidUI_rmb" : "Правый клик"
 }
