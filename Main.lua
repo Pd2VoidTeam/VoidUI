@@ -21,8 +21,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudplayerdowned"] = {"HudPlayerDowned.lua"},
 	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
 	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
-	["lib/managers/customsafehousemanager"] = {"HudPresenter.lua"},
-	["lib/managers/challengemanager"] = {"HudPresenter.lua"},
+	["lib/managers/hud/hudchallangenotification"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudpresenter"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudhint"] = {"HudHint.lua"},
 	["lib/managers/hintmanager"] = {"HudHint.lua"},
@@ -99,6 +98,7 @@ function VoidUI:DefaultConfig()
 		presenter_scale = 1,
 		suspicion_scale = 1,
 		interact_scale = 1,
+		challanges_scale = 1,
 		hint_scale = 1,
 		label_scale = 1,
 		waypoint_scale = 0.8,
@@ -116,6 +116,7 @@ function VoidUI:DefaultConfig()
 		enable_blackscreen = true,
 		enable_stats = true,
 		enable_subtitles = true,
+		enable_challanges = true,
 		totalammo = true,
 		main_loud = true,
 		main_stealth = true,
@@ -155,6 +156,7 @@ function VoidUI:DefaultConfig()
 		scoreboard_perk = true,
 		scoreboard_playtime = true,
 		scoreboard_ping = true,
+		scoreboard_toggle = 1,
 		save_warning = false,
 		presenter_sound = false,
 		hint_color = true,
@@ -211,6 +213,7 @@ VoidUI.disable_list = {
 	["enable_stats"] = 17,
 	["scoreboard"] = 14,
 	["enable_subtitles"] = 2,
+	["enable_challanges"] = 1
 }
 
 function VoidUI:UpdateMenu()
@@ -236,7 +239,7 @@ end
 Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu_manager)
 	MenuCallbackHandler.callback_VoidUI_hudscale = function(self, item)
 		VoidUI.options.hud_scale = item:value()
-		local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale"}
+		local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale", "challanges_scale"}
 		for _, menu_name in pairs(VoidUI.menus) do
 			for _, menu_item in pairs(MenuHelper:GetMenu(menu_name)._items_list) do
 				for _, v in pairs(scales) do

@@ -130,7 +130,7 @@ if VoidUI.options.teammate_panels then
 			layer = 3,
 			w = health_panel:w(),
 			h = health_panel:h(),
-			alpha = 0.6,
+			alpha = 1,
 			visible = false,
 		})	
 		local condition_icon = health_panel:bitmap({
@@ -215,7 +215,7 @@ if VoidUI.options.teammate_panels then
 			layer = 6,
 			w = health_panel:w(),
 			h = health_panel:h(),
-			alpha = 0.6,
+			color = Color(0.2,0.2,0.2),
 			visible = false,
 		})
 		local armor_value = health_panel:text({
@@ -810,7 +810,7 @@ if VoidUI.options.teammate_panels then
 		health_value:set_color(color * 0.4 + Color.black * 0.5)
 		downs_value:set_color(color * 0.8 + Color.black * 0.5)
 		detect_value:set_color(color * 0.8 + Color.black * 0.5)
-		delayed_damage_health_bar:set_color(color * 0.8 + Color.black * 0.7)
+		delayed_damage_health_bar:set_color(color * 0.48 + Color.black)
 		
 		if not self._whisper_listener then
 			self._whisper_listener = "HUDTeammate_whisper_mode_"..self._id
@@ -1274,11 +1274,8 @@ if VoidUI.options.teammate_panels then
 		local grenades_image = grenades_panel:child("grenades_image")
 		local grenades_count = grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
-		if icon == "smoke_screen_grenade" or icon == "chico_injector" or icon == "damage_control" then
-			icon = tweak_data.hud_icons[icon]
-			grenades_image:set_image(icon.texture, unpack(icon.texture_rect))
-			grenades_count:set_text("")
-		end
+		icon = tweak_data.hud_icons[icon]
+		grenades_image:set_image(icon.texture, unpack(icon.texture_rect))
 	end
 	
 	function HUDTeammate:set_grenades_amount(data)
@@ -1296,7 +1293,7 @@ if VoidUI.options.teammate_panels then
 			grenades_count:set_color(Color(1,0,0))
 			grenades_border:set_color(Color(1,0,0))
 			grenades_image:set_color(Color(1,0,0))
-		else
+		elseif data.icon ~= "smoke_screen_grenade" and data.icon ~= "chico_injector" and data.icon ~= "damage_control" then
 			grenades_count:set_text("x"..data.amount)
 			grenades_count:set_color(Color.white)
 			grenades_border:set_color(Color.white)
@@ -1347,7 +1344,7 @@ if VoidUI.options.teammate_panels then
 					cooldown_panel:set_h(self._equipment_panel_h)
 				end)
 		
-			if self._main_player then
+			if self._main_player and managers.network and managers.network:session() then
 				managers.network:session():send_to_peers("sync_grenades_cooldown", end_time, duration)
 			end
 		end
@@ -1441,7 +1438,15 @@ if VoidUI.options.teammate_panels then
 			end)
 			custom_bar:set_visible(false)
 		end
+		custom_bar:stop()
 		custom_bar:animate(anim)
+		
+		if self._main_player and managers.network and managers.network:session() then
+			local current_time = managers.game_play_central:get_heist_timer()
+			local end_time = current_time + time_left
+
+			managers.network:session():send_to_peers("sync_ability_hud", end_time, time_total)
+		end
 	end
 
 	function HUDTeammate:add_special_equipment(data)
@@ -1937,7 +1942,13 @@ if VoidUI.options.teammate_panels then
 			else panel:child("interact_time"):set_text("") end
 		end
 	end
+	function HUDTeammate:set_absorb_active(absorb_amount)
+		self._absorb_active_amount = absorb_amount
 
+		if self._main_player and managers.network and managers.network:session() then
+			managers.network:session():send_to_peers("sync_damage_absorption_hud", self._absorb_active_amount)
+		end
+	end
 	function HUDTeammate:_animate_interact_complete(bar, text)
 		local TOTAL_T = 1
 		local t = 0
@@ -2259,13 +2270,4 @@ if VoidUI.options.teammate_panels then
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
 	end
-
-	function HUDTeammate:set_absorb_active(absorb_amount)
-		self._absorb_active_amount = absorb_amount
-		
-		if self._main_player and managers.network and managers.network:session() then
-			managers.network:session():send_to_peers("sync_damage_absorption_hud", self._absorb_active_amount)
-		end
-	end
-		
 end

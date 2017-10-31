@@ -110,6 +110,40 @@
 			"callback" : "toggle_option_clbk",
 			"value" : "hint_anim"
 			"priority" : 9
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 8
+		},
+		{
+			"type" : "button",
+			"id" : "voidui_challanges",
+			"title" : "VoidUI_challanges_panel",
+			"priority" : 7
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_challanges",
+			"title" : "VoidUI_enable_challanges_title",
+			"description" : "VoidUI_enable_challanges_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_challanges"
+			"priority" : 6
+		},
+		{
+			"type" : "slider",
+			"id" : "challanges_scale",
+			"title" : "VoidUI_presenter_scale_title",
+			"description" : "VoidUI_hint_challanges_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "challanges_scale",
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.01,
+			"localized" :  true
+			"priority" : 5
 		}
 		
 	]

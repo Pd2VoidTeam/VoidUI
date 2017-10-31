@@ -1,7 +1,7 @@
 {
     "name" : "Void UI",
 	"description" : "A hud modification that aims to give the in game hud a fresh new look with some additional features.",
-    "author" : "Xeletron, Fanged Hex, VxWolf. \nSpecial thanks: Canada, B.Costa, CrafterBlade",
+    "author" : "Xeletron, Fanged Hex, VxWolf. \nSpecial thanks: Canada, B.Costa, CrafterBlade \nTranslators: Skyfrost, Esawo",
 	"contact" : "xeletron1@gmail.com",
     "version" : "1.1.1",
 	"blt_version" : 2,
@@ -49,6 +49,7 @@
 		{"hook_id" : "lib/units/civilians/civiliandamage", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/hud/newhudstatsscreen", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/units/player_team/teamaiinventory", "script_path" : "Main.lua"},
-		{"hook_id" : "lib/managers/achievmentmanager", "script_path" : "Main.lua"}
+		{"hook_id" : "lib/managers/achievmentmanager", "script_path" : "Main.lua"},
+		{"hook_id" : "lib/managers/hud/hudchallangenotification", "script_path" : "Main.lua"}
     ]
 }

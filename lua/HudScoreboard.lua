@@ -571,19 +571,27 @@ if VoidUI.options.enable_stats then
 					name = "track_text",
 					font_size = 15 * self._scale,
 					font = "fonts/font_medium_mf",
-					text = self._toggle_text,
+					text = (VoidUI.options.scoreboard_toggle < 3 and (utf8.to_upper(managers.localization:btn_macro(VoidUI.options.scoreboard_toggle == 1 and "jump" or "duck")) .." ") or "")..self._toggle_text,
 					vertical = "top",
 					align = "center",
 					layer = 1,
 				})
 				toggle_text:set_top(track_text_shadow:bottom())
 				managers.hud:make_fine_text(toggle_text)
-				toggle_text:set_center_x(extras_panel:w() / 2 + toggle_text:h() / 2)
+				local toggle_image = extras_panel:bitmap({
+					name = "toggle_image",
+					texture = "guis/textures/pd2/mouse_buttons",
+					texture_rect = {19,2,15,21},
+					w = VoidUI.options.scoreboard_toggle == 3 and toggle_text:h() / 1.5 or 0,
+					h = toggle_text:h(),
+					layer = 2
+				})
+				toggle_text:set_center_x(extras_panel:w() / 2 + toggle_image:w() * 1.2)
 				local toggle_text_shadow = extras_panel:text({
 					name = "toggle_text_shadow",
 					font_size = 15 * self._scale,
 					font = "fonts/font_medium_mf",
-					text = self._toggle_text,
+					text = toggle_text:text(),
 					vertical = "top",
 					align = "center",
 					color = Color.black,
@@ -591,15 +599,7 @@ if VoidUI.options.enable_stats then
 				})
 				toggle_text_shadow:set_top(toggle_text:top() + 2 * self._scale)
 				managers.hud:make_fine_text(toggle_text_shadow)
-				toggle_text_shadow:set_center_x(extras_panel:w() / 2 + toggle_text_shadow:h() / 2 + 2 * self._scale)
-				local toggle_image = extras_panel:bitmap({
-					name = "toggle_image",
-					texture = "guis/textures/pd2/mouse_buttons",
-					texture_rect = {19,2,15,21},
-					w = toggle_text:h() / 1.5,
-					h = toggle_text:h(),
-					layer = 2
-				})
+				toggle_text_shadow:set_x(toggle_text:x() + 2 * self._scale)
 				toggle_image:set_right(toggle_text:left() - toggle_text:h() / 2)
 				toggle_image:set_top(toggle_text:top())
 			end
@@ -692,7 +692,7 @@ if VoidUI.options.enable_stats then
 					self:align_scoreboard_panels()
 				end
 			end
-			if k == Idstring("1") then
+			if k == Idstring("1") and VoidUI.options.scoreboard_toggle == 3 then
 				self:toggle_panels()
 			end
 		end
@@ -705,6 +705,11 @@ if VoidUI.options.enable_stats then
 				id = self._mouse,
 				mouse_press = callback(self, self, 'mouse_pressed')
 			}
+			if not self._input_keyboard then
+				self._input_keyboard = Input:keyboard()
+			end
+			local type = managers.controller:get_default_wrapper_type()
+			self._key = managers.controller:get_settings(type):get_connection(VoidUI.options.scoreboard_toggle == 1 and "jump" or "duck"):get_input_name_list()[1]
 			managers.mouse_pointer._mouse:child("pointer"):set_visible(false)
 			local left_panel = self._left
 			local top_panel = self._full_hud_panel:child("top_panel")
@@ -876,7 +881,7 @@ if VoidUI.options.enable_stats then
 		function HUDStatsScreen:toggle_panels()
 			if managers.achievment and #managers.achievment:get_tracked_fill() > 0 and self._scoreboard_panels and #self._scoreboard_panels > 0 then
 				self._visible_panel = self._visible_panel == "scoreboard_panel" and "achievements_panel" or "scoreboard_panel"
-				self._toggle_text = self._visible_panel == "scoreboard_panel" and managers.localization:text("hud_stats_tracked") or managers.localization:to_upper_text("VoidUI_scoreboard")
+				self._toggle_text = (self._visible_panel == "scoreboard_panel" and managers.localization:text("hud_stats_tracked") or managers.localization:to_upper_text("VoidUI_scoreboard"))
 				self._full_hud_panel:child("achievements_panel"):set_visible(not self._full_hud_panel:child("achievements_panel"):visible())
 				self._full_hud_panel:child("scoreboard_panel"):set_visible(not self._full_hud_panel:child("scoreboard_panel"):visible())
 				local extras_panel = self._full_hud_panel:child("extras_panel")
@@ -886,7 +891,14 @@ if VoidUI.options.enable_stats then
 				self:align_scoreboard_panels()
 			end
 		end
-		
+		local update = HUDStatsScreen.update
+		function HUDStatsScreen:update(t, dt)
+			update(self, t, dt)
+
+			if self._showing_stats_screen == true and VoidUI.options.scoreboard_toggle < 3 and self._input_keyboard:pressed(Idstring(self._key)) then
+				self:toggle_panels()
+			end
+		end
 		function HUDStatsScreen:recreate_right()
 			if self._full_hud_panel:child("achievements_panel") then
 				self._full_hud_panel:remove(self._full_hud_panel:child("achievements_panel"))

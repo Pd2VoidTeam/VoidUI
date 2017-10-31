@@ -28,6 +28,7 @@ if VoidUI.options.enable_hint then
 			align = "center",
 			vertical = "center",
 			layer = 1,
+			rotation = 360,
 			wrap = false,
 			word_wrap = false
 		})
@@ -42,6 +43,7 @@ if VoidUI.options.enable_hint then
 			align = "center",
 			vertical = "center",
 			layer = 0,
+			rotation = 360,
 			wrap = false,
 			word_wrap = false
 		})

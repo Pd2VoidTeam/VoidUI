@@ -225,6 +225,8 @@
 	"VoidUI_scoreboard_playtime_desc" : "Montre le temps de jeu total d'un joueur (les boosts de groupe pour l'IA)",
 	"VoidUI_scoreboard_ping_title" : "Montrer le ping",
 	"VoidUI_scoreboard_ping_desc" : "Montre la latence de connection d'un joueur par rapport à vous",
+	"VoidUI_scoreboard_toggle_title" : "Toggle button",
+	"VoidUI_scoreboard_toggle_desc" : "Set the button that toggles between scoreboard and tracked achievements",
 	"VoidUI_ping_frequency_title" : "Fréquence de mise à jour du ping",
 	"VoidUI_ping_frequency_desc" : "Permet de définir à quel rythme d'intervalle la latence est mise à jour",
 	"VoidUI_player" : "Joueur",
@@ -256,6 +258,10 @@
 	"VoidUI_hint_anim_desc" : "Met en valeur les astuces avec une animation légère de saut",
 	"VoidUI_hint_color_title" : "Astuces colorées",
 	"VoidUI_hint_color_desc" : "Colore les noms des coéquipiers en astuces",
+	"VoidUI_challanges_panel" : "Challange Notifications",
+	"VoidUI_enable_challanges_title" : "Enable Challange Notifications",
+	"VoidUI_enable_challanges_desc" : "Enable the Void UI challange notifications",
+	"VoidUI_hint_challanges_desc" : "Set the scale of the challange notification panels",
 	
 	"VoidUI_subtitles_title" : "Sous-titres",
 	"VoidUI_subtitles_desc" : "Options relatives aux sous-titres",
@@ -288,5 +294,8 @@
 	"VoidUI_show" : "Montrer",
 	"VoidUI_subtitles_shadow" : "Ombre",
 	"VoidUI_subtitles_fill" : "Couleur Solide",
+	"VoidUI_jump" : "Jump Key",
+	"VoidUI_crouch" : "Crouch Key",
+	"VoidUI_rmb" : "Right Click"
 	
 }

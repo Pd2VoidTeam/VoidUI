@@ -73,7 +73,7 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 	
 	local hostage_trade = UnitNetworkHandler.hostage_trade
 	function UnitNetworkHandler:hostage_trade(unit, enable, trade_success, skip_hint)
-		if unit:unit_data().label_id then
+		if unit and unit:unit_data().label_id then
 				managers.hud:_remove_name_label(unit:unit_data().label_id)	
 				unit:unit_data().label_id = nil
 			end
