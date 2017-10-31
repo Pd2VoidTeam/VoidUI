@@ -258,10 +258,10 @@
 	"VoidUI_hint_anim_desc" : "Met en valeur les astuces avec une animation légère de saut",
 	"VoidUI_hint_color_title" : "Astuces colorées",
 	"VoidUI_hint_color_desc" : "Colore les noms des coéquipiers en astuces",
-	"VoidUI_challanges_panel" : "Challange Notifications",
-	"VoidUI_enable_challanges_title" : "Enable Challange Notifications",
-	"VoidUI_enable_challanges_desc" : "Enable the Void UI challange notifications",
-	"VoidUI_hint_challanges_desc" : "Set the scale of the challange notification panels",
+	"VoidUI_challanges_panel" : "Notifications (challenges)",
+	"VoidUI_enable_challanges_title" : "Activer les notifications",
+	"VoidUI_enable_challanges_desc" : "Active les notifications lorsqu'un challenge est complété",
+	"VoidUI_hint_challanges_desc" : "Permet de définir la taille du panneau de notification de challenge",
 	
 	"VoidUI_subtitles_title" : "Sous-titres",
 	"VoidUI_subtitles_desc" : "Options relatives aux sous-titres",
@@ -298,4 +298,7 @@
 	"VoidUI_crouch" : "Crouch Key",
 	"VoidUI_rmb" : "Right Click"
 	
+	"VoidUI_trophy" : "Trophé débloqué!",
+	"VoidUI_challenge" : "Side Job complété!",
+	"VoidUI_daily" : "Safe House daily complété!"
 }
