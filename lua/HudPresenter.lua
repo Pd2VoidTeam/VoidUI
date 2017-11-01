@@ -344,29 +344,23 @@ elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.
 		text_panel:set_size(text_bg_right:right(), text_bg_right:bottom())
 		text_panel:set_left(self._hud:w())
 		local title_panel = self._hud:panel({})
-		local blur = title_panel:bitmap({
-				texture = "guis/textures/test_blur_df",
-				render_template = "VertexColorTexturedBlur3D",
-				layer = 1,
-		})
 		local title_shadow = title_panel:text({
 			text = utf8.to_lower(title):gsub("^%l", string.upper) or "Achievement unlocked!",
-			x = 2,
-			y = 2,
-			font = tweak_data.menu.pd2_medium_font,
-			font_size = tweak_data.menu.pd2_medium_font_size * self._scale,
+			x = 1,
+			y = 1,
+			font = tweak_data.menu.pd2_large_font,
+			font_size = 20 * self._scale,
 			color = Color.black
 		})
 		self:make_fine_text(title_shadow)
 		local title = title_panel:text({
 			layer = 2,
 			text = title_shadow:text(),
-			font = tweak_data.menu.pd2_medium_font,
-			font_size = tweak_data.menu.pd2_medium_font_size * self._scale
+			font = tweak_data.menu.pd2_large_font,
+			font_size = 20 * self._scale
 		})
 		self:make_fine_text(title)
 		title_panel:set_size(title_shadow:right(), title_shadow:bottom())
-		blur:set_size(title_panel:w(), title_panel:h())
 		title_panel:set_bottom(self._hud:h() / 1.5)
 		title_panel:set_right(0)
 		text_panel:set_top(title_panel:bottom())

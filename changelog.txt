@@ -3,6 +3,7 @@ Version 1.1.1
 - Added challange notifications panel
 - Added tracked achievements to the stats screen (can be set to jump key, crouch key or right click)
 - Added support for the Stoic perk deck
+- Added time added and removed animations for the Cursed Kill Room heist
 - Changed the vanilla value for maximum number of tracked achievements from 4 to 7
 - Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
 - Fixed pager count not updating when the player panels are disabled

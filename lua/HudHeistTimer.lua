@@ -24,9 +24,10 @@ if VoidUI.options.enable_timer then
 			color = Color.white,
 			align = "left",
 			vertical = "center",
-			layer = 2,
+			layer = 3,
 			wrap = false,
 			word_wrap = false,
+			rotation = 360,
 			x = VoidUI.options.show_levelname and 25 * self._scale or 30 * self._scale,
 			y = 7 * self._scale,
 			h = 25 * self._scale
@@ -245,5 +246,20 @@ if VoidUI.options.enable_timer then
 		if w > 40 * self._scale then
 			self._timer_text:set_font_size((tweak_data.hud.active_objective_title_font_size * self._scale) * (40 * self._scale) / w)
 		end
+	end
+	
+	local modify_time = HUDHeistTimer.modify_time
+	function HUDHeistTimer:modify_time(time)
+		modify_time(self, time)
+		self._timer_text:stop()
+		self._timer_text:animate(function(o)
+			local s = self._timer_text:font_size()
+			over(0.3, function(p)
+				if time ~=0 and alive(self._timer_text) then
+					self._timer_text:set_font_size(math.lerp(s*1.5, s, p))
+					self._timer_text:set_color(math.lerp(time > 0 and Color.green or Color.red, Color.white, p))
+				end
+			end)
+		end)
 	end
 end
