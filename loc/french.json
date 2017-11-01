@@ -294,8 +294,8 @@
 	"VoidUI_show" : "Montrer",
 	"VoidUI_subtitles_shadow" : "Ombre",
 	"VoidUI_subtitles_fill" : "Couleur Solide",
-	"VoidUI_jump" : "Jump Key",
-	"VoidUI_crouch" : "Crouch Key",
-	"VoidUI_rmb" : "Right Click"
+	"VoidUI_jump" : "Touche de saut",
+	"VoidUI_crouch" : "Touche pour s'accroupir",
+	"VoidUI_rmb" : "Clique droit"
 	
 }
