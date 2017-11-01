@@ -251,7 +251,7 @@
 	"VoidUI_presenter_panel" : "Панель уведомлений",
 	"VoidUI_hint_panel" : "Панель подсказок",
 	"VoidUI_enable_hint_title" : "Включить подсказки",
-	"VoidUI_enable_hint_desc" : "Показывать Void UI подсказки",
+	"VoidUI_enable_hint_desc" : "Показывать Void UI подсказки о поднятой тревоге, падениях, подъемах, арестах и найденных посылках",
 	"VoidUI_hint_scale_title" : "Размер текста",
 	"VoidUI_hint_scale_desc" : "Установите размер текста подсказок",
 	"VoidUI_hint_anim_title" : "Анимация подсказок",
