@@ -241,7 +241,7 @@
 	"VoidUI_presenter_title" : "Уведомления и подсказки",
 	"VoidUI_presenter_desc" : "Параметры, связанные с уведомлениями и подсказками",
 	"VoidUI_enable_presenter_title" : "Включить уведомления",
-	"VoidUI_enable_presenter_desc" : "Показывать уведомления",
+	"VoidUI_enable_presenter_desc" : "Показывать уведомления о заданиях, полученных предметах и захваченной добыче  ",
 	"VoidUI_presenter_scale_title" : "Размер панели",
 	"VoidUI_presenter_scale_desc" : "Установите размер панели уведомлений",
 	"VoidUI_presenter_buffer_title" : "Количество уведомлений",
