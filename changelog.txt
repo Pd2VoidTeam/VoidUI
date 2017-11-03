@@ -1,4 +1,4 @@
-Version 1.1.1 (2017.10.21)
+Version 1.1.1 (2017.11.03)
 - Removed the option to show completed trophies/side-jobs since they've been implemented in the vanilla game
 - Added challange notifications panel
 - Added tracked achievements to the stats screen (can be set to jump key, crouch key or right click)
