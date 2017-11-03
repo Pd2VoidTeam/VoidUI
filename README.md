@@ -2,7 +2,7 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-Version 1.1.1 (2017.11.03)
+## Whats new in Version 1.1.1 (2017.11.03)
 - Removed the option to show completed trophies/side-jobs since they've been implemented in the vanilla game
 - Added challange notifications panel
 - Added tracked achievements to the stats screen (can be set to jump key, crouch key or right click)
