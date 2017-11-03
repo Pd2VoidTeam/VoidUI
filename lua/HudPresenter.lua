@@ -229,38 +229,142 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 		present_panel:set_alpha(0)
 		present_panel:set_x(x2)
 	end
-elseif RequiredScript == "lib/managers/customsafehousemanager" then
-	
-	local complete_trophy = CustomSafehouseManager.complete_trophy
-	function CustomSafehouseManager:complete_trophy(trophy_or_id)
-		complete_trophy(self, trophy_or_id)
-		local trophy = type(trophy_or_id) == "table" and trophy_or_id or self:get_trophy(trophy_or_id)
-		if VoidUI.options.trophies and managers.hud and trophy and trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_trophy"), text = managers.localization:text(trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
+elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.options.enable_challanges then
+	HudChallangeNotification.ICON_SIZE = 50
+	HudChallangeNotification.BOX_MAX_W = 400
+	function HudChallangeNotification:make_fine_text(text)
+		local x, y, w, h = text:text_rect()
+
+		text:set_size(w, h)
+		text:set_position(math.round(text:x()), math.round(text:y()))
 	end
 	
-	local complete_daily = CustomSafehouseManager.complete_daily
-	function CustomSafehouseManager:complete_daily()
-		complete_daily(self)
-		if not self:unlocked() then
-			return
+	function HudChallangeNotification:_animate_show(title_panel, text_panel)
+		local center = text_panel:center_x()
+		local TOTAL_T = 0.3
+		local t = 0
+		while t < TOTAL_T do 
+			coroutine.yield()
+			local dt = TimerManager:main():delta_time()
+			t = t + dt
+			title_panel:set_x(math.lerp(-title_panel:w(), self._hud:w() / 2 + 35 - text_panel:w() / 2, t / TOTAL_T))
+			text_panel:set_center_x(math.lerp(center, self._hud:w() / 2 + 35, t / TOTAL_T))
 		end
+		title_panel:set_x(self._hud:w() / 2 + 35 - text_panel:w() / 2)
+		text_panel:set_center_x(self._hud:w() / 2 + 35)
+		local title_x = title_panel:x()
+		TOTAL_T = 2
+		t = 0
+		while t < TOTAL_T do 
+			coroutine.yield()
+			local dt = TimerManager:main():delta_time()
+			t = t + dt
+			title_panel:set_x(math.lerp(title_x, title_x + 35, t / TOTAL_T))
+			text_panel:set_center_x(math.lerp(self._hud:w() / 2 + 35, self._hud:w() / 2, t / TOTAL_T))
+		end
+		title_x = title_panel:x()
+		TOTAL_T = 0.3
+		t = 0
+		while t < TOTAL_T do 
+			coroutine.yield()
+			local dt = TimerManager:main():delta_time()
+			t = t + dt
+			title_panel:set_x(math.lerp(title_x, self._hud:w(), t / TOTAL_T))
+			text_panel:set_center_x(math.lerp(self._hud:w() / 2, -text_panel:w() / 2, t / TOTAL_T))
+		end
+		self:close()
+	end
+	
+	function HudChallangeNotification:init(title, text, icon, queue)
+		self._ws = managers.gui_data:create_fullscreen_workspace()
+		self._scale = VoidUI.options.challanges_scale
+
+		HudChallangeNotification.super.init(self, self._ws:panel())
+		self._queue = queue or {}
+		self._hud = self._ws:panel()
+		self._hud:set_layer(1000)
+		local text_panel = self._hud:panel({})
+		local noti_text = text_panel:text({
+			text = utf8.to_lower(text):gsub("^%l", string.upper) or "Blame overkill!",
+			font = tweak_data.menu.pd2_medium_font,
+			font_size = tweak_data.menu.pd2_medium_font_size * self._scale,
+			vertical = "center",
+			x = 20 * self._scale,
+			w = self.BOX_MAX_W * self._scale,
+			wrap = true,
+			word_wrap = true,
+			layer = 2
+		})
+		self:make_fine_text(noti_text)
+		noti_text:set_h(noti_text:h() + 6 * self._scale)
+		local icon_texture, icon_texture_rect = tweak_data.hud_icons:get_icon_or(icon, nil)
+		if icon_texture then
+			local icon = text_panel:bitmap({
+				texture = icon_texture,
+				texture_rect = icon_texture_rect,
+				layer = 2,
+				y = 3 * self._scale,
+				w = self.ICON_SIZE * self._scale,
+				h = self.ICON_SIZE * self._scale
+			})
+			noti_text:set_x(icon:right())
+			noti_text:set_h(math.max(icon:h() + 3 * self._scale, noti_text:h()))
+			icon:set_center_y(noti_text:center_y())
+		end
+		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
+		local text_bg_left = text_panel:bitmap({
+			name = "objective_text_bg_left",
+			texture = weapons_texture,
+			texture_rect = {26,0,43,150},
+			layer = 1,
+			w = 25 * self._scale,
+			h = noti_text:h(),
+			alpha = 1
+		})
+		local text_bg = text_panel:bitmap({
+			name = "text_bg",
+			texture = weapons_texture,
+			texture_rect = {69,0,416,150},
+			layer = 1,
+			w = noti_text:right() - 25 * self._scale,
+			h = noti_text:h(),
+			x = text_bg_left:right(),
+			alpha = 1
+		})	
+		local text_bg_right = text_panel:bitmap({
+			name = "text_bg_right",
+			texture = weapons_texture,
+			texture_rect = {485,0,43,150},
+			layer = 1,
+			w = 25 * self._scale,
+			h = noti_text:h(),
+			alpha = 1
+		})
+		text_bg_right:set_left(text_bg:right())
+		text_panel:set_size(text_bg_right:right(), text_bg_right:bottom())
+		text_panel:set_left(self._hud:w())
+		local title_panel = self._hud:panel({})
+		local title_shadow = title_panel:text({
+			text = utf8.to_lower(title):gsub("^%l", string.upper) or "Achievement unlocked!",
+			x = 1,
+			y = 1,
+			font = tweak_data.menu.pd2_large_font,
+			font_size = 20 * self._scale,
+			color = Color.black
+		})
+		self:make_fine_text(title_shadow)
+		local title = title_panel:text({
+			layer = 2,
+			text = title_shadow:text(),
+			font = tweak_data.menu.pd2_large_font,
+			font_size = 20 * self._scale
+		})
+		self:make_fine_text(title)
+		title_panel:set_size(title_shadow:right(), title_shadow:bottom())
+		title_panel:set_bottom(self._hud:h() / 1.5)
+		title_panel:set_right(0)
+		text_panel:set_top(title_panel:bottom())
 		
-		if VoidUI.options.trophies and managers.hud and self._global.daily and self._global.daily.trophy.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_daily"), text = managers.localization:text(self._global.daily.trophy.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
+		title_panel:animate(callback(self, self, "_animate_show"), text_panel)
 	end
-	
-elseif RequiredScript == "lib/managers/challengemanager" then
-	
-	local check_challenge_completed = ChallengeManager._check_challenge_completed
-	function ChallengeManager:_check_challenge_completed(id, key)
-		check_challenge_completed(self, id, key)
-		local active_challenge = self:get_active_challenge(id, key)
-		if VoidUI.options.trophies and managers.hud and active_challenge and active_challenge.completed then
-			managers.hud:present({present_mid_text = true, title = managers.localization:to_upper_text("VoidUI_challenge"), text = managers.localization:text(active_challenge.name_id), border = true, color = tweak_data.screen_colors.challenge_completed_color})
-		end
-	end
-	
 end

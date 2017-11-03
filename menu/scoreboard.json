@@ -172,6 +172,20 @@
 			"priority" : 2
 		},
 		{
+			"type" : "multiple_choice",
+			"id" : "scoreboard_toggle",
+			"title" : "VoidUI_scoreboard_toggle_title",
+			"description" : "VoidUI_scoreboard_toggle_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"VoidUI_jump",
+				"VoidUI_crouch",
+				"VoidUI_rmb"
+			]
+			"value" : "scoreboard_toggle"
+			"priority" : 2
+		},
+		{
 			"type" : "toggle",
 			"id" : "scoreboard_ping",
 			"title" : "VoidUI_scoreboard_ping_title",

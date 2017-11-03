@@ -123,7 +123,16 @@ if VoidUI.options.teammate_panels then
 		})	
 		custom_bar:hide()
 		
-
+		local delayed_damage_health_bar = health_panel:bitmap({
+			name = "delayed_damage_health_bar",
+			texture = health_texture,
+			texture_rect = {881,0,202,472},
+			layer = 3,
+			w = health_panel:w(),
+			h = health_panel:h(),
+			alpha = 1,
+			visible = false,
+		})	
 		local condition_icon = health_panel:bitmap({
 			name = "condition_icon",
 			layer = 6,
@@ -196,16 +205,25 @@ if VoidUI.options.teammate_panels then
 			texture_rect = {609,0,201,472},
 			layer = 5,
 			w = health_panel:w(),
-			h = health_panel:h(),
+			h = 0,
 			alpha = 1,
 		})
-
+		local delayed_damage_armor_bar = health_panel:bitmap({
+			name = "delayed_damage_armor_bar",
+			texture = health_texture,
+			texture_rect = {1084,0,201,472},
+			layer = 6,
+			w = health_panel:w(),
+			h = health_panel:h(),
+			color = Color(0.2,0.2,0.2),
+			visible = false,
+		})
 		local armor_value = health_panel:text({
 			name = "armor_value",
 			w = self._armor_value,
 			h = self._armor_value,
 			font_size = self._armor_value / 2.5,
-			text = "100",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			font = "fonts/font_medium_noshadow_mf",
@@ -233,7 +251,7 @@ if VoidUI.options.teammate_panels then
 		local health_stored_bg = custom_player_panel:bitmap({
 			name = "health_stored_bg",
 			texture = health_texture,
-			texture_rect = {882,0,70,472},
+			texture_rect = {811,0,70,472},
 			layer = 3,
 			w = 0,
 			h = health_panel:h(),
@@ -246,7 +264,7 @@ if VoidUI.options.teammate_panels then
 		local health_stored = custom_player_panel:bitmap({
 			name = "health_stored",
 			texture = health_texture,
-			texture_rect = {882,0,70,472},
+			texture_rect = {811,0,70,472},
 			layer = 4,
 			w = self._health_w / 2.9,
 			h = health_panel:h(),
@@ -537,6 +555,18 @@ if VoidUI.options.teammate_panels then
 			alpha = 0.6,
 		})
 		grenades_image:set_center(grenades_border:center())
+		local grenades_icon_ghost = grenades_panel:bitmap({
+			name = "grenades_icon_ghost",
+			rotation = 360,
+			texture = texture,
+			texture_rect = rect,
+			visible = false,
+			layer = 3,
+			x = grenades_image:x(),
+			y = grenades_image:y(),
+			w = grenades_image:w(),
+			h = grenades_image:h(),
+		})
 		local grenades_count = grenades_panel:text({
 			name = "grenades_count",
 			w = self._equipment_panel_w / 1.2,
@@ -554,6 +584,7 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = self._equipment_panel_w,
 			h = self._equipment_panel_h,
+			alpha = 0,
 			visible = false
 		})
 		
@@ -749,6 +780,7 @@ if VoidUI.options.teammate_panels then
 			end
 		else
 			weapons_panel:show()
+			self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 		end
 		managers.hud:align_teammate_panels()
 	end
@@ -763,6 +795,7 @@ if VoidUI.options.teammate_panels then
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_background = health_panel:child("health_background")
 		local health_stored_bg =  self._custom_player_panel:child("health_stored_bg")
+		local delayed_damage_health_bar = health_panel:child("delayed_damage_health_bar")
 		local health_bar = health_panel:child("health_bar")
 		local health_value = health_panel:child("health_value")
 		local downs_value = health_panel:child("downs_value")
@@ -777,6 +810,7 @@ if VoidUI.options.teammate_panels then
 		health_value:set_color(color * 0.4 + Color.black * 0.5)
 		downs_value:set_color(color * 0.8 + Color.black * 0.5)
 		detect_value:set_color(color * 0.8 + Color.black * 0.5)
+		delayed_damage_health_bar:set_color(color * 0.48 + Color.black)
 		
 		if not self._whisper_listener then
 			self._whisper_listener = "HUDTeammate_whisper_mode_"..self._id
@@ -891,13 +925,43 @@ if VoidUI.options.teammate_panels then
 					
 					health_stored_bg:set_bottom(math.clamp(health_panel:y() + health_bar:top(), health_panel:top() + health_stored_bg:h(), health_panel:bottom()))
 					health_stored:set_bottom(health_stored_bg:bottom())
-					health_stored_bg:set_texture_rect(882,(((health_stored_bg:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored_bg:h() / self._bg_h))
-					health_stored:set_texture_rect(882,(((health_stored:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored:h() / self._bg_h))
+					health_stored_bg:set_texture_rect(811,(((health_stored_bg:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored_bg:h() / self._bg_h))
+					health_stored:set_texture_rect(811,(((health_stored:y() - health_panel:y()) / self._bg_h) * 472),70,472 * (health_stored:h() / self._bg_h))
+					self:update_delayed_damage()
 				end
 			end)
 		end)
 	end
+	
+	function HUDTeammate:update_delayed_damage()
+		local damage = self._delayed_damage or 0
+		local health_panel = self._custom_player_panel:child("health_panel")
+		local health_bar = health_panel:child("health_bar")
+		local armor_bar = health_panel:child("armor_bar")
+		local delayed_damage_armor = health_panel:child("delayed_damage_armor_bar")
+		local delayed_damage_health = health_panel:child("delayed_damage_health_bar")
+		local armor_max = self._armor_data.total
+		local armor_current = self._armor_data.current
+		local armor_ratio = armor_bar:h() / self._bg_h
+		local health_max = self._health_data.total
+		local health_current = self._health_data.current
+		local health_ratio = health_bar:h() / self._bg_h
+		local armor_damage = damage < armor_current and damage or armor_current
+		damage = damage - armor_damage
+		local health_damage = damage < health_current and damage or health_current
+		local armor_damage_ratio = armor_damage > 0 and armor_damage / armor_max or 0
+		local health_damage_ratio = health_damage / health_max
 
+		delayed_damage_armor:set_visible(armor_damage_ratio > 0)
+		delayed_damage_health:set_visible(health_damage_ratio > 0)
+		delayed_damage_armor:set_h(self._bg_h * armor_damage_ratio)
+		delayed_damage_armor:set_top(armor_bar:top())
+		delayed_damage_armor:set_texture_rect(1084,((1- armor_ratio) * 472),201,472 * armor_damage_ratio)
+		delayed_damage_health:set_h(self._bg_h * health_damage_ratio)
+		delayed_damage_health:set_top(health_bar:top())
+		delayed_damage_health:set_texture_rect(881,((1- health_ratio) * 472),202,472 * health_damage_ratio)
+	end
+	
 	function HUDTeammate:_damage_taken()
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_shade = health_panel:child("health_shade")
@@ -943,7 +1007,7 @@ if VoidUI.options.teammate_panels then
 		local armor_background = health_panel:child("armor_background")
 		local armor_bar = health_panel:child("armor_bar")
 		local armor_value = health_panel:child("armor_value")
-		local amount = math.ceil((data.current / data.total) * 100) / 100
+		local amount = data.total ~= 0 and math.ceil((data.current / data.total) * 100) / 100 or 0
 		
 		armor_bar:set_h(self._bg_h * amount)
 		armor_bar:set_texture_rect(609,0 + ((1- amount) * 472),201,472 * amount)
@@ -953,8 +1017,8 @@ if VoidUI.options.teammate_panels then
 		if show_armor_value == 2 then armor_value:set_text(self:round(amount * 100))
 		elseif show_armor_value == 3 then armor_value:set_text(self:round((data.total * 10) * amount))
 		else armor_value:set_text("") end
-		
-		if (data.current / data.total) < 0.01 then
+		self:update_delayed_damage()
+		if data.total == 0 or (data.current / data.total) < 0.01 then
 			armor_bar:set_h(0)
 			armor_value:set_text("")
 		end
@@ -1197,11 +1261,23 @@ if VoidUI.options.teammate_panels then
 		local cooldown_image = grenades_panel:child("cooldown_panel"):child("cooldown_image")
 		local grenades_count = grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
+		local grenades_icon_ghost = grenades_panel:child("grenades_icon_ghost")
 		grenades_image:set_image(icon, unpack(texture_rect))
 		cooldown_image:set_image(icon, unpack(texture_rect))
+		grenades_icon_ghost:set_image(icon, unpack(texture_rect))
 		self:set_grenades_amount(data)
 	end
-
+	
+	function HUDTeammate:set_ability_icon(icon)
+		local weapons_panel = self._custom_player_panel:child("weapons_panel")
+		local grenades_panel = weapons_panel:child("grenades_panel")
+		local grenades_image = grenades_panel:child("grenades_image")
+		local grenades_count = grenades_panel:child("grenades_count")
+		local grenades_border = grenades_panel:child("grenades_border")
+		icon = tweak_data.hud_icons[icon]
+		grenades_image:set_image(icon.texture, unpack(icon.texture_rect))
+	end
+	
 	function HUDTeammate:set_grenades_amount(data)
 		if not PlayerBase.USE_GRENADES then
 			return
@@ -1217,7 +1293,7 @@ if VoidUI.options.teammate_panels then
 			grenades_count:set_color(Color(1,0,0))
 			grenades_border:set_color(Color(1,0,0))
 			grenades_image:set_color(Color(1,0,0))
-		elseif data.icon ~= "smoke_screen_grenade" and data.icon ~= "chico_injector" then
+		elseif data.icon ~= "smoke_screen_grenade" and data.icon ~= "chico_injector" and data.icon ~= "damage_control" then
 			grenades_count:set_text("x"..data.amount)
 			grenades_count:set_color(Color.white)
 			grenades_border:set_color(Color.white)
@@ -1225,44 +1301,116 @@ if VoidUI.options.teammate_panels then
 		end
 	end
 
-	function HUDTeammate:set_ability_cooldown(data)
+	function HUDTeammate:set_grenade_cooldown(data)
 		if not PlayerBase.USE_GRENADES then
 			return
 		end
-		data.cooldown = data.cooldown and math.ceil(data.cooldown) or 0
+		local end_time = data and data.end_time
+		local duration = data and data.duration
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local cooldown_panel = grenades_panel:child("cooldown_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
 		local grenades_count = grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
-		if data.cooldown > 0 then
-			if self._max_cooldown == 0 then self._max_cooldown = data.cooldown end
+		
+		if not end_time or not duration then
+			grenades_count:set_visible(false)
+			cooldown_panel:set_visible(false)
+			grenades_border:set_color(Color.white)
+			grenades_image:set_color(Color.white)
+			cooldown_panel:stop()
+			cooldown_panel:set_h(self._equipment_panel_h)
+		else
 			grenades_count:set_visible(true)
 			cooldown_panel:set_visible(true)
 			cooldown_panel:stop()
+			self:animate_grenade_charge()
 			cooldown_panel:animate(function(o)
-				local h = cooldown_panel:h()
-				local h2 = self._equipment_panel_h * (data.cooldown / self._max_cooldown)
-				over(1, function(p)
-					if alive(cooldown_panel) then
-						cooldown_panel:set_h(math.lerp(h, h2, p))
-					end
+					local time_left = end_time - managers.game_play_central:get_heist_timer()
+					local left_ratio = time_left/duration
+					local h = self._equipment_panel_h * left_ratio
+					local start_time = duration * left_ratio
+					over(time_left, function(p)
+						if alive(cooldown_panel) then
+							cooldown_panel:set_h(math.lerp(h, 0, p))
+							grenades_count:set_text(1 + math.floor(start_time * (1-p)))
+						end
+					end)
+					cooldown_panel:set_h(0)
+					cooldown_panel:set_visible(false)
+					grenades_border:set_color(Color.white)
+					grenades_image:set_color(Color.white)
+					cooldown_panel:set_h(self._equipment_panel_h)
 				end)
-			end)
-			grenades_border:set_color(Color(1,0.8,0.8))
-			grenades_image:set_color(Color(1,0.8,0.8))
-		else
-			grenades_count:set_visible(false)
-			cooldown_panel:set_visible(false)
-			cooldown_panel:stop()
-			cooldown_panel:set_h(self._equipment_panel_h)
-			grenades_border:set_color(Color.white)
-			grenades_image:set_color(Color.white)
+		
+			if self._main_player and managers.network and managers.network:session() then
+				managers.network:session():send_to_peers("sync_grenades_cooldown", end_time, duration)
+			end
 		end
-		grenades_count:set_text(data.cooldown)
 	end
+	
+	function HUDTeammate:animate_grenade_charge()
+		local weapons_panel = self._custom_player_panel:child("weapons_panel")
+		local grenades_panel = weapons_panel:child("grenades_panel")
+		local cooldown_panel = grenades_panel:child("cooldown_panel")
+		local count = grenades_panel:child("grenades_count")
+		local icon_ghost = grenades_panel:child("grenades_icon_ghost")
+		local border = grenades_panel:child("grenades_border")
+		local image = grenades_panel:child("grenades_image")
 
+		local function animate_fade()			
+			local a = cooldown_panel:alpha()
+			over(0.2 , function (p)
+				cooldown_panel:set_alpha(math.lerp(a,1,p))
+				count:set_alpha(cooldown_panel:alpha())
+				border:set_color(Color(1,0.8,0.8))
+				count:set_color(Color.white)
+				image:set_color(Color(1,0.8,0.8))
+			end)
+			cooldown_panel:set_alpha(1)
+			count:set_alpha(1)
+		end
+		icon_ghost:set_visible(false)
+		grenades_panel:stop()
+		grenades_panel:animate(animate_fade)
+	end
+	
+	function HUDTeammate:animate_grenade_flash()
+		local weapons_panel = self._custom_player_panel:child("weapons_panel")
+		local grenades_panel = weapons_panel:child("grenades_panel")
+		local icon = grenades_panel:child("grenades_image")
+		local icon_ghost = grenades_panel:child("grenades_icon_ghost")
+		local cooldown_panel = grenades_panel:child("cooldown_panel")
+		local count = grenades_panel:child("grenades_count")
+
+		local function animate_flash()
+			local icon_w, icon_h = icon:size()
+			local icon_x, icon_y = icon:center()
+			
+			cooldown_panel:set_alpha(0)
+			icon_ghost:set_visible(true)
+			count:set_visible(true)
+			over(0.6, function (p)
+				local color = math.lerp(Color(1,1,0.8,0.8), Color(0,1,1,1), p)
+				local scale = 1 + p
+				icon_ghost:set_color(color)
+				icon_ghost:set_size(icon_w * scale, icon_h * scale)
+				icon_ghost:set_center(icon_x, icon_y)
+				count:set_alpha(1 - p)
+				count:set_text("0")
+			end)
+			count:set_visible(false)
+			count:set_text("")
+			icon_ghost:set_visible(false)
+			icon_ghost:set_size(icon_w, icon_h)
+			icon_ghost:set_center(icon_x, icon_y)
+		end
+
+		grenades_panel:stop()
+		grenades_panel:animate(animate_flash)
+	end
+	
 	function HUDTeammate:set_ability_radial(data)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local custom_bar = health_panel:child("custom_bar")
@@ -1275,21 +1423,30 @@ if VoidUI.options.teammate_panels then
 		custom_bar:set_bottom(health_panel:child("health_background"):bottom())
 	end
 
-	function HUDTeammate:activate_ability_radial(time)
+	function HUDTeammate:activate_ability_radial(time_left, time_total)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local custom_bar = health_panel:child("custom_bar")
+		time_total = time_total or time_left
 		local function anim(o)
 			custom_bar:set_visible(true)
 			custom_bar:set_color(Color(1, 0.6, 0))
 			custom_bar:set_alpha(0.5)
-			over(time, function(p)
+			over(time_left, function(p)
 				custom_bar:set_h(math.lerp(self._bg_h, 0, p))
 				custom_bar:set_texture_rect(203, math.lerp(0, 472, p),202,math.lerp(472, 0, p))
 				custom_bar:set_bottom(health_panel:child("health_background"):bottom())
 			end)
 			custom_bar:set_visible(false)
 		end
+		custom_bar:stop()
 		custom_bar:animate(anim)
+		
+		if self._main_player and managers.network and managers.network:session() then
+			local current_time = managers.game_play_central:get_heist_timer()
+			local end_time = current_time + time_left
+
+			managers.network:session():send_to_peers("sync_ability_hud", end_time, time_total)
+		end
 	end
 
 	function HUDTeammate:add_special_equipment(data)
@@ -1785,7 +1942,13 @@ if VoidUI.options.teammate_panels then
 			else panel:child("interact_time"):set_text("") end
 		end
 	end
+	function HUDTeammate:set_absorb_active(absorb_amount)
+		self._absorb_active_amount = absorb_amount
 
+		if self._main_player and managers.network and managers.network:session() then
+			managers.network:session():send_to_peers("sync_damage_absorption_hud", self._absorb_active_amount)
+		end
+	end
 	function HUDTeammate:_animate_interact_complete(bar, text)
 		local TOTAL_T = 1
 		local t = 0
@@ -1936,7 +2099,7 @@ if VoidUI.options.teammate_panels then
 			health_stored_bg:set_w(self._health_w / 2.9)
 			health_stored_bg:set_h(self._bg_h * value)
 			health_stored_bg:set_right(health_panel:x() + (11 * self._main_scale))
-			health_stored_bg:set_texture_rect(882,((1- value) * 472),70,472 * value)
+			health_stored_bg:set_texture_rect(811,((1- value) * 472),70,472 * value)
 			health_stored_bg:set_bottom(self._custom_player_panel:h())
 			health_stored_bg:set_color(color * 0.4 + Color.black)
 			health_stored:set_color(health_panel:child("health_bar"):color())
@@ -1945,7 +2108,7 @@ if VoidUI.options.teammate_panels then
 				local health_stored_max = self._custom_player_panel:bitmap({
 					name = "health_stored_max",
 					texture = "guis/textures/VoidUI/hud_health",
-					texture_rect = {882,0,70,472},
+					texture_rect = {811,0,70,472},
 					layer = 1,
 					w = self._health_w / 2.9,
 					h = self._bg_h,
@@ -1974,7 +2137,7 @@ if VoidUI.options.teammate_panels then
 				over(0.2, function(p)
 					health_stored:set_h(math.lerp(h, health_panel:h() * value, p))
 					health_stored:set_bottom(health_stored_bg:bottom())
-					health_stored:set_texture_rect(882,((health_stored:y() - health_panel:y()) / self._bg_h) * 472, 70, 472 * (health_stored:h() / self._bg_h))
+					health_stored:set_texture_rect(811,((health_stored:y() - health_panel:y()) / self._bg_h) * 472, 70, 472 * (health_stored:h() / self._bg_h))
 				end)
 			end)
 		end
@@ -2087,7 +2250,7 @@ if VoidUI.options.teammate_panels then
 			over(0.2, function(p)
 				local value = math.lerp(current_percentage, percentage, p) 
 				health_stored:set_h(self._bg_h * value)
-				health_stored:set_texture_rect(882,(1 - value) * 472, 70, 472 * value)
+				health_stored:set_texture_rect(811,(1 - value) * 472, 70, 472 * value)
 				health_stored:set_bottom(self._custom_player_panel:h())
 				health_stored:set_visible(value > 0)
 			end)

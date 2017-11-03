@@ -17,7 +17,7 @@ elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 			unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
 		end
 		
-		if unit_data and VoidUI.options.label_jokers then
+		if unit_data and VoidUI.options.enable_labels and VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = player_unit})
 			local label = managers.hud:_get_name_label(panel_id)
 			if VoidUI.options.health_jokers and VoidUI.options.enable_labels and label.panel:child("minmode_panel") then
@@ -56,7 +56,7 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 			unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])
 		end
 		
-		if VoidUI.options.label_jokers then
+		if VoidUI.options.enable_labels and VoidUI.options.label_jokers then
 			local panel_id = managers.hud:_add_name_label({ unit = unit, name = "Joker", owner_unit = managers.network:session():peer(minion_owner_peer_id):unit()})
 			local label = managers.hud:_get_name_label(panel_id)
 			if VoidUI.options.health_jokers and VoidUI.options.enable_labels and label.panel:child("minmode_panel") then
@@ -73,7 +73,7 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 	
 	local hostage_trade = UnitNetworkHandler.hostage_trade
 	function UnitNetworkHandler:hostage_trade(unit, enable, trade_success, skip_hint)
-		if unit:unit_data().label_id then
+		if unit and unit:unit_data().label_id then
 				managers.hud:_remove_name_label(unit:unit_data().label_id)	
 				unit:unit_data().label_id = nil
 			end
