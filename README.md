@@ -2,17 +2,28 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## What's new in 1.1.1 (2017.10.21)
-- Fixed a crash related to stopping ai when custom name labels are disabled
+Version 1.1.1 (2017.11.03)
+- Removed the option to show completed trophies/side-jobs since they've been implemented in the vanilla game
+- Added challange notifications panel
+- Added tracked achievements to the stats screen (can be set to jump key, crouch key or right click)
+- Added support for the Stoic perk deck
+- Added time added and removed animations for the Cursed Kill Room heist
+- Changed the vanilla value for maximum number of tracked achievements from 4 to 7
 - Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
 - Fixed pager count not updating when the player panels are disabled
-- Fixed a crash with teammate interactions when the player panels are disabled
 - Fixed teammate interaction panel not being aligned correctly as a drop-in spectator
-- Fixed crash when AI returns from custody
 - Fixed teammate names getting too small on lower resolutions when the teammate panels are scaled up
 - Fixed bag count on vehicle labels appearing at the right side of the screen
 - Fixed vehicle labels not showing passenger count
 - Fixed special equipments overlapping with the carried bag info on teammate panels
+- Fixed cooldown not showing for perk-deck abilities
+- Fixed a crash related to stopping ai when custom name labels are disabled
+- Fixed crash when AI returns from custody
+- Fixed crash related to AI getting downed while the scoreboard is disabled
+- Fixed a crash with teammate interactions when the player panels are disabled
+- Fixed a crash that could occur when quiting the game at the same time the hostage count gets updated
+- Fixed a crash related to trading jokers
+
 
 ## Credits
 - Most part of the hud made by Xeletron
