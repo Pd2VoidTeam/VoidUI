@@ -1568,7 +1568,7 @@ if VoidUI.options.enable_stats then
 			
 			local unit = managers.criminals:character_unit_by_name(character_name)
 			if unit then
-				local loadout = unit:base() and unit:base()._loadout
+				local loadout = unit and unit:base() and unit:base()._loadout
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
 				armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/level_1")
 				if loadout then
