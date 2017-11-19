@@ -11,7 +11,7 @@
 			"type" : "button",
 			"id" : "voidui_labels",
 			"title" : "VoidUI_label",
-			"priority" : 16
+			"priority" : 18
 		},
 		{
 			"type" : "toggle",
@@ -20,7 +20,7 @@
 			"description" : "VoidUI_enable_labels_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "enable_labels"
-			"priority" : 15
+			"priority" : 17
 		},
 		{
 			"type" : "toggle",
@@ -29,7 +29,7 @@
 			"description" : "VoidUI_jokernames_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_jokers"
-			"priority" : 14
+			"priority" : 16
 		},
 		{
 			"type" : "toggle",
@@ -38,7 +38,7 @@
 			"description" : "VoidUI_jokerhealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "health_jokers"
-			"priority" : 13
+			"priority" : 15
 		},
 		{
 			"type" : "slider",
@@ -52,7 +52,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 12
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -61,7 +61,7 @@
 			"description" : "VoidUI_label_upper_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_upper"
-			"priority" : 11
+			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -70,7 +70,7 @@
 			"description" : "VoidUI_minlabel_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_minmode"
-			"priority" : 10
+			"priority" : 12
 		},
 		{
 			"type" : "slider",
@@ -84,7 +84,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 9
+			"priority" : 11
 		},
 		{
 			"type" : "toggle",
@@ -93,7 +93,7 @@
 			"description" : "VoidUI_minrank_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_minrank"
-			"priority" : 8
+			"priority" : 10
 		},
 		{
 			"type" : "slider",
@@ -107,7 +107,7 @@
 			"min" : 0,
 			"step" : 1,
 			"localized" :  true
-			"priority" : 7
+			"priority" : 9
 		},
 		{
 			"type" : "slider",
@@ -121,18 +121,18 @@
 			"min" : 0.1,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 6
+			"priority" : 8
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 5
+			"priority" : 7
 		},
 		{
 			"type" : "button",
 			"id" : "voidui_waypoints",
 			"title" : "VoidUI_waypoints",
-			"priority" : 4
+			"priority" : 6
 		},
 		{
 			"type" : "slider",
@@ -146,7 +146,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 3
+			"priority" : 5
 		},
 		{
 			"type" : "toggle",
@@ -155,7 +155,7 @@
 			"description" : "VoidUI_waypoint_offscreen_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "label_waypoint_offscreen"
-			"priority" : 2
+			"priority" : 4
 		},
 		{
 			"type" : "slider",
@@ -169,8 +169,21 @@
 			"min" : 100,
 			"step" : 0.1,
 			"localized" :  true
-			"priority" : 1
-		}
-		
+			"priority" : 3
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 2
+		},
+		{
+			"type" : "toggle",
+			"id" : "pacified_civilian_waypoint",
+			"title" : "VoidUI_pacified_civilian_waypoint_title",
+			"description" : "VoidUI_pacified_civilian_waypoint_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "pacified_civilian_waypoint"
+			"priority" : 1			
+		}		
 	]
 }

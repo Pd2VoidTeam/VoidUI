@@ -168,6 +168,8 @@
 	"VoidUI_waypoint_radius_desc" : "Установите, как далеко от центра экрана отображаются метки задания, когда само задание не в поле зрения",
 	"VoidUI_waypoint_offscreen_title" : "Метки заданий",
 	"VoidUI_waypoint_offscreen_desc" : "Показывать метки задания когда само задание не в поле зрения",
+	"VoidUI_pacified_civilian_waypoint_title" : "Show Pacified Civilians",
+	"VoidUI_pacified_civilian_waypoint_desc" : "Change the waypoint of untied civilians, while they are pacified.",
 	
 	"VoidUI_interact_title" : "Взаимодействие и обнаружение",
 	"VoidUI_interact_desc" : "Параметры, связанные с панелями взаимодействия и обнаружения",
