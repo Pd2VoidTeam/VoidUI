@@ -168,6 +168,8 @@
 	"VoidUI_waypoint_radius_desc" : "Permet de définir à quel point le décalage des marqueurs et loin du centre de l'écran lorsque ceux-ci sont en dehors du champ de vision",
 	"VoidUI_waypoint_offscreen_title" : "Montrer les marqueurs en dehors du champ de vision",
 	"VoidUI_waypoint_offscreen_desc" : "Montrer les marqueurs lorsque leur source se trouve en dehors du champ de vision",
+	"VoidUI_pacified_civilian_waypoint_title" : "Show Pacified Civilians",
+	"VoidUI_pacified_civilian_waypoint_desc" : "Change the waypoint of untied civilians, while they are pacified.",
 	
 	"VoidUI_interact_title" : "Interaction et Détection",
 	"VoidUI_interact_desc" : "Options relatives aux panneaux d'interaction et de détection",
