@@ -168,6 +168,8 @@
 	"VoidUI_waypoint_radius_desc" : "Set how far offscreen waypoints are from the center of your screen when their source is out of view",
 	"VoidUI_waypoint_offscreen_title" : "Show offscreen waypoints",
 	"VoidUI_waypoint_offscreen_desc" : "Show waypoints when their source is out of view",
+        "VoidUI_pacified_civilian_waypoint_title" : "Show Pacified Civilians",
+	"VoidUI_pacified_civilian_waypoint_desc" : "Change the waypoint of untied civilians, while they are pacified.",
 	
 	"VoidUI_interact_title" : "Interaction and Detection",
 	"VoidUI_interact_desc" : "Options related to the interaction panel and the stealth detection panel",
