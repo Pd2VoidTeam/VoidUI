@@ -153,7 +153,7 @@ if VoidUI.options.enable_interact then
 		end
 		local _, _, text_w, _ = self._hud_panel:child(self._child_name_text):text_rect()
 		self._interact_bar_bg:set_w(text_w)
-		self._interact_bar:set_w((text_w - (4 * self._scale)) * (current / total))
+		self._interact_bar:set_w(math.max((text_w - (4 * self._scale)) * (current / total), 0))
 		self._interact_bar_bg:set_x(self._hud_panel:w() / 2 - (text_w / 2))
 		if VoidUI.options.center_interaction and VoidUI.options.center_interaction or false then 
 			self._interact_bar:set_center_x(self._interact_bar_bg:center_x())
@@ -175,7 +175,7 @@ if VoidUI.options.enable_interact then
 			local bar = self._hud_panel:bitmap({
 				layer = 5,
 				w = text_w - 4,
-				h = 6,
+				h = 6 * self._scale,
 				color = Color.white:with_alpha(1)
 			})
 			bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:child(self._child_name_text):y() + 66 * self._scale)
@@ -226,7 +226,7 @@ if VoidUI.options.enable_interact then
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
-			bar:set_size(math.lerp(w, w * 2, t / TOTAL_T), math.lerp(6, 1, t / TOTAL_T))
+			bar:set_size(math.lerp(w, w * 2, t / TOTAL_T), math.lerp(6 * self._scale, 1, t / TOTAL_T))
 			bar:set_x(self._hud_panel:w() / 2 - ((bar:w() - 4) / 2))
 			bar:set_center_y(y)
 		end

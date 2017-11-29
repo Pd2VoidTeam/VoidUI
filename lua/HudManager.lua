@@ -484,12 +484,16 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		function HUDManager:show_player_gear(panel_id)
-				if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
-					local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
-					player_panel:child("weapons_panel"):set_visible(true)
-					self:align_teammate_panels()
-				end
-			end		
+			if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
+				local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
+				player_panel:child("weapons_panel"):set_visible(true)
+				self:align_teammate_panels()
+			end
+		end	
+		
+		HUDManager.set_teammate_ability_color = HUDManager.set_teammate_ability_color or function(self, i, color)
+			self._teammate_panels[i]:set_ability_color(color)
+		end		
 	end		
 	
 	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then	
@@ -1284,4 +1288,41 @@ elseif RequiredScript == "lib/states/ingamemaskoff" and VoidUI.options.enable_as
 	end
 elseif RequiredScript == "lib/managers/achievmentmanager" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
 	AchievmentManager.MAX_TRACKED = 7
+elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teammate_panels or VoidUI.options.vape_hints) then
+	add_coroutine = PlayerManager.add_coroutine
+	function PlayerManager:add_coroutine(name, func, ...)
+		local arg = {...}
+		local tagged = arg[1]
+		if name == "tag_team" and tagged then
+			if VoidUI.options.vape_hints then
+				if tagged.base and tagged:base().nick_name then
+					managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_owner", {NAME=tagged:base():nick_name()}), time=5})
+				elseif tagged.base and tagged:base().owner_peer_id then
+					managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_owner_joker", {NAME=managers.criminals:character_unit_by_peer_id(tagged:base().owner_peer_id):base():nick_name()}), time=5})
+				end
+				tagged:contour():add("mark_unit")
+			end
+			if VoidUI.options.teammate_panels then
+				managers.hud:set_teammate_ability_color(HUDManager.PLAYER_PANEL, tweak_data.chat_colors[managers.criminals:character_peer_id_by_unit(tagged) or 5])
+			end
+		end
+		add_coroutine(self, name, func, ...)
+	end
+	
+	local sync_tag_team = PlayerManager.sync_tag_team
+	function PlayerManager:sync_tag_team(tagged, owner, end_time)
+		sync_tag_team(self, tagged, owner, end_time)
+		local owner_name = owner:base():nick_name()
+		local tagged_id = managers.criminals:character_peer_id_by_unit(tagged)
+		local owner_data = managers.criminals:character_data_by_unit(owner)
+		local owner_panel = (owner_data and owner_data.panel_id and owner_data.panel_id)
+		if owner_panel and VoidUI.options.teammate_panels then
+			managers.hud:set_teammate_ability_color(owner_panel, tweak_data.chat_colors[tagged_id or 5])
+		end
+		if tagged == self:local_player() and VoidUI.options.vape_hints then
+			owner:contour():add("mark_unit")
+			self:player_unit():sound():play("perkdeck_activate")
+			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
+		end
+	end
 end

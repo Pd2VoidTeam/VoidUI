@@ -32,42 +32,23 @@ if VoidUI.options.enable_timer then
 			y = 7 * self._scale,
 			h = 25 * self._scale
 		})
-		
-		local level_data = managers.job:current_level_data()
-		if level_data then
-			local level_name = self._heist_timer_panel:text({
-				name = "level_name",
-				visible = true,
-				layer = 2,
-				color = Color.white,
-				text = VoidUI.options.show_levelname and managers.localization:text(level_data.name_id) or " ",
-				font_size = tweak_data.hud.active_objective_title_font_size * 1.2 * self._scale,
-				font = "fonts/font_large_mf",
-				x = 70 * self._scale,
-				y = 4 * self._scale,
-				align = "left",
-				vertical = "top"
-			})
-			local _, _, name_w, name_h = level_name:text_rect()
-			name_w = VoidUI.options.show_levelname and name_w or 0
-			local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
-			local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
-			local ghost_icon = self._heist_timer_panel:bitmap({
-				name = "ghost_icon",
-				texture = "guis/textures/pd2/cn_minighost",
-				w = 16 * self._scale,
-				h = 16 * self._scale,
-				layer = 2,
-				blend_mode = "add",
-			})	
-			ghost_icon:set_left(71 * self._scale + name_w)
-			ghost_icon:set_center_y(6 * self._scale + name_h / 2)
-			ghost_icon:set_visible(is_level_ghostable and VoidUI.options.show_ghost_icon)
-			ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
-			local ghost_w = VoidUI.options.show_ghost_icon and 15 * self._scale or 0
-			name_w = is_level_ghostable and name_w + ghost_w or name_w
-			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
-			local level_name_bg_left = self._heist_timer_panel:bitmap({
+		local level_name = self._heist_timer_panel:text({
+			name = "level_name",
+			visible = true,
+			layer = 2,
+			color = Color.white,
+			text = " ",
+			font_size = tweak_data.hud.active_objective_title_font_size * 1.2 * self._scale,
+			font = "fonts/font_large_mf",
+			x = 70 * self._scale,
+			y = 4 * self._scale,
+			align = "left",
+			vertical = "top"
+		})
+		local _, _, name_w, name_h = level_name:text_rect()
+		name_w = VoidUI.options.show_levelname and name_w or 0
+		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
+		local level_name_bg_left = self._heist_timer_panel:bitmap({
 				name = "level_name_bg_left",
 				texture = weapons_texture,
 				texture_rect = {26,0,43,150},
@@ -101,13 +82,6 @@ if VoidUI.options.enable_timer then
 				alpha = 1
 			})
 			level_name_bg_right:set_left(level_name_bg:right())
-			
-			if managers.groupai:state() and not self._whisper_listener then
-				self._whisper_listener = "HUDHeistTimer_whisper_mode"
-				managers.groupai:state():add_listener(self._whisper_listener, {
-					"whisper_mode"
-				}, callback(self, self, "whisper_mode_changed"))
-			end
 			
 			local bags_panel = self._heist_timer_panel:panel({
 				visible = false,
@@ -164,6 +138,37 @@ if VoidUI.options.enable_timer then
 				layer = 3,
 				alpha = 1,
 			})
+			
+		local level_data = managers.job:current_level_data()
+		if level_data then
+			level_name:set_text(VoidUI.options.show_levelname and managers.localization:text(level_data.name_id) or " ")
+			local _, _, name_w, name_h = level_name:text_rect()
+			name_w = VoidUI.options.show_levelname and name_w or 0
+			local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())
+			local is_whisper_mode = managers.groupai and managers.groupai:state():whisper_mode()
+			local ghost_icon = self._heist_timer_panel:bitmap({
+				name = "ghost_icon",
+				texture = "guis/textures/pd2/cn_minighost",
+				w = 16 * self._scale,
+				h = 16 * self._scale,
+				layer = 2,
+				blend_mode = "add",
+			})	
+			ghost_icon:set_left(71 * self._scale + name_w)
+			ghost_icon:set_center_y(6 * self._scale + name_h / 2)
+			ghost_icon:set_visible(is_level_ghostable and VoidUI.options.show_ghost_icon)
+			ghost_icon:set_color(is_whisper_mode and Color.white or tweak_data.screen_colors.important_1)
+			local ghost_w = VoidUI.options.show_ghost_icon and 15 * self._scale or 0
+			name_w = is_level_ghostable and name_w + ghost_w or name_w
+			level_name_bg:set_w(name_w + 12 * self._scale)
+			level_name_bg_right:set_left(level_name_bg:right())
+			
+			if managers.groupai:state() and not self._whisper_listener then
+				self._whisper_listener = "HUDHeistTimer_whisper_mode"
+				managers.groupai:state():add_listener(self._whisper_listener, {
+					"whisper_mode"
+				}, callback(self, self, "whisper_mode_changed"))
+			end
 		end	
 		
 		self._last_time = 0

@@ -1535,11 +1535,11 @@ if VoidUI.options.enable_stats then
 				local skills = outfit and outfit.skills.skills
 				if skills then
 					skills_text:set_text(string.format("M:%02u %02u %02u  E:%02u %02u %02u  T:%02u %02u %02u  G:%02u %02u %02u  F:%02u %02u %02u", 
-					skills[1], skills[2], skills[3],
-					skills[4], skills[5], skills[6],
-					skills[7], skills[8], skills[9],
-					skills[10], skills[11], skills[12], 
-					skills[13],skills[14], skills[15]))
+					skills[1] or "0", skills[2] or "0", skills[3] or "0",
+					skills[4] or "0", skills[5] or "0", skills[6] or "0",
+					skills[7] or "0", skills[8] or "0", skills[9] or "0",
+					skills[10] or "0", skills[11] or "0", skills[12] or "0", 
+					skills[13] or "0",skills[14] or "0", skills[15] or "0"))
 					local skillpoints = 0
 					for i = 1, #skills do
 						skillpoints = skillpoints + skills[i]

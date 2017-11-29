@@ -41,7 +41,8 @@ VoidUI.hook_files = {
 	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
 	["lib/managers/hud/newhudstatsscreen"] = {"HudScoreboard.lua"},
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
-	["lib/managers/achievmentmanager"] = {"HudManager.lua"}
+	["lib/managers/achievmentmanager"] = {"HudManager.lua"},
+	["lib/managers/playermanager"] = {"HudManager.lua"}
 }
 
 function VoidUI:Save()
@@ -161,6 +162,7 @@ function VoidUI:DefaultConfig()
 		presenter_sound = false,
 		hint_color = true,
 		hint_anim = true,
+		vape_hints = true,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
 		show_objectives = 3,
@@ -288,7 +290,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 				},
 			[2] = { text = managers.localization:text("dialog_no"), is_cancel_button = true, }
 		}
-		QuickMenu:new( managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true )
+		QuickMenu:new(managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true)
 	end
 	MenuCallbackHandler.VoidUI_save = function(self, item)
 		VoidUI:Save()
@@ -327,31 +329,33 @@ end )
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
 end)
-	
-function MenuManager:toggle_chatinput()
-	if Application:editor() then
-		return
-	end
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return
-	end
-	if self:active_menu() then
-		return
-	end
-	if not managers.network:session() then
-		return
-	end
-	if managers.hud then
-		managers.hud:toggle_chatinput()
-		return true
-	end
-end
 
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
 		if VoidUI.hook_files[requiredScript] then
 			for _, file in ipairs(VoidUI.hook_files[requiredScript]) do
 			dofile( VoidUI.mod_path .. "lua/" .. file )
+		end
+	end
+end
+
+if MenuManager then
+	function MenuManager:toggle_chatinput()
+		if Application:editor() then
+			return
+		end
+		if SystemInfo:platform() ~= Idstring("WIN32") then
+			return
+		end
+		if self:active_menu() then
+			return
+		end
+		if not managers.network:session() then
+			return
+		end
+		if managers.hud then
+			managers.hud:toggle_chatinput()
+			return true
 		end
 	end
 end

@@ -1,12 +1,12 @@
 {
     "name" : "Void UI",
 	"description" : "A hud modification that aims to give the in game hud a fresh new look with some additional features.",
-    "author" : "Xeletron, Fanged Hex, VxWolf. \nSpecial thanks: Canada, B.Costa, CrafterBlade \nTranslators: Skyfrost, Esawo",
+    "author" : "Xeletron, Fanged Hex, VxWolf\nTranslation: Skyfrost, Esawo\nSpecial thanks: Canada, B.Costa, CrafterBlade",
 	"contact" : "xeletron1@gmail.com",
-    "version" : "1.1.1",
+    "version" : "1.1.2",
 	"blt_version" : 2,
 	"image" : "mod_icon.png",
-    "color" : "25 25 25",
+    "color" : "40 40 40",
 	"priority" : 100,
     "updates" : [
         {
@@ -50,6 +50,7 @@
 		{"hook_id" : "lib/managers/hud/newhudstatsscreen", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/units/player_team/teamaiinventory", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/achievmentmanager", "script_path" : "Main.lua"},
-		{"hook_id" : "lib/managers/hud/hudchallangenotification", "script_path" : "Main.lua"}
+		{"hook_id" : "lib/managers/hud/hudchallangenotification", "script_path" : "Main.lua"},
+		{"hook_id" : "lib/managers/playermanager", "script_path" : "Main.lua"}
     ]
 }

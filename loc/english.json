@@ -258,11 +258,16 @@
 	"VoidUI_hint_anim_desc" : "Animate hints with a fancy 'jump out' effect",
 	"VoidUI_hint_color_title" : "Color Hints",
 	"VoidUI_hint_color_desc" : "Color teammate names in hints",
+	"VoidUI_vape_hints_title" : "Tag Team notifications",
+	"VoidUI_vape_hints_desc" : "Display a hint notification when tagging somebody/being tagged by the Tag Team perk-deck. Also adds a few seconds long outline",	
 	"VoidUI_challanges_panel" : "Challange Notifications",
 	"VoidUI_enable_challanges_title" : "Enable Challange Notifications",
 	"VoidUI_enable_challanges_desc" : "Enable the Void UI challange notifications",
 	"VoidUI_hint_challanges_desc" : "Set the scale of the challange notification panels",
 	
+	"VoidUI_tag_team_owner" : "You tagged $NAME",
+	"VoidUI_tag_team_owner_joker" : "You tagged $NAME's Joker",
+	"VoidUI_tag_team_tagged" : "$NAME tagged you",
 	
 	"VoidUI_subtitles_title" : "Subtitles",
 	"VoidUI_subtitles_desc" : "Options related to subtitles",

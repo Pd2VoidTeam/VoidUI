@@ -596,7 +596,7 @@ if VoidUI.options.teammate_panels then
 			w = self._equipment_panel_w,
 			h = self._equipment_panel_h,
 			alpha = 1,
-			color = Color(1,0,0)
+			color = Color.red
 		})
 		local cooldown_bg = cooldown_panel:bitmap({
 			name = "cooldown_bg",
@@ -616,7 +616,7 @@ if VoidUI.options.teammate_panels then
 			w = self._equipment_panel_w / 1.7,
 			h = self._equipment_panel_h / 1.5,
 			alpha = 1,
-			color = Color(1,0,0)
+			color = Color.red
 		})
 		cooldown_image:set_center(cooldown_border:center())
 		local carry_panel = custom_player_panel:panel({
@@ -1277,7 +1277,6 @@ if VoidUI.options.teammate_panels then
 		icon = tweak_data.hud_icons[icon]
 		grenades_image:set_image(icon.texture, unpack(icon.texture_rect))
 	end
-	
 	function HUDTeammate:set_grenades_amount(data)
 		if not PlayerBase.USE_GRENADES then
 			return
@@ -1293,8 +1292,8 @@ if VoidUI.options.teammate_panels then
 			grenades_count:set_color(Color(1,0,0))
 			grenades_border:set_color(Color(1,0,0))
 			grenades_image:set_color(Color(1,0,0))
-		elseif data.icon ~= "smoke_screen_grenade" and data.icon ~= "chico_injector" and data.icon ~= "damage_control" then
-			grenades_count:set_text("x"..data.amount)
+		else
+			grenades_count:set_text(tweak_data and tweak_data.blackmarket and tweak_data.blackmarket.projectiles and tweak_data.blackmarket.projectiles[data.icon] and tweak_data.blackmarket.projectiles[data.icon].base_cooldown and "" or "x"..data.amount)
 			grenades_count:set_color(Color.white)
 			grenades_border:set_color(Color.white)
 			grenades_image:set_color(Color.white)
@@ -1349,6 +1348,30 @@ if VoidUI.options.teammate_panels then
 			end
 		end
 	end
+	function HUDTeammate:set_ability_color(color)
+		self._ability_color = color
+		local weapons_panel = self._custom_player_panel:child("weapons_panel")
+		local grenades_panel = weapons_panel:child("grenades_panel")
+		local cooldown_panel = grenades_panel:child("cooldown_panel")
+		local cooldown_border = cooldown_panel:child("cooldown_border")
+		local cooldown_image = cooldown_panel:child("cooldown_image")
+		local cooldown_bg = cooldown_panel:child("cooldown_bg")
+		local border = grenades_panel:child("grenades_border")
+		local image = grenades_panel:child("grenades_image")
+		if color then
+			cooldown_image:set_color(color * 0.5 + Color.black)
+			cooldown_border:set_color(color * 0.4 + Color.black * 0.9)
+			cooldown_bg:set_color(color * 0.5 + Color.black)
+			border:set_color(color + Color.white * 0.15)
+			image:set_color(border:color())
+		else
+			cooldown_image:set_color(Color.red)
+			cooldown_border:set_color(Color.red)
+			cooldown_bg:set_color(Color.red:with_alpha(0.8))
+			border:set_color(Color(1,0.8,0.8))
+			image:set_color(border:color())
+		end
+	end
 	
 	function HUDTeammate:animate_grenade_charge()
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
@@ -1358,15 +1381,15 @@ if VoidUI.options.teammate_panels then
 		local icon_ghost = grenades_panel:child("grenades_icon_ghost")
 		local border = grenades_panel:child("grenades_border")
 		local image = grenades_panel:child("grenades_image")
-
+		local ability_color = self._ability_color and self._ability_color + Color.white * 0.15 or Color(1,0.8,0.8)
 		local function animate_fade()			
 			local a = cooldown_panel:alpha()
 			over(0.2 , function (p)
 				cooldown_panel:set_alpha(math.lerp(a,1,p))
 				count:set_alpha(cooldown_panel:alpha())
-				border:set_color(Color(1,0.8,0.8))
+				border:set_color(ability_color)
 				count:set_color(Color.white)
-				image:set_color(Color(1,0.8,0.8))
+				image:set_color(ability_color)
 			end)
 			cooldown_panel:set_alpha(1)
 			count:set_alpha(1)
@@ -1427,19 +1450,21 @@ if VoidUI.options.teammate_panels then
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local custom_bar = health_panel:child("custom_bar")
 		time_total = time_total or time_left
-		local function anim(o)
+		local progress_start = time_left / time_total
+		custom_bar:stop()
+		custom_bar:animate(function(o)
 			custom_bar:set_visible(true)
 			custom_bar:set_color(Color(1, 0.6, 0))
 			custom_bar:set_alpha(0.5)
 			over(time_left, function(p)
-				custom_bar:set_h(math.lerp(self._bg_h, 0, p))
-				custom_bar:set_texture_rect(203, math.lerp(0, 472, p),202,math.lerp(472, 0, p))
+				local progress = 1 - progress_start * math.lerp(1, 0, p)
+				custom_bar:set_h(math.lerp(self._bg_h, 0, progress))
+				custom_bar:set_texture_rect(203, math.lerp(0, 472, progress),202,math.lerp(472, 0, progress))
 				custom_bar:set_bottom(health_panel:child("health_background"):bottom())
 			end)
 			custom_bar:set_visible(false)
-		end
-		custom_bar:stop()
-		custom_bar:animate(anim)
+			self:set_ability_color(nil)
+		end)
 		
 		if self._main_player and managers.network and managers.network:session() then
 			local current_time = managers.game_play_central:get_heist_timer()
