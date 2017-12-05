@@ -162,7 +162,7 @@ if VoidUI.options.enable_timer then
 			name_w = is_level_ghostable and name_w + ghost_w or name_w
 			level_name_bg:set_w(name_w + 12 * self._scale)
 			level_name_bg_right:set_left(level_name_bg:right())
-			
+			bags_panel:set_left(level_name_bg_right:right() - 5)
 			if managers.groupai:state() and not self._whisper_listener then
 				self._whisper_listener = "HUDHeistTimer_whisper_mode"
 				managers.groupai:state():add_listener(self._whisper_listener, {

@@ -400,6 +400,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					name_label.panel:animate(callback(self, self, "_animate_label_interact_custom"), name_label.interact, name_label.panel:child("minmode_panel"):child("min_interact"), name_label.panel:child("extended_panel"):child("interact_bg"), name_label.panel:child("minmode_panel"):child("min_interact_bg"), name_label.panel:child("extended_panel"):child("action"), action_text, timer)
 				elseif enabled and not name_label.panel:child("extended_panel") then
 					name_label.panel:animate(callback(self, self, "_animate_label_interact"), name_label.interact, timer)
+				elseif success and name_label.panel:child("extended_panel") then
+					local panel = name_label.panel
+					local bar = panel:bitmap({
+						layer = 0,
+					})
+					bar:set_size(name_label.interact:size())
+					bar:set_position(name_label.interact:position())
+					bar:set_color(name_label.interact:color())
+					bar:animate(callback(self, self, "_animate_interaction_complete"), panel)
 				elseif success and not name_label.panel:child("extended_panel") then
 					local panel = name_label.panel
 					local bitmap = panel:bitmap({
@@ -427,12 +436,27 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					bitmap:animate(callback(HUDInteraction, HUDInteraction, "_animate_interaction_complete"), circle)
 				end
 			end
+			
 			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
 			if character_data and self._teammate_panels[character_data.panel_id]._custom_player_panel then
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
 			elseif character_data and not self._teammate_panels[character_data.panel_id]._custom_player_panel then 
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
 			end
+		end
+		function HUDManager:_animate_interaction_complete(bar, panel)
+			local center_x = bar:center_x()
+			local w = bar:w()
+			local t = 0
+			local TOTAL_T = 0.2
+			while t < TOTAL_T do
+				local dt = coroutine.yield()
+				t = t + dt
+				bar:set_w(math.lerp(w, 0, t / TOTAL_T))
+				bar:set_center_x(center_x)
+			end
+			bar:set_w(0)
+			panel:remove(bar)
 		end
 	end
 	
@@ -805,7 +829,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			panel:set_size(math.max(tw, cw, aw) + 4, th + ah + ch)
 			cheater:set_size(panel:w(), ch)
 			cheater:set_position(0, 0)
-					
+			
 			extended_panel:set_size(panel:w(), panel:h())
 			text:set_size(panel:w(), th)
 			text_shadow:set_size(panel:w(), th)

@@ -42,7 +42,10 @@ VoidUI.hook_files = {
 	["lib/managers/hud/newhudstatsscreen"] = {"HudScoreboard.lua"},
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
 	["lib/managers/achievmentmanager"] = {"HudManager.lua"},
-	["lib/managers/playermanager"] = {"HudManager.lua"}
+	["lib/managers/playermanager"] = {"HudManager.lua"},
+	["lib/network/base/clientnetworksession"] = {"LevelLoadingScreen.lua"},
+	["lib/network/base/hostnetworksession"] = {"LevelLoadingScreen.lua"},
+	["lib/setups/setup"] = {"LevelLoadingScreen.lua"}
 }
 
 function VoidUI:Save()
@@ -118,6 +121,10 @@ function VoidUI:DefaultConfig()
 		enable_stats = true,
 		enable_subtitles = true,
 		enable_challanges = true,
+		enable_loadingscreen = true,
+		loading_heistinfo = true,
+		loading_players = true,
+		loading_briefing = false,
 		totalammo = true,
 		main_loud = true,
 		main_stealth = true,
@@ -163,6 +170,11 @@ function VoidUI:DefaultConfig()
 		hint_color = true,
 		hint_anim = true,
 		vape_hints = true,
+		blackscreen_map = true,
+		blackscreen_risk = true,
+		blackscreen_skull = true,
+		blackscreen_linger = true,
+		blackscreen_time = 0,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
 		show_objectives = 3,
@@ -187,6 +199,7 @@ function VoidUI:DefaultConfig()
 		interact_y = 40,
 		main_anim_time = 0.2,
 		mate_anim_time = 0.2
+		
 	}
 
 end
@@ -215,7 +228,9 @@ VoidUI.disable_list = {
 	["enable_stats"] = 17,
 	["scoreboard"] = 14,
 	["enable_subtitles"] = 2,
-	["enable_challanges"] = 1
+	["enable_challanges"] = 1,
+	["enable_blackscreen"] = 5,
+	["enable_loadingscreen"] = 3
 }
 
 function VoidUI:UpdateMenu()
