@@ -327,6 +327,9 @@
 	"VoidUI_subtitles_fill" : "Solid Color",
 	"VoidUI_jump" : "Jump Key",
 	"VoidUI_crouch" : "Crouch Key",
-	"VoidUI_rmb" : "Right Click"
+	"VoidUI_rmb" : "Right Click",
+	
+	"menu_jowi" : "Wick",
+	"menu_chico" : "Tony"
 	
 }
