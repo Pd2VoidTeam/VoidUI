@@ -77,7 +77,7 @@ end
 Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	local loc_path = VoidUI.mod_path .. "loc/"
 
-	if file.DirectoryExists( loc_path ) then
+	if file.DirectoryExists(loc_path) then
 		for _, filename in pairs(file.GetFiles(loc_path)) do
 			local str = filename:match('^(.*).json$')
 			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then

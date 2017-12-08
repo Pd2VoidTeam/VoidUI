@@ -230,6 +230,7 @@ if VoidUI.options.enable_blackscreen then
 		
 		local fade_out_mid_text = HUDBlackScreen.fade_out_mid_text
 		function HUDBlackScreen:fade_out_mid_text()
+			self._blackscreen_panel:child("mid_text"):stop()
 			fade_out_mid_text(self)
 			self._blackscreen_panel:child("skip_text"):set_visible(false)
 		end
@@ -242,7 +243,7 @@ if VoidUI.options.enable_blackscreen then
 				hud_panel:set_alpha(0)
 				local t = 0.7
 				local d = t
-				wait(2.6)
+				wait(1.6)
 				while t > 0 do
 					local dt = coroutine.yield()
 					t = t - dt
@@ -296,9 +297,8 @@ if VoidUI.options.enable_blackscreen then
 			local at_exit = IngameWaitingForPlayersState.at_exit
 			function IngameWaitingForPlayersState:at_exit()
 				at_exit(self)
-				if not self._delay_start_t then
-					managers.hud:show(Idstring("guis/level_intro"))
-				end
+				managers.hud:show(Idstring("guis/level_intro"))
+				managers.hud:blackscreen_fade_out_mid_text()
 			end
 		end
 	end
