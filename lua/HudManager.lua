@@ -826,7 +826,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local _, _, cw, ch = cheater:text_rect()
 			local _, _, mtw, mth = min_text:text_rect()
 			
-			panel:set_size(math.max(tw, cw, aw) + 4, th + ah + ch)
+			panel:set_size(math.max(tw, cw, aw, mtw) + 4, th + ah + ch)
 			cheater:set_size(panel:w(), ch)
 			cheater:set_position(0, 0)
 			

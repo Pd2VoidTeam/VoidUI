@@ -662,9 +662,20 @@ if VoidUI.options.teammate_panels then
 			h = 23  * self._mate_scale,
 			vertical = "center",
 			font_size = 18 * self._mate_scale,
-			font = "fonts/font_medium_shadow_mf"
+			font = "fonts/font_medium_mf"
 		})
-		
+		carry_panel:text({
+			name = "name_shadow",
+			visible = true,
+			text = "",
+			layer = -1,
+			color = Color.black,
+			x = 23  * self._mate_scale,
+			h = 24  * self._mate_scale,
+			vertical = "center",
+			font_size = 18 * self._mate_scale,
+			font = "fonts/font_medium_mf"
+		})
 		local interact_panel = custom_player_panel:panel({
 			name = "interact_panel",
 			visible = false,
@@ -1135,8 +1146,8 @@ if VoidUI.options.teammate_panels then
 		local secondary_firemode = secondary_ammo_panel:child("secondary_firemode")
 		local is_primary_auto = tweak_data.weapon[managers.blackmarket:equipped_primary().weapon_id].FIRE_MODE == "auto"
 		local is_sec_auto = tweak_data.weapon[managers.blackmarket:equipped_secondary().weapon_id].FIRE_MODE == "auto"
-		primary_firemode:set_text(is_primary_auto and "Auto" or "Semi")
-		secondary_firemode:set_text(is_sec_auto and "Auto" or "Semi")
+		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
+		secondary_firemode:set_text(managers.localization:text(is_sec_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
 		
 	end
 
@@ -1148,15 +1159,15 @@ if VoidUI.options.teammate_panels then
 		local secondary_firemode = secondary_ammo_panel:child("secondary_firemode")
 		if id == 2 then
 			if firemode == "single" then
-				primary_firemode:set_text("Semi")
+				primary_firemode:set_text(managers.localization:text("VoidUI_fire_semi"))
 			else
-				primary_firemode:set_text("Auto")
+				primary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end
 		else
 			if firemode == "single" then
-				secondary_firemode:set_text("Semi")
+				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_semi"))
 			else
-				secondary_firemode:set_text("Auto")
+				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end
 		end
 	end
@@ -1168,9 +1179,9 @@ if VoidUI.options.teammate_panels then
 		local primary_firemode = primary_ammo_panel:child("primary_firemode")
 		local secondary_firemode = secondary_ammo_panel:child("secondary_firemode")
 		if id == 2 then
-			primary_firemode:set_text("Burst")
+			primary_firemode:set_text(managers.localization:text("VoidUI_fire_burst"))
 		else
-			secondary_firemode:set_text("Burst")
+			secondary_firemode:set_text(managers.localization:text("VoidUI_fire_burst"))
 		end
 	end
 	
@@ -2005,7 +2016,9 @@ if VoidUI.options.teammate_panels then
 		local carry_panel = self._custom_player_panel:child("carry_panel")
 		carry_panel:set_visible(true)
 		local value_text = carry_panel:child("name")
+		local value_text_shadow = carry_panel:child("name_shadow")
 		value_text:set_text(tweak_data.carry[carry_id].name_id and managers.localization:text(tweak_data.carry[carry_id].name_id or ""))
+		value_text_shadow:set_text(value_text:text())
 		
 	end
 	function HUDTeammate:remove_carry_info()
@@ -2104,6 +2117,7 @@ if VoidUI.options.teammate_panels then
 		if not self._main_player then self._custom_player_panel:child("weapons_panel"):set_x(self._custom_player_panel:child("health_panel"):right() - (6 * self._mate_scale)) end
 		self._custom_player_panel:child("carry_panel"):set_visible(false)
 		self._custom_player_panel:child("carry_panel"):child("name"):set_text("")
+		self._custom_player_panel:child("carry_panel"):child("name_shadow"):set_text("")
 		self:set_cheater(false)
 		self:set_info_meter({
 			current = 0,

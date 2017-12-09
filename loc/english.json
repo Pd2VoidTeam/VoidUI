@@ -1,6 +1,6 @@
 {
 	"VoidUI_endless_assault" : "Endless police assault",
-	"VoidUI_assault_1" : "Yep, that's John Cleese and a dead nazi",
+	"VoidUI_assault_1" : "Yeah, Fo fucking Sho",
 	"VoidUI_assault_2" : "Haha, your payday is haunted, haha",
 	"VoidUI_assault_3" : "Eat Captain to End Ass",
 	"VoidUI_assault_4" : ":awkward:",
@@ -14,7 +14,7 @@
 	"VoidUI_assault_12" : "Bain is Civilian",
 	"VoidUI_assault_13" : "The Dark Souls of heist games",
 	"VoidUI_assault_14" : "Do not try this in real life",
-	"VoidUI_assault_15" : "Dallas is downed!",
+	"VoidUI_assault_15" : "If you see this, post it on Reddit",
 	"VoidUI_assault_16" : "You cheated by using invalid weapon or weapon mod",
 	"VoidUI_assault_17" : "Local streamer becomes funny easter egg line",
 	"VoidUI_assault_18" : "WE GOTTA GET HOXTON BACK",
@@ -78,7 +78,11 @@
 	"VoidUI_mate_name_title" : "Show player rank and level",  	    
 	"VoidUI_mate_name_desc" : "Show your teammates' infamy rank and player level before their name",
 	"VoidUI_mate_interact_title" : "Interaction times",  	    
-	"VoidUI_mate_interact_desc" : "Show the remaining time for your teammates' interactions",
+	"VoidUI_fire_auto" : "Auto",
+	"VoidUI_fire_semi" : "Semi",
+	"VoidUI_fire_burst" : "Burst",
+	
+	"VoidUI_mate_interact_desc" : "Show the remaining time for your teammates' interactions",	
 	
 	"VoidUI_objectives_title" : "Timer and Objectives",
 	"VoidUI_objectives_desc" : "Options related to the timer panel and the objectives panel",
@@ -235,6 +239,7 @@
 	"VoidUI_perk" : "Perk",
 	"VoidUI_playtime" : "Playtime",
 	"VoidUI_ping" : "Ping",
+	"VoidUI_nosong" : "NOTHING",
 	
 	"VoidUI_presenter_title" : "Notifications and Hints",
 	"VoidUI_presenter_desc" : "Options related to hud notifications and hints",
@@ -263,9 +268,9 @@
 	"VoidUI_enable_challanges_desc" : "Enable the Void UI challange notifications",
 	"VoidUI_hint_challanges_desc" : "Set the scale of the challange notification panels",
 	
-	"VoidUI_tag_team_owner" : "You tagged $NAME.",
+	"VoidUI_tag_team_owner" : "You tagged $NAME",
 	"VoidUI_tag_team_owner_joker" : "You tagged $NAME's Convert",
-	"VoidUI_tag_team_tagged" : "$NAME tagged you.",
+	"VoidUI_tag_team_tagged" : "$NAME tagged you",
 	
 	"VoidUI_subtitles_title" : "Subtitles",
 	"VoidUI_subtitles_desc" : "Options related to subtitles",

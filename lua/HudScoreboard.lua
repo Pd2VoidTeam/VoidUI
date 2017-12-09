@@ -541,7 +541,7 @@ if VoidUI.options.enable_stats then
 			
 			top_panel:child("loot_stats"):set_text(body_bag..accuracy..bags..instant_cash)
 			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..bags..instant_cash)
-			local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or "NOTHING"
+			local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or managers.localization:text("VoidUI_nosong")
 			local track_text = extras_panel:text({
 				name = "track_text",
 				font_size = 20 * self._scale,
