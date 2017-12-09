@@ -10,6 +10,7 @@ Beware that due to this being in development, crashes or bugs are very likely. I
 - Added loading screens
 - Made hint notifications color bot names as well
 - Modified the blackscreen and added options for it
+- Updated the teammate carry text to support cyrillic characters
 - Fixed damage reduction bars sometimes not being updated correctly
 - Fixed names on hint notifications not being colored if the player has a bracket in their name
 - Fixed the ability bar not showing the current amount when using the Tag Team perk-deck
