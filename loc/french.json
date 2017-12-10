@@ -199,6 +199,8 @@
 	"VoidUI_scoreboard_scale_desc" : "Permet de définir la taille du panneau statistique",
 	"VoidUI_blur_title" : "Rendre l'arrière plan flou",
 	"VoidUI_blur_desc" : "Rend l'arrière plan flou lorsque le panneau statistique est ouvert",
+	"VoidUI_scoreboard_maxlevel_title" : "Show xp when max level",
+	"VoidUI_scoreboard_maxlevel_desc" : "Show the experience bar when you are at the maximum level",
 	"VoidUI_scoreboard" : "Scoreboard",
 	"VoidUI_scoreboard_title" : "Activer le scoreboard",
 	"VoidUI_scoreboard_desc" : "Ajoute un scoreboard dans lequel vous pouvez voir des statistiques sur vous et vos coéquipiers",

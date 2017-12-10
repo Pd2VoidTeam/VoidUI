@@ -1,12 +1,15 @@
 Version 1.1.2
+- Added loading screens
 - Added tagging notifications for the Tag Team perk-deck
 - Added hud effects for the Tag Team perk-deck
 - Added the ability for custom hint notifications to use the color names feature
 - Added interaction complete animation to name labels
-- Added loading screens
+- Added the option to disable the exp bar on the stats screen when you are at max level
+- Scoreboard panels will now show the equipped armor of bots if they have them via other mods
 - Made hint notifications color bot names as well
-- Modified the blackscreen and added options for it
+- Updated the heist intro screen and added options for it
 - Updated the teammate carry text to support cyrillic characters
+- Fixed scoreboard panels getting reset when their owner is released from custody
 - Fixed damage reduction bars sometimes not being updated correctly
 - Fixed names on hint notifications not being colored if the player has a bracket in their name
 - Fixed the ability bar not showing the current amount when using the Tag Team perk-deck

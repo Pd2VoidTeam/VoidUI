@@ -47,6 +47,7 @@ if VoidUI.options.enable_blackscreen then
 				font = tweak_data.hud.medium_font_noshadow
 			})
 			managers.hud:make_fine_text(skip_text)
+			skip_text:set_center(self._blackscreen_panel:w() / 2, self._blackscreen_panel:h() / 1.5)
 			self._skip_bar = self._blackscreen_panel:bitmap({
 				layer = 2,
 				w = 0,
@@ -54,6 +55,7 @@ if VoidUI.options.enable_blackscreen then
 				h = 2,
 				visible = VoidUI.options.blackscreen_time > 0
 			})
+			self._skip_bar:set_lefttop(skip_text:x(), skip_text:bottom())
 			local loading_text = managers.localization:text("menu_loading_progress", {prog = 0})
 			local loading_text_object = self._blackscreen_panel:text({
 				name = "loading_text",

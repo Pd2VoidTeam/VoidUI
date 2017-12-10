@@ -43,6 +43,7 @@ VoidUI.hook_files = {
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
 	["lib/managers/achievmentmanager"] = {"HudManager.lua"},
 	["lib/managers/playermanager"] = {"HudManager.lua"},
+	["lib/network/base/basenetworksession"] = {"LevelLoadingScreen.lua"},
 	["lib/network/base/clientnetworksession"] = {"LevelLoadingScreen.lua"},
 	["lib/network/base/hostnetworksession"] = {"LevelLoadingScreen.lua"},
 	["lib/setups/setup"] = {"LevelLoadingScreen.lua"}
@@ -174,6 +175,7 @@ function VoidUI:DefaultConfig()
 		blackscreen_risk = true,
 		blackscreen_skull = true,
 		blackscreen_linger = true,
+		scoreboard_maxlevel = true,
 		blackscreen_time = 0,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,

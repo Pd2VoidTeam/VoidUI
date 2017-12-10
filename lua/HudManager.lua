@@ -565,10 +565,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		local remove_teammate_panel = HUDManager.remove_teammate_panel
-		function HUDManager:remove_teammate_panel(id)
-			self._hud_statsscreen:remove_scoreboard_panel(id)
-			remove_teammate_panel(self, id)
+		function HUDManager:remove_teammate_scoreboard_panel(id)
+			if self._hud_statsscreen then
+				self._hud_statsscreen:remove_scoreboard_panel(id)
+			end
 		end
 	end	
 
@@ -1348,5 +1348,17 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 			self:player_unit():sound():play("perkdeck_activate")
 			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
 		end
+	end
+elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
+	local remove_peer = BaseNetworkSession.remove_peer
+	function BaseNetworkSession:remove_peer(peer, peer_id, reason)
+		if managers.criminals and peer_id then
+			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+
+			if character_data and character_data.panel_id then
+				managers.hud:remove_teammate_scoreboard_panel(character_data.panel_id)
+			end
+		end
+		return remove_peer(self, peer, peer_id, reason)
 	end
 end

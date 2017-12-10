@@ -199,6 +199,8 @@
 	"VoidUI_scoreboard_scale_desc" : "Установите размер панели статистики",
 	"VoidUI_blur_title" : "Размытие заднего фона",
 	"VoidUI_blur_desc" : "Включить размытие заднего фона при открытии экрана статистики",
+	"VoidUI_scoreboard_maxlevel_title" : "Show xp when max level",
+	"VoidUI_scoreboard_maxlevel_desc" : "Show the experience bar when you are at the maximum level",
 	"VoidUI_scoreboard" : "Табло",
 	"VoidUI_scoreboard_title" : "Включить табло",
 	"VoidUI_scoreboard_desc" : "Показывать табло на экране статистики, где вы сможете увидеть информацию о вашей команде",

@@ -8,7 +8,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 
 	local init = LevelLoadingScreenGuiScript.init
 	function LevelLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer)
-		if arg.load_level_data.level_tweak_data.loading_enabled == false then
+		if base_layer ~= 1001 then
 			return init(self, scene_gui, res, progress, base_layer) 
 		end
 		self._scene_gui = scene_gui
@@ -219,7 +219,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 
 	local make_loading_hint = LevelLoadingScreenGuiScript._make_loading_hint
 	function LevelLoadingScreenGuiScript:_make_loading_hint(parent, tip)
-		if self._level_tweak_data.loading_enabled == false then
+		if self._base_layer ~= 1001 then
 			return make_loading_hint(self, parent, tip)
 		end
 		
@@ -261,14 +261,19 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 		return container
 	end
 	function LevelLoadingScreenGuiScript:update(progress, t, dt)
-		if self._level_tweak_data.loading_enabled then
+		if self._base_layer == 1001 then
 			self._indicator:set_alpha(math.abs(math.sin(60 * t)))
 		else 
 			self._indicator:rotate(180 * dt)
 		end
 	end
 elseif RequiredScript == "lib/utils/lightloadingscreenguiscript" then
+	
+	local init_light = LightLoadingScreenGuiScript.init
 	function LightLoadingScreenGuiScript:init(scene_gui, res, progress, base_layer, is_win32)
+		if base_layer ~= 1001 then
+			return init_light(self, scene_gui, res, progress, base_layer, is_win32)	
+		end
 		self._base_layer = base_layer
 		self._is_win32 = is_win32
 		self._scene_gui = scene_gui
@@ -335,51 +340,51 @@ elseif RequiredScript == "lib/utils/lightloadingscreenguiscript" then
 		self._t = 0
 
 		self:setup(res, progress)
-		
 	end
-	
 	local setup = LightLoadingScreenGuiScript.setup
 	function LightLoadingScreenGuiScript:setup(res, progress)
-		self._gui_tweak_data = {
-			upper_saferect_border = 64,
-			border_pad = 8
-		}
-		
+		if self._base_layer ~= 1001 then
+			return setup(self, res, progress)
+		end
+	
 		make_fine_text(self._title_text)
 		self._indicator:set_rightbottom(self._indicator:parent():w(), self._indicator:parent():h())
 		self._logo:set_center(self._indicator:center())
 		self._title_text:set_right(self._indicator:left())
 		self._title_text:set_center_y(self._indicator:center_y() + 2)
 		self._bg_gui:set_size(res.x, res.y)
-
-		if progress > 0 then
-			self._init_progress = progress
-		end
 	end
 	
 	function LightLoadingScreenGuiScript:update(progress, dt)
-		self._t = self._t + dt
-		self._indicator:set_alpha(math.abs(math.sin(60 * self._t)))
-
-		if self._init_progress < 100 and progress == -1 then
-			self._fake_progress = self._fake_progress + 20 * dt
-
-			if self._fake_progress > 100 then
-				self._fake_progress = 100
-			end
-
-			progress = self._fake_progress
+		if self._base_layer == 1001 then
+			self._t = self._t + dt
+			self._indicator:set_alpha(math.abs(math.sin(60 * self._t)))
+		else
+			self._indicator:rotate(180 * dt)
 		end
 	end
 	
 elseif RequiredScript == "lib/setups/setup" then
+	
+	local start_boot_loading_screen = Setup.start_boot_loading_screen
+	function Setup:start_boot_loading_screen()
+		tweak_data.gui.LOADING_SCREEN_LAYER = VoidUI and VoidUI.options.enable_loadingscreen and 1001 or tweak_data.gui.LOADING_SCREEN_LAYER
+		return start_boot_loading_screen(self)
+	end
+	
+	local init_game = Setup.init_game
+	function Setup:init_game()
+		tweak_data.gui.LOADING_SCREEN_LAYER = VoidUI and VoidUI.options.enable_loadingscreen and 1001 or tweak_data.gui.LOADING_SCREEN_LAYER
+		return init_game(self)
+	end
+	
 	--Totally didn't steal some part of this. Shut up!
 	local _start_loading_screen = Setup._start_loading_screen
 	function Setup:_start_loading_screen(...)
 		if Global.load_level then
 			local level_tweak_data = Global.level_data and Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 			if level_tweak_data then			
-				if VoidUI.options.enable_loadingscreen then
+				if VoidUI and VoidUI.options.enable_loadingscreen then
 					if level_tweak_data.risk == nil then level_tweak_data.risk = {} end
 					if VoidUI.options.loading_heistinfo then
 						if managers.crime_spree:is_active()then
@@ -414,14 +419,12 @@ elseif RequiredScript == "lib/setups/setup" then
 						level_tweak_data.chat_colors = tweak_data.chat_colors
 						VoidUI.LoadingScreenInfo = nil
 					end
-					level_tweak_data.loading_enabled = true
-				else
-					level_tweak_data.loading_enabled = false
 				end
 			end
 		end
 		return _start_loading_screen(self, ...)
 	end
+	
 elseif RequiredScript == "lib/network/base/clientnetworksession" then
 	local ok_to_load_level = ClientNetworkSession.ok_to_load_level
 	function ClientNetworkSession:ok_to_load_level(load_counter, ...)

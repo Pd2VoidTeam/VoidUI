@@ -365,10 +365,22 @@ if VoidUI.options.enable_stats then
 					color = Color.black
 				})
 			end
+			
 			local next_level_data = managers.experience:next_level_data() or {}
+			local gain_xp = managers.experience:get_xp_dissected(true, 0, true)
+			local at_max_level = managers.experience:current_level() == managers.experience:level_cap()
+			local current_level = managers.experience:current_level()
+			local can_lvl_up = not at_max_level and gain_xp >= next_level_data.points - next_level_data.current_points
+			local progress = (next_level_data.current_points or 1) / (next_level_data.points or 1)
+			local gain_progress = math.min(1, (gain_xp or 1) / (next_level_data.points or 1))
+			
+			local show_level = true
+			if at_max_level == true then
+				show_level = VoidUI.options.scoreboard_maxlevel
+			end
 			local experience_bg = extras_panel:bitmap({
 				name = "experience_bg",
-				h = 15 * self._scale,
+				h = show_level and 15 * self._scale or 0,
 				color = Color.black,
 				alpha = 0.6
 			})
@@ -377,21 +389,15 @@ if VoidUI.options.enable_stats then
 				x = 4 * self._scale,
 				y = 4 * self._scale,
 				w = ((next_level_data.current_points or 1) / (next_level_data.points or 1)) * (extras_panel:w() - 8 * self._scale),
-				h = 7 * self._scale,
+				h = show_level and 7 * self._scale or 0,
 				alpha = 0.6
 			})
-			local gain_xp = managers.experience:get_xp_dissected(true, 0, true)
-			local at_max_level = managers.experience:current_level() == managers.experience:level_cap()
-			local current_level = managers.experience:current_level()
-			local can_lvl_up = not at_max_level and gain_xp >= next_level_data.points - next_level_data.current_points
-			local progress = (next_level_data.current_points or 1) / (next_level_data.points or 1)
-			local gain_progress = math.min(1, (gain_xp or 1) / (next_level_data.points or 1))
 			local exp_gain_bar = extras_panel:bitmap({
 				name = "exp_gain_bar",
 				y = 4 * self._scale,
 				x = progress * (extras_panel:w() - 8 * self._scale) + 4 * self._scale,
 				w = gain_progress * (extras_panel:w() - experience_bar:w() - 8 * self._scale),
-				h = 7 * self._scale,
+				h = show_level and 7 * self._scale or 0,
 				color = tweak_data.hud_stats.potential_xp_color,
 				alpha = 0.6
 			})
@@ -400,7 +406,7 @@ if VoidUI.options.enable_stats then
 				font = tweak_data.menu.pd2_large_font,
 				x = 2,
 				y = experience_bg:bottom(),
-				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
 				text = at_max_level and tostring(current_level - 1) or tostring(current_level)
 			})
 			local current_level_text_shadow = extras_panel:text({
@@ -408,7 +414,7 @@ if VoidUI.options.enable_stats then
 				font = tweak_data.menu.pd2_large_font,
 				x = 2 + 2 * self._scale,
 				y = experience_bg:bottom() + 2 * self._scale,
-				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
 				text = at_max_level and tostring(current_level - 1) or tostring(current_level),
 				layer = -2,
 				color = Color.black
@@ -418,7 +424,7 @@ if VoidUI.options.enable_stats then
 				font = tweak_data.menu.pd2_large_font,
 				x = -2,
 				y = experience_bg:bottom(),
-				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
 				text = at_max_level and tostring(current_level) or tostring(current_level + 1),
 				align = "right"
 			})
@@ -426,7 +432,7 @@ if VoidUI.options.enable_stats then
 				name = "next_level_text_shadow",
 				font = tweak_data.menu.pd2_large_font,
 				y = experience_bg:bottom() + 2,
-				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
 				text = at_max_level and tostring(current_level) or tostring(current_level + 1),
 				layer = -2,
 				color = Color.black,
@@ -434,7 +440,7 @@ if VoidUI.options.enable_stats then
 			})
 
 			if at_max_level then
-				local text = managers.localization:text("hud_at_max_level")
+				local text = show_level and managers.localization:text("hud_at_max_level") or ""
 				next_level_text:set_text(text.." "..next_level_text:text())
 				next_level_text_shadow:set_text(next_level_text:text())
 				next_level_text:set_range_color(0, utf8.len(text), tweak_data.hud_stats.potential_xp_color)
@@ -571,7 +577,7 @@ if VoidUI.options.enable_stats then
 					name = "track_text",
 					font_size = 15 * self._scale,
 					font = "fonts/font_medium_mf",
-					text = (VoidUI.options.scoreboard_toggle < 3 and (utf8.to_upper(managers.localization:btn_macro(VoidUI.options.scoreboard_toggle == 1 and "jump" or "duck")) .." ") or "")..self._toggle_text,
+					text = (VoidUI.options.scoreboard_toggle < 3 and self._toggle_text ~= "" and (utf8.to_upper(managers.localization:btn_macro(VoidUI.options.scoreboard_toggle == 1 and "jump" or "duck")) .." ") or "")..self._toggle_text,
 					vertical = "top",
 					align = "center",
 					layer = 1,
@@ -939,7 +945,7 @@ if VoidUI.options.enable_stats then
 		
 		function HUDStatsScreen:create_scoreboards()
 			if self._full_hud_panel:child("scoreboard_panel") then
-				self._full_hud_panel:remove(self._full_hud_panel:child("scoreboard_panel"))
+				return
 			end
 			local scale = self._scale
 			local scoreboard_panel = self._full_hud_panel:panel({
@@ -1461,9 +1467,14 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:set_player(character_name, player_name, ai, peer_id)
+			if self._name == player_name then
+				return
+			end
+			self:remove_panel()
 			self._taken = true
 			self._peer_id = peer_id
 			self._ai = ai
+			self._name = player_name
 			self._character = character_name
 			self._color_id = ai and tweak_data.max_players + 1 or peer_id
 			if bkin_bl__menu and self._ai then self._color_id = 6 end
@@ -1560,7 +1571,7 @@ if VoidUI.options.enable_stats then
 			local secondary_icon = self._panel:child("secondary_icon")
 			local secondary_rarity = self._panel:child("secondary_rarity")
 			local secondary_silencer = self._panel:child("secondary_silencer")
-				local melee_icon = self._panel:child("melee_icon")
+			local melee_icon = self._panel:child("melee_icon")
 			local armor_icon = self._panel:child("armor_icon")
 			local perk_icon = self._panel:child("perk_icon")
 			local skill_icon = self._panel:child("skill_icon")
@@ -1570,7 +1581,6 @@ if VoidUI.options.enable_stats then
 			if unit then
 				local loadout = unit and unit:base() and unit:base()._loadout
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
-				armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/level_1")
 				if loadout then
 					local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", "")) or (unit:inventory() and unit:inventory():equipped_unit() and unit:inventory():equipped_unit():base() and unit:inventory():equipped_unit():base()._factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(unit:inventory():equipped_unit():base()._factory_id:gsub("_npc","")))
 					local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m4", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
@@ -1578,6 +1588,7 @@ if VoidUI.options.enable_stats then
 					primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
 					primary_rarity:set_image(rarity and rarity)
 					secondary_icon:set_image(managers.blackmarket:get_mask_icon(loadout.mask))
+					armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/".. (loadout.armor and loadout.armor or "level_1"))
 					local ability = tweak_data.upgrades.crew_ability_definitions[loadout.ability]
 					if ability then 
 						local icon, rect = tweak_data.hud_icons:get_icon_data(ability.icon)
