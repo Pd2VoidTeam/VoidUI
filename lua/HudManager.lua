@@ -570,6 +570,12 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				self._hud_statsscreen:remove_scoreboard_panel(id)
 			end
 		end
+		
+		local remove_teammate_panel = HUDManager.remove_teammate_panel
+		function HUDManager:remove_teammate_panel(id)
+			self._hud_statsscreen:free_scoreboard_panel(id)
+			remove_teammate_panel(self, id)
+		end
 	end	
 
 	--Assault Corner

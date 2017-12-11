@@ -1065,7 +1065,12 @@ if VoidUI.options.enable_stats then
 				self:align_scoreboard_panels()
 			end
 		end
-		
+		function HUDStatsScreen:free_scoreboard_panel(id)
+			if self._scoreboard_panels[id] then
+				self._scoreboard_panels[id]._taken = false
+				self:align_scoreboard_panels()
+			end
+		end
 		function HUDStatsScreen:align_scoreboard_panels()
 			local extras_panel = self._full_hud_panel:child("extras_panel")
 			if self._scoreboard_panels then
@@ -1134,6 +1139,7 @@ if VoidUI.options.enable_stats then
 			self._peer_id = nil
 			self._ai = nil
 			self._character = nil
+			self._name = nil
 			self._h = h
 			
 			self._panel = scoreboard_panel:panel({
@@ -1467,99 +1473,100 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:set_player(character_name, player_name, ai, peer_id)
-			if self._name == player_name then
-				return
-			end
-			self:remove_panel()
-			self._taken = true
-			self._peer_id = peer_id
-			self._ai = ai
-			self._name = player_name
-			self._character = character_name
-			self._color_id = ai and tweak_data.max_players + 1 or peer_id
-			if bkin_bl__menu and self._ai then self._color_id = 6 end
+			if self._name ~= player_name then
+				self:remove_panel()
+				self._taken = true
+				self._peer_id = peer_id
+				self._ai = ai
+				self._name = player_name
+				self._character = character_name
+				self._color_id = ai and tweak_data.max_players + 1 or peer_id
+				if bkin_bl__menu and self._ai then self._color_id = 6 end
 
-			local name = self._panel:child("name")
-			local skills_text = self._panel:child("skills")
-			local character_icon = self._panel:child("character_icon")
-			local primary_icon = self._panel:child("primary_icon")
-			local secondary_bg = self._panel:child("secondary_bg")
-			local primary_rarity = self._panel:child("primary_rarity")
-			local primary_silencer = self._panel:child("primary_silencer")
-			local secondary_icon = self._panel:child("secondary_icon")
-			local secondary_rarity = self._panel:child("secondary_rarity")
-			local secondary_silencer = self._panel:child("secondary_silencer")
-			local melee_icon = self._panel:child("melee_icon")
-			local armor_icon = self._panel:child("armor_icon")
-			local perk_icon = self._panel:child("perk_icon")
-			local skill_icon = self._panel:child("skill_icon")
-			local perk_count = self._panel:child("perk_count")
-			local hours = self._panel:child("hours")
-			local ping = self._panel:child("ping")
-			local peer = managers.network:session():peer(peer_id)
-			local color = tweak_data.chat_colors[self._color_id] or Color.white
-			local outfit = peer and peer:blackmarket_outfit()
-			local level = "" 
-			if peer then 
-				if peer:user_id() then
-					dohttpreq("http://steamcommunity.com/profiles/" .. peer:user_id() .. "/games/?tab=recent", callback(self, self, 'get_hours'))
-				end
-				local rank = self._main_player and managers.experience:current_rank() or peer:rank()
-				rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
-				local lvl = self._main_player and managers.experience:current_level() or peer:level()
-				level = rank..lvl.." "
-			end
-			name:set_text(level .. player_name)
-			if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end
-			name:set_color(color)
-			name:set_range_color(0, math.max(0, utf8.len(level)), Color.white:with_alpha(1))
-			local size = (20 * self._scale)
-			name:set_font_size(size)
-			local name_w = select(3, name:text_rect())
-			if name_w > name:w() then 
-				name:set_font_size(size * (name:w()/name_w))
-			end
-			character_icon:set_image(tweak_data.blackmarket:get_character_icon(character_name or "dallas"))
-			skills_text:set_visible(VoidUI.options.scoreboard_skills and not ai or false)
-			perk_count:set_visible(not ai)
-			hours:set_visible(not ai)
-			skill_icon:set_visible(ai)
-			secondary_icon:set_w(VoidUI.options.scoreboard_weapons and (ai and self._h * 0.8 or self._h * 1.8) or 0)
-			secondary_icon:set_center_x(secondary_bg:center_x())
-			ping:set_color(ai and Color.white or Color.green)
-			if ai then 
-				ping:set_text("AI") 
-				self:sync_bot_loadout(character_name)
-			elseif outfit then
-				local texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
-				primary_icon:set_image(texture)
-				primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
-				primary_rarity:set_image(rarity and rarity)
-				primary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.primary and outfit.primary.factory_id, outfit.primary and outfit.primary.blueprint)["silencer"] and true or false)
-				texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", VoidUI.options.scoreboard_skins > 1 and outfit.secondary and outfit.secondary.cosmetics)
-				secondary_icon:set_image(texture)
-				secondary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
-				secondary_rarity:set_image(rarity and rarity)
-				secondary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.secondary and outfit.secondary.factory_id, outfit.secondary and outfit.secondary.blueprint)["silencer"] and true or false)
-				melee_icon:set_image(self:get_melee_weapon(outfit.melee_weapon and outfit.melee_weapon or "weapon"))
-				armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/".. outfit.armor or "level_1")
-				local skills = outfit and outfit.skills.skills
-				if skills then
-					skills_text:set_text(string.format("M:%02u %02u %02u  E:%02u %02u %02u  T:%02u %02u %02u  G:%02u %02u %02u  F:%02u %02u %02u", 
-					skills[1] or "0", skills[2] or "0", skills[3] or "0",
-					skills[4] or "0", skills[5] or "0", skills[6] or "0",
-					skills[7] or "0", skills[8] or "0", skills[9] or "0",
-					skills[10] or "0", skills[11] or "0", skills[12] or "0", 
-					skills[13] or "0",skills[14] or "0", skills[15] or "0"))
-					local skillpoints = 0
-					for i = 1, #skills do
-						skillpoints = skillpoints + skills[i]
+				local name = self._panel:child("name")
+				local skills_text = self._panel:child("skills")
+				local character_icon = self._panel:child("character_icon")
+				local primary_icon = self._panel:child("primary_icon")
+				local secondary_bg = self._panel:child("secondary_bg")
+				local primary_rarity = self._panel:child("primary_rarity")
+				local primary_silencer = self._panel:child("primary_silencer")
+				local secondary_icon = self._panel:child("secondary_icon")
+				local secondary_rarity = self._panel:child("secondary_rarity")
+				local secondary_silencer = self._panel:child("secondary_silencer")
+				local melee_icon = self._panel:child("melee_icon")
+				local armor_icon = self._panel:child("armor_icon")
+				local perk_icon = self._panel:child("perk_icon")
+				local skill_icon = self._panel:child("skill_icon")
+				local perk_count = self._panel:child("perk_count")
+				local hours = self._panel:child("hours")
+				local ping = self._panel:child("ping")
+				local peer = managers.network:session():peer(peer_id)
+				local color = tweak_data.chat_colors[self._color_id] or Color.white
+				local outfit = peer and peer:blackmarket_outfit()
+				local level = "" 
+				if peer then 
+					if peer:user_id() then
+						dohttpreq("http://steamcommunity.com/profiles/" .. peer:user_id() .. "/games/?tab=recent", callback(self, self, 'get_hours'))
 					end
-					skills_text:set_color(skillpoints > 120 and Color.red or Color.white)
-					perk_count:set_text(outfit.skills.specializations[2] .. "/9")
-					local icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))
-					perk_icon:set_image(icon, unpack(rect))	
+					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
+					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
+					local lvl = self._main_player and managers.experience:current_level() or peer:level()
+					level = rank..lvl.." "
 				end
+				name:set_text(level .. player_name)
+				if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end
+				name:set_color(color)
+				name:set_range_color(0, math.max(0, utf8.len(level)), Color.white:with_alpha(1))
+				local size = (20 * self._scale)
+				name:set_font_size(size)
+				local name_w = select(3, name:text_rect())
+				if name_w > name:w() then 
+					name:set_font_size(size * (name:w()/name_w))
+				end
+				character_icon:set_image(tweak_data.blackmarket:get_character_icon(character_name or "dallas"))
+				skills_text:set_visible(VoidUI.options.scoreboard_skills and not ai or false)
+				perk_count:set_visible(not ai)
+				hours:set_visible(not ai)
+				skill_icon:set_visible(ai)
+				secondary_icon:set_w(VoidUI.options.scoreboard_weapons and (ai and self._h * 0.8 or self._h * 1.8) or 0)
+				secondary_icon:set_center_x(secondary_bg:center_x())
+				ping:set_color(ai and Color.white or Color.green)
+				if ai then 
+					ping:set_text("AI") 
+					self:sync_bot_loadout(character_name)
+				elseif outfit then
+					local texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
+					primary_icon:set_image(texture)
+					primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
+					primary_rarity:set_image(rarity and rarity)
+					primary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.primary and outfit.primary.factory_id, outfit.primary and outfit.primary.blueprint)["silencer"] and true or false)
+					texture, rarity = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", VoidUI.options.scoreboard_skins > 1 and outfit.secondary and outfit.secondary.cosmetics)
+					secondary_icon:set_image(texture)
+					secondary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
+					secondary_rarity:set_image(rarity and rarity)
+					secondary_silencer:set_visible(managers.blackmarket:get_perks_from_weapon_blueprint(outfit.secondary and outfit.secondary.factory_id, outfit.secondary and outfit.secondary.blueprint)["silencer"] and true or false)
+					melee_icon:set_image(self:get_melee_weapon(outfit.melee_weapon and outfit.melee_weapon or "weapon"))
+					armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/".. outfit.armor or "level_1")
+					local skills = outfit and outfit.skills.skills
+					if skills then
+						skills_text:set_text(string.format("M:%02u %02u %02u  E:%02u %02u %02u  T:%02u %02u %02u  G:%02u %02u %02u  F:%02u %02u %02u", 
+						skills[1] or "0", skills[2] or "0", skills[3] or "0",
+						skills[4] or "0", skills[5] or "0", skills[6] or "0",
+						skills[7] or "0", skills[8] or "0", skills[9] or "0",
+						skills[10] or "0", skills[11] or "0", skills[12] or "0", 
+						skills[13] or "0",skills[14] or "0", skills[15] or "0"))
+						local skillpoints = 0
+						for i = 1, #skills do
+							skillpoints = skillpoints + skills[i]
+						end
+						skills_text:set_color(skillpoints > 120 and Color.red or Color.white)
+						perk_count:set_text(outfit.skills.specializations[2] .. "/9")
+						local icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))
+						perk_icon:set_image(icon, unpack(rect))	
+					end
+				end
+			else
+				self._taken = true
 			end
 		end
 		
@@ -1660,6 +1667,7 @@ if VoidUI.options.enable_stats then
 			self._ai = nil
 			self._color_id = nil
 			self._character = nil
+			self._name = nil
 			self._panel:child("name"):set_text("")
 			self._panel:child("kills"):set_text("0")
 			self._panel:child("specials"):set_text("0")
