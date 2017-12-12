@@ -233,6 +233,8 @@
 	"VoidUI_ping_frequency_desc" : "Set how often should ping values update in seconds",
 	"VoidUI_scoreboard_toggle_title" : "Toggle button",
 	"VoidUI_scoreboard_toggle_desc" : "Set the button that toggles between the scoreboard and tracked achievements",
+	"VoidUI_error" : "Steam Error",
+	"VoidUI_private" : "Private Profile",
 	"VoidUI_player" : "Player",
 	"VoidUI_kills" : "Kills",
 	"VoidUI_specials" : "Specials",

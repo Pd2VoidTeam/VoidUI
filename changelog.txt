@@ -10,6 +10,7 @@ Version 1.1.2
 - Updated the heist intro screen and added options for it
 - Updated the teammate carry text to support cyrillic characters
 - Fixed scoreboard panels getting reset when their owner is released from custody
+- Fixed a crash related to teammates using custom perk-decks
 - Fixed damage reduction bars sometimes not being updated correctly
 - Fixed names on hint notifications not being colored if the player has a bracket in their name
 - Fixed the ability bar not showing the current amount when using the Tag Team perk-deck

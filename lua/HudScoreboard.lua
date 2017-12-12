@@ -1561,7 +1561,10 @@ if VoidUI.options.enable_stats then
 						end
 						skills_text:set_color(skillpoints > 120 and Color.red or Color.white)
 						perk_count:set_text(outfit.skills.specializations[2] .. "/9")
-						local icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))
+						local icon, rect = tweak_data.hud_icons:get_texture("pd2_question")
+						if outfit.skills.specializations[1] then
+							icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))							
+						end
 						perk_icon:set_image(icon, unpack(rect))	
 					end
 				end
@@ -1617,7 +1620,7 @@ if VoidUI.options.enable_stats then
 		
 		function HUDScoreboard:get_hours(webpage)
 			local hours = self._panel:child("hours")
-			local hours_played = "Steam Error"
+			local hours_played = managers.localization:text("VoidUI_error")
 			hours:set_wrap(true)
 			local start_pos = select(2, webpage:find("var rgGames =."))
 			if start_pos then
@@ -1631,7 +1634,7 @@ if VoidUI.options.enable_stats then
 					end
 				end
 			elseif webpage:find("profile_private_info") then
-				hours_played = "Private Profile"
+				hours_played = managers.localization:text("VoidUI_private")
 				hours:set_wrap(true)
 			end
 			hours:set_text(hours_played)

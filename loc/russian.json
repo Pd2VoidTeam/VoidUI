@@ -234,6 +234,8 @@
 	"VoidUI_scoreboard_toggle_desc" : "Установите кнопку, которая будет переключать между табло и отслеживаемыми достижениями",
 	"VoidUI_ping_frequency_title" : "Частота обновления",
 	"VoidUI_ping_frequency_desc" : "Укажите, как часто значения пинг будут обновляться в секундах",
+	"VoidUI_error" : "Steam Error",
+	"VoidUI_private" : "Private Profile",
 	"VoidUI_player" : "Игрок",
 	"VoidUI_kills" : "Убито",
 	"VoidUI_specials" : "Спецы",
