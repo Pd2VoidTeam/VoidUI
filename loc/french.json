@@ -302,7 +302,7 @@
 	"VoidUI_blackscreen_time_title" : "Passer le temps d'intro",
 	"VoidUI_blackscreen_time_desc" : "Determine le temps pour lequel vous devez appuyer afin de passer l'intro",
 	"VoidUI_skip_blackscreen"	:	"Appuyez sur $BTN_ACCEPT pour passer",
-	"VoidUI_loading_others"		:	"And $PLAYERS others",
+	"VoidUI_loading_others"		:	"Et $PLAYERS",
 	"VoidUI_loading" : "Écran de chargement",
 	"VoidUI_enable_loadingscreen_title" : "Activer les écrans de chargement",
 	"VoidUI_enable_loadingscreen_desc" : "Active les écrans de chargement de Void UI",
