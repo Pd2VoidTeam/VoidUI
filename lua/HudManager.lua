@@ -1333,7 +1333,7 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 				tagged:contour():add("mark_unit")
 			end
 			if VoidUI.options.teammate_panels then
-				managers.hud:set_teammate_ability_color(HUDManager.PLAYER_PANEL, tweak_data.chat_colors[managers.criminals:character_peer_id_by_unit(tagged) or 5])
+				managers.hud:set_teammate_ability_color(HUDManager.PLAYER_PANEL, tweak_data.chat_colors[managers.criminals:character_peer_id_by_unit(tagged)] or tweak_data.chat_colors[#tweak_data.chat_colors])
 			end
 		end
 		add_coroutine(self, name, func, ...)
@@ -1347,7 +1347,7 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 		local owner_data = managers.criminals:character_data_by_unit(owner)
 		local owner_panel = (owner_data and owner_data.panel_id and owner_data.panel_id)
 		if owner_panel and VoidUI.options.teammate_panels then
-			managers.hud:set_teammate_ability_color(owner_panel, tweak_data.chat_colors[tagged_id or 5])
+			managers.hud:set_teammate_ability_color(owner_panel, tweak_data.chat_colors[tagged_id] or tweak_data.chat_colors[#tweak_data.chat_colors])
 		end
 		if tagged == self:local_player() and VoidUI.options.vape_hints then
 			owner:contour():add("mark_unit")

@@ -108,7 +108,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 		self._level_title_text:set_right(self._indicator:left())
 		self._level_title_text:set_center_y(self._indicator:center_y() + 2)
 		
-		local level_name = self._level_tweak_data.contractor and string.format("%1s: %2s", utf8.to_upper(self._level_tweak_data.contractor), utf8.to_upper(self._level_tweak_data.level or self._level_tweak_data.name)) or ""
+		local level_name = self._level_tweak_data.contractor and string.format("%1s: %2s", utf8.to_upper(self._level_tweak_data.contractor), utf8.to_upper(self._level_tweak_data.level or self._level_tweak_data.name_id)) or ""
 		local level_text = background_safepanel:text({
 			h = 45,
 			text = level_name,
@@ -399,9 +399,14 @@ elseif RequiredScript == "lib/setups/setup" then
 							local contract_data = managers.job and managers.job:current_contact_data()
 							local job_data = managers.job and managers.job:current_job_data()
 							local job_chain = managers.job and managers.job:current_job_chain_data()
+							local level_data = managers.job:current_level_data()
 							local day = managers.job and managers.job:current_stage() or 0
+							if day and managers.job:current_job_data().name_id == "heist_rvd" then
+								day = 3 - day
+							end
 							local days = job_chain and #job_chain or 0
 							
+							level_tweak_data.name_id = managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id)
 							level_tweak_data.risk.name = Global.game_settings and managers.localization:text(tweak_data.difficulty_name_ids[Global.game_settings.difficulty]) or "normal"
 							level_tweak_data.risk.color = tweak_data.screen_colors.risk
 							level_tweak_data.risk.current = managers.job:current_difficulty_stars()

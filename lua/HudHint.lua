@@ -67,8 +67,8 @@ if VoidUI.options.enable_hint then
 					local length = utf8.len(name)
 					if x and length then
 						x = x > 5 and x - 1 - ((#text - utf8.len(text)) - (#name - length)) or x - 1
-						local color = data.peer_id or #tweak_data.chat_colors
-						hint_text:set_range_color(x, x + length, tweak_data.chat_colors[color] or Color.white)
+						local color = data.peer_id
+						hint_text:set_range_color(x, x + length, tweak_data.chat_colors[color] or tweak_data.chat_colors[#tweak_data.chat_colors])
 					end
 				end
 			end

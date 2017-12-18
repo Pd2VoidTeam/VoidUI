@@ -7,6 +7,8 @@ Version 1.1.2
 - Added the option to disable the exp bar on the stats screen when you are at max level
 - Scoreboard panels will now show the equipped armor of bots if they have them via other mods
 - Made hint notifications color bot names as well
+- Made the loading screen and stats screen show the days of Reservoir Dogs Heist correctly.
+- Made the heist intro, statscreen and timer panel show the variations of the bank heist
 - Updated the heist intro screen and added options for it
 - Updated the teammate carry text to support cyrillic characters
 - Fixed scoreboard panels getting reset when their owner is released from custody
