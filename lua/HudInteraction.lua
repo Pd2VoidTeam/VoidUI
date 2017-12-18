@@ -20,11 +20,12 @@ if VoidUI.options.enable_interact then
 			alpha = 0,
 			x = 1,
 			y = 1,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 11,
 			color = Color.black,
+			visible = false,
 			font = "fonts/font_large_mf",
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
@@ -32,10 +33,11 @@ if VoidUI.options.enable_interact then
 		local interact_text = self._hud_panel:text({
 			name = self._child_name_text,
 			alpha = 0,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 12,
+			visible = false,
 			font = "fonts/font_large_mf",
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
@@ -44,10 +46,11 @@ if VoidUI.options.enable_interact then
 			name = self._child_ivalid_name_text,
 			visible = false,
 			alpha = 0,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 13,
+			visible = false,
 			color = Color(1, 0.3, 0.3),
 			blend_mode = "normal",
 			font = "fonts/font_large_mf",
@@ -98,6 +101,10 @@ if VoidUI.options.enable_interact then
 
 	function HUDInteraction:_animate_interaction(interact_text, interact_bg, invalid_text, goal)
 		local current = self._hud_panel:child(self._child_name_text):alpha()
+		if goal == 1 then
+			interact_text:set_visible(true)
+			interact_bg:set_visible(true)
+		end
 		local TOTAL_T = 0.2
 		local t = 0
 		while TOTAL_T > t do
@@ -107,6 +114,11 @@ if VoidUI.options.enable_interact then
 			interact_text:set_alpha(a)
 			interact_bg:set_alpha(a)
 			invalid_text:set_alpha(a)
+		end
+		if goal == 0 then
+			interact_text:set_visible(false)
+			interact_bg:set_visible(false)
+			invalid_text:set_visible(false)
 		end
 	end
 	function HUDInteraction:show_interaction_bar(current, total)
