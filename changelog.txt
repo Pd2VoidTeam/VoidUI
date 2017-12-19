@@ -21,7 +21,7 @@ Version 1.1.2
 - Fixed crash related to the secured loot panel and the BeardLib-Editor
 - Fixed the throwable indicator sometimes showing wrong values for ability perk-decks
 - Fixed last interaction appearing while flashed when using the Inverted Flashbang Glare mod 
-- Fixed a crash related to jokers
+- Fixed multiple crashes related to jokers
 - Fixed a crash related to the scoreboard and players skill build
 - Fixed a log file error
 
