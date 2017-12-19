@@ -1,0 +1,124 @@
+{
+	"menu_id" : "VoidUI_loadingscreen",
+	"parent_menu_id" : "VoidUI_options",
+	"title" : "VoidUI_blackscreen_title",
+	"description" : "VoidUI_blackscreen_desc",
+	"back_callback" : "VoidUI_save",
+	"priority" : 10,
+	"localized" :  true,
+	"items" : [
+		{
+			"type" : "button",
+			"id" : "voidui_blackscreen",
+			"title" : "VoidUI_blackscreen",
+			"priority" : 13
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_blackscreen",
+			"title" : "VoidUI_enable_blackscreen_title",
+			"description" : "VoidUI_enable_blackscreen_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_blackscreen"
+			"priority" : 12
+		},
+		{
+			"type" : "toggle",
+			"id" : "blackscreen_map",
+			"title" : "VoidUI_blackscreen_map_title",
+			"description" : "VoidUI_blackscreen_map_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "blackscreen_map"
+			"priority" : 11
+		},
+		{
+			"type" : "toggle",
+			"id" : "blackscreen_risk",
+			"title" : "VoidUI_blackscreen_risk_title",
+			"description" : "VoidUI_blackscreen_risk_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "blackscreen_risk"
+			"priority" : 10
+		},
+		{
+			"type" : "toggle",
+			"id" : "blackscreen_skull",
+			"title" : "VoidUI_blackscreen_skull_title",
+			"description" : "VoidUI_blackscreen_skull_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "blackscreen_skull"
+			"priority" : 9
+		},
+		{
+			"type" : "toggle",
+			"id" : "blackscreen_linger",
+			"title" : "VoidUI_blackscreen_linger_title",
+			"description" : "VoidUI_blackscreen_linger_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "blackscreen_linger"
+			"priority" : 8
+		},
+		{
+			"type" : "slider",
+			"id" : "blackscreen_time",
+			"title" : "VoidUI_blackscreen_time_title",
+			"description" : "VoidUI_blackscreen_time_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "blackscreen_time",
+			"default_value" : 0,
+			"max" : 2,
+			"min" : 0,
+			"step" : 0.01,
+			"localized" :  true,
+			"priority" : 7
+		},
+		{
+			"type" : "divider",
+			"size" : 25,
+			"priority" : 6
+		},
+		{
+			"type" : "button",
+			"id" : "voidui_loading",
+			"title" : "VoidUI_loading",
+			"priority" : 5
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_loadingscreen",
+			"title" : "VoidUI_enable_loadingscreen_title",
+			"description" : "VoidUI_enable_loadingscreen_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_loadingscreen"
+			"priority" : 4
+		},
+		{
+			"type" : "toggle",
+			"id" : "loading_heistinfo",
+			"title" : "VoidUI_loading_heistinfo_title",
+			"description" : "VoidUI_loading_heistinfo_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "loading_heistinfo"
+			"priority" : 3
+		},
+		{
+			"type" : "toggle",
+			"id" : "loading_players",
+			"title" : "VoidUI_loading_players_title",
+			"description" : "VoidUI_loading_players_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "loading_players"
+			"priority" : 2
+		},
+		{
+			"type" : "toggle",
+			"id" : "loading_briefing",
+			"title" : "VoidUI_loading_briefing_title",
+			"description" : "VoidUI_loading_briefing_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "loading_briefing"
+			"priority" : 1
+		}
+		
+	]
+}

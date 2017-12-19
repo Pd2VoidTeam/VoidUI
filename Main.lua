@@ -41,7 +41,12 @@ VoidUI.hook_files = {
 	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
 	["lib/managers/hud/newhudstatsscreen"] = {"HudScoreboard.lua"},
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
-	["lib/managers/achievmentmanager"] = {"HudManager.lua"}
+	["lib/managers/achievmentmanager"] = {"HudManager.lua"},
+	["lib/managers/playermanager"] = {"HudManager.lua"},
+	["lib/network/base/basenetworksession"] = {"HudManager.lua"},
+	["lib/network/base/clientnetworksession"] = {"LevelLoadingScreen.lua"},
+	["lib/network/base/hostnetworksession"] = {"LevelLoadingScreen.lua"},
+	["lib/setups/setup"] = {"LevelLoadingScreen.lua"}
 }
 
 function VoidUI:Save()
@@ -73,7 +78,7 @@ end
 Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	local loc_path = VoidUI.mod_path .. "loc/"
 
-	if file.DirectoryExists( loc_path ) then
+	if file.DirectoryExists(loc_path) then
 		for _, filename in pairs(file.GetFiles(loc_path)) do
 			local str = filename:match('^(.*).json$')
 			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
@@ -117,6 +122,10 @@ function VoidUI:DefaultConfig()
 		enable_stats = true,
 		enable_subtitles = true,
 		enable_challanges = true,
+		enable_loadingscreen = true,
+		loading_heistinfo = true,
+		loading_players = true,
+		loading_briefing = false,
 		totalammo = true,
 		main_loud = true,
 		main_stealth = true,
@@ -161,6 +170,13 @@ function VoidUI:DefaultConfig()
 		presenter_sound = false,
 		hint_color = true,
 		hint_anim = true,
+		vape_hints = true,
+		blackscreen_map = true,
+		blackscreen_risk = true,
+		blackscreen_skull = true,
+		blackscreen_linger = true,
+		scoreboard_maxlevel = true,
+		blackscreen_time = 0,
 		scoreboard_skins = 2,
 		scoreboard_kills = 3,
 		show_objectives = 3,
@@ -185,6 +201,7 @@ function VoidUI:DefaultConfig()
 		interact_y = 40,
 		main_anim_time = 0.2,
 		mate_anim_time = 0.2
+		
 	}
 
 end
@@ -213,7 +230,9 @@ VoidUI.disable_list = {
 	["enable_stats"] = 17,
 	["scoreboard"] = 14,
 	["enable_subtitles"] = 2,
-	["enable_challanges"] = 1
+	["enable_challanges"] = 1,
+	["enable_blackscreen"] = 5,
+	["enable_loadingscreen"] = 3
 }
 
 function VoidUI:UpdateMenu()
@@ -288,7 +307,7 @@ Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu
 				},
 			[2] = { text = managers.localization:text("dialog_no"), is_cancel_button = true, }
 		}
-		QuickMenu:new( managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true )
+		QuickMenu:new(managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true)
 	end
 	MenuCallbackHandler.VoidUI_save = function(self, item)
 		VoidUI:Save()
@@ -327,31 +346,33 @@ end )
 Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", function(menu_manager, nodes)
 	VoidUI:UpdateMenu()
 end)
-	
-function MenuManager:toggle_chatinput()
-	if Application:editor() then
-		return
-	end
-	if SystemInfo:platform() ~= Idstring("WIN32") then
-		return
-	end
-	if self:active_menu() then
-		return
-	end
-	if not managers.network:session() then
-		return
-	end
-	if managers.hud then
-		managers.hud:toggle_chatinput()
-		return true
-	end
-end
 
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
 		if VoidUI.hook_files[requiredScript] then
 			for _, file in ipairs(VoidUI.hook_files[requiredScript]) do
 			dofile( VoidUI.mod_path .. "lua/" .. file )
+		end
+	end
+end
+
+if MenuManager then
+	function MenuManager:toggle_chatinput()
+		if Application:editor() then
+			return
+		end
+		if SystemInfo:platform() ~= Idstring("WIN32") then
+			return
+		end
+		if self:active_menu() then
+			return
+		end
+		if not managers.network:session() then
+			return
+		end
+		if managers.hud then
+			managers.hud:toggle_chatinput()
+			return true
 		end
 	end
 end

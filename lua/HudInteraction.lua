@@ -20,11 +20,12 @@ if VoidUI.options.enable_interact then
 			alpha = 0,
 			x = 1,
 			y = 1,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 11,
 			color = Color.black,
+			visible = false,
 			font = "fonts/font_large_mf",
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
@@ -32,10 +33,11 @@ if VoidUI.options.enable_interact then
 		local interact_text = self._hud_panel:text({
 			name = self._child_name_text,
 			alpha = 0,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 12,
+			visible = false,
 			font = "fonts/font_large_mf",
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
@@ -44,10 +46,11 @@ if VoidUI.options.enable_interact then
 			name = self._child_ivalid_name_text,
 			visible = false,
 			alpha = 0,
-			text = "HELLO",
+			text = "",
 			vertical = "bottom",
 			align = "center",
 			layer = 13,
+			visible = false,
 			color = Color(1, 0.3, 0.3),
 			blend_mode = "normal",
 			font = "fonts/font_large_mf",
@@ -98,6 +101,10 @@ if VoidUI.options.enable_interact then
 
 	function HUDInteraction:_animate_interaction(interact_text, interact_bg, invalid_text, goal)
 		local current = self._hud_panel:child(self._child_name_text):alpha()
+		if goal == 1 then
+			interact_text:set_visible(true)
+			interact_bg:set_visible(true)
+		end
 		local TOTAL_T = 0.2
 		local t = 0
 		while TOTAL_T > t do
@@ -107,6 +114,11 @@ if VoidUI.options.enable_interact then
 			interact_text:set_alpha(a)
 			interact_bg:set_alpha(a)
 			invalid_text:set_alpha(a)
+		end
+		if goal == 0 then
+			interact_text:set_visible(false)
+			interact_bg:set_visible(false)
+			invalid_text:set_visible(false)
 		end
 	end
 	function HUDInteraction:show_interaction_bar(current, total)
@@ -153,7 +165,7 @@ if VoidUI.options.enable_interact then
 		end
 		local _, _, text_w, _ = self._hud_panel:child(self._child_name_text):text_rect()
 		self._interact_bar_bg:set_w(text_w)
-		self._interact_bar:set_w((text_w - (4 * self._scale)) * (current / total))
+		self._interact_bar:set_w(math.max((text_w - (4 * self._scale)) * (current / total), 0))
 		self._interact_bar_bg:set_x(self._hud_panel:w() / 2 - (text_w / 2))
 		if VoidUI.options.center_interaction and VoidUI.options.center_interaction or false then 
 			self._interact_bar:set_center_x(self._interact_bar_bg:center_x())
@@ -175,7 +187,7 @@ if VoidUI.options.enable_interact then
 			local bar = self._hud_panel:bitmap({
 				layer = 5,
 				w = text_w - 4,
-				h = 6,
+				h = 6 * self._scale,
 				color = Color.white:with_alpha(1)
 			})
 			bar:set_position(self._hud_panel:w() / 2 - ((text_w - 4) / 2), self._hud_panel:child(self._child_name_text):y() + 66 * self._scale)
@@ -226,7 +238,7 @@ if VoidUI.options.enable_interact then
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
-			bar:set_size(math.lerp(w, w * 2, t / TOTAL_T), math.lerp(6, 1, t / TOTAL_T))
+			bar:set_size(math.lerp(w, w * 2, t / TOTAL_T), math.lerp(6 * self._scale, 1, t / TOTAL_T))
 			bar:set_x(self._hud_panel:w() / 2 - ((bar:w() - 4) / 2))
 			bar:set_center_y(y)
 		end

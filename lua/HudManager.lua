@@ -400,6 +400,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					name_label.panel:animate(callback(self, self, "_animate_label_interact_custom"), name_label.interact, name_label.panel:child("minmode_panel"):child("min_interact"), name_label.panel:child("extended_panel"):child("interact_bg"), name_label.panel:child("minmode_panel"):child("min_interact_bg"), name_label.panel:child("extended_panel"):child("action"), action_text, timer)
 				elseif enabled and not name_label.panel:child("extended_panel") then
 					name_label.panel:animate(callback(self, self, "_animate_label_interact"), name_label.interact, timer)
+				elseif success and name_label.panel:child("extended_panel") then
+					local panel = name_label.panel
+					local bar = panel:bitmap({
+						layer = 0,
+					})
+					bar:set_size(name_label.interact:size())
+					bar:set_position(name_label.interact:position())
+					bar:set_color(name_label.interact:color())
+					bar:animate(callback(self, self, "_animate_interaction_complete"), panel)
 				elseif success and not name_label.panel:child("extended_panel") then
 					local panel = name_label.panel
 					local bitmap = panel:bitmap({
@@ -427,12 +436,27 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					bitmap:animate(callback(HUDInteraction, HUDInteraction, "_animate_interaction_complete"), circle)
 				end
 			end
+			
 			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
 			if character_data and self._teammate_panels[character_data.panel_id]._custom_player_panel then
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
 			elseif character_data and not self._teammate_panels[character_data.panel_id]._custom_player_panel then 
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
 			end
+		end
+		function HUDManager:_animate_interaction_complete(bar, panel)
+			local center_x = bar:center_x()
+			local w = bar:w()
+			local t = 0
+			local TOTAL_T = 0.2
+			while t < TOTAL_T do
+				local dt = coroutine.yield()
+				t = t + dt
+				bar:set_w(math.lerp(w, 0, t / TOTAL_T))
+				bar:set_center_x(center_x)
+			end
+			bar:set_w(0)
+			panel:remove(bar)
 		end
 	end
 	
@@ -484,12 +508,16 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		function HUDManager:show_player_gear(panel_id)
-				if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
-					local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
-					player_panel:child("weapons_panel"):set_visible(true)
-					self:align_teammate_panels()
-				end
-			end		
+			if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
+				local player_panel = self._teammate_panels[panel_id]:panel():child("custom_player_panel")
+				player_panel:child("weapons_panel"):set_visible(true)
+				self:align_teammate_panels()
+			end
+		end	
+		
+		HUDManager.set_teammate_ability_color = HUDManager.set_teammate_ability_color or function(self, i, color)
+			self._teammate_panels[i]:set_ability_color(color)
+		end		
 	end		
 	
 	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then	
@@ -537,9 +565,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
+		function HUDManager:remove_teammate_scoreboard_panel(id)
+			if self._hud_statsscreen then
+				self._hud_statsscreen:remove_scoreboard_panel(id)
+			end
+		end
+		
 		local remove_teammate_panel = HUDManager.remove_teammate_panel
 		function HUDManager:remove_teammate_panel(id)
-			self._hud_statsscreen:remove_scoreboard_panel(id)
+			self._hud_statsscreen:free_scoreboard_panel(id)
 			remove_teammate_panel(self, id)
 		end
 	end	
@@ -798,10 +832,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local _, _, cw, ch = cheater:text_rect()
 			local _, _, mtw, mth = min_text:text_rect()
 			
-			panel:set_size(math.max(tw, cw, aw) + 4, th + ah + ch)
+			panel:set_size(math.max(tw, cw, aw, mtw) + 4, th + ah + ch)
 			cheater:set_size(panel:w(), ch)
 			cheater:set_position(0, 0)
-					
+			
 			extended_panel:set_size(panel:w(), panel:h())
 			text:set_size(panel:w(), th)
 			text_shadow:set_size(panel:w(), th)
@@ -1284,4 +1318,53 @@ elseif RequiredScript == "lib/states/ingamemaskoff" and VoidUI.options.enable_as
 	end
 elseif RequiredScript == "lib/managers/achievmentmanager" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
 	AchievmentManager.MAX_TRACKED = 7
+elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teammate_panels or VoidUI.options.vape_hints) then
+	add_coroutine = PlayerManager.add_coroutine
+	function PlayerManager:add_coroutine(name, func, ...)
+		local arg = {...}
+		local tagged = arg[1]
+		if name == "tag_team" and tagged then
+			if VoidUI.options.vape_hints then
+				if tagged.base and tagged:base().nick_name then
+					managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_owner", {NAME=tagged:base():nick_name()}), time=5})
+				elseif tagged.base and tagged:base().owner_peer_id then
+					managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_owner_joker", {NAME=managers.criminals:character_unit_by_peer_id(tagged:base().owner_peer_id):base():nick_name()}), time=5})
+				end
+				tagged:contour():add("mark_unit")
+			end
+			if VoidUI.options.teammate_panels then
+				managers.hud:set_teammate_ability_color(HUDManager.PLAYER_PANEL, tweak_data.chat_colors[managers.criminals:character_peer_id_by_unit(tagged)] or tweak_data.chat_colors[#tweak_data.chat_colors])
+			end
+		end
+		add_coroutine(self, name, func, ...)
+	end
+	
+	local sync_tag_team = PlayerManager.sync_tag_team
+	function PlayerManager:sync_tag_team(tagged, owner, end_time)
+		sync_tag_team(self, tagged, owner, end_time)
+		local owner_name = owner:base():nick_name()
+		local tagged_id = managers.criminals:character_peer_id_by_unit(tagged)
+		local owner_data = managers.criminals:character_data_by_unit(owner)
+		local owner_panel = (owner_data and owner_data.panel_id and owner_data.panel_id)
+		if owner_panel and VoidUI.options.teammate_panels then
+			managers.hud:set_teammate_ability_color(owner_panel, tweak_data.chat_colors[tagged_id] or tweak_data.chat_colors[#tweak_data.chat_colors])
+		end
+		if tagged == self:local_player() and VoidUI.options.vape_hints then
+			owner:contour():add("mark_unit")
+			self:player_unit():sound():play("perkdeck_activate")
+			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
+		end
+	end
+elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
+	local remove_peer = BaseNetworkSession.remove_peer
+	function BaseNetworkSession:remove_peer(peer, peer_id, reason)
+		if managers.criminals and peer_id then
+			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
+
+			if character_data and character_data.panel_id then
+				managers.hud:remove_teammate_scoreboard_panel(character_data.panel_id)
+			end
+		end
+		return remove_peer(self, peer, peer_id, reason)
+	end
 end

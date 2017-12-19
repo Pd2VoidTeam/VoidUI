@@ -49,16 +49,43 @@ if VoidUI.options.enable_hint then
 		})
 	end
 	function HUDHint:show(params)
-		local text = params.text
 		local clip_panel = self._hint_panel:child("clip_panel")
 		self._stop = false
 		self._hint_panel:stop()
-		self._hint_panel:animate(callback(self, self, "_animate_show"), callback(self, self, "show_done"), params.time or 3, text)
+		self._hint_panel:animate(callback(self, self, "_animate_show"), callback(self, self, "show_done"), params)
 	end
 	function HUDHint:stop()
 		self._stop = true
 	end
-	function HUDHint:_animate_show(hint_panel, done_cb, seconds, text)
+	
+	function HUDHint:color_by_names(hint_text, text)
+		if VoidUI.options.hint_color then
+			for _, data in pairs(managers.criminals:characters()) do
+				if data.unit and alive(data.unit) and data.unit.base and data.unit:base().nick_name and (data.peer_id or data.data.ai) then
+					local name = data.unit:base():nick_name()
+					local x = select(1, hint_text:text():find(name, 1, true))
+					local length = utf8.len(name)
+					if x and length then
+						x = x > 5 and x - 1 - ((#text - utf8.len(text)) - (#name - length)) or x - 1
+						local color = data.peer_id
+						hint_text:set_range_color(x, x + length, tweak_data.chat_colors[color] or tweak_data.chat_colors[#tweak_data.chat_colors])
+					end
+				end
+			end
+		end
+	end
+	
+	function HUDHint:color_by_name(hint_text, name, color)
+		if VoidUI.options.hint_color then
+			local x = select(1, hint_text:text():find(name, 1, true)) - 1
+			local length = utf8.len(name)
+			hint_text:set_range_color(x, x + length, color)
+		end
+	end
+	
+	function HUDHint:_animate_show(hint_panel, done_cb, params)
+		local text = params.text
+		local seconds = params.time or 3
 		local scale = VoidUI.options.hint_scale
 		local clip_panel = hint_panel:child("clip_panel")
 		local hint_text = clip_panel:child("hint_text")
@@ -84,18 +111,10 @@ if VoidUI.options.enable_hint then
 		hint_text:set_h(h)
 		hint_text_shadow:set_h(h)
 		
-		if VoidUI.options.hint_color then
-			for peer_id, peer in pairs(managers.network:session():all_peers()) do
-				if peer then
-					local name = peer:name()
-					if string.find(hint_text:text(), name) ~= nil then 
-						local length = utf8.len(name)
-						local x = select(1, string.find(hint_text:text(), name, 1, true)) - 1
-						if x > 5 then x = x - ((#text - utf8.len(text)) - (#name - length)) end
-						hint_text:set_range_color(x, x + length, tweak_data.chat_colors[managers.criminals:character_color_id_by_unit(peer:unit())])
-					end
-				end
-			end	
+		if params.name and params.color then
+			self:color_by_name(hint_text, params.name, params.color)
+		else
+			self:color_by_names(hint_text, text)
 		end
 		
 		local s = start_s
@@ -167,6 +186,7 @@ if VoidUI.options.enable_hint then
 		hint_text_shadow:set_text("")
 		done_cb()
 	end
+
 	function HUDHint:show_done()
 	end
 end
