@@ -2,27 +2,32 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## Whats new in Version 1.1.1 (2017.11.03)
-- Removed the option to show completed trophies/side-jobs since they've been implemented in the vanilla game
-- Added challange notifications panel
-- Added tracked achievements to the stats screen (can be set to jump key, crouch key or right click)
-- Added support for the Stoic perk deck
-- Added time added and removed animations for the Cursed Kill Room heist
-- Changed the vanilla value for maximum number of tracked achievements from 4 to 7
-- Fixed Downs not updating on scoreboard, and crashing when downs are restored if the player panels are disabled
-- Fixed pager count not updating when the player panels are disabled
-- Fixed teammate interaction panel not being aligned correctly as a drop-in spectator
-- Fixed teammate names getting too small on lower resolutions when the teammate panels are scaled up
-- Fixed bag count on vehicle labels appearing at the right side of the screen
-- Fixed vehicle labels not showing passenger count
-- Fixed special equipments overlapping with the carried bag info on teammate panels
-- Fixed cooldown not showing for perk-deck abilities
-- Fixed a crash related to stopping ai when custom name labels are disabled
-- Fixed crash when AI returns from custody
-- Fixed crash related to AI getting downed while the scoreboard is disabled
-- Fixed a crash with teammate interactions when the player panels are disabled
-- Fixed a crash that could occur when quiting the game at the same time the hostage count gets updated
-- Fixed a crash related to trading jokers
+## Whats new in Version 1.1.2 (2017.12.19)
+- Added loading screens
+- Added tagging notifications for the Tag Team perk-deck
+- Added hud effects for the Tag Team perk-deck
+- Added the ability for custom hint notifications to use the color names feature
+- Added interaction complete animation to name labels
+- Added the option to disable the exp bar on the stats screen when you are at max level
+- Scoreboard panels will now show the equipped armor of bots if they have them via other mods
+- Made hint notifications color bot names as well
+- Made the loading screen and stats screen show the days of Reservoir Dogs Heist correctly.
+- Made the heist intro, statscreen and timer panel show the variations of the bank heist
+- Updated the heist intro screen and added options for it
+- Updated the teammate carry text to support cyrillic characters
+- Fixed scoreboard panels getting reset when their owner is released from custody
+- Fixed a crash related to teammates using custom perk-decks
+- Fixed damage reduction bars sometimes not being updated correctly
+- Fixed names on hint notifications not being colored if the player has a bracket in their name
+- Fixed the ability bar not showing the current amount when using the Tag Team perk-deck
+- Fixed the interaction complete animation not being scaled correctly
+- Fixed the interaction bar length issue when interacting with bugged objects in The Golden Grin Casino
+- Fixed crash related to the secured loot panel and the BeardLib-Editor
+- Fixed the throwable indicator sometimes showing wrong values for ability perk-decks
+- Fixed last interaction appearing while flashed when using the Inverted Flashbang Glare mod 
+- Fixed multiple crashes related to jokers
+- Fixed a crash related to the scoreboard and players skill build
+- Fixed a log file error
 
 
 ## Credits
