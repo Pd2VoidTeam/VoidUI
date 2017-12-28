@@ -66,6 +66,11 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 				Color.black:with_alpha(1)
 			},
 		})
+		local black_shader = background_fullpanel:bitmap({
+			name = "black_shader",
+			layer = 19,
+			color = Color.black
+		})
 		local extras = "guis/textures/VoidUI/hud_extras"
 		self._indicator = background_safepanel:bitmap({
 			texture = extras,
@@ -76,7 +81,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 				55,
 				54
 			},
-			layer = 1
+			layer = 20
 		})
 		self._logo = background_safepanel:bitmap({
 			texture = extras,
@@ -87,7 +92,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 				37,
 				37
 			},
-			layer = 2
+			layer = 21
 		})
 		self._level_title_text = background_safepanel:text({
 			y = 0,
@@ -97,7 +102,7 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 			font_size = 30,
 			align = "left",
 			font = "fonts/font_large_mf",
-			layer = 1,
+			layer = 20,
 			color = Color.white
 		})
 
@@ -201,20 +206,19 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 				})
 			end
 		end
-		self._back_drop_gui._workspace:panel():animate(callback(self, self, "_animate_fade"))
+		black_shader:animate(callback(self, self, "_animate_fade"))
 	end
-	function LevelLoadingScreenGuiScript:_animate_fade(workspace)
-		workspace:set_alpha(0)
+	function LevelLoadingScreenGuiScript:_animate_fade(shader)
+		shader:set_alpha(1)
 		wait(0.2)
 		local t = 0
 		local TOTAL_T = 0.5
 		while TOTAL_T > t do
 			local dt = coroutine.yield()
 			t = t + dt
-			workspace:set_alpha(math.min(math.lerp(0, 1, t / TOTAL_T), 1))
-			self._fade:set_alpha(2)
+			shader:set_alpha(math.lerp(1, 0, t / TOTAL_T))
 		end
-		workspace:set_alpha(1)
+		shader:set_alpha(0)
 	end
 
 	local make_loading_hint = LevelLoadingScreenGuiScript._make_loading_hint
@@ -388,28 +392,27 @@ elseif RequiredScript == "lib/setups/setup" then
 					if level_tweak_data.risk == nil then level_tweak_data.risk = {} end
 					if VoidUI.options.loading_heistinfo then
 						if managers.crime_spree:is_active()then
-							local mission = managers.crime_spree:get_mission()
-							local level_data = managers.job:current_level_data()
+							local mission = managers.crime_spree and managers.crime_spree:get_mission()
+							local level_data = managers.job and managers.job:current_level_data()
 							level_tweak_data.risk.color = tweak_data.screen_colors.crime_spree_risk
-							level_tweak_data.risk.name = managers.localization:to_upper_text("cn_crime_spree").." "..managers.localization:to_upper_text("menu_cs_level", {
-								level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
+							level_tweak_data.risk.name = managers.crime_spree and managers.localization:to_upper_text("cn_crime_spree").." "..managers.localization:to_upper_text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")}) or ""
 							level_tweak_data.contractor	= managers.localization:text(level_data.name_id)
 							level_tweak_data.level = "+" .. managers.localization:text("menu_cs_level", {level = mission and mission.add or 0})
 						else
 							local contract_data = managers.job and managers.job:current_contact_data()
 							local job_data = managers.job and managers.job:current_job_data()
 							local job_chain = managers.job and managers.job:current_job_chain_data()
-							local level_data = managers.job:current_level_data()
+							local level_data = managers.job and managers.job:current_level_data()
 							local day = managers.job and managers.job:current_stage() or 0
-							if day and managers.job:current_job_data().name_id == "heist_rvd" then
+							if day and job_data and job_data.name_id == "heist_rvd" then
 								day = 3 - day
 							end
 							local days = job_chain and #job_chain or 0
 							
-							level_tweak_data.name_id = managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id)
+							level_tweak_data.name_id = level_data and managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id) or ""
 							level_tweak_data.risk.name = Global.game_settings and managers.localization:text(tweak_data.difficulty_name_ids[Global.game_settings.difficulty]) or "normal"
 							level_tweak_data.risk.color = tweak_data.screen_colors.risk
-							level_tweak_data.risk.current = managers.job:current_difficulty_stars()
+							level_tweak_data.risk.current = managers.job and managers.job:current_difficulty_stars()
 							level_tweak_data.risk.difficulties = tweak_data.difficulties
 							level_tweak_data.risk.risk_textures = tweak_data.gui.blackscreen_risk_textures
 							level_tweak_data.contractor = contract_data and managers.localization:text(contract_data.name_id) or ""

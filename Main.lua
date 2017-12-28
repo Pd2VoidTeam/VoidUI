@@ -46,7 +46,8 @@ VoidUI.hook_files = {
 	["lib/network/base/basenetworksession"] = {"HudManager.lua"},
 	["lib/network/base/clientnetworksession"] = {"LevelLoadingScreen.lua"},
 	["lib/network/base/hostnetworksession"] = {"LevelLoadingScreen.lua"},
-	["lib/setups/setup"] = {"LevelLoadingScreen.lua"}
+	["lib/setups/setup"] = {"LevelLoadingScreen.lua"},
+	["lib/managers/menumanagerdialogs"] = {"HudManager.lua"}
 }
 
 function VoidUI:Save()
@@ -79,11 +80,15 @@ Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	local loc_path = VoidUI.mod_path .. "loc/"
 
 	if file.DirectoryExists(loc_path) then
-		for _, filename in pairs(file.GetFiles(loc_path)) do
-			local str = filename:match('^(.*).json$')
-			if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
-				loc:load_localization_file(loc_path .. filename)
-				break
+		if BLT.Localization._current == 'cht' or BLT.Localization._current == 'zh-cn' then
+			loc:load_localization_file(loc_path .. "chinese.json")
+		else
+			for _, filename in pairs(file.GetFiles(loc_path)) do
+				local str = filename:match('^(.*).json$')
+				if str and Idstring(str) and Idstring(str):key() == SystemInfo:language():key() then
+					loc:load_localization_file(loc_path .. filename)
+					break
+				end
 			end
 		end
 		loc:load_localization_file(loc_path .. "english.json", false)

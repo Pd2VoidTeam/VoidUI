@@ -1367,4 +1367,216 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 		end
 		return remove_peer(self, peer, peer_id, reason)
 	end
+elseif RequiredScript == "lib/managers/menumanagerdialogs" then
+	function MenuManager:show_person_joining(id, nick, progress_percentage, join_start)
+		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
+			return
+		end
+		if not self._person_joining then
+			self._person_joining = join_start or os.clock()
+			local color = tweak_data.chat_colors[id] or Color.white
+			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
+			local panel = hud.panel:panel({name = "user_dropin" .. id, layer = 10000 + id})
+			local bg_blur = panel:bitmap({
+				name = "bg_blur",
+				texture = "guis/textures/test_blur_df",
+				render_template = "VertexColorTexturedBlur3D",
+				w = panel:w(),
+				h = panel:h(),
+				layer = 0,
+			})
+			local bg_shade = panel:bitmap({
+				name = "bg_shade",
+				color = Color.black,
+				alpha = 0.5,
+				layer = 0,
+			})
+			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
+			local highlight_texture = "guis/textures/VoidUI/hud_highlights"
+			local panel_bg = panel:bitmap({
+				name = "panel_bg",
+				texture = highlight_texture,
+				texture_rect = {0,467,503,160},
+				layer = 1,
+				w = 480,
+				h = 180,
+				alpha = 1,
+				color = color
+			})
+			panel_bg:set_center(bg_blur:center())
+			local progressbar_bg = panel:bitmap({
+				name = "progressbar_bg",
+				w = 350,
+				h = 10,
+				color = color * 0.2 + Color.black,
+				layer = 2,
+			})
+			progressbar_bg:set_center(panel:w() / 2, panel:h() / 2)
+			local progressbar = panel:bitmap({
+				name = "progressbar",
+				w = (progress_percentage or 0) / 100 * 350,
+				h = 10,
+				layer = 3,
+				color = color
+			})
+			progressbar:set_x(progressbar_bg:x())
+			progressbar:set_center_y(progressbar_bg:center_y())
+			local level = "" 
+			local peer = managers.network:session():peer(id)
+			if peer then 
+				level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() and peer:level().. " " or "")
+			end
+			local title_text = panel:text({
+				name = "title_text",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = level..managers.localization:text("dialog_dropin_title", {USER = nick}),
+				layer = 2,
+			})
+			managers.hud:make_fine_text(title_text)
+			title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
+			title_text:set_center_x(panel:w() / 2)
+			title_text:set_bottom(progressbar_bg:top() - 5)
+			local title_text_shadow = panel:text({
+				name = "title_text_shadow",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = title_text:text(),
+				layer = -2,
+				color = Color.black
+			})
+			managers.hud:make_fine_text(title_text_shadow)
+			title_text_shadow:set_position(title_text:x() + 2, title_text:y() + 2)
+			
+			local progress_text = panel:text({
+				name = "progress_text",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = tonumber(progress_percentage or 0).."%",
+				align = "center",
+				layer = 2,
+				color = color
+			})
+			managers.hud:make_fine_text(progress_text)
+			progress_text:set_w(panel:w())
+			progress_text:set_top(progressbar_bg:bottom() + 5)
+			local progress_text_shadow = panel:text({
+				name = "progress_text_shadow",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = progress_text:text(),
+				align = "center",
+				layer = -2,
+				color = Color.black
+			})
+			managers.hud:make_fine_text(progress_text_shadow)
+			progress_text_shadow:set_w(panel:w())
+			progress_text_shadow:set_position(2, progress_text:y() + 2)			
+			local function animation(o)
+				local center_x, center_y = panel_bg:center()
+				local w, h = panel_bg:size()
+				local TOTAL_T = 0.25
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + 0.016
+					o:set_alpha(math.lerp(0, 1, t / TOTAL_T))
+					panel_bg:set_size(math.lerp(w * 2, w, t / TOTAL_T), math.lerp(h * 2, h, t / TOTAL_T))
+					panel_bg:set_center(center_x, center_y)
+				end
+				t = 0
+				local sin
+				local speed = managers.groupai and managers.groupai:state():whisper_mode() and 40 or 100
+				while true do
+					coroutine.yield()
+					t = t + 0.016
+					sin = math.sin((speed + 75) * t) * 25
+					panel_bg:set_rotation(math.sin(speed * t) * 3)
+					panel_bg:set_size(w - sin, h - sin)
+					panel_bg:set_center(center_x, center_y)
+				end
+			end
+			panel:animate(animation)
+		else
+			self._joining_queue = self._joining_queue or {}
+			table.insert(self._joining_queue, {id = id, nick = nick, join_start = managers.game_play_central:get_heist_timer()})
+		end
+	end
+	function MenuManager:update_person_joining(id, progress_percentage)
+		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+			return
+		end
+		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
+		if panel then
+			local progress_text = panel:child("progress_text")
+			local progress_text_shadow = panel:child("progress_text_shadow")
+			local progressbar = panel:child("progressbar")
+			local Time = os.clock()-self._person_joining
+			local remaining = (Time/progress_percentage*100)-Time
+			progressbar:stop()
+			local function set_progress(o)
+				local w = o:w()
+				local max_w = panel:child("progressbar_bg"):w()
+				local TOTAL_T = 0.15
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + 0.016
+					o:set_w(math.lerp(w, tonumber(progress_percentage) / 100 * max_w, t / TOTAL_T))
+					progress_text:set_text(string.format("%1s%% (%.1fs)", math.floor(o:w() / max_w * 100), remaining))
+					progress_text_shadow:set_text(progress_text:text())
+				end
+				o:set_w(tonumber(progress_percentage) / 100 * max_w)
+				progress_text:set_text(string.format("%1s%% (%.1fs)", progress_percentage, remaining))
+				progress_text_shadow:set_text(progress_text:text())
+			end
+			progressbar:animate(set_progress)
+		elseif self._joining_queue then
+			for i, data in pairs(self._joining_queue) do
+				if data.id == id then
+					data.progress_percentage = progress_percentage
+				end
+			end			
+		end
+	end
+	
+	function MenuManager:close_person_joining(id)
+		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+			return
+		end
+		
+		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
+		if panel then
+			local function animation(o)
+				local panel_bg = panel:child("panel_bg")
+				local center_x, center_y = panel_bg:center()
+				local w, h = panel_bg:size()
+				local TOTAL_T = 0.25
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + 0.016
+					panel:set_alpha(math.lerp(1, 0, t / TOTAL_T))
+					panel_bg:set_size(math.lerp(w, w * 1.5, t / TOTAL_T), math.lerp(h, h * 1.5, t / TOTAL_T))
+					panel_bg:set_center(center_x, center_y)
+				end
+				managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:remove(panel)
+				self._person_joining = nil
+				if self._joining_queue and self._joining_queue[1] then
+					local joining = self._joining_queue[1]
+					self:show_person_joining(joining.id, joining.nick, joining.progress_percentage, joining.join_start)
+					table.remove(self._joining_queue, 1)
+				end
+			end
+			panel:stop()
+			panel:animate(animation)
+		elseif self._joining_queue then
+			for i, data in pairs(self._joining_queue) do
+				if data.id == id then
+					table.remove(self._joining_queue, i)
+				end
+			end			
+		end
+	end
 end
+
