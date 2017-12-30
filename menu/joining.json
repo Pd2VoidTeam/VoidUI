@@ -1,0 +1,95 @@
+{
+	"menu_id" : "VoidUI_joining",
+	"parent_menu_id" : "VoidUI_options",
+	"title" : "VoidUI_joining_title",
+	"description" : "VoidUI_joining_desc",
+	"back_callback" : "VoidUI_save",
+	"priority" : 10,
+	"localized" :  true,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "enable_joining",
+			"title" : "VoidUI_enable_joining_title",
+			"description" : "VoidUI_enable_joining_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "enable_joining"
+			"priority" : 10
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_rank",
+			"title" : "VoidUI_mate_name_title",
+			"description" : "VoidUI_joining_rank_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "joining_rank"
+			"priority" : 9
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_time",
+			"title" : "VoidUI_joining_time_title",
+			"description" : "VoidUI_joining_time_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "joining_time"
+			"priority" : 8
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_border",
+			"title" : "VoidUI_joining_border_title",
+			"description" : "VoidUI_joining_border_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "joining_border"
+			"priority" : 7
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "joining_anim",
+			"title" : "VoidUI_joining_anim_title",
+			"description" : "VoidUI_joining_anim_desc",
+			"callback" : "basic_option_clbk",
+			"items" : [
+				"VoidUI_disable",
+				"VoidUI_joining_anim_rot",
+				"VoidUI_joining_anim_grow",
+				"VoidUI_joining_anim_full"
+			]
+			"value" : "joining_anim"
+			"priority" : 6
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_mods",
+			"title" : "VoidUI_joining_mods_title",
+			"description" : "VoidUI_joining_mods_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "joining_mods"
+			"priority" : 5
+		},
+		{
+			"type" : "slider",
+			"id" : "joining_mods_scale",
+			"title" : "VoidUI_joining_mods_scale_title",
+			"description" : "VoidUI_joining_mods_scale_desc",
+			"callback" : "basic_option_clbk",
+			"value" : "joining_mods_scale",
+			"default_value" : 0.9,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 0.01,
+			"localized" :  true,
+			"priority" : 4
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_drawing",
+			"title" : "VoidUI_joining_drawing_title",
+			"description" : "VoidUI_joining_drawing_desc",
+			"callback" : "toggle_option_clbk",
+			"value" : "joining_drawing"
+			"priority" : 3
+		}
+		
+	]
+}

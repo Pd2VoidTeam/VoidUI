@@ -305,5 +305,59 @@ if VoidUI.options.enable_blackscreen then
 				managers.hud:blackscreen_fade_out_mid_text()
 			end
 		end
+	elseif RequiredScript == "lib/managers/menu/fadeoutguiobject" then
+		function FadeoutGuiObject:init(params)
+			Global.FadeoutObjects = Global.FadeoutObjects or {}
+
+			table.insert(Global.FadeoutObjects, self)
+
+			params = params or {}
+			self._fade_out_duration = params.fade_out or 0
+			self._fade_out_duration = params.sustain or nil
+			local show_loding_icon = params.show_loading_icon or true
+			local loading_texture = "guis/textures/VoidUI/hud_extras"
+			self._ws = managers.gui_data:create_saferect_workspace()
+			self._panel = self._ws:panel()
+			self._panel:set_layer(1000)
+
+			if show_loding_icon then
+				local loading_icon = self._panel:bitmap({
+					name = "loading_icon",
+					texture = loading_texture,
+					texture_rect = {1085, 174, 55, 54}
+				})
+				loading_icon:set_rightbottom(self._panel:w(), self._panel:h())
+				
+				local loading_logo = self._panel:bitmap({
+					name = "loading_logo",
+					texture = loading_texture,
+					texture_rect = {1149, 201, 37, 37}
+				})
+				loading_logo:set_center(loading_icon:center())
+				local function spin_forever_animation(o)
+					local dt, t = nil, 0
+					while true do
+						dt = coroutine.yield()
+						t = t + dt
+						o:set_alpha(math.abs(math.sin(120 * t)))
+					end
+				end
+
+				loading_icon:animate(spin_forever_animation)
+			end
+
+			local function fade_out_animation(panel)
+				while not self._fade_out_duration do
+					wait(1)
+				end
+
+				over(self._fade_out_duration / 1.5, function (p)
+					panel:set_alpha(1 - p)
+				end)
+				managers.gui_data:destroy_workspace(self._ws)
+				table.delete(Global.FadeoutObjects, self)
+			end
+			self._panel:animate(fade_out_animation)
+		end
 	end
 end

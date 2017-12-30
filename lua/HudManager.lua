@@ -1355,6 +1355,7 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
 		end
 	end
+	
 elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
 	local remove_peer = BaseNetworkSession.remove_peer
 	function BaseNetworkSession:remove_peer(peer, peer_id, reason)
@@ -1367,29 +1368,54 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 		end
 		return remove_peer(self, peer, peer_id, reason)
 	end
-elseif RequiredScript == "lib/managers/menumanagerdialogs" then
+	
+elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.enable_joining then
+	local update_time = 0.016666666666666666
 	function MenuManager:show_person_joining(id, nick, progress_percentage, join_start)
 		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
 			return
 		end
+		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
+		if VoidUI.options.joining_drawing and not hud.panel:child("dropin_draw_panel") then
+			self._dropin_draw_panel = hud.panel:panel({name = "dropin_draw_panel", layer = 10000})
+			local tooltip = self._dropin_draw_panel:text({
+				name = "tooltip",
+				font_size = 20,
+				font = tweak_data.menu.pd2_medium_font,
+				text = managers.localization:text("menu_pp_draw_default"),
+				vertical = "bottom",
+				layer = 2,
+			})
+			managers.hud:make_fine_text(tooltip)
+			tooltip:set_leftbottom(10, self._dropin_draw_panel:h() - 2)
+			local points_panel = self._dropin_draw_panel:text({
+				name = "points_panel",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				vertical = "bottom",
+				text = "100%",
+				layer = 2,
+			})
+			points_panel:set_left(tooltip:right() + 5)
+			self._num_draw_points = 0
+		end
 		if not self._person_joining then
 			self._person_joining = join_start or os.clock()
 			local color = tweak_data.chat_colors[id] or Color.white
-			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
-			local panel = hud.panel:panel({name = "user_dropin" .. id, layer = 10000 + id})
+			local panel = hud.panel:panel({name = "user_dropin" .. id, layer = 10000})
 			local bg_blur = panel:bitmap({
 				name = "bg_blur",
 				texture = "guis/textures/test_blur_df",
 				render_template = "VertexColorTexturedBlur3D",
 				w = panel:w(),
 				h = panel:h(),
-				layer = 0,
+				layer = -1,
 			})
 			local bg_shade = panel:bitmap({
 				name = "bg_shade",
 				color = Color.black,
 				alpha = 0.5,
-				layer = 0,
+				layer = -1,
 			})
 			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 			local highlight_texture = "guis/textures/VoidUI/hud_highlights"
@@ -1401,29 +1427,37 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 				w = 480,
 				h = 180,
 				alpha = 1,
-				color = color
+				color = VoidUI.options.joining_border and color or Color.white
 			})
 			panel_bg:set_center(bg_blur:center())
 			local progressbar_bg = panel:bitmap({
 				name = "progressbar_bg",
 				w = 350,
 				h = 10,
-				color = color * 0.2 + Color.black,
+				color = VoidUI.options.joining_border and color * 0.2 + Color.black or Color.white * 0.2 + Color.black,
 				layer = 2,
 			})
 			progressbar_bg:set_center(panel:w() / 2, panel:h() / 2)
+			local progressbar_shadow = panel:bitmap({
+				name = "progressbar_shadow",
+				w = 350,
+				h = 10,
+				color = Color.black,
+				layer = -2,
+			})
+			progressbar_shadow:set_center(panel:w() / 2 + 2, panel:h() / 2 + 2)
 			local progressbar = panel:bitmap({
 				name = "progressbar",
 				w = (progress_percentage or 0) / 100 * 350,
 				h = 10,
 				layer = 3,
-				color = color
+				color = VoidUI.options.joining_border and color or Color.white
 			})
 			progressbar:set_x(progressbar_bg:x())
 			progressbar:set_center_y(progressbar_bg:center_y())
 			local level = "" 
 			local peer = managers.network:session():peer(id)
-			if peer then 
+			if peer and VoidUI.options.joining_rank then 
 				level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() and peer:level().. " " or "")
 			end
 			local title_text = panel:text({
@@ -1434,12 +1468,16 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 				layer = 2,
 			})
 			managers.hud:make_fine_text(title_text)
+			if title_text:w() > 400 then
+				title_text:set_font_size(title_text:font_size() * (400/title_text:w()))
+				title_text:set_w(title_text:w() * (400/title_text:w()))
+			end
 			title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
 			title_text:set_center_x(panel:w() / 2)
 			title_text:set_bottom(progressbar_bg:top() - 5)
 			local title_text_shadow = panel:text({
 				name = "title_text_shadow",
-				font_size = 25,
+				font_size = title_text:font_size(),
 				font = tweak_data.menu.pd2_large_font,
 				text = title_text:text(),
 				layer = -2,
@@ -1455,7 +1493,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 				text = tonumber(progress_percentage or 0).."%",
 				align = "center",
 				layer = 2,
-				color = color
+				color = VoidUI.options.joining_border and color or Color.white
 			})
 			managers.hud:make_fine_text(progress_text)
 			progress_text:set_w(panel:w())
@@ -1471,7 +1509,52 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 			})
 			managers.hud:make_fine_text(progress_text_shadow)
 			progress_text_shadow:set_w(panel:w())
-			progress_text_shadow:set_position(2, progress_text:y() + 2)			
+			progress_text_shadow:set_position(2, progress_text:y() + 2)	
+			if VoidUI.options.joining_mods and peer and peer:synced_mods() then 
+				local mods_fade = panel:gradient({
+					name = "mods_fade",
+					layer = 1,
+					gradient_points = {
+						0,
+						Color.black:with_alpha(0),
+						0.7,
+						Color.black:with_alpha(0),
+						0.85,
+						Color.black:with_alpha(0.5),
+						1,
+						Color.black:with_alpha(0.7)
+					}
+				})
+				local modslist_panel = panel:panel({name = "modslist_panel", x = -15})
+				modslist_panel:text({
+					name = "mods_title",
+					font_size = 25,
+					font = tweak_data.menu.pd2_large_font,
+					text = managers.localization:text("menu_players_list_mods"),
+					align = "right",
+					y = 5,
+					layer = 2,
+					color = Color.white
+				})
+				local last_mod
+				self._joining_mods = {}
+				for i, mod in ipairs(peer:synced_mods()) do
+					last_mod = modslist_panel:text({
+						name = "mod_" .. tostring(i),
+						font_size = 18 * VoidUI.options.joining_mods_scale,
+						font = tweak_data.menu.pd2_large_font,
+						text = mod.name,
+						align = "right",
+						y = (i-1) * (18 * VoidUI.options.joining_mods_scale) + 30,
+						layer = 2,
+						color = Color.white
+					})
+					managers.hud:make_fine_text(last_mod)
+					last_mod:set_right(modslist_panel:w())
+					table.insert(self._joining_mods, last_mod)
+				end	
+				modslist_panel:set_h(last_mod:bottom())
+			end
 			local function animation(o)
 				local center_x, center_y = panel_bg:center()
 				local w, h = panel_bg:size()
@@ -1479,27 +1562,57 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 				local t = 0
 				while TOTAL_T >= t do
 					coroutine.yield()
-					t = t + 0.016
+					t = t + update_time
 					o:set_alpha(math.lerp(0, 1, t / TOTAL_T))
 					panel_bg:set_size(math.lerp(w * 2, w, t / TOTAL_T), math.lerp(h * 2, h, t / TOTAL_T))
 					panel_bg:set_center(center_x, center_y)
 				end
+				o:set_alpha(1)
+				panel_bg:set_size(w, h)
+				panel_bg:set_center(center_x, center_y)
 				t = 0
-				local sin
-				local speed = managers.groupai and managers.groupai:state():whisper_mode() and 40 or 100
+				local grow_sin = 0
+				local rot_speed, grow_speed = 0, 0
+				if VoidUI.options.joining_anim == 2 or VoidUI.options.joining_anim == 4 then
+					rot_speed = managers.groupai and managers.groupai:state():whisper_mode() and 40 or 100
+				end
+				if VoidUI.options.joining_anim == 3 or VoidUI.options.joining_anim == 4 then
+					grow_speed = managers.groupai and managers.groupai:state():whisper_mode() and 115 or 175
+				end
+				
 				while true do
 					coroutine.yield()
-					t = t + 0.016
-					sin = math.sin((speed + 75) * t) * 25
-					panel_bg:set_rotation(math.sin(speed * t) * 3)
-					panel_bg:set_size(w - sin, h - sin)
+					t = t + update_time
+					grow_sin = math.sin(grow_speed * t) * 25
+					panel_bg:set_rotation(math.sin(rot_speed * t) * 3)
+					panel_bg:set_size(w - grow_sin, h - grow_sin)
 					panel_bg:set_center(center_x, center_y)
+					
+					if self._dropin_draw_panel and self._draw_mode then
+						self._last_draw_t = self._last_draw_t or t - update_time
+						local time_diff = t - self._last_draw_t
+
+						if update_time < time_diff then
+							self._last_draw_t = t
+							local mx, my = managers.mouse_pointer:world_position()
+
+							self:draw_joining_line(mx, my)
+						end
+					end
 				end
 			end
 			panel:animate(animation)
+			self._mouse_id = managers.mouse_pointer:get_id()
+			self._removed_mouse = nil
+			local data = {
+				mouse_press = callback(self, self, "mouse_pressed_joining"),
+				mouse_release = callback(self, self, "mouse_released_joining"),
+				id = self._mouse_id
+			}
+			managers.mouse_pointer:use_mouse(data)
 		else
 			self._joining_queue = self._joining_queue or {}
-			table.insert(self._joining_queue, {id = id, nick = nick, join_start = managers.game_play_central:get_heist_timer()})
+			table.insert(self._joining_queue, {id = id, nick = nick, join_start = os.clock()})
 		end
 	end
 	function MenuManager:update_person_joining(id, progress_percentage)
@@ -1517,17 +1630,18 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 			local function set_progress(o)
 				local w = o:w()
 				local max_w = panel:child("progressbar_bg"):w()
+				local text = VoidUI.options.joining_time and "%1s%% (%.1fs)" or "%1s%%"
 				local TOTAL_T = 0.15
 				local t = 0
 				while TOTAL_T >= t do
 					coroutine.yield()
-					t = t + 0.016
+					t = t + update_time
 					o:set_w(math.lerp(w, tonumber(progress_percentage) / 100 * max_w, t / TOTAL_T))
-					progress_text:set_text(string.format("%1s%% (%.1fs)", math.floor(o:w() / max_w * 100), remaining))
+					progress_text:set_text(string.format(text, math.floor(o:w() / max_w * 100), remaining))
 					progress_text_shadow:set_text(progress_text:text())
 				end
 				o:set_w(tonumber(progress_percentage) / 100 * max_w)
-				progress_text:set_text(string.format("%1s%% (%.1fs)", progress_percentage, remaining))
+				progress_text:set_text(string.format(text, progress_percentage, remaining))
 				progress_text_shadow:set_text(progress_text:text())
 			end
 			progressbar:animate(set_progress)
@@ -1544,8 +1658,8 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
 			return
 		end
-		
-		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
+		local hud =	managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
+		local panel = hud.panel:child("user_dropin" .. id)
 		if panel then
 			local function animation(o)
 				local panel_bg = panel:child("panel_bg")
@@ -1555,7 +1669,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 				local t = 0
 				while TOTAL_T >= t do
 					coroutine.yield()
-					t = t + 0.016
+					t = t + update_time
 					panel:set_alpha(math.lerp(1, 0, t / TOTAL_T))
 					panel_bg:set_size(math.lerp(w, w * 1.5, t / TOTAL_T), math.lerp(h, h * 1.5, t / TOTAL_T))
 					panel_bg:set_center(center_x, center_y)
@@ -1568,14 +1682,89 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" then
 					table.remove(self._joining_queue, 1)
 				end
 			end
+			if self._dropin_draw_panel and (not self._joining_queue or not self._joining_queue[1]) then
+				self._draw_mode = false
+				hud.panel:remove(self._dropin_draw_panel)
+				self._dropin_draw_panel = nil
+			end
+			self._joining_mods = nil
 			panel:stop()
 			panel:animate(animation)
+			managers.mouse_pointer:set_pointer_image("arrow")
+			managers.mouse_pointer:remove_mouse(self._mouse_id)
+			self._mouse_id = nil
 		elseif self._joining_queue then
 			for i, data in pairs(self._joining_queue) do
 				if data.id == id then
 					table.remove(self._joining_queue, i)
 				end
 			end			
+		end
+	end
+	function MenuManager:draw_joining_line(x, y)
+		if not self._dropin_draw_panel or tweak_data.preplanning.gui.MAX_DRAW_POINTS < self._num_draw_points then
+			self._draw_mode = false
+			self._draw_points = {}
+			self._last_draw_t = nil
+			return
+		end
+		
+		self._draw_points = self._draw_points or {}
+		if #self._draw_points < 2 then
+			table.insert(self._draw_points, Vector3(x, y, 0))
+		end
+		self._dropin_draw_panel:child("points_panel"):set_text(100 - self._num_draw_points/tweak_data.preplanning.gui.MAX_DRAW_POINTS * 100 .."%")
+		if #self._draw_points == 2 and self._draw_points[1] ~= Vector3(x, y, 0) then
+			local draw_panel = self._dropin_draw_panel:child("draw") or self._dropin_draw_panel:panel({name = "draw"})
+			local line = draw_panel:polyline({
+				blend_mode = "add",
+				layer = 0,
+				halign = "scale",
+				valign = "scale",
+				points = self._draw_points,
+				line_width = 2,
+				color = tweak_data.preplanning_peer_colors[managers.network:session():local_peer():id()] or Color.white:with_alpha(0)
+			})
+			self._num_draw_points = self._num_draw_points + 1
+			table.remove(self._draw_points, 1)
+		elseif #self._draw_points == 2 and self._draw_points[1] == Vector3(x, y, 0) then
+			table.remove(self._draw_points, #self._draw_points)
+		end
+	end
+	
+	function MenuManager:mouse_pressed_joining(o, button, x, y)
+		if button == Idstring("0") then
+			if ctrl() and self._dropin_draw_panel and self._num_draw_points and tweak_data.preplanning.gui.MAX_DRAW_POINTS >= self._num_draw_points then
+				self._draw_mode = true
+				if self._joining_mods then
+					self._joining_mods[1]:parent():set_alpha(0.25)
+					self._joining_mods[1]:parent():parent():child("mods_fade"):set_alpha(0.25)
+				end
+				managers.mouse_pointer:set_pointer_image("hand")
+			elseif not ctrl() and self._joining_mods then
+				for _, mod in ipairs(self._joining_mods) do
+					if mod:inside(x,y) then
+						Steam:overlay_activate("url", "www.google.com/search?q=Payday+2+" .. mod:text():gsub(" ", "%+"))
+						break
+					end
+				end	
+			end
+		elseif button == Idstring("1") and self._num_draw_points > 0 and self._dropin_draw_panel and self._dropin_draw_panel:child("draw") then
+			self._dropin_draw_panel:child("draw"):clear()
+			self._num_draw_points = 0
+			self._dropin_draw_panel:child("points_panel"):set_text("100%")
+		end
+	end
+	function MenuManager:mouse_released_joining(o, button, x, y)
+		if button == Idstring("0") then
+			self._draw_mode = false
+			self._draw_points = {}
+			self._last_draw_t = nil
+			if self._joining_mods then
+				self._joining_mods[1]:parent():set_alpha(1)
+				self._joining_mods[1]:parent():parent():child("mods_fade"):set_alpha(1)
+			end
+			managers.mouse_pointer:set_pointer_image("arrow")
 		end
 	end
 end

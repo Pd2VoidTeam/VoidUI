@@ -2,6 +2,7 @@ Version 1.2
 - Added joining player panels
 - Added better fade-in animation for loading screens
 - Added Chinese localization made by CoolLKK 
+
 - Fixed a crash related to the loading screens and the BeardLib-Editor
 
 Version 1.1.2 (2017.12.19)
