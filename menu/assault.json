@@ -13,7 +13,7 @@
 			"title" : "VoidUI_enable_assault_title",
 			"description" : "VoidUI_enable_assault_decs",
 			"callback" : "toggle_option_clbk",
-			"value" : "enable_assault"
+			"value" : "enable_assault",
 			"priority" : 7
 		},
 		{
@@ -27,7 +27,7 @@
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 0.01,
-			"localized" :  true
+			"localized" :  true,
 			"priority" : 6
 		},
 		{
@@ -36,7 +36,7 @@
 			"title" : "VoidUI_hostages_title",
 			"description" : "VoidUI_hostages_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "hostages"
+			"value" : "hostages",
 			"priority" : 5
 		},
 		{
@@ -45,7 +45,7 @@
 			"title" : "VoidUI_pagers_title",
 			"description" : "VoidUI_pagers_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "pagers"
+			"value" : "pagers",
 			"priority" : 4
 		},
 		{
@@ -68,7 +68,7 @@
 			"title" : "VoidUI_badge_title",
 			"description" : "VoidUI_badge_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "show_badge"
+			"value" : "show_badge",
 			"priority" : 2
 		},
 		{
