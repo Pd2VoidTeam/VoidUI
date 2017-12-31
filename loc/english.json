@@ -1,7 +1,7 @@
 {
 	"VoidUI_endless_assault" : "Endless police assault",
 	"VoidUI_jowi" : "Wick",
-	"VoidUI_chico" : "Tony"
+	"VoidUI_chico" : "Tony",
 	"VoidUI_assault_1" : "Yeah, Fo fucking Sho",
 	"VoidUI_assault_2" : "Haha, your payday is haunted, haha",
 	"VoidUI_assault_3" : "Eat Captain to End Ass",
@@ -314,11 +314,11 @@
 	"VoidUI_loading_briefing_title" : "Heist briefing",
 	"VoidUI_loading_briefing_desc" : "Show the contractor's briefing for the heist",
 
-	"VoidUI_joining_title" : "Joining Player Panel",
+	"VoidUI_joining_title" : "Joining Players",
 	"VoidUI_joining_desc" : "Options related to the joining drop-in clients panel",
 	"VoidUI_enable_joining_title" : "Enable Joining Player Panel",
 	"VoidUI_enable_joining_desc" : "Enable the Void UI joining drop-in clients panel",
-	"VoidUI_joining_rank_desc" : "Show the joining players infamy rank and player level",
+	"VoidUI_joining_rank_desc" : "Show the joining player's level and infamy level",
 	"VoidUI_joining_time_title" : "Show remaining time",
 	"VoidUI_joining_time_desc" : "Show the estimated time until the player joins",
 	"VoidUI_joining_border_title" : "Colored joining panel",
@@ -357,8 +357,9 @@
 	"VoidUI_jump" : "Jump Key",
 	"VoidUI_crouch" : "Crouch Key",
 	"VoidUI_rmb" : "Right Click",
-	"VoidUI_joining_anim_rot" : "Rotate",
-	"VoidUI_joining_anim_grow" : "Pulse",
-	"VoidUI_joining_anim_full" : "Rotate and Pulse"
+	"VoidUI_joining_anim_off" : "Static",
+	"VoidUI_joining_anim_rot" : "Rotating",
+	"VoidUI_joining_anim_grow" : "Pulsing",
+	"VoidUI_joining_anim_full" : "Rotating and Pulsing"
 	
 }
