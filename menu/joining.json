@@ -13,7 +13,7 @@
 			"title" : "VoidUI_enable_joining_title",
 			"description" : "VoidUI_enable_joining_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "enable_joining"
+			"value" : "enable_joining",
 			"priority" : 10
 		},
 		{
@@ -22,7 +22,7 @@
 			"title" : "VoidUI_mate_name_title",
 			"description" : "VoidUI_joining_rank_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "joining_rank"
+			"value" : "joining_rank",
 			"priority" : 9
 		},
 		{
@@ -31,7 +31,7 @@
 			"title" : "VoidUI_joining_time_title",
 			"description" : "VoidUI_joining_time_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "joining_time"
+			"value" : "joining_time",
 			"priority" : 8
 		},
 		{
@@ -40,7 +40,7 @@
 			"title" : "VoidUI_joining_border_title",
 			"description" : "VoidUI_joining_border_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "joining_border"
+			"value" : "joining_border",
 			"priority" : 7
 		},
 		{
@@ -50,12 +50,12 @@
 			"description" : "VoidUI_joining_anim_desc",
 			"callback" : "basic_option_clbk",
 			"items" : [
-				"VoidUI_disable",
+				"VoidUI_joining_anim_off",
 				"VoidUI_joining_anim_rot",
 				"VoidUI_joining_anim_grow",
 				"VoidUI_joining_anim_full"
 			]
-			"value" : "joining_anim"
+			"value" : "joining_anim",
 			"priority" : 6
 		},
 		{
@@ -64,7 +64,7 @@
 			"title" : "VoidUI_joining_mods_title",
 			"description" : "VoidUI_joining_mods_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "joining_mods"
+			"value" : "joining_mods",
 			"priority" : 5
 		},
 		{
@@ -87,7 +87,7 @@
 			"title" : "VoidUI_joining_drawing_title",
 			"description" : "VoidUI_joining_drawing_desc",
 			"callback" : "toggle_option_clbk",
-			"value" : "joining_drawing"
+			"value" : "joining_drawing",
 			"priority" : 3
 		}
 		
