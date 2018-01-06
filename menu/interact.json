@@ -1,111 +1,91 @@
 {
-	"menu_id" : "VoidUI_interact",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "interact",
+	"parent_menu" : "options",
 	"title" : "VoidUI_interact_title",
-	"description" : "VoidUI_interact_desc",
-	"back_callback" : "VoidUI_save",
-	"localized" :  true,
-	"priority" : 10,
+	"priority" : 6,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_interact",
-			"title" : "VoidUI_interact",
-			"priority" : 18
+			"type" : "label",
+			"parent" : "enable_interact",
+			"title" : "VoidUI_interact"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_interact",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_interact_title",
 			"description" : "VoidUI_enable_interact_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_interact"
-			"priority" : 17
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "interact_scale",
+			"parent" : "enable_interact",
 			"title" : "VoidUI_interact_scale_title",
 			"description" : "VoidUI_interact_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "interact_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 16
+			"step" : 2
 		},
 		{
 			"type" : "slider",
 			"id" : "interact_y",
+			"parent" : "enable_interact",
 			"title" : "VoidUI_interact_y_title",
 			"description" : "VoidUI_interact_y_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "interact_y",
 			"default_value" : 40,
 			"max" : 240,
 			"min" : -340,
-			"step" : 1, 
-			"localized" :  true
-			"priority" : 15
+			"step" : 0
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_interact",
+			"parent" : "enable_interact",
 			"title" : "VoidUI_interacttime_title",
 			"description" : "VoidUI_interacttime_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_interact"
-			"priority" : 14
+			"default_value" : true
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 13
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_suspicion",
-			"title" : "VoidUI_suspicion",
-			"priority" : 12
+			"type" : "label",
+			"parent" : "enable_suspicion",
+			"title" : "VoidUI_suspicion"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_suspicion",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_suspicion_title",
 			"description" : "VoidUI_enable_suspicion_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_suspicion"
-			"priority" : 11
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "suspicion_scale",
+			"parent" : "enable_suspicion",
 			"title" : "VoidUI_suspicion_scale_title",
 			"description" : "VoidUI_suspicion_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "suspicion_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 10
+			"step" : 2
 		},
 		{
 			"type" : "slider",
 			"id" : "suspicion_y",
+			"parent" : "enable_suspicion",
 			"title" : "VoidUI_suspicion_y_title",
 			"description" : "VoidUI_suspicion_y_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "suspicion_y",
 			"default_value" : 160,
 			"max" : 300,
 			"min" : -300,
-			"step" : 1,
-			"localized" :  true,
-			"priority" : 9
+			"step" : 0
 		}
 		
 	]

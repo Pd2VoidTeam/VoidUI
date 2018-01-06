@@ -40,81 +40,82 @@ if RequiredScript == "lib/managers/hudmanager" then
 		end
 	end
 	
-	local add_waypoint = HUDManager.add_waypoint
-	function HUDManager:add_waypoint(id, data)
-		add_waypoint(self, id, data)
-		
-		if self._hud.waypoints[id] then
-			local scale = VoidUI.options.waypoint_scale
-			local bitmap = self._hud.waypoints[id].bitmap
-			local arrow = self._hud.waypoints[id].arrow
-			local distance = self._hud.waypoints[id].distance
-			local text = self._hud.waypoints[id].text
-			local timer = self._hud.waypoints[id].timer_gui
+	if VoidUI.options.enable_waypoints then
+		local add_waypoint = HUDManager.add_waypoint
+		function HUDManager:add_waypoint(id, data)
+			add_waypoint(self, id, data)
 			
-			bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
-			arrow:set_size(arrow:w() * scale, arrow:h() * scale)
-			text:set_font_size(text:font_size() * scale)
-			text:set_size(text:w() * scale, text:h() * scale)
-			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-			self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
+			if self._hud.waypoints[id] then
+				local scale = VoidUI.options.waypoint_scale
+				local bitmap = self._hud.waypoints[id].bitmap
+				local arrow = self._hud.waypoints[id].arrow
+				local distance = self._hud.waypoints[id].distance
+				local text = self._hud.waypoints[id].text
+				local timer = self._hud.waypoints[id].timer_gui
+				
+				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
+				arrow:set_size(arrow:w() * scale, arrow:h() * scale)
+				text:set_font_size(text:font_size() * scale)
+				text:set_size(text:w() * scale, text:h() * scale)
+				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
+				self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
+				
+				if data.distance then
+					distance:set_font_size(distance:font_size() * scale)
+					distance:set_size(distance:w() * scale, distance:h() * scale)
+				end
+				if data.timer then
+					timer:set_size(timer:w() * scale, timer:h() * scale)
+					timer:set_font_size(timer:font_size() * scale)
+				end
+			end
+		end
+		
+		local change_waypoint_icon = HUDManager.change_waypoint_icon
+		function HUDManager:change_waypoint_icon(id, icon)
+			change_waypoint_icon(self, id, icon)
 			
-			if data.distance then
-				distance:set_font_size(distance:font_size() * scale)
-				distance:set_size(distance:w() * scale, distance:h() * scale)
-			end
-			if data.timer then
-				timer:set_size(timer:w() * scale, timer:h() * scale)
-				timer:set_font_size(timer:font_size() * scale)
+			if self._hud.waypoints[id] then
+				local scale = VoidUI.options.waypoint_scale
+				local bitmap = self._hud.waypoints[id].bitmap
+				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
+				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
 			end
 		end
-	end
-	
-	local change_waypoint_icon = HUDManager.change_waypoint_icon
-	function HUDManager:change_waypoint_icon(id, icon)
-		change_waypoint_icon(self, id, icon)
 		
-		if self._hud.waypoints[id] then
-			local scale = VoidUI.options.waypoint_scale
-			local bitmap = self._hud.waypoints[id].bitmap
-			bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
-			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-		end
-	end
-	
-	local update_waypoints = HUDManager._update_waypoints
-	function HUDManager:_update_waypoints(t, dt)
-		update_waypoints(self, t, dt)
-		local cam = managers.viewport:get_current_camera()
-		if not cam then
-			return
-		end
-		
-		local wp_pos = Vector3()
-		local wp_onscreen_direction = Vector3()
-		
-		for id, data in pairs(self._hud.waypoints) do
-			if data.state == "offscreen" then
-					local panel = data.bitmap:parent()
-					mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
-					local show = VoidUI.options.label_waypoint_offscreen
-					data.bitmap:set_visible(show)
-					data.arrow:set_visible(show)
-					data.text:set_visible(show)
-					
-					local direction = wp_onscreen_direction
-					local panel_center_x, panel_center_y = panel:center()
-					local scale = VoidUI.options.waypoint_scale
-					mvector3.set_static(direction, wp_pos.x - panel_center_x, wp_pos.y - panel_center_y, 0)
-					mvector3.normalize(direction)
-					data.arrow:set_center(mvector3.x(data.current_position) + direction.x * (24 * scale), mvector3.y(data.current_position) + direction.y * (24 * scale))
-			elseif data.state == "onscreen" and not VoidUI.options.label_waypoint_offscreen then
-				data.bitmap:set_visible(true)
-				data.text:set_visible(true)
+		local update_waypoints = HUDManager._update_waypoints
+		function HUDManager:_update_waypoints(t, dt)
+			update_waypoints(self, t, dt)
+			local cam = managers.viewport:get_current_camera()
+			if not cam then
+				return
+			end
+			
+			local wp_pos = Vector3()
+			local wp_onscreen_direction = Vector3()
+			
+			for id, data in pairs(self._hud.waypoints) do
+				if data.state == "offscreen" then
+						local panel = data.bitmap:parent()
+						mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
+						local show = VoidUI.options.label_waypoint_offscreen
+						data.bitmap:set_visible(show)
+						data.arrow:set_visible(show)
+						data.text:set_visible(show)
+						
+						local direction = wp_onscreen_direction
+						local panel_center_x, panel_center_y = panel:center()
+						local scale = VoidUI.options.waypoint_scale
+						mvector3.set_static(direction, wp_pos.x - panel_center_x, wp_pos.y - panel_center_y, 0)
+						mvector3.normalize(direction)
+						data.arrow:set_center(mvector3.x(data.current_position) + direction.x * (24 * scale), mvector3.y(data.current_position) + direction.y * (24 * scale))
+				elseif data.state == "onscreen" and not VoidUI.options.label_waypoint_offscreen then
+					data.bitmap:set_visible(true)
+					data.text:set_visible(true)
+				end
 			end
 		end
 	end
-	
 	-- Name Labels
 	if VoidUI.options.enable_labels then
 		function HUDManager:update_name_label_by_peer(peer)

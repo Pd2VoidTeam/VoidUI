@@ -62,7 +62,7 @@ if VoidUI.options.enable_hint then
 		if VoidUI.options.hint_color then
 			for _, data in pairs(managers.criminals:characters()) do
 				if data.unit and alive(data.unit) and data.unit.base and data.unit:base().nick_name and (data.peer_id or data.data.ai) then
-					local name = data.unit:base():nick_name()
+					local name = " "..data.unit:base():nick_name().." "
 					local x = select(1, hint_text:text():find(name, 1, true))
 					local length = utf8.len(name)
 					if x and length then
@@ -84,7 +84,7 @@ if VoidUI.options.enable_hint then
 	end
 	
 	function HUDHint:_animate_show(hint_panel, done_cb, params)
-		local text = params.text
+		local text = " "..params.text.." "
 		local seconds = params.time or 3
 		local scale = VoidUI.options.hint_scale
 		local clip_panel = hint_panel:child("clip_panel")

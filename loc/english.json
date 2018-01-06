@@ -30,13 +30,15 @@
 	"VoidUI_assault_26" : "Kneel before the Assault Banner!",
 	
 	"VoidUI_options_title" : "Void UI",
-	"VoidUI_options_desc" : "Customize the behavior of Void UI",  
+	"VoidUI_options_desc" : "Customize the behavior of Void UI",
+	"VoidUI_ingame_hud" : "Ingame HUD",  
+	"VoidUI_interface" : "User Interface",  	
 	"VoidUI_hud_scale_title" : "HUD Scale",
 	"VoidUI_hud_scale_desc" : "Set the scale of all Void UI elements. Elements can also be resized separately",
 	"VoidUI_outlines_title" : "Coloured Convert outlines",
 	"VoidUI_outlines_desc" : "Make the outline of converted cops the same color as their owner",
 	"VoidUI_assault_lines_title" : "Assault alerts",
-	"VoidUI_assault_lines_desc" : "Add back bain responses warning of the next imminent assault. \nLight: 30 second warning. Standard: 30, 20, and 10 second warning, like PDTH.",
+	"VoidUI_assault_lines_desc" : "Add back bain responses warning of the next imminent assault. \n\nDisabled: Dont remind\nLight: 30 second warning. \nStandard: 30, 20, and 10 second warning, like PDTH.",
 	"VoidUI_reset_title" : "Reset Options",
 	"VoidUI_reset_desc" : "Reset every option to their default configuration",
 	"VoidUI_reset_confirm" : "Are you sure you want to reset Void UI to the default configuration? This can not be undone.",
@@ -66,6 +68,8 @@
 	"VoidUI_main_stealth_desc" : "Show the amount of body bags you have left (stealth only)",	
 	"VoidUI_ammo_pickup_title" : "Show Ammo pickups",  	    
 	"VoidUI_ammo_pickup_desc" : "Show the amount of ammo you've picked up",		
+	"VoidUI_main_fg_title" : "Foreground Color",  	    
+	"VoidUI_main_fg_desc" : "The color of the outlines, the text and the equipment icons on the main player panel",	
 
 	"VoidUI_mate_panel" : "Teammate panels",	
 	"VoidUI_mate_scale_title" : "Teammate HUD Scale",
@@ -166,6 +170,8 @@
 	"VoidUI_mindot_title" : "Disable minmode area scale",
 	"VoidUI_mindot_desc" : "Set how direct you need to point your screen at another player to temporarily disable minmode on their label",
 	"VoidUI_waypoints" : "Waypoints",
+	"VoidUI_enable_waypoints_title" : "Enable Waypoints",
+	"VoidUI_enable_waypoints_desc" : "Enable the Void UI waypoints",
 	"VoidUI_waypoint_scale_title" : "Waypoints scale",
 	"VoidUI_waypoint_scale_desc" : "Set the scale of the objective waypoints and awareness markers",
 	"VoidUI_waypoint_radius_title" : "Offscreen waypoint offset",
@@ -361,5 +367,8 @@
 	"VoidUI_joining_anim_rot" : "Rotating",
 	"VoidUI_joining_anim_grow" : "Pulsing",
 	"VoidUI_joining_anim_full" : "Rotating and Pulsing"
+	"VoidUI_red" : "RED",
+	"VoidUI_green" : "GREEN",
+	"VoidUI_blue" : "BLUE"
 	
 }

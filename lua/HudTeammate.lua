@@ -322,6 +322,7 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = weapons_panel:w(),
 			h = weapons_panel:h(),
+			color = VoidUI:GetColor("C_main_bg"),
 			alpha = 1,
 		})	
 		local primary_ammo_panel = weapons_panel:panel({
@@ -2142,7 +2143,6 @@ if VoidUI.options.teammate_panels then
 		if alive(health_stored_bg) and value > 0 then	
 			health_stored:set_visible(true)
 			health_stored:set_w(self._health_w / 2.9)
-			
 			health_stored_bg:set_visible(true)
 			health_stored_bg:set_w(self._health_w / 2.9)
 			health_stored_bg:set_h(self._bg_h * value)
@@ -2150,7 +2150,7 @@ if VoidUI.options.teammate_panels then
 			health_stored_bg:set_texture_rect(811,((1- value) * 472),70,472 * value)
 			health_stored_bg:set_bottom(self._custom_player_panel:h())
 			health_stored_bg:set_color(color * 0.4 + Color.black)
-			health_stored:set_color(health_panel:child("health_bar"):color())
+			health_stored:set_color(color * 0.7 + Color.black * 0.9)
 			weapons_panel:set_x(health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale))
 			if not health_stored_max then 	
 				local health_stored_max = self._custom_player_panel:bitmap({
@@ -2162,11 +2162,11 @@ if VoidUI.options.teammate_panels then
 					h = self._bg_h,
 					alpha = 1,
 				})
-				health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
+				health_stored_max:set_color(color * (Color.white * 0.5))
 				health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))
 				health_stored_max:set_bottom(self._custom_player_panel:h())
 			else
-				health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
+				health_stored_max:set_color(color * (Color.white * 0.5))
 				health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))
 				health_stored_max:set_bottom(self._custom_player_panel:h())
 			end

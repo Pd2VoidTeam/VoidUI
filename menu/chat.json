@@ -1,73 +1,64 @@
 {
-	"menu_id" : "VoidUI_chat",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "chat",
+	"parent_menu" : "options",
 	"title" : "VoidUI_chat_title",
-	"description" : "VoidUI_chat_desc",
-	"back_callback" : "VoidUI_save",
-	"localized" :  true,
-	"priority" : 10,
+	"priority" : 8,
 	"items" : [
 		{
 			"type" : "toggle",
 			"id" : "enable_chat",
 			"title" : "VoidUI_enable_chat_title",
 			"description" : "VoidUI_enable_chat_decs",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_chat",
-			"priority" : 15
+			"is_parent" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_chat_scale",
+			"parent" : "enable_chat",
 			"title" : "VoidUI_chat_scale_title",
 			"description" : "VoidUI_chat_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hud_chat_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 14
+			"step" : 1
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_charactername",
 			"title" : "VoidUI_charactername_title",
 			"description" : "VoidUI_charactername_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_charactername",
-			"priority" : 13
+			"parent" : "enable_chat",
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "chattime",
+			"parent" : "enable_chat",
 			"title" : "VoidUI_chattime_title",
 			"description" : "VoidUI_chattime_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_gametime", 
 				"VoidUI_realtime"
 			],
-			"value" : "chattime",
-			"priority" : 12
+			"default_value" : 1
 		},
 		{
 			"type" : "toggle",
 			"id" : "chat_mouse",
 			"title" : "VoidUI_chat_mouse_title",
 			"description" : "VoidUI_chat_mouse_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "chat_mouse",
-			"priority" : 11
+			"parent" : "enable_chat",
+			"is_parent" : true,
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "chat_copy",
 			"title" : "VoidUI_chat_copy_title",
 			"description" : "VoidUI_chat_copy_desc",
-			"callback" : "basic_option_clbk",
+			"parent" : ["enable_chat", "chat_mouse"],
 			"items" : [
 				"VoidUI_disable", 
 				"VoidUI_chat_message",
@@ -75,8 +66,7 @@
 				"VoidUI_chat_character",
 				"VoidUI_chat_name_character"
 			],
-			"value" : "chat_copy",
-			"priority" : 10
+			"default_value" : 5
 		}
 		
 	]

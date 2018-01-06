@@ -1,236 +1,212 @@
 {
-	"menu_id" : "VoidUI_hudteammate",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "hudteammate",
+	"parent_menu" : "options",
 	"title" : "VoidUI_hudteammate_title",
-	"description" : "VoidUI_hudteammate_desc",
-	"back_callback" : "VoidUI_save",
-	"localized" :  true,
-	"priority" : 20,
+	"priority" : 2,
 	"items" : [
 		{
 			"type" : "toggle",
 			"id" : "teammate_panels",
+			"is_parent" : true,
 			"title" : "VoidUI_teammate_panels_title",
 			"description" : "VoidUI_teammate_panels_decs",
-			"callback" : "toggle_option_clbk",
-			"value" : "teammate_panels",
-			"priority" : 22
+			"default_value" : true
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 21
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_player",
+			"type" : "label",
 			"title" : "VoidUI_main_panel",
-			"priority" : 20
+			"parent" : "teammate_panels"
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_main_scale",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_scale_title",
 			"description" : "VoidUI_main_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hud_main_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 19
+			"step" : 2
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "main_health",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_health_title",
 			"description" : "VoidUI_main_health_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_health_percentage", 
 				"VoidUI_health_real"
 			],
-			"value" : "main_health",
-			"priority" : 18
+			"default_value" : 2
 		},
 		{
 			"type" : "slider",
 			"id" : "main_anim_time",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_anim_time_title",
 			"description" : "VoidUI_main_anim_time_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "main_anim_time",
+			"suffix" : "s",
 			"default_value" : 0.2,
 			"max" : 0.5,
 			"min" : 0.0,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 17
+			"step" : 2
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "main_armor",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_armor_title",
 			"description" : "VoidUI_armor_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_health_percentage", 
 				"VoidUI_health_real"
 			],
-			"value" : "main_armor",
-			"priority" : 16
+			"default_value" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "totalammo",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_total_title",
 			"description" : "VoidUI_total_decs",
-			"callback" : "toggle_option_clbk",
-			"value" : "totalammo",
-			"priority" : 15
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "main_loud",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_loud_title",
 			"description" : "VoidUI_main_loud_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "main_loud",
-			"priority" : 14
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "main_stealth",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_stealth_title",
 			"description" : "VoidUI_main_stealth_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "main_stealth",
-			"priority" : 13
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "ammo_pickup",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_ammo_pickup_title",
 			"description" : "VoidUI_ammo_pickup_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "ammo_pickup",
-			"priority" : 12
-		},
-		
-		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 11
+			"default_value" : true
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_teammate",
+			"type" : "color_select",
+			"id" : "c_main_fg",
+			"parent" : "teammate_panels",
+			"title" : "VoidUI_main_fg_title",
+			"description" : "VoidUI_main_fg_desc",
+			"default_value" : [1,1,1]
+		},
+		{
+			"type" : "divider"
+		},
+		{
+			"type" : "label",
 			"title" : "VoidUI_mate_panel",
-			"priority" : 10
+			"parent" : "teammate_panels"
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_mate_scale",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_mate_scale_title",
 			"description" : "VoidUI_mate_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hud_mate_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 9
+			"step" : 2
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "mate_health",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_health_title",
 			"description" : "VoidUI_mate_health_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_health_percentage", 
 				"VoidUI_health_real"
 			],
-			"value" : "mate_health",
-			"priority" : 8
+			"default_value" : 2
 		},
 		{
 			"type" : "slider",
 			"id" : "mate_anim_time",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_main_anim_time_title",
 			"description" : "VoidUI_mate_anim_time_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "mate_anim_time",
+			"suffix" : "s",
 			"default_value" : 0.2,
 			"max" : 0.5,
 			"min" : 0.0,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 7
+			"step" : 2
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "mate_armor",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_armor_title",
 			"description" : "VoidUI_mate_armor_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_health_percentage", 
 				"VoidUI_health_real"
 			],
-			"value" : "mate_armor",
-			"priority" : 6
+			"default_value" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "mate_loud",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_mate_loud_title",
 			"description" : "VoidUI_mate_loud_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "mate_loud",
-			"priority" : 5
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "mate_stealth",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_mate_stealth_title",
 			"description" : "VoidUI_mate_stealth_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "mate_stealth",
-			"priority" : 4
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "mate_name",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_mate_name_title",
 			"description" : "VoidUI_mate_name_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "mate_name",
-			"priority" : 3
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "mate_upper",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_label_upper_title",
 			"description" : "VoidUI_label_upper_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "mate_upper",
-			"priority" : 2
+			"default_value" : false
 		},
 		{
 			"type" : "toggle",
 			"id" : "mate_interact",
+			"parent" : "teammate_panels",
 			"title" : "VoidUI_mate_interact_title",
 			"description" : "VoidUI_mate_interact_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "mate_interact",
-			"priority" : 1
+			"default_value" : true
 		}
 	]
 }

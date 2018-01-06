@@ -1,134 +1,112 @@
 {
-	"menu_id" : "VoidUI_objectives",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "objectives",
+	"parent_menu" : "options",
 	"title" : "VoidUI_objectives_title",
-	"description" : "VoidUI_objectives_desc",
-	"back_callback" : "VoidUI_save",
-	"priority" : 10,
-	"localized" :  true,
+	"priority" : 4,
 	"items" : [
 		{
 			"type" : "slider",
 			"id" : "hud_objectives_scale",
 			"title" : "VoidUI_objectives_scale_title",
 			"description" : "VoidUI_objectives_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hud_objectives_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 21
+			"step" : 2
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 20
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_timer",
-			"title" : "VoidUI_timer_panel",
-			"priority" : 19
+			"type" : "label",
+			"parent" : "enable_timer",
+			"title" : "VoidUI_timer_panel"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_timer",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_timer_title",
 			"description" : "VoidUI_enable_timer_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_timer"
-			"priority" : 18
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "show_timer",
+			"parent" : "enable_timer",
 			"title" : "VoidUI_objectives_show_timer_title",
 			"description" : "VoidUI_objectives_show_timer_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_on_scoreboard", 
 				"VoidUI_show"
 			],
-			"value" : "show_timer",
-			"priority" : 17
+			"default_value" : 3
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_levelname",
+			"parent" : "enable_timer",
 			"title" : "VoidUI_levelname_title",
 			"description" : "VoidUI_levelname_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_levelname"
-			"priority" : 16
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_ghost_icon",
+			"parent" : "enable_timer",
 			"title" : "VoidUI_ghost_title",
 			"description" : "VoidUI_ghost_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_ghost_icon"
-			"priority" : 15
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "show_loot",
+			"parent" : "enable_timer",
 			"title" : "VoidUI_loot_title",
 			"description" : "VoidUI_loot_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "show_loot"
-			"priority" : 14
+			"default_value" : true
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 13
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_objectives",
-			"title" : "VoidUI_objectives_panel",
-			"priority" : 12
+			"type" : "label",
+			"parent" : "enable_objectives",
+			"title" : "VoidUI_objectives_panel"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_objectives",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_objectives_title",
 			"description" : "VoidUI_enable_objectives_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_objectives"
-			"priority" : 11
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "show_objectives",
+			"parent" : "enable_objectives",
 			"title" : "VoidUI_objectives_show_title",
 			"description" : "VoidUI_objectives_show_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disabled", 
 				"VoidUI_on_scoreboard", 
 				"VoidUI_show"
 			],
-			"value" : "show_objectives",
-			"priority" : 10
+			"default_value" : 3
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_objective_history",
+			"parent" : "enable_objectives",
 			"title" : "VoidUI_objective_history_title",
 			"description" : "VoidUI_objective_history_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hud_objective_history",
 			"default_value" : 3,
 			"max" : 6,
 			"min" : 0,
-			"step" : 1,
-			"localized" :  true
-			"priority" : 9
+			"step" : 0
 		}
 		
 	]

@@ -1,175 +1,159 @@
 {
-	"menu_id" : "VoidUI_label",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "label",
+	"parent_menu" : "options",
 	"title" : "VoidUI_label_title",
-	"description" : "VoidUI_label_desc",
-	"back_callback" : "VoidUI_save",
-	"localized" :  true,
-	"priority" : 18,
+	"priority" : 6,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_labels",
-			"title" : "VoidUI_label",
-			"priority" : 16
+			"type" : "label",
+			"parent" : "enable_labels",
+			"title" : "VoidUI_label"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_labels",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_labels_title",
 			"description" : "VoidUI_enable_labels_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_labels"
-			"priority" : 15
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "label_jokers",
+			"parent" : "enable_labels",
 			"title" : "VoidUI_jokernames_title",
 			"description" : "VoidUI_jokernames_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_jokers"
-			"priority" : 14
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "health_jokers",
+			"parent" : "enable_labels",
 			"title" : "VoidUI_jokerhealth_title",
 			"description" : "VoidUI_jokerhealth_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "health_jokers"
-			"priority" : 13
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "label_scale",
+			"parent" : "enable_labels",
 			"title" : "VoidUI_label_scale_title",
 			"description" : "VoidUI_label_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "label_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 12
+			"step" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "label_upper",
+			"parent" : "enable_labels",
 			"title" : "VoidUI_label_upper_title",
 			"description" : "VoidUI_label_upper_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_upper"
-			"priority" : 11
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "label_minmode",
+			"is_parent" : true,
+			"parent" : "enable_labels",
 			"title" : "VoidUI_minlabel_title",
 			"description" : "VoidUI_minlabel_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_minmode"
-			"priority" : 10
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "label_minscale",
+			"parent" : ["enable_labels", "label_minmode"],
 			"title" : "VoidUI_label_minscale_title",
 			"description" : "VoidUI_label_minscale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "label_minscale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 9
+			"step" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "label_minrank",
+			"parent" : ["enable_labels", "label_minmode"],
 			"title" : "VoidUI_minrank_title",
 			"description" : "VoidUI_minrank_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_minrank"
-			"priority" : 8
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "label_minmode_dist",
+			"parent" : ["enable_labels", "label_minmode"],
 			"title" : "VoidUI_mindist_title",
 			"description" : "VoidUI_mindist_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "label_minmode_dist",
+			"suffix" : "m",
 			"default_value" : 7,
 			"max" : 30,
 			"min" : 0,
-			"step" : 1,
-			"localized" :  true
-			"priority" : 7
+			"step" : 0
 		},
 		{
 			"type" : "slider",
 			"id" : "label_minmode_dot",
+			"parent" : ["enable_labels", "label_minmode"],
 			"title" : "VoidUI_mindot_title",
 			"description" : "VoidUI_mindot_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "label_minmode_dot",
+			"suffix" : "m",
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.1,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 6
+			"step" : 1
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 5
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_waypoints",
-			"title" : "VoidUI_waypoints",
-			"priority" : 4
+			"type" : "label",
+			"parent" : "enable_waypoints",
+			"title" : "VoidUI_waypoints"
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_waypoints",
+			"is_parent" : true,
+			"title" : "VoidUI_enable_waypoints_title",
+			"description" : "VoidUI_enable_waypoints_desc",
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "waypoint_scale",
+			"parent" : "enable_waypoints",
 			"title" : "VoidUI_waypoint_scale_title",
 			"description" : "VoidUI_waypoint_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "waypoint_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 3
+			"step" : 2
+
 		},
 		{
 			"type" : "toggle",
 			"id" : "label_waypoint_offscreen",
+			"parent" : "enable_waypoints",
 			"title" : "VoidUI_waypoint_offscreen_title",
 			"description" : "VoidUI_waypoint_offscreen_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "label_waypoint_offscreen"
-			"priority" : 2
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "waypoint_radius",
+			"parent" : "enable_waypoints",
 			"title" : "VoidUI_waypoint_radius_title",
 			"description" : "VoidUI_waypoint_radius_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "waypoint_radius",
+			"suffix" : "m",
 			"default_value" : 160,
 			"max" : 340,
 			"min" : 100,
-			"step" : 0.1,
-			"localized" :  true
-			"priority" : 1
+			"step" : 2
 		}
 		
 	]

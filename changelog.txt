@@ -1,9 +1,13 @@
 Version 1.2
+- Added custom options menu
 - Added joining player panels
 - Added better fade-in animation for loading screens
 - Added Chinese localization made by CoolLKK 
-
+- Added the ability to disable the waypoint modifications
+- Fixed the width of objectives sometimes being incorrect
 - Fixed a crash related to the loading screens and the BeardLib-Editor
+- Fixed the stored health meter for ex-president not working correctly
+- Fixed hint notifications sometimes coloring wrong parts of the text
 
 Version 1.1.2 (2017.12.19)
 - Added loading screens

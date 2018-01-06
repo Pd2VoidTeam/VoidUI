@@ -1,60 +1,133 @@
 {
-	"menu_id" : "VoidUI_options",
-	"parent_menu_id" : "blt_options",
+	"menu_id" : "options",
 	"title" : "VoidUI_options_title",
-	"description" : "VoidUI_options_desc",
-	"back_callback" : "VoidUI_warning_save",
-	"localized" :  true,
+	"priority" : 1,
 	"items" : [
 		{
-			"type" : "divider",
-			"size" : 20,
-			"priority" : 6
+			"type" : "label",
+			"title"	: "VoidUI_ingame_hud"
+		},
+		{
+			"type" : "button",
+			"id" : "hudteammate",
+			"title" : "VoidUI_hudteammate_title",
+			"description" : "VoidUI_hudteammate_desc",
+			"next_menu" : "hudteammate"
+		},
+		{
+			"type" : "button",
+			"id" : "assault",
+			"title" : "VoidUI_assault_title",
+			"description" : "VoidUI_assault_desc",
+			"next_menu" : "assault"
+		},
+		{
+			"type" : "button",
+			"id" : "objectives",
+			"title" : "VoidUI_objectives_title",
+			"description" : "VoidUI_objectives_desc",
+			"next_menu" : "objectives"
+		},
+		{
+			"type" : "button",
+			"id" : "presenter",
+			"title" : "VoidUI_presenter_title",
+			"description" : "VoidUI_presenter_title",
+			"next_menu" : "presenter"
+		},
+		{
+			"type" : "button",
+			"id" : "interact",
+			"title" : "VoidUI_interact_title",
+			"description" : "VoidUI_interact_desc",
+			"next_menu" : "interact"
+		},
+		{
+			"type" : "button",
+			"id" : "label",
+			"title" : "VoidUI_label_title",
+			"description" : "VoidUI_label_desc",
+			"next_menu" : "label"
+		},
+		{
+			"type" : "button",
+			"id" : "scoreboard",
+			"title" : "VoidUI_stats_title",
+			"description" : "VoidUI_stats_desc",
+			"next_menu" : "scoreboard"
+		},
+		{
+			"type" : "button",
+			"id" : "chat",
+			"title" : "VoidUI_chat_title",
+			"description" : "VoidUI_chat_desc",
+			"next_menu" : "chat"
+		},
+		{
+			"type" : "button",
+			"id" : "subtitles",
+			"title" : "VoidUI_subtitles_title",
+			"description" : "VoidUI_subtitles_desc",
+			"next_menu" : "subtitles"
+		},
+		{
+			"type" : "button",
+			"id" : "joining",
+			"title" : "VoidUI_joining_title",
+			"description" : "VoidUI_joining_desc",
+			"next_menu" : "joining"
 		},
 		{
 			"type" : "slider",
 			"id" : "hud_scale",
 			"title" : "VoidUI_hud_scale_title",
 			"description" : "VoidUI_hud_scale_desc",
-			"callback" : "callback_VoidUI_hudscale",
-			"value" : "hud_scale",
+			"callback" : "SetGlobalHudscale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true,
-			"priority" : 5
+			"step" : 2
+		},
+		{
+			"type" : "divider"
+		},
+		{
+			"type" : "label",
+			"title"	: "VoidUI_interface"
+		},
+		{
+			"type" : "button",
+			"id" : "loadingscreen",
+			"title" : "VoidUI_blackscreen_title",
+			"description" : "VoidUI_blackscreen_desc",
+			"next_menu" : "loadingscreen"
 		},
 		{
 			"type" : "toggle",
 			"id" : "outlines",
 			"title" : "VoidUI_outlines_title",
 			"description" : "VoidUI_outlines_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "outlines"
-			"priority" : 3
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "assault_lines",
 			"title" : "VoidUI_assault_lines_title",
 			"description" : "VoidUI_assault_lines_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disable",
 				"VoidUI_assault_lines_30sec",
 				"VoidUI_assault_lines_every10sec"
-			]
-			"value" : "assault_lines"
-			"priority" : 2
+			],
+			"default_value" : 3
 		},
 		{
 			"type" : "button",
 			"id" : "voidui_reset",
 			"title" : "VoidUI_reset_title",
 			"description" : "VoidUI_reset_desc",
-			"callback" : "callback_VoidUI_reset",
-			"priority" : 1
+			"callback" : "ResetOptions"
 		}
 
 	]
