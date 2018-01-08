@@ -56,6 +56,7 @@
 			"description" : "VoidUI_blackscreen_time_desc",
 			"parent" : "enable_blackscreen"
 			"default_value" : 0,
+			"suffix" : "s",
 			"max" : 2,
 			"min" : 0,
 			"step" : 1

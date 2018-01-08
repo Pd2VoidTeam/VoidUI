@@ -8,6 +8,8 @@ Version 1.2
 - Fixed a crash related to the loading screens and the BeardLib-Editor
 - Fixed the stored health meter for ex-president not working correctly
 - Fixed hint notifications sometimes coloring wrong parts of the text
+- Fixed the player and teammate panels incorrectly showing the player having 0 medicbags when they have no equipment 
+- Fixed the exp bar and tracked achievements on the statspanel being too long on 21:9 monitors
 
 Version 1.1.2 (2017.12.19)
 - Added loading screens

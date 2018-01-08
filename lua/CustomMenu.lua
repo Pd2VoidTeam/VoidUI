@@ -7,7 +7,7 @@ end
 
 VoidUIMenu = VoidUIMenu or class()
 function VoidUIMenu:init()
-	self._ws = managers.gui_data:create_fullscreen_workspace()
+	self._ws = managers.gui_data:create_fullscreen_16_9_workspace()
 	self._ws:connect_keyboard(Input:keyboard())
 	self._mouse_id = managers.mouse_pointer:get_id()
 	self._menus = {}
@@ -16,20 +16,26 @@ function VoidUIMenu:init()
 		layer = 500,
 		alpha = 0
     })
-	self._panel:bitmap({
+	local background_size = managers.gui_data:full_scaled_size()
+	local bg = self._panel:bitmap({
 		name = "bg",
 		color = Color.black,
 		alpha = 0.5,
-		layer = -1
+		layer = -1,
+		rotation = 360,
+		w = background_size.w
 	})
-	self._panel:bitmap({
+	bg:set_center_x(self._panel:w() / 2)
+	local blur_bg = self._panel:bitmap({
 		name = "blur_bg",
 		texture = "guis/textures/test_blur_df",
 		render_template = "VertexColorTexturedBlur3D",
-		w = self._panel:w(),
+		w = background_size.w,
 		h = self._panel:h(),
+		rotation = 360,
 		layer = -2,
 	})
+	blur_bg:set_center_x(self._panel:w() / 2)
 	self._tooltip = self._panel:text({
 		name = "tooltip",
 		font_size = 18,
@@ -56,6 +62,45 @@ function VoidUIMenu:init()
 	})
 	self._options_panel:set_right(self._panel:w() - 10)
 	self._tooltip:set_right(self._options_panel:x() - 20)
+	if managers.menu:is_pc_controller() then
+		local back_button = self._panel:panel({
+			name = "back_button",
+			w = 100,
+			h = 25,
+			layer = 2
+		})
+		local title = back_button:text({
+			name = "title",
+			font_size = 23,
+			font = tweak_data.menu.pd2_medium_font,
+			align = "center",
+			text = managers.localization:text("menu_back")
+		})
+		make_fine_text(title)
+		back_button:set_size(title:w() + 10, title:h() + 5)
+		title:set_center(back_button:w() / 2, back_button:h() / 2)
+		back_button:set_right(self._options_panel:right())
+		back_button:set_top(self._options_panel:bottom())
+		back_button:bitmap({
+			name = "bg",
+			alpha = 0
+		})
+		self._back_button = {type = "button", panel = back_button, callback = "Cancel", num = 0 }
+	else
+		self._button_legends = self._panel:text({
+			name = "legends",
+			layer = 2,
+			w = options_bg:w() - 20,
+			h = 25,
+			font_size = 23,
+			font = tweak_data.menu.pd2_medium_font,
+			align = "right",
+			text = managers.localization:text("menu_legend_select", {BTN_UPDATE  = managers.localization:btn_macro("menu_update")}).."    "..managers.localization:text("menu_legend_back", {BTN_BACK = managers.localization:btn_macro("back")})
+		})
+		self._button_legends:set_right(self._options_panel:right() - 5)
+		self._button_legends:set_top(self._options_panel:bottom())
+	end
+	
 	self._mod_version = ""
 	for _, mod in ipairs(BLT.Mods:Mods()) do
 		if mod:GetName() == "Void UI" then
@@ -74,37 +119,39 @@ end
 
 function VoidUIMenu:Open()
 	self._enabled = true
-    managers.menu:input_enabled(false)
+	managers.menu._input_enabled = false
+	for _, menu in ipairs(managers.menu._open_menus) do
+		menu.input._controller:disable()
+	end
 	managers.mouse_pointer:use_mouse({
 		mouse_move = callback(self, self, "mouse_move"),
 		mouse_press = callback(self, self, "mouse_press"),
 		mouse_release = callback(self, self, "mouse_release"),
 		id = self._mouse_id,
 	})
+	if not self._controller then
+		self._controller = managers.controller:create_controller("VoidUIMenu", nil, false)
+		self._controller:add_trigger("cancel", callback(self, self, "Cancel"))
+		self._controller:add_trigger("confirm", callback(self, self, "Confirm"))
+		self._controller:add_trigger("menu_down", callback(self, self, "MenuDown"))
+		self._controller:add_trigger("menu_up", callback(self, self, "MenuUp"))
+		self._controller:add_trigger("menu_right", callback(self, self, "MenuLeftRight", 1))
+		self._controller:add_trigger("menu_left", callback(self, self, "MenuLeftRight", -1))
+		if not managers.menu:is_pc_controller() then
+			self._controller:add_trigger("next_page", callback(self, self, "MenuLeftRight", 10))
+			self._controller:add_trigger("previous_page", callback(self, self, "MenuLeftRight", -10))
+		end
+	end
 	local function animation(o)
 		local a = self._panel:alpha()
-		local TOTAL_T = 0.3
+		local TOTAL_T = 0.2
 		local t = 0
 		while TOTAL_T >= t do
 			coroutine.yield()
 			t = t + 0.016666666666666666
 			self._panel:set_alpha(math.lerp(a, 1, t / TOTAL_T))
 		end
-		if not self._controller then
-			self._controller = managers.controller:create_controller("VoidUIMenu", nil, false)
-			self._controller:enable()
-			self._controller:add_trigger("cancel", callback(self, self, "Cancel"))
-			self._controller:add_trigger("confirm", callback(self, self, "Confirm"))
-			self._controller:add_trigger("menu_down", callback(self, self, "MenuDown"))
-			self._controller:add_trigger("menu_up", callback(self, self, "MenuUp"))
-			self._controller:add_trigger("menu_right", callback(self, self, "MenuLeftRight", 1))
-			self._controller:add_trigger("menu_left", callback(self, self, "MenuLeftRight", -1))
-			local controller_type = managers.controller:get_default_wrapper_type()
-			if not managers.menu:is_pc_controller() then
-				self._controller:add_trigger("next_page", callback(self, self, "MenuLeftRight", 10))
-				self._controller:add_trigger("previous_page", callback(self, self, "MenuLeftRight", -10))
-			end
-		end
+		self._controller:enable()
 	end
 	self._panel:stop()
 	self._panel:animate(animation)
@@ -112,19 +159,22 @@ end
 function VoidUIMenu:Close()
 	self._enabled = false
 	managers.mouse_pointer:remove_mouse(self._mouse_id)
+	if self._controller then
+		self._controller:destroy()
+		self._controller = nil
+	end
 	local function animation(o)
 		local a = self._panel:alpha()
-		local TOTAL_T = 0.3
+		local TOTAL_T = 0.2
 		local t = 0
 		while TOTAL_T >= t do
 			coroutine.yield()
 			t = t + 0.016666666666666666
 			self._panel:set_alpha(math.lerp(a, 0, t / TOTAL_T))
 		end
-		managers.menu:input_enabled(true)
-		if self._controller then
-			self._controller:destroy()
-			self._controller = nil
+		managers.menu._input_enabled = true
+		for _, menu in ipairs(managers.menu._open_menus) do
+			menu.input._controller:enable()
 		end
 		VoidUI:Save()
 		managers.gui_data:destroy_workspace(self._ws)
@@ -137,6 +187,7 @@ end
 
 -- Mouse Functions
 function VoidUIMenu:mouse_move(o, x, y)
+	x, y = managers.mouse_pointer:convert_fullscreen_16_9_mouse_pos(x, y)
 	if self._open_menu then
 		if self._open_choice_dialog and self._open_choice_dialog.panel then
 			local selected = false
@@ -166,6 +217,8 @@ function VoidUIMenu:mouse_move(o, x, y)
 			end
 		elseif self._slider then
 			self:SetSlider(self._slider, x)
+		elseif self._back_button and self._back_button.panel:inside(x,y) then
+			self:HighlightItem(self._back_button)
 		else
 			for _, item in pairs(self._open_menu.items) do
 				if item.enabled and item.panel:inside(x,y) and item.panel:child("bg") then
@@ -176,6 +229,7 @@ function VoidUIMenu:mouse_move(o, x, y)
 	end
 end
 function VoidUIMenu:mouse_press(o, button, x, y)
+	x, y = managers.mouse_pointer:convert_fullscreen_16_9_mouse_pos(x, y)
 	if button == Idstring("0") then	
 		if self._open_choice_dialog then
 			if self._open_choice_dialog.panel:inside(x,y) then
@@ -215,8 +269,13 @@ function VoidUIMenu:mouse_press(o, button, x, y)
 	end
 end
 function VoidUIMenu:mouse_release(o, button, x, y)
+	x, y = managers.mouse_pointer:convert_fullscreen_16_9_mouse_pos(x, y)
 	if button == Idstring("0") then	
 		if self._slider then
+			if self._slider.callback then
+				local clbk = callback(self, self, self._slider.callback)
+				clbk(self._slider)
+			end
 			self._slider = nil
 		end
 	end
@@ -315,7 +374,6 @@ function VoidUIMenu:MenuLeftRight(change)
 	end
 end
 function VoidUIMenu:ActivateItem(item, x)
-	
 	if not self._highlighted_item then
 		return
 	end
@@ -387,13 +445,7 @@ function VoidUIMenu:Cancel()
 	elseif self._open_color_dialog then
 		self:CloseColorMenu(false)
 	elseif self._open_menu.parent_menu then
-		local opened = self._open_menu.id
-		self:OpenMenu(self._open_menu.parent_menu)
-		for _, item in pairs(self._open_menu.items) do
-			if item.panel and item.panel:child("bg") and item.id == opened then
-				self:HighlightItem(item)
-			end
-		end
+		self:OpenMenu(self._open_menu.parent_menu, true)
 	else
 		self:Close()
 	end
@@ -416,7 +468,7 @@ function VoidUIMenu:GetMenuFromJson(path)
 			menu_title = menu_title.." "..self._mod_version
 		end
 		
-		self:CreateMenu({
+		local menu = self:CreateMenu({
 			menu_id = menu_id,
 			parent_menu = parent_menu,
 			title = menu_title,
@@ -486,6 +538,7 @@ function VoidUIMenu:GetMenuFromJson(path)
 					title = managers.localization:text(title),
 					description = managers.localization:text(desc),
 					percentage = item.percentage,
+					callback = item.callback,
 					max = item.max,
 					min = item.min,
 					step = item.step,
@@ -526,6 +579,7 @@ function VoidUIMenu:GetMenuFromJson(path)
 				})	
 			end
 		end
+		menu.panel:set_h(menu.items[#menu.items].panel:bottom())
 	end
 end
 function VoidUIMenu:CreateMenu(params)
@@ -535,6 +589,7 @@ function VoidUIMenu:CreateMenu(params)
 	
 	local menu_panel = self._options_panel:panel({
 		name = "menu_"..tostring(params.menu_id),
+		x = self._options_panel:w(),
 		w = self._options_panel:w(),
 		h = self._options_panel:h(),
 		layer = 1,
@@ -555,27 +610,63 @@ function VoidUIMenu:CreateMenu(params)
 	end
 	title:set_right(menu_panel:w() - 5)
 	self._menus[params.menu_id] = {panel = menu_panel, parent_menu = params.parent_menu, items = {}}
+	return self._menus[params.menu_id]
 end
 
-function VoidUIMenu:OpenMenu(menu)
+function VoidUIMenu:OpenMenu(menu, close)
 	if not self._menus[menu] then
 		return
 	end
-	if self._open_menu then
-		self._open_menu.panel:set_visible(false)
-	end
-
-	self._tooltip:set_text("")
-	self._open_menu = self._menus[menu]
-	self._open_menu.panel:set_visible(true)
-	self._open_menu.id = menu
-	
-	for _, item in pairs(self._open_menu.items) do
-		if item.panel and item.enabled and item.panel:child("bg") then
-			self:HighlightItem(item)
-			return
+	local prev_menu = self._open_menu
+	local next_menu = self._menus[menu]
+	local function animation(o)
+		local x = next_menu.panel:x()
+		local prev_x 
+		if prev_menu then
+			prev_x = prev_menu.panel:x()
+		end
+		next_menu.panel:set_visible(true)
+		local TOTAL_T = 0.2
+		local t = 0
+		while TOTAL_T >= t do
+			coroutine.yield()
+			t = t + 0.016666666666666666
+			next_menu.panel:set_x(math.lerp(x, 0, t / TOTAL_T))
+			if prev_menu then
+				prev_menu.panel:set_x(math.lerp(prev_x, close and prev_menu.panel:w() or -prev_menu.panel:w(), t / TOTAL_T))
+			end
+		end
+		next_menu.panel:set_x(0)
+		local opened
+		if prev_menu then 
+			prev_menu.panel:set_visible(false)
+			prev_menu.panel:set_x(close and prev_menu.panel:w() or -prev_menu.panel:w())
+			opened = self._open_menu.id
+		end
+		self._open_menu = next_menu
+		self._open_menu.id = menu
+		
+		if close and opened ~= nil then
+			for _, item in pairs(self._open_menu.items) do
+				if item.panel and item.panel:child("bg") and item.id == opened then
+					self:HighlightItem(item)
+				end
+			end
+		else
+			for _, item in pairs(self._open_menu.items) do
+				if item.panel and item.enabled and item.panel:child("bg") then
+					self:HighlightItem(item)
+					return
+				end
+			end
 		end
 	end
+	self._tooltip:set_text("")
+	if prev_menu then
+		prev_menu.panel:stop()
+	end
+	next_menu.panel:stop()
+	next_menu.panel:animate(animation)
 end
 
 function VoidUIMenu:GetLastPosInMenu(menu_id)
@@ -665,6 +756,18 @@ function VoidUIMenu:CreateButton(params)
 	if w > title:w() then
 		title:set_font_size(title:font_size() * (title:w()/w))
 	end
+	if params.next_menu then
+		local next = button_panel:bitmap({
+			name = "next",
+			texture = "guis/textures/VoidUI/hud_extras",
+			texture_rect = {793,150,40,41},
+			y = 6,
+			w = 6,
+			h = 12,
+			layer = 1	
+		})
+		next:set_right(button_panel:w() - 10 - w)
+	end
 	local button = {
 		panel = button_panel,
 		id = params.id,
@@ -714,7 +817,7 @@ function VoidUIMenu:CreateToggle(params)
 	local check_bg = toggle_panel:bitmap({
 		name = "check_bg",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {710,150,25,25},
+		texture_rect = {711,150,40,41},
 		x = 2,
 		y = 2,
 		w = 22,
@@ -724,7 +827,7 @@ function VoidUIMenu:CreateToggle(params)
 	local check = toggle_panel:bitmap({
 		name = "check",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {736,150,25,25},
+		texture_rect = {752,150,40,41},
 		x = 2,
 		y = 2,
 		w = 22,
@@ -802,6 +905,7 @@ function VoidUIMenu:CreateSlider(params)
 		enabled = params.enabled,
 		value = params.value,
 		percentage = params.percentage,
+		callback = params.callback,
 		max = params.max,
 		min = params.min,
 		step = params.step,
@@ -1245,4 +1349,12 @@ function VoidUIMenu:ResetOptions()
 		[2] = { text = managers.localization:text("dialog_no"), is_cancel_button = true, }
 	}
 	QuickMenu:new(managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true)
+end
+
+function VoidUIMenu:SetGlobalHudscale(slider)
+	local value = slider.value
+	local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale", "challanges_scale"}
+	for _ ,scale in pairs(scales) do
+		VoidUI.options[scale] = tonumber(value)
+	end
 end

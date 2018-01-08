@@ -328,7 +328,7 @@ if VoidUI.options.enable_stats then
 			})
 			local extras_panel = self._full_hud_panel:panel({
 				name = "extras_panel",
-				w = self._scoreboard_panels and self._scoreboard_panels[#self._scoreboard_panels]._panel:w() or (self._full_hud_panel:w() / 1.55) * self._scale,
+				w = self._scoreboard_panels and self._scoreboard_panels[#self._scoreboard_panels]._panel:w() or (managers.gui_data:full_16_9_size().w / 1.55) * self._scale,
 				h = self._full_hud_panel:h() / 3
 			})
 		end
@@ -911,7 +911,7 @@ if VoidUI.options.enable_stats then
 			end
 			local achievements_panel = self._full_hud_panel:panel({
 				name = "achievements_panel",
-				w = (self._full_hud_panel:w() / 1.55) * self._scale,
+				w = (managers.gui_data:full_16_9_size().w / 1.55) * self._scale,
 				y = (self._full_hud_panel:h() / 2.5) * self._scale,
 				h = (35 * self._scale) * 4,
 				visible = self._visible_panel == "achievements_panel" and true or false
@@ -950,7 +950,7 @@ if VoidUI.options.enable_stats then
 			local scale = self._scale
 			local scoreboard_panel = self._full_hud_panel:panel({
 				name = "scoreboard_panel",
-				w = (self._full_hud_panel:w() / 1.55) * scale,
+				w = (managers.gui_data:full_16_9_size().w / 1.55) * scale,
 				y = (self._full_hud_panel:h() / 2.5) * scale,
 				h = 0
 			})

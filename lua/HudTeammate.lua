@@ -315,14 +315,13 @@ if VoidUI.options.teammate_panels then
 		})
 		weapons_panel:set_bottom(custom_player_panel:bottom())
 		weapons_panel:set_x(self._main_player and health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale) or health_panel:right() - (6 * self._mate_scale))
-		
+		self._fore_color = self._main_player and VoidUI:GetColor("c_main_fg") or VoidUI:GetColor("c_mate_fg") 
 		local weapons_background = weapons_panel:bitmap({
 			name = "weapons_background",
 			texture = "guis/textures/VoidUI/hud_weapons",
 			layer = 1,
 			w = weapons_panel:w(),
 			h = weapons_panel:h(),
-			color = VoidUI:GetColor("C_main_bg"),
 			alpha = 1,
 		})	
 		local primary_ammo_panel = weapons_panel:panel({
@@ -342,6 +341,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = self._main_player and"left" or "right",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
 		})
@@ -356,6 +356,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = "left",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
 		})
@@ -383,6 +384,7 @@ if VoidUI.options.teammate_panels then
 			texture = highlight_texture,
 			texture_rect = selected_rect,
 			layer = 1,
+			color = self._fore_color,
 			w = self._ammo_1_w,
 			h = self._ammo_panel_h,
 			alpha = 1,
@@ -405,6 +407,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = self._main_player and"left" or "right",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
 		})
@@ -419,6 +422,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = "left",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
 		})
@@ -447,6 +451,7 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = self._ammo_1_w,
 			h = self._ammo_panel_h,
+			color = self._fore_color,
 			alpha = 1,
 		})
 		local equipment_panel = weapons_panel:panel({
@@ -464,16 +469,16 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = self._equipment_panel_w,
 			h = self._equipment_panel_h,
+			color = self._fore_color,
 			alpha = 1,
 		})	
-		local icon, texture_rect = tweak_data.hud_icons:get_icon_data("equipment_doctor_bag")
 		local equipment_image = equipment_panel:bitmap({
 			name = "equipment_image",
-			texture = icon,
-			texture_rect = texture_rect,
+			texture = "guis/textures/pd2/add_icon",
 			layer = 2,
 			w = self._equipment_panel_w / 1.9,
 			h = self._equipment_panel_h / 1.6,
+			color = self._fore_color,
 			alpha = 0.6,
 		})
 		equipment_image:set_center(equipment_border:center())
@@ -482,14 +487,14 @@ if VoidUI.options.teammate_panels then
 			w = self._equipment_panel_w / 1.2,
 			h = self._equipment_panel_h,
 			font_size = self._equipment_panel_h / 2,
-			text = "x0",
+			color = self._fore_color,
+			text = "",
 			vertical = "bottom",
 			align = "right",
 			font = "fonts/font_medium_shadow_mf",
 			layer = 3,
 			alpha = 1,
 		})
-		
 		
 		local ties_panel = weapons_panel:panel({
 			name = "ties_panel",
@@ -1097,7 +1102,7 @@ if VoidUI.options.teammate_panels then
 		local ammo_amount = selected_ammo_panel:child(type.."_ammo_amount")
 		local ammo_image = selected_ammo_panel:child(type.."_selected_image")
 		local pickup = selected_ammo_panel:child(type.."_pickup")
-		local color = Color.white
+		local color = self._fore_color
 		
 		local current_left_total = current_left
 		local max_total = max
@@ -1109,8 +1114,8 @@ if VoidUI.options.teammate_panels then
 		end
 
 		ammo_amount:set_text(string.gsub("000", "0", "", string.len(tostring(current_clip))).. tostring(current_clip).."/"..string.gsub("000", "0", "", string.len(tostring(current_left)))..tostring(current_left)) 
-		ammo_amount:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
-		ammo_image:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
+		ammo_amount:set_color(math.lerp(Color.red, self._fore_color, math.min(1, (current_left_total/max_total) / 0.4)))
+		ammo_image:set_color(ammo_amount:color()) 
 		
 		if VoidUI.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
 			pickup:stop()
@@ -1202,9 +1207,9 @@ if VoidUI.options.teammate_panels then
 			ties_image:set_color(Color(1,0,0))
 		else
 			ties_amount:set_text("x"..amount)
-			ties_amount:set_color(Color.white)
-			ties_border:set_color(Color.white)
-			ties_image:set_color(Color.white)
+			ties_amount:set_color(self._fore_color)
+			ties_border:set_color(self._fore_color)
+			ties_image:set_color(self._fore_color)
 		end
 	end
 
@@ -1240,9 +1245,9 @@ if VoidUI.options.teammate_panels then
 			equipment_image:set_color(Color(1,0,0))
 		else
 			equipment_count:set_text("x"..data.amount)
-			equipment_count:set_color(Color.white)
-			equipment_border:set_color(Color.white)
-			equipment_image:set_color(Color.white)
+			equipment_count:set_color(self._fore_color)
+			equipment_border:set_color(self._fore_color)
+			equipment_image:set_color(self._fore_color)
 		end
 	end	
 
@@ -1259,9 +1264,9 @@ if VoidUI.options.teammate_panels then
 			end
 		end
 		if visible then
-			equipment_count:set_color(Color.white)
-			equipment_border:set_color(Color.white)
-			equipment_image:set_color(Color.white)
+			equipment_count:set_color(self._fore_color)
+			equipment_border:set_color(self._fore_color)
+			equipment_image:set_color(self._fore_color)
 		else
 			equipment_count:set_color(Color(1,0,0))
 			equipment_border:set_color(Color(1,0,0))
@@ -1318,13 +1323,13 @@ if VoidUI.options.teammate_panels then
 			grenades_image:set_color(Color(1,0,0))
 		else
 			grenades_count:set_text(tweak_data and tweak_data.blackmarket and tweak_data.blackmarket.projectiles and tweak_data.blackmarket.projectiles[data.icon] and tweak_data.blackmarket.projectiles[data.icon].base_cooldown and "" or "x"..data.amount)
-			grenades_count:set_color(Color.white)
+			grenades_count:set_color(self._fore_color)
 			if self._ability_color then 
 				grenades_border:set_color(self._ability_color + Color.white * 0.05)
 				grenades_image:set_color(grenades_border:color())
 			else
-				grenades_border:set_color(Color.white)
-				grenades_image:set_color(Color.white)
+				grenades_border:set_color(self._fore_color)
+				grenades_image:set_color(self._fore_color)
 			end
 		end
 	end
@@ -1397,8 +1402,8 @@ if VoidUI.options.teammate_panels then
 				border:set_color(Color(1,0.8,0.8))
 				image:set_color(border:color())
 			else
-				border:set_color(Color.white)
-				image:set_color(Color.white)
+				border:set_color(self._fore_color)
+				image:set_color(self._fore_color)
 			end
 		end
 	end
@@ -1418,7 +1423,7 @@ if VoidUI.options.teammate_panels then
 				cooldown_panel:set_alpha(math.lerp(a,1,p))
 				count:set_alpha(cooldown_panel:alpha())
 				border:set_color(ability_color)
-				count:set_color(Color.white)
+				count:set_color(self._fore_color)
 				image:set_color(ability_color)
 			end)
 			cooldown_panel:set_alpha(1)

@@ -1373,7 +1373,7 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.enable_joining then
 	local update_time = 0.016666666666666666
 	function MenuManager:show_person_joining(id, nick, progress_percentage, join_start)
-		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
 			return
 		end
 		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
@@ -1511,7 +1511,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			managers.hud:make_fine_text(progress_text_shadow)
 			progress_text_shadow:set_w(panel:w())
 			progress_text_shadow:set_position(2, progress_text:y() + 2)	
-			if VoidUI.options.joining_mods and peer and peer:synced_mods() then 
+			if VoidUI.options.joining_mods and peer and peer:synced_mods() and #peer:synced_mods() > 0 then 
 				local mods_fade = panel:gradient({
 					name = "mods_fade",
 					layer = 1,
@@ -1554,7 +1554,9 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 					last_mod:set_right(modslist_panel:w())
 					table.insert(self._joining_mods, last_mod)
 				end	
-				modslist_panel:set_h(last_mod:bottom())
+				if last_mod then
+					modslist_panel:set_h(last_mod:bottom())
+				end
 			end
 			local function animation(o)
 				local center_x, center_y = panel_bg:center()
@@ -1617,7 +1619,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 		end
 	end
 	function MenuManager:update_person_joining(id, progress_percentage)
-		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
 			return
 		end
 		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
@@ -1656,7 +1658,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 	end
 	
 	function MenuManager:close_person_joining(id)
-		if not managers.hud and not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
 			return
 		end
 		local hud =	managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)

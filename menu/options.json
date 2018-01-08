@@ -124,7 +124,7 @@
 		},
 		{
 			"type" : "button",
-			"id" : "voidui_reset",
+			"id" : "reset_options",
 			"title" : "VoidUI_reset_title",
 			"description" : "VoidUI_reset_desc",
 			"callback" : "ResetOptions"
