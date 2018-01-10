@@ -9,7 +9,8 @@
 			"id" : "enable_chat",
 			"title" : "VoidUI_enable_chat_title",
 			"description" : "VoidUI_enable_chat_decs",
-			"is_parent" : true
+			"is_parent" : true,
+			"default_value" : true
 		},
 		{
 			"type" : "slider",

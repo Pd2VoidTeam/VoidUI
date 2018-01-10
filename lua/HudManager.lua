@@ -483,8 +483,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					panel._panel:set_right(panel._panel:parent():right())
 				else
 					if panel:is_waiting() then panel._panel:set_w(165 * self._mate_scale)
-					elseif panel:ai() or panel:panel():child("custom_player_panel"):child("weapons_panel"):visible() == false then panel._panel:set_w(62 * self._mate_scale)
-					elseif panel:peer_id() then panel._panel:set_w(165 * self._mate_scale)
+					elseif panel:ai() then panel._panel:set_w(VoidUI.options.mate_show == 3 and 62 * self._mate_scale or 0)
+					elseif panel:peer_id() then panel._panel:set_w(VoidUI.options.mate_show > 1 and 165 * self._mate_scale or 0)
 					else panel._panel:set_w(0) end
 					panel._panel:set_x(i == 1 and 0 or self._teammate_panels[i - 1]._panel:right() -  9 * self._mate_scale)
 				end

@@ -56,9 +56,9 @@ function VoidUIMenu:init()
 	options_bg:set_right(self._panel:w())	
 	self._options_panel = self._panel:panel({
 		name = "options_panel",
-		y = 10,
+		y = 5,
 		w = options_bg:w() - 20,
-		h = options_bg:h() - 50,
+		h = options_bg:h() - 45,
 	})
 	self._options_panel:set_right(self._panel:w() - 10)
 	self._tooltip:set_right(self._options_panel:x() - 20)
@@ -69,23 +69,36 @@ function VoidUIMenu:init()
 			h = 25,
 			layer = 2
 		})
+		local esc = " %["..utf8.to_upper(managers.controller:get_settings("pc"):get_connection("back"):get_input_name_list()[1]).."%]"
 		local title = back_button:text({
 			name = "title",
-			font_size = 23,
-			font = tweak_data.menu.pd2_medium_font,
+			font_size = 28,
+			font = tweak_data.menu.pd2_large_font,
 			align = "center",
-			text = managers.localization:text("menu_back")
+			text = managers.localization:text("menu_back"):gsub(esc, "")
 		})
 		make_fine_text(title)
-		back_button:set_size(title:w() + 10, title:h() + 5)
+		back_button:set_size(title:w() + 16, title:h() + 2)
 		title:set_center(back_button:w() / 2, back_button:h() / 2)
-		back_button:set_right(self._options_panel:right())
-		back_button:set_top(self._options_panel:bottom())
-		back_button:bitmap({
+		back_button:set_righttop(self._options_panel:right(), self._options_panel:bottom() + 2)
+		local bg = back_button:bitmap({
 			name = "bg",
-			alpha = 0
+			alpha = 0,
 		})
 		self._back_button = {type = "button", panel = back_button, callback = "Cancel", num = 0 }
+		
+		self._reset_button = self._panel:text({
+			name = "reset_button",
+			font_size = 18,
+			font = tweak_data.menu.pd2_large_font,
+			h = back_button:h(),
+			align = "left",
+			vertical = "center",
+			text = managers.localization:text("VoidUI_tooltip_reset", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message", true)}),
+			layer = 3,
+			visible = false
+		})
+		self._reset_button:set_lefttop(self._options_panel:x(), back_button:top())
 	else
 		self._button_legends = self._panel:text({
 			name = "legends",
@@ -114,6 +127,10 @@ function VoidUIMenu:init()
 		end
 		self:OpenMenu("options")
 	end
+	
+	if VoidUI.Warning == 1 then
+		self:CreateChangeWarning()
+	end
 end
 
 
@@ -123,12 +140,7 @@ function VoidUIMenu:Open()
 	for _, menu in ipairs(managers.menu._open_menus) do
 		menu.input._controller:disable()
 	end
-	managers.mouse_pointer:use_mouse({
-		mouse_move = callback(self, self, "mouse_move"),
-		mouse_press = callback(self, self, "mouse_press"),
-		mouse_release = callback(self, self, "mouse_release"),
-		id = self._mouse_id,
-	})
+
 	if not self._controller then
 		self._controller = managers.controller:create_controller("VoidUIMenu", nil, false)
 		self._controller:add_trigger("cancel", callback(self, self, "Cancel"))
@@ -137,24 +149,29 @@ function VoidUIMenu:Open()
 		self._controller:add_trigger("menu_up", callback(self, self, "MenuUp"))
 		self._controller:add_trigger("menu_right", callback(self, self, "MenuLeftRight", 1))
 		self._controller:add_trigger("menu_left", callback(self, self, "MenuLeftRight", -1))
+		self._controller:add_trigger("menu_toggle_voice_message", callback(self, self, "SetItem"))
 		if not managers.menu:is_pc_controller() then
 			self._controller:add_trigger("next_page", callback(self, self, "MenuLeftRight", 10))
 			self._controller:add_trigger("previous_page", callback(self, self, "MenuLeftRight", -10))
+		else
+			managers.mouse_pointer:use_mouse({
+				mouse_move = callback(self, self, "mouse_move"),
+				mouse_press = callback(self, self, "mouse_press"),
+				mouse_release = callback(self, self, "mouse_release"),
+				id = self._mouse_id
+			})
 		end
 	end
-	local function animation(o)
-		local a = self._panel:alpha()
-		local TOTAL_T = 0.2
-		local t = 0
-		while TOTAL_T >= t do
-			coroutine.yield()
-			t = t + 0.016666666666666666
-			self._panel:set_alpha(math.lerp(a, 1, t / TOTAL_T))
-		end
-		self._controller:enable()
-	end
+
 	self._panel:stop()
-	self._panel:animate(animation)
+	self._panel:animate(function(o)
+		local a = self._panel:alpha()
+		
+		anim_over(0.2, function (p)
+			self._panel:set_alpha(math.lerp(a, 1, p))
+		end)
+		self._controller:enable()
+	end)
 end
 function VoidUIMenu:Close()
 	self._enabled = false
@@ -163,32 +180,32 @@ function VoidUIMenu:Close()
 		self._controller:destroy()
 		self._controller = nil
 	end
-	local function animation(o)
+	VoidUI:Save()
+	
+	self._panel:stop()
+	self._panel:animate(function(o)
 		local a = self._panel:alpha()
-		local TOTAL_T = 0.2
-		local t = 0
-		while TOTAL_T >= t do
-			coroutine.yield()
-			t = t + 0.016666666666666666
-			self._panel:set_alpha(math.lerp(a, 0, t / TOTAL_T))
-		end
+		
+		anim_over(0.2, function (p)
+			self._panel:set_alpha(math.lerp(a, 0, p))
+		end)
+		
+		self._panel:set_alpha(0)
 		managers.menu._input_enabled = true
 		for _, menu in ipairs(managers.menu._open_menus) do
 			menu.input._controller:enable()
 		end
-		VoidUI:Save()
 		managers.gui_data:destroy_workspace(self._ws)
 		VoidUI.Menu = nil
 		self = nil
-	end
-	self._panel:stop()
-	self._panel:animate(animation)
+	end)
 end
 
 -- Mouse Functions
 function VoidUIMenu:mouse_move(o, x, y)
 	x, y = managers.mouse_pointer:convert_fullscreen_16_9_mouse_pos(x, y)
 	if self._open_menu then
+		managers.mouse_pointer:set_pointer_image("arrow")
 		if self._open_choice_dialog and self._open_choice_dialog.panel then
 			local selected = false
 			for i, item in pairs(self._open_choice_dialog.items) do
@@ -199,11 +216,13 @@ function VoidUIMenu:mouse_move(o, x, y)
 					item:set_color(Color.white)
 					self._open_choice_dialog.selected = i
 					selected = true
+					managers.mouse_pointer:set_pointer_image("link")
 				end
 			end
 		elseif self._open_color_dialog and self._open_color_dialog.panel then
 			if self._slider then
 				self:SetColorSlider(self._slider.slider, x, self._slider.type)
+				managers.mouse_pointer:set_pointer_image("grab")
 			else
 				for i, item in pairs(self._open_color_dialog.items) do
 					if alive(item) and item:inside(x,y) and item:child("bg"):alpha() ~= 0.1 then
@@ -212,6 +231,7 @@ function VoidUIMenu:mouse_move(o, x, y)
 						end
 						item:child("bg"):set_alpha(0.1)
 						self._open_color_dialog.selected = i
+						managers.mouse_pointer:set_pointer_image("link")
 					end
 				end
 			end
@@ -219,10 +239,16 @@ function VoidUIMenu:mouse_move(o, x, y)
 			self:SetSlider(self._slider, x)
 		elseif self._back_button and self._back_button.panel:inside(x,y) then
 			self:HighlightItem(self._back_button)
+			managers.mouse_pointer:set_pointer_image("link")
 		else
 			for _, item in pairs(self._open_menu.items) do
 				if item.enabled and item.panel:inside(x,y) and item.panel:child("bg") then
 					self:HighlightItem(item)
+					if item.type == "slider" then
+						managers.mouse_pointer:set_pointer_image("hand")
+					else
+						managers.mouse_pointer:set_pointer_image("link")
+					end
 				end
 			end
 		end
@@ -240,6 +266,7 @@ function VoidUIMenu:mouse_press(o, button, x, y)
 						VoidUI.options[parent_item.id] = i
 						parent_item.value = i
 						self:CloseMultipleChoicePanel()
+						self:CreateChangeWarning()
 					end
 				end
 			else
@@ -252,6 +279,7 @@ function VoidUIMenu:mouse_press(o, button, x, y)
 						if item:child("slider") then
 							self._slider = {slider = item, type = i}
 							self:SetColorSlider(item, x, i)
+							managers.mouse_pointer:set_pointer_image("grab")
 						else
 							self:CloseColorMenu(true)
 						end
@@ -277,6 +305,7 @@ function VoidUIMenu:mouse_release(o, button, x, y)
 				clbk(self._slider)
 			end
 			self._slider = nil
+			managers.mouse_pointer:set_pointer_image("hand")
 		end
 	end
 end
@@ -284,6 +313,9 @@ end
 
 -- Item interaction
 function VoidUIMenu:Confirm()
+	if not self._enabled then
+		return
+	end
 	if self._open_choice_dialog then
 		for i, item in pairs(self._open_choice_dialog.items) do
 			if alive(item) and self._open_choice_dialog.selected == i then
@@ -292,6 +324,7 @@ function VoidUIMenu:Confirm()
 				VoidUI.options[parent_item.id] = i
 				parent_item.value = i
 				self:CloseMultipleChoicePanel()
+				self:CreateChangeWarning()
 			end
 		end
 	elseif self._open_color_dialog and self._open_color_dialog.selected == 4 then
@@ -301,6 +334,9 @@ function VoidUIMenu:Confirm()
 	end
 end
 function VoidUIMenu:MenuDown()
+	if not self._enabled then
+		return
+	end
 	if self._open_choice_dialog then
 		if self._open_choice_dialog.selected < #self._open_choice_dialog.items then
 			if self._open_choice_dialog.selected > 0 then
@@ -336,6 +372,9 @@ function VoidUIMenu:MenuDown()
 	end
 end
 function VoidUIMenu:MenuUp()
+	if not self._enabled then
+		return
+	end
 	if self._open_choice_dialog then
 		if self._open_choice_dialog.selected > 1 then
 			self._open_choice_dialog.items[self._open_choice_dialog.selected]:set_color(Color(0.7,0.7,0.7))
@@ -367,10 +406,17 @@ function VoidUIMenu:MenuUp()
 	end
 end
 function VoidUIMenu:MenuLeftRight(change)
+	if not self._enabled then
+		return
+	end
 	if self._open_color_dialog and self._open_color_dialog.selected < 4 then
 		self:SetColorSlider(self._open_color_dialog.items[self._open_color_dialog.selected], nil, self._open_color_dialog.selected, change)
 	elseif self._open_menu and self._highlighted_item and self._highlighted_item.type == "slider" then
 		self:SetSlider(self._highlighted_item, nil, change)
+		if self._highlighted_item.callback then
+			local clbk = callback(self, self, self._highlighted_item.callback)
+			clbk(self._highlighted_item)
+		end
 	end
 end
 function VoidUIMenu:ActivateItem(item, x)
@@ -387,23 +433,39 @@ function VoidUIMenu:ActivateItem(item, x)
 		end
 	elseif item.type == "toggle" then
 		local value = not item.value
-		item.value = value
-		VoidUI.options[item.id] = value
-		item.panel:child("check"):set_visible(value)
-		if item.is_parent then
-			self:SetMenuItemsEnabled()
-		end
+		self:SetItem(item, value, self._open_menu)
 	elseif item.type == "multiple_choice" and not self._open_choice_dialog then
 		self:OpenMultipleChoicePanel(item)
 	elseif item.type == "slider" and x then
 		self._slider = item
 		self:SetSlider(item, x)
+		managers.mouse_pointer:set_pointer_image("grab")
+		self:CreateChangeWarning()
 	elseif item.type == "color_select" and not self._open_color_dialog then
 		self:OpenColorMenu(item)
 	end
 end
-function VoidUIMenu:SetMenuItemsEnabled()
-	for _, item in pairs(self._open_menu.items) do
+
+function VoidUIMenu:CreateChangeWarning()
+	if managers.hud and not self._panel:child("changed_warning") then
+		VoidUI.Warning = 1
+		local changed_warning = self._panel:text({
+			name = "changed_warning",
+			layer = 2,
+			w = 500,
+			h = 20,
+			font_size = 18,
+			font = tweak_data.menu.pd2_small_font,
+			color = Color.red,
+			align = "right",
+			text = managers.localization:text("VoidUI_warning_desc")
+		})
+		changed_warning:set_right(self._options_panel:left() - 15)
+		changed_warning:set_bottom(self._panel:h())
+	end
+end
+function VoidUIMenu:SetMenuItemsEnabled(menu)
+	for _, item in pairs(menu.items) do
 		local enabled, parents = true, item.parent
 		if parents and type(parents) == "string" then
 			enabled = VoidUI.options[parents]
@@ -416,7 +478,14 @@ function VoidUIMenu:SetMenuItemsEnabled()
 		end
 		if item.panel and enabled ~= nil and enabled ~= item.enabled then
 			item.enabled = enabled
-			item.panel:set_alpha(enabled and 1 or 0.5)
+			item.panel:stop()
+			item.panel:animate(function(o)
+				local alpha = o:alpha()		
+				anim_over(0.2, function (p)
+					o:set_alpha(math.lerp(alpha, enabled and 1 or 0.5, p))
+				end)
+				o:set_alpha(enabled and 1 or 0.5)
+			end)
 		end
 	end
 end
@@ -427,15 +496,36 @@ function VoidUIMenu:HighlightItem(item)
 	if self._highlighted_item then
 		self:UnhighlightItem(self._highlighted_item)
 	end
-	item.panel:child("bg"):set_alpha(0.3)
+	item.panel:child("bg"):stop()
+	item.panel:child("bg"):animate(function(o)
+		local alpha = o:alpha()		
+		anim_over(0.2, function (p)
+			o:set_alpha(math.lerp(alpha, 0.3, p))
+		end)
+		o:set_alpha(0.3)
+	end)
 	self._highlighted_item = item
+	
 	if self._highlighted_item.desc then
 		self._tooltip:set_text(self._highlighted_item.desc)
+	end
+	
+	if self._reset_button and self._highlighted_item.value ~= nil then
+		self._reset_button:set_visible(true)
+	else
+		self._reset_button:set_visible(false)
 	end
 end
 
 function VoidUIMenu:UnhighlightItem(item)
-	item.panel:child("bg"):set_alpha(0)
+	item.panel:child("bg"):stop()
+	item.panel:child("bg"):animate(function(o)
+		local alpha = o:alpha()		
+		anim_over(0.20, function (p)
+			o:set_alpha(math.lerp(alpha, 0, p))
+		end)
+		o:set_alpha(0)
+	end)
 	self._highlighted_item = nil
 end
 
@@ -448,6 +538,57 @@ function VoidUIMenu:Cancel()
 		self:OpenMenu(self._open_menu.parent_menu, true)
 	else
 		self:Close()
+	end
+end
+function VoidUIMenu:SetItem(item, value, menu)
+	if item ==nil or type(item) ~= "table" then 
+		item = self._highlighted_item
+		value = item.default_value
+		menu = self._open_menu
+	end
+	if item and type(item) == "table" and item.default_value ~= nil then
+		if item.type == "toggle" then
+			item.value = value
+			VoidUI.options[item.id] = value
+			
+			item.panel:child("check"):stop()
+			item.panel:child("check"):animate(function(o)
+				local alpha = o:alpha()		
+				local w, h = o:size()
+				local check = item.panel:child("check_bg")
+				anim_over(0.1, function (p)
+					o:set_alpha(math.lerp(alpha, value and 1 or 0, p))
+					o:set_size(math.lerp(w, value and check:w() or check:w() * 2, p), math.lerp(h, value and check:h() or check:h() * 2, p))
+					o:set_center(check:center())
+				end)
+				o:set_alpha(value and 1 or 0)
+			end)
+		elseif item.type == "slider" then
+			value = string.format("%." .. (item.step or 0) .. "f", value)
+			local percentage = (value - item.min) / (item.max - item.min)
+			item.panel:child("value_bar"):set_w(math.max(1,item.panel:w() * percentage))
+			item.panel:child("value_text"):set_text(item.percentage and math.floor(value * 100).."%" or value ..(item.suffix and item.suffix or ""))
+			value = tonumber(value)
+			item.value = value
+			VoidUI.options[item.id] = value
+		elseif item.type == "multiple_choice" then
+			item.panel:child("title_selected"):set_text(item.items[value])
+			item.value = value
+			VoidUI.options[item.id] = value
+		elseif item.type == "color_select" then
+			value = Color(unpack(value))
+			item.panel:child("color"):set_color(value)
+			item.value = value
+			VoidUI.options[item.id] = {value.red, value.green, value.blue}
+		end
+		self:CreateChangeWarning()
+		if item.callback then
+			local clbk = callback(self, self, item.callback)
+			clbk(item)
+		end
+		if item.is_parent then
+			self:SetMenuItemsEnabled(menu)
+		end
 	end
 end
 --Menu Creation and activation
@@ -565,7 +706,7 @@ function VoidUIMenu:GetMenuFromJson(path)
 					parent = item.parent
 				})	
 			elseif item_type == "color_select" then
-				value = Color(value[1], value[2], value[3])
+				value = Color(unpack(value))
 				
 				self:CreateColorSelect({
 					menu_id = menu_id,
@@ -619,23 +760,26 @@ function VoidUIMenu:OpenMenu(menu, close)
 	end
 	local prev_menu = self._open_menu
 	local next_menu = self._menus[menu]
-	local function animation(o)
+	self._tooltip:set_text("")
+	if prev_menu then
+		prev_menu.panel:stop()
+	end
+	next_menu.panel:stop()
+	next_menu.panel:animate(function(o)
 		local x = next_menu.panel:x()
 		local prev_x 
 		if prev_menu then
 			prev_x = prev_menu.panel:x()
 		end
 		next_menu.panel:set_visible(true)
-		local TOTAL_T = 0.2
-		local t = 0
-		while TOTAL_T >= t do
-			coroutine.yield()
-			t = t + 0.016666666666666666
-			next_menu.panel:set_x(math.lerp(x, 0, t / TOTAL_T))
+		
+		anim_over(0.1, function (p)
+			next_menu.panel:set_x(math.lerp(x, 0, p))
 			if prev_menu then
-				prev_menu.panel:set_x(math.lerp(prev_x, close and prev_menu.panel:w() or -prev_menu.panel:w(), t / TOTAL_T))
+				prev_menu.panel:set_x(math.lerp(prev_x, close and prev_menu.panel:w() or -prev_menu.panel:w(), p))
 			end
-		end
+		end)
+		
 		next_menu.panel:set_x(0)
 		local opened
 		if prev_menu then 
@@ -660,13 +804,7 @@ function VoidUIMenu:OpenMenu(menu, close)
 				end
 			end
 		end
-	end
-	self._tooltip:set_text("")
-	if prev_menu then
-		prev_menu.panel:stop()
-	end
-	next_menu.panel:stop()
-	next_menu.panel:animate(animation)
+	end)
 end
 
 function VoidUIMenu:GetLastPosInMenu(menu_id)
@@ -756,18 +894,6 @@ function VoidUIMenu:CreateButton(params)
 	if w > title:w() then
 		title:set_font_size(title:font_size() * (title:w()/w))
 	end
-	if params.next_menu then
-		local next = button_panel:bitmap({
-			name = "next",
-			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {793,150,40,41},
-			y = 6,
-			w = 6,
-			h = 12,
-			layer = 1	
-		})
-		next:set_right(button_panel:w() - 10 - w)
-	end
 	local button = {
 		panel = button_panel,
 		id = params.id,
@@ -830,17 +956,19 @@ function VoidUIMenu:CreateToggle(params)
 		texture_rect = {752,150,40,41},
 		x = 2,
 		y = 2,
-		w = 22,
-		h = 21,
-		visible = params.value,
+		w = params.value and 22 or 44,
+		h = params.value and 21 or 42,
+		alpha = params.value and 1 or 0,
 		layer = 2	
 	})
+	check:set_center(check_bg:center())
 	local toggle = {
 		panel = toggle_panel,
 		type = "toggle",
 		id = params.id,
 		enabled = params.enabled,
 		value = params.value,
+		default_value = params.default_value,
 		parent = params.parent,
 		is_parent = params.is_parent,
 		desc = params.description,
@@ -904,6 +1032,7 @@ function VoidUIMenu:CreateSlider(params)
 		type = "slider",
 		enabled = params.enabled,
 		value = params.value,
+		default_value = params.default_value,
 		percentage = params.percentage,
 		callback = params.callback,
 		max = params.max,
@@ -988,6 +1117,7 @@ function VoidUIMenu:CreateMultipleChoice(params)
 		enabled = params.enabled,
 		items = params.items,
 		value = params.value,
+		default_value = params.default_value,
 		parent = params.parent,
 		desc = params.description,
 		num = #self._menus[params.menu_id].items
@@ -1001,15 +1131,19 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 		y = item.panel:bottom(),
 		w = item.panel:w(),
 		h = 4 + (#item.items * 25),
-		layer = 20
+		alpha = 0,
+		layer = 20,
+		rotation = 360,
 	})
-	if choice_dialog:bottom() > item.panel:parent():h() then
+	if choice_dialog:bottom() > self._options_panel:h() then
 		choice_dialog:set_bottom(item.panel:top())
 	end
-	choice_dialog:bitmap({
+	local border = choice_dialog:bitmap({
 		name = "border",
 		alpha = 0.3,
-		layer = 1
+		layer = 1,
+		h = 0,
+		rotation = 360,
 	})
 	choice_dialog:bitmap({
 		name = "blur_bg",
@@ -1019,8 +1153,9 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 		w = choice_dialog:w(),
 		h = choice_dialog:h(),
 		layer = 0,
+		rotation = 360
 	})
-	choice_dialog:bitmap({
+	local bg = choice_dialog:bitmap({
 		name = "bg",
 		alpha = 0.7,
 		color = Color.black,
@@ -1029,6 +1164,7 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 		y = 2,
 		w = choice_dialog:w() - 4,
 		h = choice_dialog:h() - 4,
+		rotation = 360
 	})
 	self._open_choice_dialog = { parent_item = item, panel = choice_dialog, selected = item.value, items = {} }
 	for i, choice in pairs(item.items) do
@@ -1043,7 +1179,8 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 			h = 25,
 			color = item.value == i and Color.white or Color(0.6,0.6,0.6),
 			vertical = "center",
-			layer = 3
+			layer = 3,
+			rotation = 360
 		})
 		local w = select(3, title:text_rect())
 		if w > title:w() then
@@ -1051,10 +1188,36 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 		end
 		table.insert(self._open_choice_dialog.items, title)
 	end
+	choice_dialog:animate(function(o)	
+		local h = o:h()
+		anim_over(0.1, function (p)
+			o:set_alpha(math.lerp(0, 1, p))
+			border:set_h(math.lerp(0, h, p))
+			bg:set_h(border:h() - 4)
+		end)
+		o:set_alpha(1)
+		border:set_h(h)
+		bg:set_h(border:h() - 4)
+	end)
 end
 function VoidUIMenu:CloseMultipleChoicePanel()
-	self._open_choice_dialog.parent_item.panel:parent():remove(self._open_choice_dialog.panel)
-	self._open_choice_dialog = nil
+	self._open_choice_dialog.panel:stop()
+	self._open_choice_dialog.panel:animate(function(o)	
+		local h = o:h()
+		local alpha = o:alpha()
+		local border = o:child("border")
+		local bg = o:child("bg")
+		anim_over(0.1, function (p)
+			o:set_alpha(math.lerp(alpha, 0, p))
+			border:set_h(math.lerp(h, 0, p))
+			bg:set_h(border:h() - 4)
+		end)
+		o:set_alpha(0)
+		border:set_h(h)
+		bg:set_h(border:h() - 4)
+		self._open_choice_dialog.parent_item.panel:parent():remove(self._open_choice_dialog.panel)
+		self._open_choice_dialog = nil
+	end)
 end
 
 -- Custom Color Items
@@ -1112,6 +1275,7 @@ function VoidUIMenu:CreateColorSelect(params)
 		type = "color_select",
 		enabled = params.enabled,
 		value = params.value,
+		default_value = params.default_value,
 		parent = params.parent,
 		desc = params.description,
 		num = #self._menus[params.menu_id].items
@@ -1126,15 +1290,17 @@ function VoidUIMenu:OpenColorMenu(item)
 		y = item.panel:bottom(),
 		w = item.panel:w(),
 		h = 114,
-		layer = 20
+		layer = 20,
+		alpha = 0
 	})
 	if dialog:bottom() > item.panel:parent():h() then
 		dialog:set_bottom(item.panel:top())
 	end
-	dialog:bitmap({
+	local border = dialog:bitmap({
 		name = "border",
 		alpha = 0.3,
-		layer = 1
+		layer = 1,
+		h = 0
 	})
 	dialog:bitmap({
 		name = "blur_bg",
@@ -1145,7 +1311,7 @@ function VoidUIMenu:OpenColorMenu(item)
 		h = dialog:h(),
 		layer = 0,
 	})
-	dialog:bitmap({
+	local bg = dialog:bitmap({
 		name = "bg",
 		alpha = 0.7,
 		color = Color.black,
@@ -1153,7 +1319,7 @@ function VoidUIMenu:OpenColorMenu(item)
 		x = 2,
 		y = 2,
 		w = dialog:w() - 4,
-		h = dialog:h() - 4,
+		h = 0,
 	})	
 	local color = item.value
 	local red_panel = dialog:panel({
@@ -1307,6 +1473,18 @@ function VoidUIMenu:OpenColorMenu(item)
 		layer = 3,
 	})
 	self._open_color_dialog = { parent_item = item, panel = dialog, color = item.value, selected = 1,  items = {red_panel, green_panel, blue_panel, accept_panel} }
+	
+	dialog:animate(function(o)	
+		local h = o:h()
+		anim_over(0.1, function (p)
+			o:set_alpha(math.lerp(0, 1, p))
+			border:set_h(math.lerp(0, h, p))
+			bg:set_h(border:h() - 4)
+		end)
+		o:set_alpha(1)
+		border:set_h(h)
+		bg:set_h(border:h() - 4)
+	end)
 end
 function VoidUIMenu:SetColorSlider(item, x, type, add)
 	local panel_min, panel_max = item:world_x(), item:world_x() + item:w() 
@@ -1319,42 +1497,74 @@ function VoidUIMenu:SetColorSlider(item, x, type, add)
 	end
 	local value = string.format("%.0f", 0 + (255 - 0) * percentage)
 	value_bar:set_w(math.max(1,item:w() * percentage))
-	value_bar:set_color(Color(type == 1 and value /255 or 0, type == 2 and value / 255 or 0, type == 3 and value / 255 or 0))
+	value_bar:set_color(Color(255, type == 1 and value or 0, type == 2 and value or 0, type == 3 and value or 0) / 255)
 	value_text:set_text(value)
 	local color = self._open_color_dialog.color
-	self._open_color_dialog.color = Color(type == 1 and value /255 or color.red, type == 2 and value / 255 or color.green, type == 3 and value / 255 or color.blue)
+	self._open_color_dialog.color = Color(type == 1 and value / 255 or color.red, type == 2 and value / 255 or color.green, type == 3 and value / 255 or color.blue)
 	self._open_color_dialog.parent_item.panel:child("color"):set_color(self._open_color_dialog.color)
 end
-function VoidUIMenu:CloseColorMenu(save)
-	self._open_color_dialog.parent_item.panel:parent():remove(self._open_color_dialog.panel)
-	if save then
-		local color = self._open_color_dialog.color
-		VoidUI.options[self._open_color_dialog.parent_item.id] = {color.red, color.green, color.blue}
-		self._open_color_dialog.parent_item.value = color
-	end
-	local option_color = VoidUI.options[self._open_color_dialog.parent_item.id]
-	self._open_color_dialog.parent_item.panel:child("color"):set_color(Color(option_color[1], option_color[2], option_color[3]))
-	self._open_color_dialog = nil
+
+function VoidUIMenu:CloseColorMenu(save)	
+	self._open_color_dialog.panel:stop()
+	self._open_color_dialog.panel:animate(function(o)	
+		local h = o:h()
+		local alpha = o:alpha()
+		local border = o:child("border")
+		local bg = o:child("bg")
+		anim_over(0.1, function (p)
+			o:set_alpha(math.lerp(alpha, 0, p))
+			border:set_h(math.lerp(h, 0, p))
+			bg:set_h(border:h() - 4)
+		end)
+		o:set_alpha(0)
+		border:set_h(h)
+		bg:set_h(border:h() - 4)
+		self._open_color_dialog.parent_item.panel:parent():remove(self._open_color_dialog.panel)
+		if save then
+			local color = self._open_color_dialog.color
+			VoidUI.options[self._open_color_dialog.parent_item.id] = {color.red, color.green, color.blue}
+			self._open_color_dialog.parent_item.value = color
+			self:CreateChangeWarning()
+		end
+		local option_color = VoidUI.options[self._open_color_dialog.parent_item.id]
+		self._open_color_dialog.parent_item.panel:child("color"):set_color(Color(option_color[1], option_color[2], option_color[3]))
+		self._open_color_dialog = nil
+	end)
 end
 
 --Callbacks
 function VoidUIMenu:ResetOptions()
-	local buttons = {
-		[1] = { 
-			text = managers.localization:text("dialog_yes"), 
-			callback = function(self)
-				VoidUI:DefaultConfig()
-			end,
-			},
-		[2] = { text = managers.localization:text("dialog_no"), is_cancel_button = true, }
+	local buttons = {{ 
+		text = managers.localization:text("dialog_yes"), 
+		callback = function()
+			VoidUI:DefaultConfig()
+			for _, menu in pairs(self._menus) do
+				for _, item in pairs(menu.items) do 
+					if item.value ~= nil and item.default_value ~= nil then
+						self:SetItem(item, VoidUI.options[item.id], menu)
+					end
+				end
+			end
+			self._controller:enable()
+		end},
+		{ text = managers.localization:text("dialog_no"), is_cancel_button = true, callback = function() self._controller:enable() end}
 	}
+	self._controller:disable()
 	QuickMenu:new(managers.localization:text("VoidUI_reset_title"), managers.localization:text("VoidUI_reset_confirm"), buttons, true)
 end
 
 function VoidUIMenu:SetGlobalHudscale(slider)
 	local value = slider.value
 	local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale", "challanges_scale"}
-	for _ ,scale in pairs(scales) do
-		VoidUI.options[scale] = tonumber(value)
+	for _, menu in pairs(self._menus) do
+		for _, item in pairs(menu.items) do 
+			if item.id then
+				for _, scale in pairs(scales) do 
+					if scale == item.id then
+						self:SetItem(item, value, menu)
+					end
+				end
+			end
+		end
 	end
 end

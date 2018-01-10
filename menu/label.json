@@ -51,7 +51,7 @@
 			"parent" : "enable_labels",
 			"title" : "VoidUI_label_upper_title",
 			"description" : "VoidUI_label_upper_desc",
-			"default_value" : true
+			"default_value" : false
 		},
 		{
 			"type" : "toggle",

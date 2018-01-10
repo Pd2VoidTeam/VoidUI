@@ -1108,9 +1108,13 @@ if VoidUI.options.teammate_panels then
 		local max_total = max
 		local peer = managers.network:session():peer(self:peer_id())
 		local outfit = peer and peer:blackmarket_outfit()
-		if VoidUI.options.totalammo == true and (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
-			current_left = current_left - current_clip
-			max = max - max_clip
+		if (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
+			if VoidUI.options.totalammo == true then
+				current_left = current_left - current_clip
+				max = max - max_clip
+			end
+		else
+			max_total = 2
 		end
 
 		ammo_amount:set_text(string.gsub("000", "0", "", string.len(tostring(current_clip))).. tostring(current_clip).."/"..string.gsub("000", "0", "", string.len(tostring(current_left)))..tostring(current_left)) 

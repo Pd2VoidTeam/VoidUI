@@ -187,7 +187,7 @@
 			"description" : "VoidUI_ping_frequency_desc",
 			"parent" : ["enable_stats", "scoreboard_ping", "scoreboard"],
 			"suffix" : "s",
-			"default_value" : 1,
+			"default_value" : 2,
 			"max" : 10,
 			"min" : 1,
 			"step" : 0

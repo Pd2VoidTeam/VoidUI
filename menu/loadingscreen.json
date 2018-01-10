@@ -98,7 +98,7 @@
 			"id" : "loading_briefing",
 			"title" : "VoidUI_loading_briefing_title",
 			"description" : "VoidUI_loading_briefing_desc",
-			"default_value" : true,
+			"default_value" : false,
 			"parent" : "enable_loadingscreen"
 		}
 		

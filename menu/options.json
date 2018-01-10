@@ -104,6 +104,13 @@
 			"next_menu" : "loadingscreen"
 		},
 		{
+			"type" : "divider"
+		},
+		{
+			"type" : "label",
+			"title"	: "VoidUI_extras"
+		},
+		{
 			"type" : "toggle",
 			"id" : "outlines",
 			"title" : "VoidUI_outlines_title",

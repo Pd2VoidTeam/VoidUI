@@ -207,6 +207,19 @@
 			"title" : "VoidUI_mate_interact_title",
 			"description" : "VoidUI_mate_interact_desc",
 			"default_value" : true
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "mate_show",
+			"parent" : "teammate_panels",
+			"title" : "VoidUI_mate_show_title",
+			"description" : "VoidUI_mate_show_desc",
+			"items" : [
+				"VoidUI_disabled", 
+				"VoidUI_not_ai", 
+				"VoidUI_show"
+			],
+			"default_value" : 3
 		}
 	]
 }

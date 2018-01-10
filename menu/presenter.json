@@ -46,7 +46,7 @@
 			"parent" : "enable_presenter",
 			"title" : "VoidUI_presenter_sound_title",
 			"description" : "VoidUI_presenter_sound_desc",
-			"default_value" : true
+			"default_value" : false
 		},
 		{
 			"type" : "divider"

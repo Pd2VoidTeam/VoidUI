@@ -209,6 +209,7 @@ function VoidUI:DefaultConfig()
 		chat_copy = 5,
 		main_health = 2,
 		mate_health = 2,
+		mate_show = 3,
 		chattime = 1,
 		main_armor = 2,
 		mate_armor = 1,
@@ -245,7 +246,7 @@ end )
 function VoidUI:GetColor(name)
 	if VoidUI.options[name] then
 		local color = VoidUI.options[name]
-		return Color(color[1], color[2], color[3])
+		return Color(unpack(color))
 	else
 		return Color.white
 	end

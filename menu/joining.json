@@ -48,7 +48,7 @@
 				"VoidUI_joining_anim_grow",
 				"VoidUI_joining_anim_full"
 			]
-			"default_value" : 3
+			"default_value" : 4
 		},
 		{
 			"type" : "toggle",
