@@ -5,6 +5,16 @@ local function make_fine_text(text_obj)
 	text_obj:set_position(math.round(text_obj:x()), math.round(text_obj:y()))
 end	
 
+function do_animation(TOTAL_T, clbk)
+	local t = 0
+	while t < TOTAL_T do
+		coroutine.yield() 
+		t = t + TimerManager:main():delta_time()
+		clbk(t / TOTAL_T, t)
+	end
+	clbk(1, TOTAL_T)
+end
+
 VoidUIMenu = VoidUIMenu or class()
 function VoidUIMenu:init()
 	self._ws = managers.gui_data:create_fullscreen_16_9_workspace()
@@ -167,7 +177,7 @@ function VoidUIMenu:Open()
 	self._panel:animate(function(o)
 		local a = self._panel:alpha()
 		
-		anim_over(0.2, function (p)
+		do_animation(0.2, function (p)
 			self._panel:set_alpha(math.lerp(a, 1, p))
 		end)
 		self._controller:enable()
@@ -186,7 +196,7 @@ function VoidUIMenu:Close()
 	self._panel:animate(function(o)
 		local a = self._panel:alpha()
 		
-		anim_over(0.2, function (p)
+		do_animation(0.2, function (p)
 			self._panel:set_alpha(math.lerp(a, 0, p))
 		end)
 		
@@ -481,7 +491,7 @@ function VoidUIMenu:SetMenuItemsEnabled(menu)
 			item.panel:stop()
 			item.panel:animate(function(o)
 				local alpha = o:alpha()		
-				anim_over(0.2, function (p)
+				do_animation(0.2, function (p)
 					o:set_alpha(math.lerp(alpha, enabled and 1 or 0.5, p))
 				end)
 				o:set_alpha(enabled and 1 or 0.5)
@@ -499,7 +509,7 @@ function VoidUIMenu:HighlightItem(item)
 	item.panel:child("bg"):stop()
 	item.panel:child("bg"):animate(function(o)
 		local alpha = o:alpha()		
-		anim_over(0.2, function (p)
+		do_animation(0.2, function (p)
 			o:set_alpha(math.lerp(alpha, 0.3, p))
 		end)
 		o:set_alpha(0.3)
@@ -512,7 +522,7 @@ function VoidUIMenu:HighlightItem(item)
 	
 	if self._reset_button and self._highlighted_item.value ~= nil then
 		self._reset_button:set_visible(true)
-	else
+	elseif self._reset_button and self._highlighted_item.value == nil then
 		self._reset_button:set_visible(false)
 	end
 end
@@ -521,7 +531,7 @@ function VoidUIMenu:UnhighlightItem(item)
 	item.panel:child("bg"):stop()
 	item.panel:child("bg"):animate(function(o)
 		local alpha = o:alpha()		
-		anim_over(0.20, function (p)
+		do_animation(0.20, function (p)
 			o:set_alpha(math.lerp(alpha, 0, p))
 		end)
 		o:set_alpha(0)
@@ -556,7 +566,7 @@ function VoidUIMenu:SetItem(item, value, menu)
 				local alpha = o:alpha()		
 				local w, h = o:size()
 				local check = item.panel:child("check_bg")
-				anim_over(0.1, function (p)
+				do_animation(0.1, function (p)
 					o:set_alpha(math.lerp(alpha, value and 1 or 0, p))
 					o:set_size(math.lerp(w, value and check:w() or check:w() * 2, p), math.lerp(h, value and check:h() or check:h() * 2, p))
 					o:set_center(check:center())
@@ -773,7 +783,7 @@ function VoidUIMenu:OpenMenu(menu, close)
 		end
 		next_menu.panel:set_visible(true)
 		
-		anim_over(0.1, function (p)
+		do_animation(0.1, function (p)
 			next_menu.panel:set_x(math.lerp(x, 0, p))
 			if prev_menu then
 				prev_menu.panel:set_x(math.lerp(prev_x, close and prev_menu.panel:w() or -prev_menu.panel:w(), p))
@@ -1190,7 +1200,7 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 	end
 	choice_dialog:animate(function(o)	
 		local h = o:h()
-		anim_over(0.1, function (p)
+		do_animation(0.1, function (p)
 			o:set_alpha(math.lerp(0, 1, p))
 			border:set_h(math.lerp(0, h, p))
 			bg:set_h(border:h() - 4)
@@ -1207,7 +1217,7 @@ function VoidUIMenu:CloseMultipleChoicePanel()
 		local alpha = o:alpha()
 		local border = o:child("border")
 		local bg = o:child("bg")
-		anim_over(0.1, function (p)
+		do_animation(0.1, function (p)
 			o:set_alpha(math.lerp(alpha, 0, p))
 			border:set_h(math.lerp(h, 0, p))
 			bg:set_h(border:h() - 4)
@@ -1476,7 +1486,7 @@ function VoidUIMenu:OpenColorMenu(item)
 	
 	dialog:animate(function(o)	
 		local h = o:h()
-		anim_over(0.1, function (p)
+		do_animation(0.1, function (p)
 			o:set_alpha(math.lerp(0, 1, p))
 			border:set_h(math.lerp(0, h, p))
 			bg:set_h(border:h() - 4)
@@ -1511,7 +1521,7 @@ function VoidUIMenu:CloseColorMenu(save)
 		local alpha = o:alpha()
 		local border = o:child("border")
 		local bg = o:child("bg")
-		anim_over(0.1, function (p)
+		do_animation(0.1, function(p)
 			o:set_alpha(math.lerp(alpha, 0, p))
 			border:set_h(math.lerp(h, 0, p))
 			bg:set_h(border:h() - 4)
@@ -1531,7 +1541,6 @@ function VoidUIMenu:CloseColorMenu(save)
 		self._open_color_dialog = nil
 	end)
 end
-
 --Callbacks
 function VoidUIMenu:ResetOptions()
 	local buttons = {{ 

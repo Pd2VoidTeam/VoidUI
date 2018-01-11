@@ -141,7 +141,7 @@
 			"parent" : "enable_waypoints",
 			"title" : "VoidUI_waypoint_offscreen_title",
 			"description" : "VoidUI_waypoint_offscreen_desc",
-			"default_value" : true
+			"default_value" : false
 		},
 		{
 			"type" : "slider",

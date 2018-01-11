@@ -56,7 +56,7 @@
 			"title" : "VoidUI_joining_mods_title",
 			"description" : "VoidUI_joining_mods_desc",
 			"is_parent" : true,
-			"default_value" : true,
+			"default_value" : false,
 			"parent" : "enable_joining"
 		},
 		{

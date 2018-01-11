@@ -58,6 +58,7 @@ Version 1.1.1 (2017.11.03)
 - Fixed a crash related to stopping ai when custom name labels are disabled
 - Fixed crash when AI returns from custody
 - Fixed crash related to AI getting downed while the scoreboard is disabled
+- Fixed blackscreen not displaying the correct skip button when using a controller
 - Fixed a crash with teammate interactions when the player panels are disabled
 - Fixed a crash that could occur when quiting the game at the same time the hostage count gets updated
 - Fixed a crash related to trading jokers

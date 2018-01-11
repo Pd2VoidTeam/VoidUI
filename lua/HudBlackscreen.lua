@@ -32,7 +32,7 @@ if VoidUI.options.enable_blackscreen then
 			mid_text:set_center_x(self._blackscreen_panel:center_x())
 			mid_text:set_center_y(self._blackscreen_panel:h() / 2.5)
 			local is_server = Network:is_server()
-			local continue_button = managers.menu:is_pc_controller() and "ENTER" or nil
+			local continue_button = managers.menu:is_pc_controller() and "ENTER" or managers.localization:get_default_macro("BTN_A")
 			local text = managers.localization:to_upper_text(VoidUI.options.blackscreen_time > 0 and "hud_skip_blackscreen" or "VoidUI_skip_blackscreen", {BTN_ACCEPT = continue_button})
 			local skip_text = self._blackscreen_panel:text({
 				name = "skip_text",
