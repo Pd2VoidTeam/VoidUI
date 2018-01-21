@@ -61,6 +61,7 @@ Version 1.1.1 (2017.11.03)
 - Fixed blackscreen not displaying the correct skip button when using a controller
 - Fixed a crash with teammate interactions when the player panels are disabled
 - Fixed a crash that could occur when quiting the game at the same time the hostage count gets updated
+- Fixed a crash related to skills and perk-decks
 - Fixed a crash related to trading jokers
 
 Version 1.1 (2017.10.15)

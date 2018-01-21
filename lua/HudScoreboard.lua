@@ -1563,7 +1563,7 @@ if VoidUI.options.enable_stats then
 							skillpoints = skillpoints + skills[i]
 						end
 						skills_text:set_color(skillpoints > 120 and Color.red or Color.white)
-						perk_count:set_text(outfit.skills.specializations[2] .. "/9")
+						perk_count:set_text((outfit.skills.specializations[2] or "0") .. "/9")
 						local icon, rect = tweak_data.hud_icons:get_texture("pd2_question")
 						if tweak_data.skilltree.specializations[tonumber(outfit.skills.specializations[1])] then
 							icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))							

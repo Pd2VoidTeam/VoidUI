@@ -213,7 +213,7 @@ if VoidUI.options.enable_blackscreen then
 			if level_data then
 				local level_text = job_panel:text({
 					name = "level_text",
-					text = VoidUI.options.blackscreen_map and managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id) or "",
+					text = VoidUI.options.blackscreen_map and managers.localization:to_upper_text(level_data.name_id) or "",
 					font = tweak_data.menu.pd2_large_font,
 					font_size = 50,
 					align = "center",

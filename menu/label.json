@@ -129,7 +129,7 @@
 			"title" : "VoidUI_waypoint_scale_title",
 			"description" : "VoidUI_waypoint_scale_desc",
 			"percentage" : true,
-			"default_value" : 1,
+			"default_value" : 0.8,
 			"max" : 2,
 			"min" : 0.65,
 			"step" : 2

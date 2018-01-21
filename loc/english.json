@@ -284,9 +284,9 @@
 	"VoidUI_enable_challanges_desc" : "Enable the Void UI challenge notifications",
 	"VoidUI_hint_challanges_desc" : "Set the scale of the challenge notification panels",
 	
-	"VoidUI_tag_team_owner" : "You tagged $NAME",
-	"VoidUI_tag_team_owner_joker" : "You tagged $NAME's Convert",
-	"VoidUI_tag_team_tagged" : "$NAME tagged you",
+	"VoidUI_tag_team_owner" : "You tagged $NAME!",
+	"VoidUI_tag_team_owner_joker" : "You tagged the convert of $NAME!",
+	"VoidUI_tag_team_tagged" : "$NAME tagged you!",
 	
 	"VoidUI_subtitles_title" : "Subtitles",
 	"VoidUI_subtitles_desc" : "Options related to subtitles",

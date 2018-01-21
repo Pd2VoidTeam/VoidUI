@@ -794,7 +794,7 @@ if VoidUI.options.teammate_panels then
 				local outfit = peer and peer:blackmarket_outfit()
 				local skills = outfit and outfit.skills
 				skills = skills and skills.skills
-				self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (tonumber(skills[14]) >= 3 and 1 or 0)
+				self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (tonumber(skills[14] or 0) >= 3 and 1 or 0)
 				self:reset_downs()
 			else
 				name:set_bottom(health_panel:top() - 1)
@@ -1884,7 +1884,7 @@ if VoidUI.options.teammate_panels then
 				local has_deployable = outfit.deployable and outfit.deployable ~= "nil"
 				self._wait_panel:child("deploy"):child("amount"):set_text(has_deployable and "x" .. outfit.deployable_amount or "")
 				self._wait_panel:child("throw"):child("amount"):set_text("x" .. managers.player:get_max_grenades(peer:grenade_id()))
-				self._wait_panel:child("perk"):child("amount"):set_text(outfit.skills.specializations[2] .. "/9")
+				self._wait_panel:child("perk"):child("amount"):set_text(outfit.skills.specializations[2] or "" .. "/9")
 				local deploy_image = self._wait_panel:child("deploy"):child("icon")
 				if has_deployable then
 					set_icon_data(deploy_image, tweak_data.equipments[outfit.deployable].icon)

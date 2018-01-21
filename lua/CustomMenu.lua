@@ -205,9 +205,6 @@ function VoidUIMenu:Close()
 		for _, menu in ipairs(managers.menu._open_menus) do
 			menu.input._controller:enable()
 		end
-		managers.gui_data:destroy_workspace(self._ws)
-		VoidUI.Menu = nil
-		self = nil
 	end)
 end
 
