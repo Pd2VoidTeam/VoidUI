@@ -8,19 +8,13 @@
 	"priority" : 10,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_interact",
-			"title" : "VoidUI_interact",
-			"priority" : 18
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_interact",
 			"title" : "VoidUI_enable_interact_title",
 			"description" : "VoidUI_enable_interact_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "enable_interact"
-			"priority" : 17
+			"priority" : 18
 		},
 		{
 			"type" : "slider",
@@ -34,7 +28,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true,
-			"priority" : 16
+			"priority" : 17
 		},
 		{
 			"type" : "slider",
@@ -48,7 +42,7 @@
 			"min" : -340,
 			"step" : 1, 
 			"localized" :  true
-			"priority" : 15
+			"priority" : 16
 		},
 		{
 			"type" : "toggle",
@@ -57,18 +51,12 @@
 			"description" : "VoidUI_interacttime_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "show_interact"
-			"priority" : 14
+			"priority" : 15
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 13
-		},
-		{
-			"type" : "button",
-			"id" : "voidui_suspicion",
-			"title" : "VoidUI_suspicion",
-			"priority" : 12
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -77,7 +65,7 @@
 			"description" : "VoidUI_enable_suspicion_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "enable_suspicion"
-			"priority" : 11
+			"priority" : 13
 		},
 		{
 			"type" : "slider",
@@ -91,7 +79,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true,
-			"priority" : 10
+			"priority" : 12
 		},
 		{
 			"type" : "slider",
@@ -105,8 +93,7 @@
 			"min" : -300,
 			"step" : 1,
 			"localized" :  true,
-			"priority" : 9
+			"priority" : 11
 		}
-		
 	]
 }
