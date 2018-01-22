@@ -8,12 +8,6 @@
 	"priority" : 18,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_labels",
-			"title" : "VoidUI_label",
-			"priority" : 16
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_labels",
 			"title" : "VoidUI_enable_labels_title",
@@ -129,12 +123,6 @@
 			"priority" : 5
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_waypoints",
-			"title" : "VoidUI_waypoints",
-			"priority" : 4
-		},
-		{
 			"type" : "slider",
 			"id" : "waypoint_scale",
 			"title" : "VoidUI_waypoint_scale_title",
@@ -171,6 +159,5 @@
 			"localized" :  true
 			"priority" : 1
 		}
-		
 	]
 }
