@@ -5,7 +5,7 @@
 	"description" : "VoidUI_hudteammate_desc",
 	"back_callback" : "VoidUI_save",
 	"localized" :  true,
-	"priority" : 20,
+	"priority" : 19,
 	"items" : [
 		{
 			"type" : "toggle",
@@ -14,18 +14,12 @@
 			"description" : "VoidUI_teammate_panels_decs",
 			"callback" : "toggle_option_clbk",
 			"value" : "teammate_panels"
-			"priority" : 22
+			"priority" : 20
 		},
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 21
-		},
-		{
-			"type" : "button",
-			"id" : "voidui_player",
-			"title" : "VoidUI_main_panel",
-			"priority" : 20
+			"priority" : 19
 		},
 		{
 			"type" : "slider",
@@ -39,7 +33,7 @@
 			"min" : 0.65,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 19
+			"priority" : 18
 		},
 		{
 			"type" : "multiple_choice",
@@ -53,7 +47,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_health",
-			"priority" : 18
+			"priority" : 17
 		},
 		{
 			"type" : "slider",
@@ -67,7 +61,7 @@
 			"min" : 0.0,
 			"step" : 0.01,
 			"localized" :  true
-			"priority" : 17
+			"priority" : 16
 		},
 		{
 			"type" : "multiple_choice",
@@ -81,7 +75,7 @@
 				"VoidUI_health_real"
 			],
 			"value" : "main_armor",
-			"priority" : 16
+			"priority" : 15
 		},
 		{
 			"type" : "toggle",
@@ -90,7 +84,7 @@
 			"description" : "VoidUI_total_decs",
 			"callback" : "toggle_option_clbk",
 			"value" : "totalammo"
-			"priority" : 15
+			"priority" : 14
 		},
 		{
 			"type" : "toggle",
@@ -99,7 +93,7 @@
 			"description" : "VoidUI_main_loud_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_loud"
-			"priority" : 14
+			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -108,7 +102,7 @@
 			"description" : "VoidUI_main_stealth_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "main_stealth"
-			"priority" : 13
+			"priority" : 12
 		},
 		{
 			"type" : "toggle",
@@ -117,18 +111,12 @@
 			"description" : "VoidUI_ammo_pickup_desc",
 			"callback" : "toggle_option_clbk",
 			"value" : "ammo_pickup"
-			"priority" : 12
+			"priority" : 11
 		},
 		
 		{
 			"type" : "divider",
 			"size" : 25,
-			"priority" : 11
-		},
-		{
-			"type" : "button",
-			"id" : "voidui_teammate",
-			"title" : "VoidUI_mate_panel",
 			"priority" : 10
 		},
 		{
