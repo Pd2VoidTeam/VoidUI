@@ -8,12 +8,6 @@
 	"localized" :  true,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_blackscreen",
-			"title" : "VoidUI_blackscreen",
-			"priority" : 13
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_blackscreen",
 			"title" : "VoidUI_enable_blackscreen_title",
@@ -78,12 +72,6 @@
 			"priority" : 6
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_loading",
-			"title" : "VoidUI_loading",
-			"priority" : 5
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_loadingscreen",
 			"title" : "VoidUI_enable_loadingscreen_title",
@@ -119,6 +107,5 @@
 			"value" : "loading_briefing"
 			"priority" : 1
 		}
-		
 	]
 }
