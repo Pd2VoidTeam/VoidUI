@@ -27,12 +27,6 @@
 			"priority" : 20
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_timer",
-			"title" : "VoidUI_timer_panel",
-			"priority" : 19
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_timer",
 			"title" : "VoidUI_enable_timer_title",
@@ -88,12 +82,6 @@
 			"priority" : 13
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_objectives",
-			"title" : "VoidUI_objectives_panel",
-			"priority" : 12
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_objectives",
 			"title" : "VoidUI_enable_objectives_title",
@@ -130,6 +118,5 @@
 			"localized" :  true
 			"priority" : 9
 		}
-		
 	]
 }
