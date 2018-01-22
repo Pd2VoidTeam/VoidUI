@@ -8,12 +8,6 @@
 	"localized" :  true,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_presenter",
-			"title" : "VoidUI_presenter_panel",
-			"priority" : 20
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_presenter",
 			"title" : "VoidUI_enable_presenter_title",
@@ -63,12 +57,6 @@
 			"type" : "divider",
 			"size" : 25,
 			"priority" : 14
-		},
-		{
-			"type" : "button",
-			"id" : "voidui_hint",
-			"title" : "VoidUI_hint_panel",
-			"priority" : 13
 		},
 		{
 			"type" : "toggle",
@@ -126,12 +114,6 @@
 			"priority" : 7
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_challanges",
-			"title" : "VoidUI_challanges_panel",
-			"priority" : 6
-		},
-		{
 			"type" : "toggle",
 			"id" : "enable_challanges",
 			"title" : "VoidUI_enable_challanges_title",
@@ -154,6 +136,5 @@
 			"localized" :  true
 			"priority" : 4
 		}
-		
 	]
 }
