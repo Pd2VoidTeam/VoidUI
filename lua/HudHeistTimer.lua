@@ -134,7 +134,7 @@ if VoidUI.options.enable_timer then
 				text = managers.loot:get_secured_mandatory_bags_amount() + managers.loot:get_secured_bonus_bags_amount() * self._scale,
 				vertical = "bottom",
 				align = "right",
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 				layer = 3,
 				alpha = 1,
 			})

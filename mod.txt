@@ -51,7 +51,7 @@
 		{"hook_id" : "lib/managers/hud/newhudstatsscreen", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/units/player_team/teamaiinventory", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/achievmentmanager", "script_path" : "Main.lua"},
-		{"hook_id" : "lib/managers/hud/hudchallangenotification", "script_path" : "Main.lua"},
+		{"hook_id" : "lib/managers/hud/hudchallengenotification", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/playermanager", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/utils/levelloadingscreenguiscript", "script_path" : "lua/LevelLoadingScreen.lua"},
 		{"hook_id" : "lib/utils/lightloadingscreenguiscript", "script_path" : "lua/LevelLoadingScreen.lua"},

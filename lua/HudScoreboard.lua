@@ -1418,7 +1418,7 @@ if VoidUI.options.enable_stats then
 				x = perk_bg:x(),
 				w = VoidUI.options.scoreboard_perk and h / 1.1 or 0,
 				h = h / 1.1,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 			})
 			local hours_bg = self._panel:bitmap({
 				name = "hours_bg",

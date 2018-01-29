@@ -22,7 +22,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudplayerdowned"] = {"HudPlayerDowned.lua"},
 	["lib/managers/hud/hudobjectives"] = {"HudObjectives.lua"},
 	["lib/managers/hud/hudheisttimer"] = {"HudHeistTimer.lua"},
-	["lib/managers/hud/hudchallangenotification"] = {"HudPresenter.lua"},
+	["lib/managers/hud/hudchallengenotification"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudpresenter"] = {"HudPresenter.lua"},
 	["lib/managers/hud/hudhint"] = {"HudHint.lua"},
 	["lib/managers/hintmanager"] = {"HudHint.lua"},
@@ -229,19 +229,6 @@ if not VoidUI.loaded then
 	VoidUI:Load()
 	VoidUI:LoadTextures()
 end
-
-Hooks:Add("MenuManagerInitialize", "MenuManagerInitialize_VoidUI", function(menu_manager)
-
-	--[[
-	local menus = SystemFS:list(VoidUI.mod_path.. "menu/")
-	MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/options.json", VoidUI, VoidUI.options)
-	table.insert(VoidUI.menus, "VoidUI_options")
-	for i=#menus, 1, -1 do
-		MenuHelper:LoadFromJsonFile(VoidUI.mod_path .. "menu/"..menus[i], VoidUI, VoidUI.options)
-		table.insert(VoidUI.menus, "VoidUI_"..menus[i]:gsub(".json", ""))
-	end
-	--]]
-end )
 
 function VoidUI:GetColor(name)
 	if VoidUI.options[name] then

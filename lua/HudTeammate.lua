@@ -491,7 +491,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 3,
 			alpha = 1,
 		})
@@ -536,7 +536,7 @@ if VoidUI.options.teammate_panels then
 			text = "x0",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 3,
 			alpha = 1,
 		})
@@ -593,7 +593,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 4,
 			alpha = 1,
 		})	
@@ -696,7 +696,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "bottom",
 			align = self._main_player and "right" or "left",
 			font_size = 19 * self._mate_scale,
-			font = "fonts/font_medium_shadow_mf"
+			font = "fonts/font_medium_noshadow_mf"
 		})
 		interact_text:set_bottom(self._main_player and health_panel:top() - self._equipment_panel_h or health_panel:top() - 1)
 		interact_text:set_x(self._main_player and 0 or 9 * self._mate_scale)
@@ -1835,7 +1835,7 @@ if VoidUI.options.teammate_panels then
 			name = "amount",
 			visible = vis_at_start,
 			text = "x0",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			vertical = "bottom",
 			align = "right",
 			layer = 2,
@@ -1967,7 +1967,7 @@ if VoidUI.options.teammate_panels then
 				align = "left",
 				font_size = prev_size,
 				rotation = 360,
-				font = "fonts/font_medium_shadow_mf"
+				font = "fonts/font_medium_noshadow_mf"
 			})
 			text:set_bottom(self._custom_player_panel:child("health_panel"):top() - 1)
 			text:set_x(9 * self._mate_scale)

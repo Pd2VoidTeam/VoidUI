@@ -5,6 +5,8 @@ Version 1.2
 - Added Chinese localization made by CoolLKK 
 - Added the ability to disable the waypoint modifications
 - Added the options to only show hudpanels of player teammates, or dont show them at all
+- Added achievement milestone notifications
+- Fixed challenge notifications not working
 - Fixed the width of objectives sometimes being incorrect
 - Fixed a crash related to the loading screens and the BeardLib-Editor
 - Fixed the stored health meter for ex-president not working correctly

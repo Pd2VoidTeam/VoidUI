@@ -391,7 +391,7 @@ if VoidUI.options.enable_assault then
 				x = 0,
 				y = 0,
 				color = Color.white,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
 			local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id()) and managers.groupai and managers.groupai:state():whisper_mode()
@@ -446,7 +446,7 @@ if VoidUI.options.enable_assault then
 				x = 0,
 				y = 0,
 				color = Color.white,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
 			
@@ -514,7 +514,7 @@ if VoidUI.options.enable_assault then
 				x = 0,
 				y = 0,
 				color = Color.white,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2.2,
 				visible = false
 			})
@@ -530,7 +530,7 @@ if VoidUI.options.enable_assault then
 				x = 0,
 				y = 0,
 				color = Color.white,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
 			if self._hud_panel:child("wave_panel") then
@@ -583,7 +583,7 @@ if VoidUI.options.enable_assault then
 					x = 0,
 					y = 0,
 					color = Color.white,
-					font = "fonts/font_medium_shadow_mf",
+					font = "fonts/font_medium_noshadow_mf",
 					font_size = panel_h / 2
 				})
 			end

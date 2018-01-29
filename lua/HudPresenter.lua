@@ -229,17 +229,17 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 		present_panel:set_alpha(0)
 		present_panel:set_x(x2)
 	end
-elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.options.enable_challanges then
-	HudChallangeNotification.ICON_SIZE = 50
-	HudChallangeNotification.BOX_MAX_W = 400
-	function HudChallangeNotification:make_fine_text(text)
+elseif RequiredScript == "lib/managers/hud/hudchallengenotification" and VoidUI.options.enable_challanges then
+	HudChallengeNotification.ICON_SIZE = 50
+	HudChallengeNotification.BOX_MAX_W = 400
+	function HudChallengeNotification:make_fine_text(text)
 		local x, y, w, h = text:text_rect()
 
 		text:set_size(w, h)
 		text:set_position(math.round(text:x()), math.round(text:y()))
 	end
 	
-	function HudChallangeNotification:_animate_show(title_panel, text_panel)
+	function HudChallengeNotification:_animate_show(title_panel, text_panel)
 		local center = text_panel:center_x()
 		local TOTAL_T = 0.3
 		local t = 0
@@ -275,11 +275,11 @@ elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.
 		self:close()
 	end
 	
-	function HudChallangeNotification:init(title, text, icon, queue)
+	function HudChallengeNotification:init(title, text, icon, rewards, queue)
 		self._ws = managers.gui_data:create_fullscreen_workspace()
 		self._scale = VoidUI.options.challanges_scale
 
-		HudChallangeNotification.super.init(self, self._ws:panel())
+		HudChallengeNotification.super.init(self, self._ws:panel())
 		self._queue = queue or {}
 		self._hud = self._ws:panel()
 		self._hud:set_layer(1000)
@@ -303,14 +303,56 @@ elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.
 				texture = icon_texture,
 				texture_rect = icon_texture_rect,
 				layer = 2,
+				x = 10 * self._scale,
 				y = 3 * self._scale,
 				w = self.ICON_SIZE * self._scale,
 				h = self.ICON_SIZE * self._scale
 			})
-			noti_text:set_x(icon:right())
-			noti_text:set_h(math.max(icon:h() + 3 * self._scale, noti_text:h()))
+			noti_text:set_x(icon:right() + 5)
+			noti_text:set_h(math.max(icon:h() + 6 * self._scale, noti_text:h()))
 			icon:set_center_y(noti_text:center_y())
 		end
+		local box_height = noti_text:h()
+		
+		for i, reward in ipairs(rewards or {}) do
+			local reward_panel = text_panel:panel({
+				h = 20,
+				x = 25,
+				y = noti_text:bottom() + (i - 1) * 22,
+				layer = 2
+			})
+			local reward_icon = reward_panel:bitmap({
+				w = 20,
+				h = 20,
+				texture = reward.texture
+			})
+			local reward_text = managers.localization:text(reward.name_id)
+	
+			if reward.amount then
+				reward_text = reward.amount .. "x " .. reward_text
+			end
+			local reward_text = reward_panel:text({
+				text = reward_text,
+				font = tweak_data.menu.pd2_medium_font,
+				x = reward_icon:right() + 2,
+				layer = 2,
+				font_size = 20 * self._scale
+			})
+			local reward_text_bg = reward_panel:text({
+				text = reward_text:text(),
+				font = tweak_data.menu.pd2_medium_font,
+				color = Color.black,
+				layer = 1,
+				x = reward_icon:right() + 3,
+				font_size = 20 * self._scale
+			})
+			reward_text:set_center_y(reward_icon:center_y())
+			reward_text_bg:set_center_y(reward_icon:center_y() + 1)
+			reward_panel:set_w(reward_text_bg:right())
+	
+			box_height = math.max(box_height, reward_panel:bottom() + 8)
+		end
+		
 		local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 		local text_bg_left = text_panel:bitmap({
 			name = "objective_text_bg_left",
@@ -341,7 +383,7 @@ elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.
 			alpha = 1
 		})
 		text_bg_right:set_left(text_bg:right())
-		text_panel:set_size(text_bg_right:right(), text_bg_right:bottom())
+		text_panel:set_size(text_bg_right:right(), box_height)
 		text_panel:set_left(self._hud:w())
 		local title_panel = self._hud:panel({})
 		local title_shadow = title_panel:text({
@@ -360,6 +402,7 @@ elseif RequiredScript == "lib/managers/hud/hudchallangenotification" and VoidUI.
 			font_size = 20 * self._scale
 		})
 		self:make_fine_text(title)
+		
 		title_panel:set_size(title_shadow:right(), title_shadow:bottom())
 		title_panel:set_bottom(self._hud:h() / 1.5)
 		title_panel:set_right(0)
