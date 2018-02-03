@@ -5,8 +5,6 @@ Beware that due to this being in development, crashes or bugs are very likely. I
 ### What will be in version 1.2
 - Added custom options menu
 - Added joining player panels
-   The joining player's modlist will be shown if they have mods
-   You can draw while a player is joining by holding control and dragging with the mouse
 - Added better fade-in animation for loading screens
 - Added Chinese localization made by CoolLKK 
 - Added the ability to disable the waypoint modifications
