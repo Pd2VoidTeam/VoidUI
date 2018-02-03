@@ -10,7 +10,10 @@ if VoidUI.options.enable_assault then
 			hud.panel:child("casing_panel"):set_alpha(0)
 			hud.panel:child("buffs_panel"):set_alpha(0)
 			self._custom_hud_panel = hud.panel:panel({name = "custom_assault_panel"})
-			self._pagers = 4
+			self._pagers = 0
+			for i, val in ipairs(tweak_data.player.alarm_pager.bluff_success_chance) do
+				self._pagers = val > 0 and math.max(self._pagers, i) or self._pagers
+			end
 			self._noreturn_time = 0
 			self._noreturn_time_current = 0
 			self._assault_phase = 0

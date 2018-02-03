@@ -1120,7 +1120,7 @@ if VoidUI.options.enable_stats then
 				if level_data then
 					local day_title = top_panel:child("day_title")
 					local day_title_shadow = top_panel:child("day_title_shadow")
-					day_title:set_text(managers.localization:text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id))
+					day_title:set_text(managers.localization:text(managers.crime_spree:is_active() and level_data.name_id or (level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id)))
 					day_title_shadow:set_text(day_title:text())
 				end
 			end

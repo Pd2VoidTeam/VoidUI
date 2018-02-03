@@ -47,6 +47,8 @@
 	"VoidUI_warning_desc" : "Some of your changes may not take effect until the next heist",
 	"VoidUI_warning_confirm" : "Dont warn again",
 	"VoidUI_tooltip_reset" : "Set to default $BTN_RESET",
+	"VoidUI_tooltip_reset_cnt" : "$BTN_RESET Set to default",
+	"VoidUI_tooltip_steps" : "$BTN_STEP Large steps",
 	
 	"VoidUI_hudteammate_title" : "Player and Teammate Panels",
 	"VoidUI_hudteammate_desc" : "Options related to the main player and teammates panels",

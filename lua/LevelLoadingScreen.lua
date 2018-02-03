@@ -391,7 +391,7 @@ elseif RequiredScript == "lib/setups/setup" then
 				if VoidUI and VoidUI.options.enable_loadingscreen then
 					if level_tweak_data.risk == nil then level_tweak_data.risk = {} end
 					if VoidUI.options.loading_heistinfo then
-						if managers.crime_spree:is_active()then
+						if managers.crime_spree:is_active() then
 							local mission = managers.crime_spree and managers.crime_spree:get_mission()
 							local level_data = managers.job and managers.job:current_level_data()
 							level_tweak_data.risk.color = tweak_data.screen_colors.crime_spree_risk

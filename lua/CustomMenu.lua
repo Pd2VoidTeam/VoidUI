@@ -104,7 +104,7 @@ function VoidUIMenu:init()
 			h = back_button:h(),
 			align = "left",
 			vertical = "center",
-			text = managers.localization:text("VoidUI_tooltip_reset", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message", true)}),
+			text = managers.localization:text("VoidUI_tooltip_reset", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message")}),
 			layer = 3,
 			visible = false
 		})
@@ -142,7 +142,6 @@ function VoidUIMenu:init()
 		self:CreateChangeWarning()
 	end
 end
-
 
 function VoidUIMenu:Open()
 	self._enabled = true
@@ -369,8 +368,15 @@ function VoidUIMenu:MenuDown()
 		end
 	elseif self._open_menu and self._highlighted_item then
 		local current_num = self._highlighted_item.num + 1 > #self._open_menu.items - 1 and 0 or self._highlighted_item.num + 1
-		for i= current_num, (#self._open_menu.items - current_num) + current_num do
+		for i = current_num, (#self._open_menu.items - current_num) + current_num do
 			local item = self._open_menu.items[i + 1]
+			if item and item.enabled and item.panel:child("bg") then
+				self:HighlightItem(item)
+				return
+			end
+		end
+		for i = 0, #self._open_menu.items do
+			local item = self._open_menu.items[i]
 			if item and item.enabled and item.panel:child("bg") then
 				self:HighlightItem(item)
 				return
@@ -521,7 +527,15 @@ function VoidUIMenu:HighlightItem(item)
 		self._reset_button:set_visible(true)
 	elseif self._reset_button and self._highlighted_item.value == nil then
 		self._reset_button:set_visible(false)
-	end
+	elseif self._button_legends then
+		if self._highlighted_item.value ~= nil and self._highlighted_item.type ~= "slider" then
+			self:SetLegends(true, true, false)
+		elseif self._highlighted_item.value ~= nil and self._highlighted_item.type == "slider" then
+			self:SetLegends(false, true, true)
+		elseif self._highlighted_item.value == nil then
+			self:SetLegends(true, false, false)
+		end
+	end	
 end
 
 function VoidUIMenu:UnhighlightItem(item)
@@ -534,6 +548,15 @@ function VoidUIMenu:UnhighlightItem(item)
 		o:set_alpha(0)
 	end)
 	self._highlighted_item = nil
+end
+
+function VoidUIMenu:SetLegends(accept, reset, step)
+	local text = managers.localization:text("menu_legend_back", {BTN_BACK = managers.localization:btn_macro("back")})
+	local separator = "    "
+	if accept then text = managers.localization:text("menu_legend_select", {BTN_UPDATE  = managers.localization:btn_macro("menu_update")}).. separator ..text end
+	if reset then text = managers.localization:to_upper_text("VoidUI_tooltip_reset_cnt", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message")}).. separator.. text end
+	if step then text = managers.localization:to_upper_text("VoidUI_tooltip_steps", {BTN_STEP  = managers.localization:btn_macro("previous_page")..managers.localization:btn_macro("next_page")}).. separator.. text end
+	self._button_legends:set_text(text)
 end
 
 function VoidUIMenu:Cancel()

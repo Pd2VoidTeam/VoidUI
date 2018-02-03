@@ -142,7 +142,7 @@ if VoidUI.options.enable_timer then
 		local level_data = managers.job:current_level_data()
 		local job_data = managers.job:current_job_data()
 		if level_data then
-			level_name:set_text(VoidUI.options.show_levelname and managers.localization:text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id) or " ")
+			level_name:set_text(VoidUI.options.show_levelname and managers.localization:text(managers.crime_spree:is_active() and level_data.name_id or (level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id)) or " ")
 			local _, _, name_w, name_h = level_name:text_rect()
 			name_w = VoidUI.options.show_levelname and name_w or 0
 			local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id())

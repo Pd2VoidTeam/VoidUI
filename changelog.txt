@@ -6,7 +6,12 @@ Version 1.2
 - Added the ability to disable the waypoint modifications
 - Added the options to only show hudpanels of player teammates, or dont show them at all
 - Added achievement milestone notifications
+- Fixed down counters not seting the maximum amount of downs correctly
+- Fixed the pager counter not showing the correct amount of pagers during crime-spree
+- Chnaged the equiped weapons on drop-in promts to an icon of the weapon
+- Fixed the down counter not updating when the player changes loadouts on the briefing screen
 - Fixed challenge notifications not working
+- Fixed the timer panel displaying an error as heist name during the Crime-Spree version of Bank heist
 - Fixed the width of objectives sometimes being incorrect
 - Fixed a crash related to the loading screens and the BeardLib-Editor
 - Fixed the stored health meter for ex-president not working correctly

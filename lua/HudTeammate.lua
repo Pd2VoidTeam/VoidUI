@@ -18,7 +18,7 @@ if VoidUI.options.teammate_panels then
 		self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 		self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
 		self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
-		self._downs_max = self._main_player and (3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)) or 3
+		self._downs_max = tweak_data.player.damage.LIVES_INIT -(Global.game_settings.difficulty == "sm_wish" and - 2 or 0)
 		self._downs = self._downs_max
 		self._primary_max = 0
 		self._secondary_max = 0
@@ -790,12 +790,6 @@ if VoidUI.options.teammate_panels then
 				name_shadow:show()
 				weapons_panel:show()
 				armor_value:show()
-				local peer = managers.network:session():peer(self:peer_id())
-				local outfit = peer and peer:blackmarket_outfit()
-				local skills = outfit and outfit.skills
-				skills = skills and skills.skills
-				self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (tonumber(skills[14] or 0) >= 3 and 1 or 0)
-				self:reset_downs()
 			else
 				name:set_bottom(health_panel:top() - 1)
 				name:set_x(9 * self._mate_scale)
@@ -809,7 +803,6 @@ if VoidUI.options.teammate_panels then
 			end
 		else
 			weapons_panel:show()
-			self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 		end
 		managers.hud:align_teammate_panels()
 	end
@@ -848,6 +841,7 @@ if VoidUI.options.teammate_panels then
 			}, callback(self, self, "whisper_mode_changed"))
 		end
 		self:set_detection()
+		self:set_max_downs()
 	end
 	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
@@ -1735,57 +1729,39 @@ if VoidUI.options.teammate_panels then
 			texture = highlight_texture,
 			texture_rect = {0,158,503,157},
 			layer = 1,
-			x = background:left() + 7 * self._mate_scale,
 			y = background:top(),
 			w = self._w,
 			h = self._ammo_panel_h,
-			rotation = 180,
 			alpha = 1
 		})
-		local primary_weapon = panel:text({
+		primary_border:set_right(weapons_panel:right())
+		local primary_weapon = panel:bitmap({
 			name = "primary_weapon",
-			x = background:left() + 4 * self._mate_scale,
-			y = background:top(),
-			w = weapons_panel:w() - 8 * self._mate_scale,
-			h = self._ammo_panel_h,
-			font_size = self._ammo_panel_h / 2.5,
-			text = "Primary Weapon",
-			vertical = "center",
-			align = "center",
-			font = "fonts/font_large_mf",
-			wrap = true,
-			word_wrap = true,
-			layer = 2,
-			alpha = 1
+			w = weapons_panel:w() / 2 * self._mate_scale,
+			h = self._ammo_panel_h / 1.2,
+			texture = managers.blackmarket:get_weapon_icon_path("new_m4"),
+			layer = 2
 		})
+		primary_weapon:set_center(primary_border:center())
 		local secondary_border = panel:bitmap({
 			name = "secondary_border",
 			texture = highlight_texture,
 			texture_rect = {0,158,503,157},
 			layer = 1,
-			x = background:left() + 4 * self._mate_scale,
 			y = primary_border:bottom() + 1 * self._mate_scale,
 			w = self._w,
 			h = self._ammo_panel_h,
-			rotation = 180,
 			alpha = 1
 		})
-		local secondary_weapon = panel:text({
+		secondary_border:set_right(weapons_panel:right() - 3 * self._mate_scale)
+		local secondary_weapon = panel:bitmap({
 			name = "secondary_weapon",
-			x = background:left() + 2 * self._mate_scale,
-			y = primary_border:bottom() + 1 * self._mate_scale,
-			w = weapons_panel:w() - 4 * self._mate_scale,
-			h = self._ammo_panel_h,
-			font_size = self._ammo_panel_h / 2.5,
-			text = "Secondary Weapon",
-			vertical = "center",
-			align = "center",
-			font = "fonts/font_large_mf",
-			wrap = true,
-			word_wrap = true,
-			layer = 2,
-			alpha = 1
+			w = weapons_panel:w() /2 * self._mate_scale,
+			h = self._ammo_panel_h / 1.2,
+			texture = managers.blackmarket:get_weapon_icon_path("glock_17"),
+			layer = 2
 		})
+		secondary_weapon:set_center(secondary_border:center())
 		local deploy_panel = panel:panel({name = "deploy"})
 		local throw_panel = panel:panel({name = "throw"})
 		local perk_panel = panel:panel({name = "perk"})
@@ -1857,6 +1833,7 @@ if VoidUI.options.teammate_panels then
 		peer = peer or my_peer
 		if self._wait_panel then
 			if waiting then
+				local color = tweak_data.chat_colors[peer:id()] or Color.white
 				self._panel:set_visible(false)
 				self._wait_panel:set_lefttop(self._panel:lefttop())
 				local name = self._wait_panel:child("name")
@@ -1877,10 +1854,22 @@ if VoidUI.options.teammate_panels then
 				end
 				local outfit = peer:profile().outfit
 				outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
-				name:set_text((0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. "" .. peer:name())
+				local _, _, name_w, _ = name:text_rect()
+				local level = (0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. ""
+				name:set_text(level .. peer:name())
 				name_shadow:set_text(name:text())
-				if outfit.primary and outfit.primary.factory_id then self._wait_panel:child("primary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.primary.factory_id)) end
-				if outfit.secondary and outfit.secondary.factory_id then self._wait_panel:child("secondary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.secondary.factory_id)) end
+				if name_w > (140 * self._mate_scale) then name:set_font_size(name:font_size() * ((self._mate_scale < 1 and 140 * self._mate_scale or 140)/name_w)) end
+				name_shadow:set_font_size(name:font_size())
+				name:set_color(color)
+				name:set_range_color(0, utf8.len(level), Color.white:with_alpha(1))
+				if outfit.primary and outfit.primary.factory_id then 
+					local texture = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
+					self._wait_panel:child("primary_weapon"):set_image(texture) 	
+				end
+				if outfit.secondary and outfit.secondary.factory_id then 
+					local texture = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", VoidUI.options.scoreboard_skins > 1 and outfit.secondary and outfit.secondary.cosmetics)
+					self._wait_panel:child("secondary_weapon"):set_image(texture) 
+				end
 				local has_deployable = outfit.deployable and outfit.deployable ~= "nil"
 				self._wait_panel:child("deploy"):child("amount"):set_text(has_deployable and "x" .. outfit.deployable_amount or "")
 				self._wait_panel:child("throw"):child("amount"):set_text("x" .. managers.player:get_max_grenades(peer:grenade_id()))
@@ -2333,6 +2322,24 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:reset_downs()
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local downs_value = health_panel:child("downs_value")
+		self._downs = self._downs_max
+		downs_value:set_text("x".. tostring(self._downs))
+	end
+	
+	function HUDTeammate:set_max_downs()
+		local health_panel = self._custom_player_panel:child("health_panel")
+		local downs_value = health_panel:child("downs_value")
+		self._downs_max = managers.job:current_difficulty_stars() == 6 and 2 or tweak_data.player.damage.LIVES_INIT
+		if self._main_player then
+			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
+		elseif self._peer_id then
+			local peer = managers.network:session():peer(self._peer_id)
+			local outfit = peer and peer:blackmarket_outfit()
+			local skills = outfit and outfit.skills
+			skills = skills and skills.skills
+			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
+		end
+		self._downs_max = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
 	end
