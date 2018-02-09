@@ -262,6 +262,12 @@ Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", f
 	end
 end)
 
+Hooks:PostHook(MenuManager, "update", "update_menu", function(self, t, dt)
+	if VoidUI.Menu and VoidUI.Menu.update and VoidUI.Menu._enabled then
+		VoidUI.Menu:update(t, dt)
+	end
+end)
+
 if RequiredScript then
 	local requiredScript = RequiredScript:lower()
 		if VoidUI.hook_files[requiredScript] then

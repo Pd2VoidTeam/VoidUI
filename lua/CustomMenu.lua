@@ -21,6 +21,7 @@ function VoidUIMenu:init()
 	self._ws:connect_keyboard(Input:keyboard())
 	self._mouse_id = managers.mouse_pointer:get_id()
 	self._menus = {}
+	self._axis_timer = { x = 0, y = 0 }
 	self._panel = self._ws:panel():panel({
         name = "VoidUIMenu", 
 		layer = 500,
@@ -104,7 +105,7 @@ function VoidUIMenu:init()
 			h = back_button:h(),
 			align = "left",
 			vertical = "center",
-			text = managers.localization:text("VoidUI_tooltip_reset", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message")}),
+			text = managers.localization:text("VoidUI_tooltip_reset", {BTN_RESET  = utf8.to_upper(managers.localization:btn_macro("menu_toggle_voice_message"))}),
 			layer = 3,
 			visible = false
 		})
@@ -142,6 +143,59 @@ function VoidUIMenu:init()
 		self:CreateChangeWarning()
 	end
 end
+function VoidUIMenu:update(t, dt)
+	if self._axis_timer.y <= 0 then
+		if 0.5 < self._controller:get_input_axis("menu_move").y or self._controller:get_input_bool("menu_up") then
+			self:MenuUp()
+			self._axis_timer.y = 0.18
+			if self._controller:get_input_pressed("menu_up") then
+				self._axis_timer.y = 0.30
+			end
+		elseif -0.5 > self._controller:get_input_axis("menu_move").y or self._controller:get_input_bool("menu_down") then
+			self:MenuDown()
+			self._axis_timer.y = 0.18
+			if self._controller:get_input_pressed("menu_down") then
+				self._axis_timer.y = 0.30
+			end
+		end
+	end
+	if self._controller and self._axis_timer.x <= 0 then
+		if 0.5 < self._controller:get_input_axis("menu_move").x or self._controller:get_input_bool("menu_right") then
+			self:MenuLeftRight(1)
+			self._axis_timer.x = 0.12
+			if self._controller:get_input_pressed("menu_right") then
+				self._axis_timer.x = 0.22
+			end
+		elseif self._controller:get_input_bool("next_page") then
+			self:MenuLeftRight(10)
+			self._axis_timer.x = 0.12
+			if self._controller:get_input_pressed("next_page") then
+				self._axis_timer.x = 0.22
+			end
+		elseif not managers.menu:is_pc_controller() and self._controller:get_input_bool("next_page") then
+			self:MenuLeftRight(10)
+			self._axis_timer.x = 0.12
+			if self._controller:get_input_pressed("next_page") then
+				self._axis_timer.x = 0.22
+			end
+		elseif -0.5 > self._controller:get_input_axis("menu_move").x or self._controller:get_input_bool("menu_left") then
+			self:MenuLeftRight(-1)
+			self._axis_timer.x = 0.12
+			if self._controller:get_input_pressed("menu_left") then
+				self._axis_timer.x = 0.22
+			end
+		elseif not managers.menu:is_pc_controller() and self._controller:get_input_bool("previous_page") then
+			self:MenuLeftRight(-10)
+			self._axis_timer.x = 0.12
+			if self._controller:get_input_pressed("previous_page") then
+				self._axis_timer.x = 0.22
+			end
+		end
+	end
+	
+	self._axis_timer.y = math.max(self._axis_timer.y - dt, 0)
+	self._axis_timer.x = math.max(self._axis_timer.x - dt, 0)
+end
 
 function VoidUIMenu:Open()
 	self._enabled = true
@@ -154,15 +208,8 @@ function VoidUIMenu:Open()
 		self._controller = managers.controller:create_controller("VoidUIMenu", nil, false)
 		self._controller:add_trigger("cancel", callback(self, self, "Cancel"))
 		self._controller:add_trigger("confirm", callback(self, self, "Confirm"))
-		self._controller:add_trigger("menu_down", callback(self, self, "MenuDown"))
-		self._controller:add_trigger("menu_up", callback(self, self, "MenuUp"))
-		self._controller:add_trigger("menu_right", callback(self, self, "MenuLeftRight", 1))
-		self._controller:add_trigger("menu_left", callback(self, self, "MenuLeftRight", -1))
 		self._controller:add_trigger("menu_toggle_voice_message", callback(self, self, "SetItem"))
-		if not managers.menu:is_pc_controller() then
-			self._controller:add_trigger("next_page", callback(self, self, "MenuLeftRight", 10))
-			self._controller:add_trigger("previous_page", callback(self, self, "MenuLeftRight", -10))
-		else
+		if managers.menu:is_pc_controller() then
 			managers.mouse_pointer:use_mouse({
 				mouse_move = callback(self, self, "mouse_move"),
 				mouse_press = callback(self, self, "mouse_press"),
@@ -260,6 +307,7 @@ function VoidUIMenu:mouse_move(o, x, y)
 		end
 	end
 end
+
 function VoidUIMenu:mouse_press(o, button, x, y)
 	x, y = managers.mouse_pointer:convert_fullscreen_16_9_mouse_pos(x, y)
 	if button == Idstring("0") then	
@@ -358,6 +406,7 @@ function VoidUIMenu:MenuDown()
 			end
 			self._open_color_dialog.items[self._open_color_dialog.selected + 1]:child("bg"):set_alpha(0.1)
 			self._open_color_dialog.selected = self._open_color_dialog.selected + 1
+			self:SetLegends(self._open_color_dialog.selected == 4 and true or false, false, self._open_color_dialog.selected < 4 and true or false)
 		end
 	elseif self._open_menu and not self._highlighted_item then
 		for i, item in pairs(self._open_menu.items) do
@@ -399,6 +448,7 @@ function VoidUIMenu:MenuUp()
 			self._open_color_dialog.items[self._open_color_dialog.selected]:child("bg"):set_alpha(0)
 			self._open_color_dialog.items[self._open_color_dialog.selected - 1]:child("bg"):set_alpha(0.1)
 			self._open_color_dialog.selected = self._open_color_dialog.selected - 1
+			self:SetLegends(false, false, true)
 		end
 	elseif self._open_menu and self._highlighted_item then
 		local current_num = self._highlighted_item.num + 1
@@ -456,6 +506,7 @@ function VoidUIMenu:ActivateItem(item, x)
 		self:CreateChangeWarning()
 	elseif item.type == "color_select" and not self._open_color_dialog then
 		self:OpenColorMenu(item)
+		self:SetLegends(false, false, true)
 	end
 end
 
@@ -551,12 +602,14 @@ function VoidUIMenu:UnhighlightItem(item)
 end
 
 function VoidUIMenu:SetLegends(accept, reset, step)
-	local text = managers.localization:text("menu_legend_back", {BTN_BACK = managers.localization:btn_macro("back")})
-	local separator = "    "
-	if accept then text = managers.localization:text("menu_legend_select", {BTN_UPDATE  = managers.localization:btn_macro("menu_update")}).. separator ..text end
-	if reset then text = managers.localization:to_upper_text("VoidUI_tooltip_reset_cnt", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message")}).. separator.. text end
-	if step then text = managers.localization:to_upper_text("VoidUI_tooltip_steps", {BTN_STEP  = managers.localization:btn_macro("previous_page")..managers.localization:btn_macro("next_page")}).. separator.. text end
-	self._button_legends:set_text(text)
+	if self._button_legends then
+		local text = managers.localization:text("menu_legend_back", {BTN_BACK = managers.localization:btn_macro("back")})
+		local separator = "    "
+		if accept then text = managers.localization:text("menu_legend_select", {BTN_UPDATE  = managers.localization:btn_macro("menu_update")}).. separator ..text end
+		if reset then text = managers.localization:to_upper_text("VoidUI_tooltip_reset_cnt", {BTN_RESET  = managers.localization:btn_macro("menu_toggle_voice_message")}).. separator.. text end
+		if step then text = managers.localization:to_upper_text("VoidUI_tooltip_steps", {BTN_STEP  = managers.localization:btn_macro("previous_page")..managers.localization:btn_macro("next_page")}).. separator.. text end
+		self._button_legends:set_text(text)
+	end
 end
 
 function VoidUIMenu:Cancel()
@@ -1229,6 +1282,7 @@ function VoidUIMenu:OpenMultipleChoicePanel(item)
 		border:set_h(h)
 		bg:set_h(border:h() - 4)
 	end)
+	self:SetLegends(true, false, false)
 end
 function VoidUIMenu:CloseMultipleChoicePanel()
 	self._open_choice_dialog.panel:stop()
@@ -1248,6 +1302,7 @@ function VoidUIMenu:CloseMultipleChoicePanel()
 		self._open_choice_dialog.parent_item.panel:parent():remove(self._open_choice_dialog.panel)
 		self._open_choice_dialog = nil
 	end)
+	self:SetLegends(true, true, false)
 end
 
 -- Custom Color Items
@@ -1560,7 +1615,9 @@ function VoidUIMenu:CloseColorMenu(save)
 		self._open_color_dialog.parent_item.panel:child("color"):set_color(Color(option_color[1], option_color[2], option_color[3]))
 		self._open_color_dialog = nil
 	end)
+	self:SetLegends(true, true, false)
 end
+
 --Callbacks
 function VoidUIMenu:ResetOptions()
 	local buttons = {{ 
