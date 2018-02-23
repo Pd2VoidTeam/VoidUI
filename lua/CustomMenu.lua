@@ -147,49 +147,27 @@ function VoidUIMenu:update(t, dt)
 	if self._axis_timer.y <= 0 then
 		if 0.5 < self._controller:get_input_axis("menu_move").y or self._controller:get_input_bool("menu_up") then
 			self:MenuUp()
-			self._axis_timer.y = 0.18
-			if self._controller:get_input_pressed("menu_up") then
-				self._axis_timer.y = 0.30
-			end
+			self:SetAxisTimer("y", 0.18, 0.3, "menu_up")
 		elseif -0.5 > self._controller:get_input_axis("menu_move").y or self._controller:get_input_bool("menu_down") then
 			self:MenuDown()
-			self._axis_timer.y = 0.18
-			if self._controller:get_input_pressed("menu_down") then
-				self._axis_timer.y = 0.30
-			end
+			self:SetAxisTimer("y", 0.18, 0.3, "menu_down")
 		end
 	end
 	if self._controller and self._axis_timer.x <= 0 then
 		if 0.5 < self._controller:get_input_axis("menu_move").x or self._controller:get_input_bool("menu_right") then
 			self:MenuLeftRight(1)
-			self._axis_timer.x = 0.12
-			if self._controller:get_input_pressed("menu_right") then
-				self._axis_timer.x = 0.22
-			end
-		elseif self._controller:get_input_bool("next_page") then
-			self:MenuLeftRight(10)
-			self._axis_timer.x = 0.12
-			if self._controller:get_input_pressed("next_page") then
-				self._axis_timer.x = 0.22
-			end
-		elseif not managers.menu:is_pc_controller() and self._controller:get_input_bool("next_page") then
-			self:MenuLeftRight(10)
-			self._axis_timer.x = 0.12
-			if self._controller:get_input_pressed("next_page") then
-				self._axis_timer.x = 0.22
-			end
+			self:SetAxisTimer("x", 0.12, 0.22, "menu_right")
 		elseif -0.5 > self._controller:get_input_axis("menu_move").x or self._controller:get_input_bool("menu_left") then
 			self:MenuLeftRight(-1)
-			self._axis_timer.x = 0.12
-			if self._controller:get_input_pressed("menu_left") then
-				self._axis_timer.x = 0.22
-			end
+			self:SetAxisTimer("x", 0.12, 0.22, "menu_left")
+		end
+		
+		if not managers.menu:is_pc_controller() and self._controller:get_input_bool("next_page") then
+			self:MenuLeftRight(10)
+			self:SetAxisTimer("x", 0.12, 0.22, "next_page")
 		elseif not managers.menu:is_pc_controller() and self._controller:get_input_bool("previous_page") then
 			self:MenuLeftRight(-10)
-			self._axis_timer.x = 0.12
-			if self._controller:get_input_pressed("previous_page") then
-				self._axis_timer.x = 0.22
-			end
+			self:SetAxisTimer("x", 0.12, 0.22, "previous_page")
 		end
 	end
 	
@@ -197,6 +175,12 @@ function VoidUIMenu:update(t, dt)
 	self._axis_timer.x = math.max(self._axis_timer.x - dt, 0)
 end
 
+function VoidUIMenu:SetAxisTimer(axis, delay, input_delay, input)
+	self._axis_timer[axis] = delay
+	if self._controller:get_input_pressed(input) then
+		self._axis_timer[axis] = input_delay
+	end
+end
 function VoidUIMenu:Open()
 	self._enabled = true
 	managers.menu._input_enabled = false

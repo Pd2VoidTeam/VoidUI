@@ -700,6 +700,17 @@ if VoidUI.options.teammate_panels then
 		})
 		interact_text:set_bottom(self._main_player and health_panel:top() - self._equipment_panel_h or health_panel:top() - 1)
 		interact_text:set_x(self._main_player and 0 or 9 * self._mate_scale)
+		local interact_text_shadow = interact_panel:text({
+			name = "interact_text_shadow",
+			text = string.upper(managers.localization:text("hud_action_generic")),
+			layer = 2,
+			color = Color.black,
+			vertical = "bottom",
+			align = self._main_player and "right" or "left",
+			font_size = 19 * self._mate_scale,
+			font = "fonts/font_medium_noshadow_mf"
+		})
+		interact_text_shadow:set_position(interact_text:x() + 1, interact_text:y() + 1)
 		local interact_bar = interact_panel:bitmap({
 			name = "interact_bar",
 			texture = health_texture,
@@ -1894,6 +1905,7 @@ if VoidUI.options.teammate_panels then
 		self._custom_player_panel:child("interact_panel"):stop()
 		self._custom_player_panel:child("interact_panel"):set_visible(enabled)
 		local interact_text = self._custom_player_panel:child("interact_panel"):child("interact_text")
+		local interact_text_shadow = self._custom_player_panel:child("interact_panel"):child("interact_text_shadow")
 		local name = self._custom_player_panel:child("name")
 		local name_shadow = self._custom_player_panel:child("name_shadow")
 		local prev_text = interact_text:text()
@@ -1912,8 +1924,10 @@ if VoidUI.options.teammate_panels then
 		end
 		interact_text:set_text(" ".. action_text)
 		interact_text:set_font_size(19 * self._mate_scale)
+		interact_text_shadow:set_text(" ".. action_text)
+		interact_text_shadow:set_font_size(19 * self._mate_scale)
 		local _,_,text_w,_ = interact_text:text_rect()
-		if text_w > 140 * self._mate_scale then interact_text:set_font_size(interact_text:font_size() * (140 * self._mate_scale/text_w)) end
+		if text_w > 140 * self._mate_scale then interact_text:set_font_size(interact_text:font_size() * (140 * self._mate_scale/text_w)) interact_text_shadow:set_font_size(interact_text:font_size()) end
 		self._custom_player_panel:child("health_panel"):child("health_bar"):set_alpha(enabled and 0.3 or 1)
 		self._custom_player_panel:child("health_panel"):child("armor_bar"):set_visible(not enabled)
 		self._custom_player_panel:child("health_panel"):child("armor_value"):set_visible(not enabled)
@@ -1927,6 +1941,7 @@ if VoidUI.options.teammate_panels then
 					name:set_alpha(math.lerp(name:alpha(), enabled == true and 0 or 1, p))
 					name_shadow:set_alpha(math.lerp(name:alpha(), enabled == true and 0 or 1, p))
 					interact_text:set_alpha(math.lerp(interact_text:alpha(),enabled == true and 1 or 0,p))
+					interact_text_shadow:set_alpha(interact_text:alpha())
 				end
 			end)
 		end)
@@ -1970,6 +1985,7 @@ if VoidUI.options.teammate_panels then
 						name:set_alpha(math.lerp(name:alpha(), 1, p))
 						name_shadow:set_alpha(math.lerp(name:alpha(), 1, p))
 						interact_text:set_alpha(math.lerp(interact_text:alpha(), 0, p))
+						interact_text_shadow:set_alpha(interact_text:alpha())
 					end
 				end)
 			end)
@@ -2329,7 +2345,7 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:set_max_downs()
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local downs_value = health_panel:child("downs_value")
-		self._downs_max = managers.job:current_difficulty_stars() == 6 and 2 or tweak_data.player.damage.LIVES_INIT
+		self._downs_max = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
 		if self._main_player then
 			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
 		elseif self._peer_id then

@@ -179,12 +179,12 @@ if VoidUI.options.enable_stats then
 			if job_data then
 				local difficulty_stars = managers.job:current_difficulty_stars()
 				local difficulty_string = managers.localization:to_upper_text(tweak_data.difficulty_name_id)
-				local difficulty_color = tweak_data.screen_colors.risk
-				
+				local difficulty_color = tweak_data.screen_colors.text
 				if managers.crime_spree:is_active() then
 					difficulty_string = managers.localization:to_upper_text("cn_crime_spree")..": "..managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 					difficulty_color = tweak_data.screen_colors.crime_spree_risk
-				end
+				elseif Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down
+				elseif difficulty_stars > 0 then difficulty_color = tweak_data.screen_colors.risk end
 			
 				local risk_text = risk_panel:text({
 					name = "risk_text",
@@ -192,10 +192,9 @@ if VoidUI.options.enable_stats then
 					font_size = 25 * self._scale,
 					y = 2,
 					text = difficulty_string,
-					color = tweak_data.screen_colors.text
+					color = difficulty_color
 				})
 				managers.hud:make_fine_text(risk_text)
-				if difficulty_stars > 0 then risk_text:set_color(difficulty_color) end
 				local risk_text_shadow = risk_panel:text({
 					name = "risk_text_shadow",
 					x = 2 * self._scale,

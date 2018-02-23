@@ -411,7 +411,7 @@ elseif RequiredScript == "lib/setups/setup" then
 							
 							level_tweak_data.name_id = level_data and managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id) or ""
 							level_tweak_data.risk.name = Global.game_settings and managers.localization:text(tweak_data.difficulty_name_ids[Global.game_settings.difficulty]) or "normal"
-							level_tweak_data.risk.color = tweak_data.screen_colors.risk
+							level_tweak_data.risk.color = Global.game_settings.one_down and tweak_data.screen_colors.one_down or tweak_data.screen_colors.risk
 							level_tweak_data.risk.current = managers.job and managers.job:current_difficulty_stars()
 							level_tweak_data.risk.difficulties = tweak_data.difficulties
 							level_tweak_data.risk.risk_textures = tweak_data.gui.blackscreen_risk_textures
