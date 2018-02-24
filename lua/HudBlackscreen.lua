@@ -90,9 +90,10 @@ if VoidUI.options.enable_blackscreen then
 			local risk_panel = job_panel:panel({name = "risk_panel"})
 			local last_risk_level
 			local blackscreen_risk_textures = tweak_data.gui.blackscreen_risk_textures
+			local current_dif = managers.job:current_difficulty_stars()
 			local difficulty_color = tweak_data.screen_colors.text
 			if Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down
-			elseif difficulty_stars > 0 then difficulty_color = tweak_data.screen_colors.risk end
+			elseif current_dif > 0 then difficulty_color = tweak_data.screen_colors.risk end
 			local risk_text = risk_panel:text({
 				name = "risk_text",
 				text = VoidUI.options.blackscreen_risk and managers.localization:to_upper_text(tweak_data.difficulty_name_id) or "",
@@ -105,7 +106,6 @@ if VoidUI.options.enable_blackscreen then
 				h = 35
 			})
 			managers.hud:make_fine_text(risk_text)
-			local current_dif = managers.job:current_difficulty_stars()
 			for i = 1, #tweak_data.difficulties - 2 do
 				local difficulty_name = tweak_data.difficulties[i + 2]
 				local texture = blackscreen_risk_textures[difficulty_name] or "guis/textures/pd2/risklevel_blackscreen"
