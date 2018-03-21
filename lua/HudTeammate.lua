@@ -18,7 +18,7 @@ if VoidUI.options.teammate_panels then
 		self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 		self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
 		self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
-		self._downs_max = self._main_player and (3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)) or 3
+		self._downs_max = self._main_player and (3 - (Global.game_settings.one_down and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)) or 3
 		self._downs = self._downs_max
 		self._primary_max = 0
 		self._secondary_max = 0
