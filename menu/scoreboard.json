@@ -156,7 +156,7 @@
 			"title" : "VoidUI_scoreboard_playtime_title",
 			"description" : "VoidUI_scoreboard_playtime_desc",
 			"parent" : ["enable_stats", "scoreboard"],
-			"default_value" : true
+			"default_value" : false
 		},
 		{
 			"type" : "multiple_choice",
