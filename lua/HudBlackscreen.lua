@@ -74,7 +74,7 @@ if VoidUI.options.enable_blackscreen then
 		end
 
 		function HUDBlackScreen:_set_job_data()
-			if not managers.job:has_active_job() then
+			if not managers.job:has_active_job() or self._blackscreen_panel:child("custom_job_panel") then
 				return
 			end
 			local job_panel = self._blackscreen_panel:panel({
@@ -91,9 +91,8 @@ if VoidUI.options.enable_blackscreen then
 			local last_risk_level
 			local blackscreen_risk_textures = tweak_data.gui.blackscreen_risk_textures
 			local current_dif = managers.job:current_difficulty_stars()
-			local difficulty_color = tweak_data.screen_colors.text
-			if Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down
-			elseif current_dif > 0 then difficulty_color = tweak_data.screen_colors.risk end
+			local difficulty_color = tweak_data.screen_colors.risk
+			if Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down end
 			local risk_text = risk_panel:text({
 				name = "risk_text",
 				text = VoidUI.options.blackscreen_risk and managers.localization:to_upper_text(tweak_data.difficulty_name_id) or "",
@@ -169,6 +168,9 @@ if VoidUI.options.enable_blackscreen then
 		end
 
 		function HUDBlackScreen:_set_job_data_crime_spree()
+			if self._blackscreen_panel:child("custom_job_panel") then
+				return
+			end
 			local skip_text = self._blackscreen_panel:child("skip_text")
 			local loading_text = self._blackscreen_panel:child("loading_text")
 			local job_panel = self._blackscreen_panel:panel({
@@ -294,9 +296,8 @@ if VoidUI.options.enable_blackscreen then
 	elseif RequiredScript == "lib/states/ingamewaitingforplayers" then
 		local update = IngameWaitingForPlayersState.update
 		function IngameWaitingForPlayersState:update(t, dt)
-			if self._skip_data and not self._data_changed then 
+			if self._skip_data then 
 				self._skip_data.total = VoidUI.options.blackscreen_time 
-				self._data_changed = true
 			end
 			return update(self, t, dt)
 		end
@@ -320,14 +321,15 @@ if VoidUI.options.enable_blackscreen then
 			local show_loding_icon = params.show_loading_icon or true
 			local loading_texture = "guis/textures/VoidUI/hud_extras"
 			self._ws = managers.gui_data:create_saferect_workspace()
-			self._panel = self._ws:panel()
+			self._panel = self._ws:panel({alpha = 0})
 			self._panel:set_layer(1000)
 
 			if show_loding_icon then
 				local loading_icon = self._panel:bitmap({
 					name = "loading_icon",
 					texture = loading_texture,
-					texture_rect = {1085, 174, 55, 54}
+					texture_rect = {1085, 174, 55, 54},
+					alpha = 0
 				})
 				loading_icon:set_rightbottom(self._panel:w(), self._panel:h())
 				
@@ -337,7 +339,8 @@ if VoidUI.options.enable_blackscreen then
 					texture_rect = {1149, 201, 37, 37}
 				})
 				loading_logo:set_center(loading_icon:center())
-				local function spin_forever_animation(o)
+				
+				local function spin_forever_animation(o)					
 					local dt, t = nil, 0
 					while true do
 						dt = coroutine.yield()
@@ -345,8 +348,13 @@ if VoidUI.options.enable_blackscreen then
 						o:set_alpha(math.abs(math.sin(120 * t)))
 					end
 				end
-
-				loading_icon:animate(spin_forever_animation)
+				local function fade_in_animation(panel)
+					over(0.2, function (p)
+						panel:set_alpha(p)
+					end)
+					loading_icon:animate(spin_forever_animation)
+				end
+				self._panel:animate(fade_in_animation)
 			end
 
 			local function fade_out_animation(panel)

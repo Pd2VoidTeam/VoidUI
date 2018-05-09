@@ -533,6 +533,8 @@ if VoidUI.options.enable_stats then
 			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount
 			local small_loot = managers.loot:get_real_total_small_loot_value()
 			local hit_accuracy = managers.statistics:session_hit_accuracy()
+			local player_unit = managers.player:player_unit()
+			local trade_delay = alive(player_unit) and not tweak_data.player.damage.automatic_respawn_time and managers.groupai:state():all_criminals()[managers.player:player_unit():key()] and managers.groupai:state():all_criminals()[managers.player:player_unit():key()].respawn_penalty
 
 			local body_bag = managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount())
 			local bags = ""
@@ -543,9 +545,10 @@ if VoidUI.options.enable_stats then
 			end
 			local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
 			local accuracy = VoidUI.options.scoreboard_accuracy and hit_accuracy and " Ї "..utf8.to_lower(managers.localization:text("menu_stats_hit_accuracy")):gsub("^%l", string.upper).." ".. hit_accuracy.."%" or ""
-			
-			top_panel:child("loot_stats"):set_text(body_bag..accuracy..bags..instant_cash)
-			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..bags..instant_cash)
+			local delay = VoidUI.options.scoreboard_delay and trade_delay and " Ї "..managers.localization:text("hud_trade_delay", {TIME = tostring(self:_get_time_text(trade_delay))}) or ""
+
+			top_panel:child("loot_stats"):set_text(body_bag..accuracy..delay..bags..instant_cash)
+			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or managers.localization:text("VoidUI_nosong")
 			local track_text = extras_panel:text({
 				name = "track_text",
@@ -609,6 +612,15 @@ if VoidUI.options.enable_stats then
 				toggle_image:set_top(toggle_text:top())
 			end
 		end
+		function HUDStatsScreen:_get_time_text(time)
+			time = math.max(math.floor(time), 0)
+			local minutes = math.floor(time / 60)
+			time = time - minutes * 60
+			local seconds = math.round(time)
+			local text = ""
+	
+			return text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
+		end	
 		function HUDStatsScreen:_create_mutators_list(mutators_panel)
 			mutators_panel:clear()
 			if not managers.mutators:are_mutators_active() then
@@ -667,7 +679,7 @@ if VoidUI.options.enable_stats then
 					layer = -2
 				})
 			end
-			mutators_panel:set_h(mutator_text:bottom() + 2)
+			mutators_panel:set_h(mutator_text and mutator_text:bottom() + 2 or 0)
 			mutators_panel:set_center_y(self._full_hud_panel:h() / 2)
 		end
 		function HUDStatsScreen:loot_value_updated()
@@ -1513,7 +1525,7 @@ if VoidUI.options.enable_stats then
 					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
 					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
 					local lvl = self._main_player and managers.experience:current_level() or peer:level()
-					level = rank..lvl.." "
+					level = rank or ""..lvl or"".." "
 				end
 				name:set_text(level .. player_name)
 				if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end
@@ -1627,7 +1639,9 @@ if VoidUI.options.enable_stats then
 			local start_pos = select(2, webpage:find("var rgGames =."))
 			if start_pos then
 				local tables = json.decode(webpage:sub(start_pos, webpage:find(".var rgChangingGames", start_pos)))
-				if tables then
+				if tables and #tables == 0 then
+					hours_played = managers.localization:text("VoidUI_hidden")
+				elseif tables and #tables > 0 then
 					for i = 1, #tables do
 						if tables[i].appid == 218620 then
 							hours_played = tables[i].hours_forever:gsub(",", "") .. "h"

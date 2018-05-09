@@ -32,7 +32,7 @@
 			"type" : "button",
 			"id" : "presenter",
 			"title" : "VoidUI_presenter_title",
-			"description" : "VoidUI_presenter_title",
+			"description" : "VoidUI_presenter_desc",
 			"next_menu" : "presenter"
 		},
 		{

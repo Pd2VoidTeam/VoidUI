@@ -216,7 +216,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 			reset_player_hpbar(self)
 			local character_name = managers.criminals:local_character_name()
 			local crim_entry = managers.criminals:character_static_data_by_name(character_name)
-			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
+			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
 				self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
 			end
 		end

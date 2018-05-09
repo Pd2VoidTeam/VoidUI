@@ -41,6 +41,22 @@
 			"default_value" : true
 		},
 		{
+			"type" : "toggle",
+			"id" : "scoreboard_accuracy",
+			"title" : "VoidUI_scoreboard_accuracy_title",
+			"description" : "VoidUI_scoreboard_accuracy_desc",
+			"parent" : "enable_stats",
+			"default_value" : true
+		},
+		{
+			"type" : "toggle",
+			"id" : "scoreboard_delay",
+			"title" : "VoidUI_scoreboard_delay_title",
+			"description" : "VoidUI_scoreboard_delay_desc",
+			"parent" : "enable_stats",
+			"default_value" : false
+		},
+		{
 			"type" : "divider"
 		},
 		{
@@ -50,14 +66,6 @@
 			"description" : "VoidUI_scoreboard_desc",
 			"is_parent" : true,
 			"parent" : "enable_stats",
-			"default_value" : true
-		},
-		{
-			"type" : "toggle",
-			"id" : "scoreboard_accuracy",
-			"title" : "VoidUI_scoreboard_accuracy_title",
-			"description" : "VoidUI_scoreboard_accuracy_desc",
-			"parent" : ["enable_stats", "scoreboard"],
 			"default_value" : true
 		},
 		{
@@ -156,7 +164,7 @@
 			"title" : "VoidUI_scoreboard_playtime_title",
 			"description" : "VoidUI_scoreboard_playtime_desc",
 			"parent" : ["enable_stats", "scoreboard"],
-			"default_value" : false
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",

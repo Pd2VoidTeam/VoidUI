@@ -166,6 +166,7 @@ function VoidUI:DefaultConfig()
 		scoreboard_blur = true,
 		scoreboard = true,
 		scoreboard_accuracy = true,
+		scoreboard_delay = false,
 		scoreboard_character = true,
 		scoreboard_skills = true,
 		scoreboard_specials = true,
@@ -218,8 +219,8 @@ function VoidUI:DefaultConfig()
 		suspicion_y = 160,
 		interact_y = 40,
 		main_anim_time = 0.2,
-		mate_anim_time = 0.2,
-		c_main_fg = {1,1,1}
+		mate_anim_time = 0.2
+		--c_main_fg = {1,1,1}
 	}
 end
 

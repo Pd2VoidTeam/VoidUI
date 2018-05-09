@@ -869,6 +869,7 @@ if VoidUI.options.enable_assault then
 			end
 		end
 		function HUDAssaultCorner:_set_text_list(text_list)
+			text_list = text_list or {"hud_assault_assault", "hud_assault_end_line"}
 			local assault_panel = self._custom_hud_panel:child("assault_panel")
 			local text_panel = assault_panel:child("text_panel")
 			text_panel:script().text_list = text_panel:script().text_list or {}
@@ -1177,9 +1178,6 @@ if VoidUI.options.enable_assault then
 			end)
 		end
 		function HUDAssaultCorner:_set_hostage_offseted(is_offseted, big_logo)
-			if self._point_of_no_return then
-				return
-			end
 			local hostage_panel = self._custom_hud_panel:child("icons_panel"):child("hostages_panel")
 			self._remove_hostage_offset = nil
 			hostage_panel:stop()
@@ -1389,7 +1387,7 @@ if VoidUI.options.enable_assault then
 			noreturnbox_panel:child("text_panel"):animate(callback(self, self, "_animate_text"), text_panel:script().text_list, self._noreturn_color)
 			
 			self:_end_assault()
-			self:_hide_hostages()
+			self:_set_hostage_offseted(true, true)
 			point_of_no_return_panel:stop()
 			point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
 			self:_set_feedback_color(self._noreturn_color)
@@ -1404,7 +1402,7 @@ if VoidUI.options.enable_assault then
 			end
 			self._custom_hud_panel:child("point_of_no_return_panel"):set_visible(false)
 			self._point_of_no_return = false
-			self:_show_hostages()
+			self:_set_hostage_offseted(false, false)
 			self:_set_feedback_color(nil)
 		end
 		function HUDAssaultCorner:flash_point_of_no_return_timer(beep)
@@ -1431,7 +1429,7 @@ if VoidUI.options.enable_assault then
 			local icon_noreturnbox = point_of_no_return_panel:child("icon_noreturnbox")
 			local point_of_no_return_timer = point_of_no_return_panel:child("point_of_no_return_timer")
 			wait(delay_time)
-			self:_hide_hostages()
+			--self:_hide_hostages()
 			
 			background:set_x(noreturnbox_panel:w())
 			border:set_x(background:x() - 1 * self._scale)
@@ -1440,8 +1438,8 @@ if VoidUI.options.enable_assault then
 			icon_noreturnbox:set_y(0)
 			local TOTAL_T = 0.4
 			local t = 0
-			local center_x = icon_noreturnbox:center_x()
-			local center_y = icon_noreturnbox:center_y()
+			local center_x = point_of_no_return_timer:center_x()
+			local center_y = point_of_no_return_timer:center_y()
 			point_of_no_return_panel:set_visible(true)
 			while TOTAL_T > t do
 				local dt = coroutine.yield()

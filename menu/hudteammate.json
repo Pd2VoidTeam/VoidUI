@@ -103,14 +103,6 @@
 			"default_value" : true
 		},
 		{
-			"type" : "color_select",
-			"id" : "c_main_fg",
-			"parent" : "teammate_panels",
-			"title" : "VoidUI_main_fg_title",
-			"description" : "VoidUI_main_fg_desc",
-			"default_value" : [1,1,1]
-		},
-		{
 			"type" : "divider"
 		},
 		{
