@@ -283,6 +283,9 @@ if MenuManager then
 		if Application:editor() then
 			return
 		end
+		if game_state_machine and game_state_machine:current_state_name() == "editor" then
+			return
+		end
 		if SystemInfo:platform() ~= Idstring("WIN32") then
 			return
 		end

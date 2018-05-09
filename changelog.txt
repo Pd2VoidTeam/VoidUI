@@ -13,6 +13,7 @@ Version 1.2
 - Fixed a crash with assault lines
 - Fixed a crash with the presenter panel
 - Fixed the blackscreen panel sometimes getting created multiple times
+- Fixed chat button causing textboxes to lock up in the beardlib-editor
 - Fixed blackscreen skip time getting reset to the vanilla value
 - Fixed down counters not setting the maximum amount of downs correctly
 - Fixed the pager counter not showing the correct amount of pagers during crime-spree
