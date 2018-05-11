@@ -857,6 +857,8 @@ if VoidUI.options.teammate_panels then
 	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
 		set_name(self, teammate_name)
+		if teammate_name == managers.localization:text("menu_jowi") then teammate_name = managers.localization:text("VoidUI_jowi") 
+		elseif teammate_name == managers.localization:text("menu_chico") then teammate_name = managers.localization:text("VoidUI_chico") end
 		teammate_name = VoidUI.options.mate_upper and utf8.to_upper(teammate_name) or teammate_name
 		local name = self._custom_player_panel:child("name")
 		local name_shadow = self._custom_player_panel:child("name_shadow")

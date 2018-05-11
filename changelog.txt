@@ -1,5 +1,4 @@
 Version 1.2
-- Updated the localization files
 - Added custom options menu
 - Added joining player panels
 - Added better fade-in animation for loading screens
@@ -17,7 +16,6 @@ Version 1.2
 - Fixed blackscreen skip time getting reset to the vanilla value
 - Fixed down counters not setting the maximum amount of downs correctly
 - Fixed the pager counter not showing the correct amount of pagers during crime-spree
-- Chnaged the equiped weapons on drop-in promts to an icon of the weapon
 - Fixed the down counter not updating when the player changes loadouts on the briefing screen
 - Fixed challenge notifications not working
 - Fixed the timer panel displaying an error as heist name during the Crime-Spree version of Bank heist
@@ -28,6 +26,9 @@ Version 1.2
 - Fixed the player and teammate panels incorrectly showing the player having 0 medicbags when they have no equipment 
 - Fixed the exp bar and tracked achievements on the statspanel being too long on 21:9 monitors
 - Fixed hudpanels always displaying saws if they were low on ammo
+- Scarface's and John Wick's name will be shortened on their hud panels
+- Changed the equiped weapons on drop-in promts to an icon of the weapon
+- Updated the localization files
 
 Version 1.1.2 (2017.12.19)
 - Added loading screens
