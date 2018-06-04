@@ -5,6 +5,10 @@
 	"priority" : 8,
 	"items" : [
 		{
+			"type" : "label",
+			"title"	: "VoidUI_text_chat"
+		},
+		{
 			"type" : "toggle",
 			"id" : "enable_chat",
 			"title" : "VoidUI_enable_chat_title",
@@ -22,7 +26,7 @@
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 1
+			"step" : 2
 		},
 		{
 			"type" : "toggle",
@@ -68,6 +72,42 @@
 				"VoidUI_chat_name_character"
 			],
 			"default_value" : 5
+		},
+		{
+			"type" : "divider"
+		},
+		{
+			"type" : "label",
+			"title"	: "VoidUI_voice_chat"
+		},
+		{
+			"type" : "toggle",
+			"id" : "enable_voice",
+			"title" : "VoidUI_enable_voice_title",
+			"description" : "VoidUI_enable_voice_decs",
+			"is_parent" : true,
+			"default_value" : true
+		},
+		{
+			"type" : "slider",
+			"id" : "voice_scale",
+			"parent" : "enable_voice",
+			"title" : "VoidUI_voice_scale_title",
+			"description" : "VoidUI_voice_scale_desc",
+			"percentage" : true,
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 2
+		},
+		{
+			"type" : "toggle",
+			"id" : "voice_name",
+			"title" : "VoidUI_voice_name_title",
+			"description" : "VoidUI_voice_name_desc",
+			"parent" : "enable_voice",
+			"is_parent" : true,
+			"default_value" : true
 		}
 		
 	]

@@ -208,7 +208,39 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
-	
+
+	local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
+	function HUDManager:_setup_player_info_hud_pd2()
+		setup_player_info_hud_pd2(self)
+		if VoidUI.options.scoreboard and VoidUI.options.enable_stats and not self._hud_statsscreen then
+			self:_setup_stats_screen()
+			self:show_stats_screen()
+			self:hide_stats_screen()
+		end
+		if VoidUI.options.enable_voice then
+			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+			self:_create_voice_panel(hud)
+		end
+	end
+	if VoidUI.options.enable_voice then
+		function HUDManager:_create_voice_panel(hud)
+			if managers.network:session() then
+				self._voice_panel = HUDVoice:new(hud)
+			end
+		end
+		function HUDManager:set_mugshot_voice(id, active)
+			local data = self:_get_mugshot_data(id)
+			if not id or not self._voice_panel or not data or not managers.network:session() then
+				return
+			end
+			self:set_voice(data, active)
+		end
+		function HUDManager:set_voice(data, active)
+			if managers.network:session() then
+				self._voice_panel:set_voice(data, active)
+			end
+		end
+	end
 	--Stat Panel
 	if VoidUI.options.scoreboard and VoidUI.options.enable_stats then
 		local reset_player_hpbar = HUDManager.reset_player_hpbar
@@ -218,15 +250,6 @@ if RequiredScript == "lib/managers/hudmanager" then
 			local crim_entry = managers.criminals:character_static_data_by_name(character_name)
 			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
 				self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
-			end
-		end
-		local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
-		function HUDManager:_setup_player_info_hud_pd2()
-			setup_player_info_hud_pd2(self)
-			if not self._hud_statsscreen then
-				self:_setup_stats_screen()
-				self:show_stats_screen()
-				self:hide_stats_screen()
 			end
 		end
 		

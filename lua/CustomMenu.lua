@@ -1625,7 +1625,7 @@ end
 
 function VoidUIMenu:SetGlobalHudscale(slider)
 	local value = slider.value
-	local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale", "challanges_scale"}
+	local scales = {"hud_main_scale", "hud_mate_scale", "hud_objectives_scale", "hud_assault_scale", "hud_chat_scale", "scoreboard_scale", "presenter_scale", "hint_scale", "suspicion_scale", "interact_scale", "challanges_scale", "voice_scale"}
 	for _, menu in pairs(self._menus) do
 		for _, item in pairs(menu.items) do 
 			if item.id then

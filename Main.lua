@@ -13,7 +13,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudsuspicion"] = {"HudSuspicion.lua"},
 	["lib/states/ingamewaitingforplayers"] = {"HudBlackscreen.lua"},
 	["lib/managers/menu/fadeoutguiobject"] = {"HudBlackscreen.lua"},
-	["lib/managers/hudmanagerpd2"] = {"HudManager.lua", "HudScoreboard.lua"},
+	["lib/managers/hudmanagerpd2"] = {"HudManager.lua", "HudScoreboard.lua", "HudVoice.lua"},
 	["lib/units/beings/player/huskplayermovement"] = {"HudPlayerDowned.lua"},
 	["lib/units/beings/player/states/playerbleedout"] = {"HudPlayerDowned.lua"},
 	["lib/network/handlers/unitnetworkhandler"] = {"HudPlayerDowned.lua", "jokers.lua"},
@@ -49,7 +49,8 @@ VoidUI.hook_files = {
 	["lib/network/base/hostnetworksession"] = {"LevelLoadingScreen.lua"},
 	["lib/setups/setup"] = {"LevelLoadingScreen.lua"},
 	["lib/managers/menumanagerdialogs"] = {"HudManager.lua"},
-	["lib/managers/menumanager"] = {"CustomMenu.lua"}
+	["lib/managers/menumanager"] = {"CustomMenu.lua"},
+	["lib/network/matchmaking/networkvoicechatsteam"] = {"HudVoice.lua"}	
 }
 
 function VoidUI:Save()
@@ -117,6 +118,7 @@ function VoidUI:DefaultConfig()
 		waypoint_scale = 0.8,
 		subtitle_scale = 0.9,
 		joining_mods_scale = 1,
+		voice_scale = 1,
 		teammate_panels = true,
 		enable_interact = true,
 		enable_suspicion = true,
@@ -134,6 +136,7 @@ function VoidUI:DefaultConfig()
 		enable_loadingscreen = true,
 		enable_joining = true,
 		enable_waypoints = true,
+		enable_voice = true,
 		loading_heistinfo = true,
 		loading_players = true,
 		loading_briefing = false,
@@ -193,6 +196,7 @@ function VoidUI:DefaultConfig()
 		joining_border = true,
 		joining_mods = false,
 		joining_drawing = true,
+		voice_name = true,
 		joining_anim = 4,
 		blackscreen_time = 0,
 		scoreboard_skins = 2,
