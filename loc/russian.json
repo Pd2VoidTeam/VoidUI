@@ -46,9 +46,9 @@
 	"VoidUI_warning_title" : "Настройки изменены",
 	"VoidUI_warning_desc" : "Некоторые изменения не вступят в силу до следующего ограбления",
 	"VoidUI_warning_confirm" : "Не предупреждать снова",
-	"VoidUI_tooltip_reset" : "Set to default $BTN_RESET",
-	"VoidUI_tooltip_reset_cnt" : "$BTN_RESET Set to default",
-	"VoidUI_tooltip_steps" : "$BTN_STEP Large steps",
+	"VoidUI_tooltip_reset" : "По умолчанию $BTN_RESET",
+	"VoidUI_tooltip_reset_cnt" : "$BTN_RESET По умолчанию",
+	"VoidUI_tooltip_steps" : "$BTN_STEP Большой шаг ползунка",
 	
 	"VoidUI_hudteammate_title" : "Панели игрока и напарников",
 	"VoidUI_hudteammate_desc" : "Настройки вашей панели и панелей напарников",
