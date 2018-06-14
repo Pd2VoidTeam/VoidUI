@@ -30,6 +30,7 @@ Version 1.2
 - Fixed the stats panel showing the current song as nothing on music locked heists
 - Scarface's and John Wick's name will be shortened on their hud panels
 - Changed the equiped weapons on drop-in promts to an icon of the weapon
+- Russian translation were remade by Borderkeeper 
 - Updated the localization files
 
 Version 1.1.2 (2017.12.19)
