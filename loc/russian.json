@@ -325,7 +325,7 @@
 	"VoidUI_blackscreen_time_title" : "Таймер пропуска",
 	"VoidUI_blackscreen_time_desc" : "Сколько необходимо удерживать Enter для пропуска введения",
 	"VoidUI_skip_blackscreen"	:	"Нажмите $BTN_ACCEPT чтобы пропустить",
-	"VoidUI_loading_others"		:	"И еще $PLAYERS игрока",
+	"VoidUI_loading_others"		:	"И еще $PLAYERS игрок(а)",
 	"VoidUI_loading" : "Экраны загрузки",
 	"VoidUI_enable_loadingscreen_title" : "Включить экраны загрузки",
 	"VoidUI_enable_loadingscreen_desc" : "Включить экраны загрузки Void UI",
