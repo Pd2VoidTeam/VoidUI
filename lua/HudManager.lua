@@ -40,81 +40,82 @@ if RequiredScript == "lib/managers/hudmanager" then
 		end
 	end
 	
-	local add_waypoint = HUDManager.add_waypoint
-	function HUDManager:add_waypoint(id, data)
-		add_waypoint(self, id, data)
-		
-		if self._hud.waypoints[id] then
-			local scale = VoidUI.options.waypoint_scale
-			local bitmap = self._hud.waypoints[id].bitmap
-			local arrow = self._hud.waypoints[id].arrow
-			local distance = self._hud.waypoints[id].distance
-			local text = self._hud.waypoints[id].text
-			local timer = self._hud.waypoints[id].timer_gui
+	if VoidUI.options.enable_waypoints then
+		local add_waypoint = HUDManager.add_waypoint
+		function HUDManager:add_waypoint(id, data)
+			add_waypoint(self, id, data)
 			
-			bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
-			arrow:set_size(arrow:w() * scale, arrow:h() * scale)
-			text:set_font_size(text:font_size() * scale)
-			text:set_size(text:w() * scale, text:h() * scale)
-			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-			self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
+			if self._hud.waypoints[id] then
+				local scale = VoidUI.options.waypoint_scale
+				local bitmap = self._hud.waypoints[id].bitmap
+				local arrow = self._hud.waypoints[id].arrow
+				local distance = self._hud.waypoints[id].distance
+				local text = self._hud.waypoints[id].text
+				local timer = self._hud.waypoints[id].timer_gui
+				
+				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
+				arrow:set_size(arrow:w() * scale, arrow:h() * scale)
+				text:set_font_size(text:font_size() * scale)
+				text:set_size(text:w() * scale, text:h() * scale)
+				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
+				self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
+				
+				if data.distance then
+					distance:set_font_size(distance:font_size() * scale)
+					distance:set_size(distance:w() * scale, distance:h() * scale)
+				end
+				if data.timer then
+					timer:set_size(timer:w() * scale, timer:h() * scale)
+					timer:set_font_size(timer:font_size() * scale)
+				end
+			end
+		end
+		
+		local change_waypoint_icon = HUDManager.change_waypoint_icon
+		function HUDManager:change_waypoint_icon(id, icon)
+			change_waypoint_icon(self, id, icon)
 			
-			if data.distance then
-				distance:set_font_size(distance:font_size() * scale)
-				distance:set_size(distance:w() * scale, distance:h() * scale)
-			end
-			if data.timer then
-				timer:set_size(timer:w() * scale, timer:h() * scale)
-				timer:set_font_size(timer:font_size() * scale)
+			if self._hud.waypoints[id] then
+				local scale = VoidUI.options.waypoint_scale
+				local bitmap = self._hud.waypoints[id].bitmap
+				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
+				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
 			end
 		end
-	end
-	
-	local change_waypoint_icon = HUDManager.change_waypoint_icon
-	function HUDManager:change_waypoint_icon(id, icon)
-		change_waypoint_icon(self, id, icon)
 		
-		if self._hud.waypoints[id] then
-			local scale = VoidUI.options.waypoint_scale
-			local bitmap = self._hud.waypoints[id].bitmap
-			bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
-			self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-		end
-	end
-	
-	local update_waypoints = HUDManager._update_waypoints
-	function HUDManager:_update_waypoints(t, dt)
-		update_waypoints(self, t, dt)
-		local cam = managers.viewport:get_current_camera()
-		if not cam then
-			return
-		end
-		
-		local wp_pos = Vector3()
-		local wp_onscreen_direction = Vector3()
-		
-		for id, data in pairs(self._hud.waypoints) do
-			if data.state == "offscreen" then
-					local panel = data.bitmap:parent()
-					mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
-					local show = VoidUI.options.label_waypoint_offscreen
-					data.bitmap:set_visible(show)
-					data.arrow:set_visible(show)
-					data.text:set_visible(show)
-					
-					local direction = wp_onscreen_direction
-					local panel_center_x, panel_center_y = panel:center()
-					local scale = VoidUI.options.waypoint_scale
-					mvector3.set_static(direction, wp_pos.x - panel_center_x, wp_pos.y - panel_center_y, 0)
-					mvector3.normalize(direction)
-					data.arrow:set_center(mvector3.x(data.current_position) + direction.x * (24 * scale), mvector3.y(data.current_position) + direction.y * (24 * scale))
-			elseif data.state == "onscreen" and not VoidUI.options.label_waypoint_offscreen then
-				data.bitmap:set_visible(true)
-				data.text:set_visible(true)
+		local update_waypoints = HUDManager._update_waypoints
+		function HUDManager:_update_waypoints(t, dt)
+			update_waypoints(self, t, dt)
+			local cam = managers.viewport:get_current_camera()
+			if not cam then
+				return
+			end
+			
+			local wp_pos = Vector3()
+			local wp_onscreen_direction = Vector3()
+			
+			for id, data in pairs(self._hud.waypoints) do
+				if data.state == "offscreen" then
+						local panel = data.bitmap:parent()
+						mvector3.set(wp_pos, self._saferect:world_to_screen(cam, data.position))
+						local show = VoidUI.options.label_waypoint_offscreen
+						data.bitmap:set_visible(show)
+						data.arrow:set_visible(show)
+						data.text:set_visible(show)
+						
+						local direction = wp_onscreen_direction
+						local panel_center_x, panel_center_y = panel:center()
+						local scale = VoidUI.options.waypoint_scale
+						mvector3.set_static(direction, wp_pos.x - panel_center_x, wp_pos.y - panel_center_y, 0)
+						mvector3.normalize(direction)
+						data.arrow:set_center(mvector3.x(data.current_position) + direction.x * (24 * scale), mvector3.y(data.current_position) + direction.y * (24 * scale))
+				elseif data.state == "onscreen" and not VoidUI.options.label_waypoint_offscreen then
+					data.bitmap:set_visible(true)
+					data.text:set_visible(true)
+				end
 			end
 		end
 	end
-	
 	-- Name Labels
 	if VoidUI.options.enable_labels then
 		function HUDManager:update_name_label_by_peer(peer)
@@ -207,7 +208,39 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
-	
+
+	local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
+	function HUDManager:_setup_player_info_hud_pd2()
+		setup_player_info_hud_pd2(self)
+		if VoidUI.options.scoreboard and VoidUI.options.enable_stats and not self._hud_statsscreen then
+			self:_setup_stats_screen()
+			self:show_stats_screen()
+			self:hide_stats_screen()
+		end
+		if VoidUI.options.enable_voice then
+			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
+			self:_create_voice_panel(hud)
+		end
+	end
+	if VoidUI.options.enable_voice then
+		function HUDManager:_create_voice_panel(hud)
+			if managers.network:session() then
+				self._voice_panel = HUDVoice:new(hud)
+			end
+		end
+		function HUDManager:set_mugshot_voice(id, active)
+			local data = self:_get_mugshot_data(id)
+			if not id or not self._voice_panel or not data or not managers.network:session() then
+				return
+			end
+			self:set_voice(data, active)
+		end
+		function HUDManager:set_voice(data, active)
+			if managers.network:session() then
+				self._voice_panel:set_voice(data, active)
+			end
+		end
+	end
 	--Stat Panel
 	if VoidUI.options.scoreboard and VoidUI.options.enable_stats then
 		local reset_player_hpbar = HUDManager.reset_player_hpbar
@@ -215,17 +248,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 			reset_player_hpbar(self)
 			local character_name = managers.criminals:local_character_name()
 			local crim_entry = managers.criminals:character_static_data_by_name(character_name)
-			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
+			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
 				self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
-			end
-		end
-		local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
-		function HUDManager:_setup_player_info_hud_pd2()
-			setup_player_info_hud_pd2(self)
-			if not self._hud_statsscreen then
-				self:_setup_stats_screen()
-				self:show_stats_screen()
-				self:hide_stats_screen()
 			end
 		end
 		
@@ -482,8 +506,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					panel._panel:set_right(panel._panel:parent():right())
 				else
 					if panel:is_waiting() then panel._panel:set_w(165 * self._mate_scale)
-					elseif panel:ai() or panel:panel():child("custom_player_panel"):child("weapons_panel"):visible() == false then panel._panel:set_w(62 * self._mate_scale)
-					elseif panel:peer_id() then panel._panel:set_w(165 * self._mate_scale)
+					elseif panel:ai() then panel._panel:set_w(VoidUI.options.mate_show == 3 and 62 * self._mate_scale or 0)
+					elseif panel:peer_id() then panel._panel:set_w(VoidUI.options.mate_show > 1 and 165 * self._mate_scale or 0)
 					else panel._panel:set_w(0) end
 					panel._panel:set_x(i == 1 and 0 or self._teammate_panels[i - 1]._panel:right() -  9 * self._mate_scale)
 				end
@@ -1355,6 +1379,7 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
 		end
 	end
+	
 elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
 	local remove_peer = BaseNetworkSession.remove_peer
 	function BaseNetworkSession:remove_peer(peer, peer_id, reason)
@@ -1367,4 +1392,406 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 		end
 		return remove_peer(self, peer, peer_id, reason)
 	end
+	
+elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.enable_joining then
+	local update_time = 0.016666666666666666
+	function MenuManager:show_person_joining(id, nick, progress_percentage, join_start)
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
+			return
+		end
+		local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
+		if VoidUI.options.joining_drawing and not hud.panel:child("dropin_draw_panel") then
+			self._dropin_draw_panel = hud.panel:panel({name = "dropin_draw_panel", layer = 10000})
+			local tooltip = self._dropin_draw_panel:text({
+				name = "tooltip",
+				font_size = 20,
+				font = tweak_data.menu.pd2_medium_font,
+				text = managers.localization:text("menu_pp_draw_default"),
+				vertical = "bottom",
+				layer = 2,
+			})
+			managers.hud:make_fine_text(tooltip)
+			tooltip:set_leftbottom(10, self._dropin_draw_panel:h() - 2)
+			local points_panel = self._dropin_draw_panel:text({
+				name = "points_panel",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				vertical = "bottom",
+				text = "100%",
+				layer = 2,
+			})
+			points_panel:set_left(tooltip:right() + 5)
+			self._num_draw_points = 0
+		end
+		if not self._person_joining then
+			self._person_joining = join_start or os.clock()
+			local color = tweak_data.chat_colors[id] or Color.white
+			local panel = hud.panel:panel({name = "user_dropin" .. id, layer = 10000})
+			local bg_blur = panel:bitmap({
+				name = "bg_blur",
+				texture = "guis/textures/test_blur_df",
+				render_template = "VertexColorTexturedBlur3D",
+				w = panel:w(),
+				h = panel:h(),
+				layer = -1,
+			})
+			local bg_shade = panel:bitmap({
+				name = "bg_shade",
+				color = Color.black,
+				alpha = 0.5,
+				layer = -1,
+			})
+			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
+			local highlight_texture = "guis/textures/VoidUI/hud_highlights"
+			local panel_bg = panel:bitmap({
+				name = "panel_bg",
+				texture = highlight_texture,
+				texture_rect = {0,467,503,160},
+				layer = 1,
+				w = 480,
+				h = 180,
+				alpha = 1,
+				color = VoidUI.options.joining_border and color or Color.white
+			})
+			panel_bg:set_center(bg_blur:center())
+			local progressbar_bg = panel:bitmap({
+				name = "progressbar_bg",
+				w = 350,
+				h = 10,
+				color = VoidUI.options.joining_border and color * 0.2 + Color.black or Color.white * 0.2 + Color.black,
+				layer = 2,
+			})
+			progressbar_bg:set_center(panel:w() / 2, panel:h() / 2)
+			local progressbar_shadow = panel:bitmap({
+				name = "progressbar_shadow",
+				w = 350,
+				h = 10,
+				color = Color.black,
+				layer = -2,
+			})
+			progressbar_shadow:set_center(panel:w() / 2 + 2, panel:h() / 2 + 2)
+			local progressbar = panel:bitmap({
+				name = "progressbar",
+				w = (progress_percentage or 0) / 100 * 350,
+				h = 10,
+				layer = 3,
+				color = VoidUI.options.joining_border and color or Color.white
+			})
+			progressbar:set_x(progressbar_bg:x())
+			progressbar:set_center_y(progressbar_bg:center_y())
+			local level = "" 
+			local peer = managers.network:session():peer(id)
+			if peer and VoidUI.options.joining_rank then 
+				level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() and peer:level().. " " or "")
+			end
+			local title_text = panel:text({
+				name = "title_text",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = level..managers.localization:text("dialog_dropin_title", {USER = nick}),
+				layer = 2,
+			})
+			managers.hud:make_fine_text(title_text)
+			if title_text:w() > 400 then
+				title_text:set_font_size(title_text:font_size() * (400/title_text:w()))
+				title_text:set_w(title_text:w() * (400/title_text:w()))
+			end
+			title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
+			title_text:set_center_x(panel:w() / 2)
+			title_text:set_bottom(progressbar_bg:top() - 5)
+			local title_text_shadow = panel:text({
+				name = "title_text_shadow",
+				font_size = title_text:font_size(),
+				font = tweak_data.menu.pd2_large_font,
+				text = title_text:text(),
+				layer = -2,
+				color = Color.black
+			})
+			managers.hud:make_fine_text(title_text_shadow)
+			title_text_shadow:set_position(title_text:x() + 2, title_text:y() + 2)
+			
+			local progress_text = panel:text({
+				name = "progress_text",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = tonumber(progress_percentage or 0).."%",
+				align = "center",
+				layer = 2,
+				color = VoidUI.options.joining_border and color or Color.white
+			})
+			managers.hud:make_fine_text(progress_text)
+			progress_text:set_w(panel:w())
+			progress_text:set_top(progressbar_bg:bottom() + 5)
+			local progress_text_shadow = panel:text({
+				name = "progress_text_shadow",
+				font_size = 25,
+				font = tweak_data.menu.pd2_large_font,
+				text = progress_text:text(),
+				align = "center",
+				layer = -2,
+				color = Color.black
+			})
+			managers.hud:make_fine_text(progress_text_shadow)
+			progress_text_shadow:set_w(panel:w())
+			progress_text_shadow:set_position(2, progress_text:y() + 2)	
+			if VoidUI.options.joining_mods and peer and peer:synced_mods() and #peer:synced_mods() > 0 then 
+				local mods_fade = panel:gradient({
+					name = "mods_fade",
+					layer = 1,
+					gradient_points = {
+						0,
+						Color.black:with_alpha(0),
+						0.7,
+						Color.black:with_alpha(0),
+						0.85,
+						Color.black:with_alpha(0.5),
+						1,
+						Color.black:with_alpha(0.7)
+					}
+				})
+				local modslist_panel = panel:panel({name = "modslist_panel", x = -15})
+				modslist_panel:text({
+					name = "mods_title",
+					font_size = 25,
+					font = tweak_data.menu.pd2_large_font,
+					text = managers.localization:text("menu_players_list_mods"),
+					align = "right",
+					y = 5,
+					layer = 2,
+					color = Color.white
+				})
+				local last_mod
+				self._joining_mods = {}
+				for i, mod in ipairs(peer:synced_mods()) do
+					last_mod = modslist_panel:text({
+						name = "mod_" .. tostring(i),
+						font_size = 18 * VoidUI.options.joining_mods_scale,
+						font = tweak_data.menu.pd2_large_font,
+						text = mod.name,
+						align = "right",
+						y = (i-1) * (18 * VoidUI.options.joining_mods_scale) + 30,
+						layer = 2,
+						color = Color.white
+					})
+					managers.hud:make_fine_text(last_mod)
+					last_mod:set_right(modslist_panel:w())
+					table.insert(self._joining_mods, last_mod)
+				end	
+				if last_mod then
+					modslist_panel:set_h(last_mod:bottom())
+				end
+			end
+			local function animation(o)
+				local center_x, center_y = panel_bg:center()
+				local w, h = panel_bg:size()
+				local TOTAL_T = 0.25
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + update_time
+					o:set_alpha(math.lerp(0, 1, t / TOTAL_T))
+					panel_bg:set_size(math.lerp(w * 2, w, t / TOTAL_T), math.lerp(h * 2, h, t / TOTAL_T))
+					panel_bg:set_center(center_x, center_y)
+				end
+				o:set_alpha(1)
+				panel_bg:set_size(w, h)
+				panel_bg:set_center(center_x, center_y)
+				t = 0
+				local grow_sin = 0
+				local rot_speed, grow_speed = 0, 0
+				if VoidUI.options.joining_anim == 2 or VoidUI.options.joining_anim == 4 then
+					rot_speed = managers.groupai and managers.groupai:state():whisper_mode() and 40 or 100
+				end
+				if VoidUI.options.joining_anim == 3 or VoidUI.options.joining_anim == 4 then
+					grow_speed = managers.groupai and managers.groupai:state():whisper_mode() and 115 or 175
+				end
+				
+				while true do
+					coroutine.yield()
+					t = t + update_time
+					grow_sin = math.sin(grow_speed * t) * 25
+					panel_bg:set_rotation(math.sin(rot_speed * t) * 3)
+					panel_bg:set_size(w - grow_sin, h - grow_sin)
+					panel_bg:set_center(center_x, center_y)
+					
+					if self._dropin_draw_panel and self._draw_mode then
+						self._last_draw_t = self._last_draw_t or t - update_time
+						local time_diff = t - self._last_draw_t
+
+						if update_time < time_diff then
+							self._last_draw_t = t
+							local mx, my = managers.mouse_pointer:world_position()
+
+							self:draw_joining_line(mx, my)
+						end
+					end
+				end
+			end
+			panel:animate(animation)
+			self._mouse_id = managers.mouse_pointer:get_id()
+			self._removed_mouse = nil
+			local data = {
+				mouse_press = callback(self, self, "mouse_pressed_joining"),
+				mouse_release = callback(self, self, "mouse_released_joining"),
+				id = self._mouse_id
+			}
+			managers.mouse_pointer:use_mouse(data)
+		else
+			self._joining_queue = self._joining_queue or {}
+			table.insert(self._joining_queue, {id = id, nick = nick, join_start = os.clock()})
+		end
+	end
+	function MenuManager:update_person_joining(id, progress_percentage)
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+			return
+		end
+		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
+		if panel then
+			local progress_text = panel:child("progress_text")
+			local progress_text_shadow = panel:child("progress_text_shadow")
+			local progressbar = panel:child("progressbar")
+			local Time = os.clock()-self._person_joining
+			local remaining = (Time/progress_percentage*100)-Time
+			progressbar:stop()
+			local function set_progress(o)
+				local w = o:w()
+				local max_w = panel:child("progressbar_bg"):w()
+				local text = VoidUI.options.joining_time and "%1s%% (%.1fs)" or "%1s%%"
+				local TOTAL_T = 0.15
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + update_time
+					o:set_w(math.lerp(w, tonumber(progress_percentage) / 100 * max_w, t / TOTAL_T))
+					progress_text:set_text(string.format(text, math.floor(o:w() / max_w * 100), remaining))
+					progress_text_shadow:set_text(progress_text:text())
+				end
+				o:set_w(tonumber(progress_percentage) / 100 * max_w)
+				progress_text:set_text(string.format(text, progress_percentage, remaining))
+				progress_text_shadow:set_text(progress_text:text())
+			end
+			progressbar:animate(set_progress)
+		elseif self._joining_queue then
+			for i, data in pairs(self._joining_queue) do
+				if data.id == id then
+					data.progress_percentage = progress_percentage
+				end
+			end			
+		end
+	end
+	
+	function MenuManager:close_person_joining(id)
+		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
+			return
+		end
+		local hud =	managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
+		local panel = hud.panel:child("user_dropin" .. id)
+		if panel then
+			local function animation(o)
+				local panel_bg = panel:child("panel_bg")
+				local center_x, center_y = panel_bg:center()
+				local w, h = panel_bg:size()
+				local TOTAL_T = 0.25
+				local t = 0
+				while TOTAL_T >= t do
+					coroutine.yield()
+					t = t + update_time
+					panel:set_alpha(math.lerp(1, 0, t / TOTAL_T))
+					panel_bg:set_size(math.lerp(w, w * 1.5, t / TOTAL_T), math.lerp(h, h * 1.5, t / TOTAL_T))
+					panel_bg:set_center(center_x, center_y)
+				end
+				managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:remove(panel)
+				self._person_joining = nil
+				if self._joining_queue and self._joining_queue[1] then
+					local joining = self._joining_queue[1]
+					self:show_person_joining(joining.id, joining.nick, joining.progress_percentage, joining.join_start)
+					table.remove(self._joining_queue, 1)
+				end
+			end
+			if self._dropin_draw_panel and (not self._joining_queue or not self._joining_queue[1]) then
+				self._draw_mode = false
+				hud.panel:remove(self._dropin_draw_panel)
+				self._dropin_draw_panel = nil
+			end
+			self._joining_mods = nil
+			panel:stop()
+			panel:animate(animation)
+			managers.mouse_pointer:set_pointer_image("arrow")
+			managers.mouse_pointer:remove_mouse(self._mouse_id)
+			self._mouse_id = nil
+		elseif self._joining_queue then
+			for i, data in pairs(self._joining_queue) do
+				if data.id == id then
+					table.remove(self._joining_queue, i)
+				end
+			end			
+		end
+	end
+	function MenuManager:draw_joining_line(x, y)
+		if not self._dropin_draw_panel or tweak_data.preplanning.gui.MAX_DRAW_POINTS < self._num_draw_points then
+			self._draw_mode = false
+			self._draw_points = {}
+			self._last_draw_t = nil
+			return
+		end
+		
+		self._draw_points = self._draw_points or {}
+		if #self._draw_points < 2 then
+			table.insert(self._draw_points, Vector3(x, y, 0))
+		end
+		self._dropin_draw_panel:child("points_panel"):set_text(100 - self._num_draw_points/tweak_data.preplanning.gui.MAX_DRAW_POINTS * 100 .."%")
+		if #self._draw_points == 2 and self._draw_points[1] ~= Vector3(x, y, 0) then
+			local draw_panel = self._dropin_draw_panel:child("draw") or self._dropin_draw_panel:panel({name = "draw"})
+			local line = draw_panel:polyline({
+				blend_mode = "add",
+				layer = 0,
+				halign = "scale",
+				valign = "scale",
+				points = self._draw_points,
+				line_width = 2,
+				color = tweak_data.preplanning_peer_colors[managers.network:session():local_peer():id()] or Color.white:with_alpha(0)
+			})
+			self._num_draw_points = self._num_draw_points + 1
+			table.remove(self._draw_points, 1)
+		elseif #self._draw_points == 2 and self._draw_points[1] == Vector3(x, y, 0) then
+			table.remove(self._draw_points, #self._draw_points)
+		end
+	end
+	
+	function MenuManager:mouse_pressed_joining(o, button, x, y)
+		if button == Idstring("0") then
+			if ctrl() and self._dropin_draw_panel and self._num_draw_points and tweak_data.preplanning.gui.MAX_DRAW_POINTS >= self._num_draw_points then
+				self._draw_mode = true
+				if self._joining_mods then
+					self._joining_mods[1]:parent():set_alpha(0.25)
+					self._joining_mods[1]:parent():parent():child("mods_fade"):set_alpha(0.25)
+				end
+				managers.mouse_pointer:set_pointer_image("hand")
+			elseif not ctrl() and self._joining_mods then
+				for _, mod in ipairs(self._joining_mods) do
+					if mod:inside(x,y) then
+						Steam:overlay_activate("url", "www.google.com/search?q=Payday+2+" .. mod:text():gsub(" ", "%+"))
+						break
+					end
+				end	
+			end
+		elseif button == Idstring("1") and self._num_draw_points > 0 and self._dropin_draw_panel and self._dropin_draw_panel:child("draw") then
+			self._dropin_draw_panel:child("draw"):clear()
+			self._num_draw_points = 0
+			self._dropin_draw_panel:child("points_panel"):set_text("100%")
+		end
+	end
+	function MenuManager:mouse_released_joining(o, button, x, y)
+		if button == Idstring("0") then
+			self._draw_mode = false
+			self._draw_points = {}
+			self._last_draw_t = nil
+			if self._joining_mods then
+				self._joining_mods[1]:parent():set_alpha(1)
+				self._joining_mods[1]:parent():parent():child("mods_fade"):set_alpha(1)
+			end
+			managers.mouse_pointer:set_pointer_image("arrow")
+		end
+	end
 end
+

@@ -66,12 +66,25 @@ if VoidUI.options.enable_suspicion then
 			name = "suspicion_rate",
 			text = " 0%",
 			layer = 5,
-			h = 18 * self._scale,
+			h = 20 * self._scale,
 			color = Color(0,0.47,1),
 			align = "center",
 			vertical = "center",
-			font_size = 20 * self._scale,
-			font = "fonts/font_medium_shadow_mf",
+			font_size = 18 * self._scale,
+			font = "fonts/font_medium_mf",
+		})
+		local suspicion_rate_shadow = self._suspicion_panel:text({
+			name = "suspicion_rate_shadow",
+			text = " 0%",
+			layer = 4,
+			x = 1,
+			y = 1,
+			h = 20 * self._scale,
+			color = Color.black,
+			align = "center",
+			vertical = "center",
+			font_size = 18 * self._scale,
+			font = "fonts/font_medium_mf",
 		})
 		local left_shade = self._suspicion_panel:bitmap({
 			name = "left_shade",
@@ -162,6 +175,7 @@ if VoidUI.options.enable_suspicion then
 			local wanted_value = 0
 			local value = wanted_value
 			local suspicion_rate = o:child("suspicion_rate")
+			local suspicion_rate_shadow = o:child("suspicion_rate_shadow")
 			local suspicion_detected = o:child("suspicion_detected")
 			local suspicion_fill_panel = o:child("suspicion_fill_panel")
 			local misc_panel = o:child("misc_panel")
@@ -200,18 +214,18 @@ if VoidUI.options.enable_suspicion then
 						wanted_value = 1
 						self._suspicion_value = wanted_value
 						self._sound_source:post_event("hud_suspicion_discovered")
-						local animate_detect_text = function(o)
+						local animate_detect_text = function(o, suspicion_rate, suspicion_rate_shadow)
 							local w, h = o:size()
-							local suspicion_rate = o:parent():child("suspicion_rate")
 							over(0.6, function(p)
 								o:set_alpha(p)
 								suspicion_rate:set_alpha(1 - p)
+								suspicion_rate_shadow:set_alpha(1 - p)
 								o:set_size(w * p, h * p)
 								o:set_center(o:parent():w() / 2, o:parent():h() / 2)
 							end)
 						end
 						suspicion_detected:stop()
-						suspicion_detected:animate(animate_detect_text)
+						suspicion_detected:animate(animate_detect_text, suspicion_rate, suspicion_rate_shadow)
 					end
 				end
 				if not detect_me and wanted_value ~= self._suspicion_value then
@@ -220,6 +234,7 @@ if VoidUI.options.enable_suspicion then
 				if (not detect_me or time_to_end < 2) and self._back_to_stealth then
 					self._back_to_stealth = nil
 					suspicion_rate:set_alpha(1)
+					suspicion_rate_shadow:set_alpha(1)
 					suspicion_detected:set_alpha(0)
 					detect_me = false
 					wanted_value = 0
@@ -232,6 +247,7 @@ if VoidUI.options.enable_suspicion then
 					value = wanted_value
 				end
 				suspicion_rate:set_text(math.floor(value * 100) .."%")
+				suspicion_rate_shadow:set_text(suspicion_rate:text())
 				self:align_suspicion(value)
 				suspicion_rate:set_color(math.lerp(Color(0,0.47,1), Color(1,0.2,0), math.clamp(value - 0.30, 0, 0.4) / 0.4))
 				
@@ -297,6 +313,7 @@ if VoidUI.options.enable_suspicion then
 		if alive(self._suspicion_panel) then
 			self._suspicion_panel:set_visible(false)
 			self._suspicion_panel:child("suspicion_rate"):set_alpha(1)
+			self._suspicion_panel:child("suspicion_rate_shadow"):set_alpha(1)
 			self._suspicion_panel:child("suspicion_detected"):stop()
 			self._suspicion_panel:child("suspicion_detected"):set_alpha(0)
 		end

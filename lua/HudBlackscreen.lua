@@ -32,7 +32,7 @@ if VoidUI.options.enable_blackscreen then
 			mid_text:set_center_x(self._blackscreen_panel:center_x())
 			mid_text:set_center_y(self._blackscreen_panel:h() / 2.5)
 			local is_server = Network:is_server()
-			local continue_button = managers.menu:is_pc_controller() and "ENTER" or nil
+			local continue_button = managers.menu:is_pc_controller() and "ENTER" or managers.localization:get_default_macro("BTN_A")
 			local text = managers.localization:to_upper_text(VoidUI.options.blackscreen_time > 0 and "hud_skip_blackscreen" or "VoidUI_skip_blackscreen", {BTN_ACCEPT = continue_button})
 			local skip_text = self._blackscreen_panel:text({
 				name = "skip_text",
@@ -74,7 +74,7 @@ if VoidUI.options.enable_blackscreen then
 		end
 
 		function HUDBlackScreen:_set_job_data()
-			if not managers.job:has_active_job() then
+			if not managers.job:has_active_job() or self._blackscreen_panel:child("custom_job_panel") then
 				return
 			end
 			local job_panel = self._blackscreen_panel:panel({
@@ -90,6 +90,9 @@ if VoidUI.options.enable_blackscreen then
 			local risk_panel = job_panel:panel({name = "risk_panel"})
 			local last_risk_level
 			local blackscreen_risk_textures = tweak_data.gui.blackscreen_risk_textures
+			local current_dif = managers.job:current_difficulty_stars()
+			local difficulty_color = tweak_data.screen_colors.risk
+			if Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down end
 			local risk_text = risk_panel:text({
 				name = "risk_text",
 				text = VoidUI.options.blackscreen_risk and managers.localization:to_upper_text(tweak_data.difficulty_name_id) or "",
@@ -97,12 +100,11 @@ if VoidUI.options.enable_blackscreen then
 				font_size = 35,
 				align = "right",
 				vertical = "center",
-				color = tweak_data.screen_colors.risk,
+				color = difficulty_color,
 				y = 2,
 				h = 35
 			})
 			managers.hud:make_fine_text(risk_text)
-			local current_dif = managers.job:current_difficulty_stars()
 			for i = 1, #tweak_data.difficulties - 2 do
 				local difficulty_name = tweak_data.difficulties[i + 2]
 				local texture = blackscreen_risk_textures[difficulty_name] or "guis/textures/pd2/risklevel_blackscreen"
@@ -113,7 +115,7 @@ if VoidUI.options.enable_blackscreen then
 					w = VoidUI.options.blackscreen_skull and 35 or 0,
 					h = 35
 				})
-				last_risk_level:set_color(i <= current_dif and tweak_data.screen_colors.risk or tweak_data.screen_colors.text)
+				last_risk_level:set_color(i <= current_dif and difficulty_color or tweak_data.screen_colors.text)
 				last_risk_level:set_alpha(i <= current_dif and 1 or 0.20)
 				last_risk_level:move(risk_text:w() + (i - 1) * last_risk_level:w(), 0)
 			end
@@ -166,6 +168,9 @@ if VoidUI.options.enable_blackscreen then
 		end
 
 		function HUDBlackScreen:_set_job_data_crime_spree()
+			if self._blackscreen_panel:child("custom_job_panel") then
+				return
+			end
 			local skip_text = self._blackscreen_panel:child("skip_text")
 			local loading_text = self._blackscreen_panel:child("loading_text")
 			local job_panel = self._blackscreen_panel:panel({
@@ -213,7 +218,7 @@ if VoidUI.options.enable_blackscreen then
 			if level_data then
 				local level_text = job_panel:text({
 					name = "level_text",
-					text = VoidUI.options.blackscreen_map and managers.localization:to_upper_text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id) or "",
+					text = VoidUI.options.blackscreen_map and managers.localization:to_upper_text(level_data.name_id) or "",
 					font = tweak_data.menu.pd2_large_font,
 					font_size = 50,
 					align = "center",
@@ -291,9 +296,8 @@ if VoidUI.options.enable_blackscreen then
 	elseif RequiredScript == "lib/states/ingamewaitingforplayers" then
 		local update = IngameWaitingForPlayersState.update
 		function IngameWaitingForPlayersState:update(t, dt)
-			if self._skip_data and not self._data_changed then 
+			if self._skip_data then 
 				self._skip_data.total = VoidUI.options.blackscreen_time 
-				self._data_changed = true
 			end
 			return update(self, t, dt)
 		end
@@ -304,6 +308,67 @@ if VoidUI.options.enable_blackscreen then
 				managers.hud:show(Idstring("guis/level_intro"))
 				managers.hud:blackscreen_fade_out_mid_text()
 			end
+		end
+	elseif RequiredScript == "lib/managers/menu/fadeoutguiobject" then
+		function FadeoutGuiObject:init(params)
+			Global.FadeoutObjects = Global.FadeoutObjects or {}
+
+			table.insert(Global.FadeoutObjects, self)
+
+			params = params or {}
+			self._fade_out_duration = params.fade_out or 0
+			self._fade_out_duration = params.sustain or nil
+			local show_loding_icon = params.show_loading_icon or true
+			local loading_texture = "guis/textures/VoidUI/hud_extras"
+			self._ws = managers.gui_data:create_saferect_workspace()
+			self._panel = self._ws:panel({alpha = 0})
+			self._panel:set_layer(1000)
+
+			if show_loding_icon then
+				local loading_icon = self._panel:bitmap({
+					name = "loading_icon",
+					texture = loading_texture,
+					texture_rect = {1085, 174, 55, 54},
+					alpha = 0
+				})
+				loading_icon:set_rightbottom(self._panel:w(), self._panel:h())
+				
+				local loading_logo = self._panel:bitmap({
+					name = "loading_logo",
+					texture = loading_texture,
+					texture_rect = {1149, 201, 37, 37}
+				})
+				loading_logo:set_center(loading_icon:center())
+				
+				local function spin_forever_animation(o)					
+					local dt, t = nil, 0
+					while true do
+						dt = coroutine.yield()
+						t = t + dt
+						o:set_alpha(math.abs(math.sin(120 * t)))
+					end
+				end
+				local function fade_in_animation(panel)
+					over(0.2, function (p)
+						panel:set_alpha(p)
+					end)
+					loading_icon:animate(spin_forever_animation)
+				end
+				self._panel:animate(fade_in_animation)
+			end
+
+			local function fade_out_animation(panel)
+				while not self._fade_out_duration do
+					wait(1)
+				end
+
+				over(self._fade_out_duration / 1.5, function (p)
+					panel:set_alpha(1 - p)
+				end)
+				managers.gui_data:destroy_workspace(self._ws)
+				table.delete(Global.FadeoutObjects, self)
+			end
+			self._panel:animate(fade_out_animation)
 		end
 	end
 end

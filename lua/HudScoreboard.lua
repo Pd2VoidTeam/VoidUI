@@ -179,12 +179,12 @@ if VoidUI.options.enable_stats then
 			if job_data then
 				local difficulty_stars = managers.job:current_difficulty_stars()
 				local difficulty_string = managers.localization:to_upper_text(tweak_data.difficulty_name_id)
-				local difficulty_color = tweak_data.screen_colors.risk
-				
+				local difficulty_color = tweak_data.screen_colors.text
 				if managers.crime_spree:is_active() then
 					difficulty_string = managers.localization:to_upper_text("cn_crime_spree")..": "..managers.localization:text("menu_cs_level", {level = managers.experience:cash_string(managers.crime_spree:server_spree_level(), "")})
 					difficulty_color = tweak_data.screen_colors.crime_spree_risk
-				end
+				elseif Global.game_settings.one_down then difficulty_color = tweak_data.screen_colors.one_down
+				elseif difficulty_stars > 0 then difficulty_color = tweak_data.screen_colors.risk end
 			
 				local risk_text = risk_panel:text({
 					name = "risk_text",
@@ -192,10 +192,9 @@ if VoidUI.options.enable_stats then
 					font_size = 25 * self._scale,
 					y = 2,
 					text = difficulty_string,
-					color = tweak_data.screen_colors.text
+					color = difficulty_color
 				})
 				managers.hud:make_fine_text(risk_text)
-				if difficulty_stars > 0 then risk_text:set_color(difficulty_color) end
 				local risk_text_shadow = risk_panel:text({
 					name = "risk_text_shadow",
 					x = 2 * self._scale,
@@ -328,7 +327,7 @@ if VoidUI.options.enable_stats then
 			})
 			local extras_panel = self._full_hud_panel:panel({
 				name = "extras_panel",
-				w = self._scoreboard_panels and self._scoreboard_panels[#self._scoreboard_panels]._panel:w() or (self._full_hud_panel:w() / 1.55) * self._scale,
+				w = self._scoreboard_panels and self._scoreboard_panels[#self._scoreboard_panels]._panel:w() or (managers.gui_data:full_16_9_size().w / 1.55) * self._scale,
 				h = self._full_hud_panel:h() / 3
 			})
 		end
@@ -534,6 +533,8 @@ if VoidUI.options.enable_stats then
 			local mandatory_amount = mandatory_bags_data and mandatory_bags_data.amount
 			local small_loot = managers.loot:get_real_total_small_loot_value()
 			local hit_accuracy = managers.statistics:session_hit_accuracy()
+			local player_unit = managers.player:player_unit()
+			local trade_delay = alive(player_unit) and not tweak_data.player.damage.automatic_respawn_time and managers.groupai:state():all_criminals()[managers.player:player_unit():key()] and managers.groupai:state():all_criminals()[managers.player:player_unit():key()].respawn_penalty
 
 			local body_bag = managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount())
 			local bags = ""
@@ -544,10 +545,15 @@ if VoidUI.options.enable_stats then
 			end
 			local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
 			local accuracy = VoidUI.options.scoreboard_accuracy and hit_accuracy and " Ї "..utf8.to_lower(managers.localization:text("menu_stats_hit_accuracy")):gsub("^%l", string.upper).." ".. hit_accuracy.."%" or ""
-			
-			top_panel:child("loot_stats"):set_text(body_bag..accuracy..bags..instant_cash)
-			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..bags..instant_cash)
-			local music = Global.music_manager and Global.music_manager.current_track and managers.music:current_track_string() or managers.localization:text("VoidUI_nosong")
+			local delay = VoidUI.options.scoreboard_delay and trade_delay and " Ї "..managers.localization:text("hud_trade_delay", {TIME = tostring(self:_get_time_text(trade_delay))}) or ""
+
+			top_panel:child("loot_stats"):set_text(body_bag..accuracy..delay..bags..instant_cash)
+			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
+			local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
+			music = managers.localization:text("VoidUI_nosong")
+			if (level_data and level_data.music == "no_music") or Global.music_manager.current_track then
+				music = managers.music:current_track_string()
+			end
 			local track_text = extras_panel:text({
 				name = "track_text",
 				font_size = 20 * self._scale,
@@ -610,6 +616,15 @@ if VoidUI.options.enable_stats then
 				toggle_image:set_top(toggle_text:top())
 			end
 		end
+		function HUDStatsScreen:_get_time_text(time)
+			time = math.max(math.floor(time), 0)
+			local minutes = math.floor(time / 60)
+			time = time - minutes * 60
+			local seconds = math.round(time)
+			local text = ""
+	
+			return text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
+		end	
 		function HUDStatsScreen:_create_mutators_list(mutators_panel)
 			mutators_panel:clear()
 			if not managers.mutators:are_mutators_active() then
@@ -668,7 +683,7 @@ if VoidUI.options.enable_stats then
 					layer = -2
 				})
 			end
-			mutators_panel:set_h(mutator_text:bottom() + 2)
+			mutators_panel:set_h(mutator_text and mutator_text:bottom() + 2 or 0)
 			mutators_panel:set_center_y(self._full_hud_panel:h() / 2)
 		end
 		function HUDStatsScreen:loot_value_updated()
@@ -911,7 +926,7 @@ if VoidUI.options.enable_stats then
 			end
 			local achievements_panel = self._full_hud_panel:panel({
 				name = "achievements_panel",
-				w = (self._full_hud_panel:w() / 1.55) * self._scale,
+				w = (managers.gui_data:full_16_9_size().w / 1.55) * self._scale,
 				y = (self._full_hud_panel:h() / 2.5) * self._scale,
 				h = (35 * self._scale) * 4,
 				visible = self._visible_panel == "achievements_panel" and true or false
@@ -950,7 +965,7 @@ if VoidUI.options.enable_stats then
 			local scale = self._scale
 			local scoreboard_panel = self._full_hud_panel:panel({
 				name = "scoreboard_panel",
-				w = (self._full_hud_panel:w() / 1.55) * scale,
+				w = (managers.gui_data:full_16_9_size().w / 1.55) * scale,
 				y = (self._full_hud_panel:h() / 2.5) * scale,
 				h = 0
 			})
@@ -1120,7 +1135,7 @@ if VoidUI.options.enable_stats then
 				if level_data then
 					local day_title = top_panel:child("day_title")
 					local day_title_shadow = top_panel:child("day_title_shadow")
-					day_title:set_text(managers.localization:text(level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id))
+					day_title:set_text(managers.localization:text(managers.crime_spree:is_active() and level_data.name_id or (level_data.name_id == "heist_branchbank_hl" and job_data.name_id or level_data.name_id)))
 					day_title_shadow:set_text(day_title:text())
 				end
 			end
@@ -1418,7 +1433,7 @@ if VoidUI.options.enable_stats then
 				x = perk_bg:x(),
 				w = VoidUI.options.scoreboard_perk and h / 1.1 or 0,
 				h = h / 1.1,
-				font = "fonts/font_medium_shadow_mf",
+				font = "fonts/font_medium_noshadow_mf",
 			})
 			local hours_bg = self._panel:bitmap({
 				name = "hours_bg",
@@ -1514,7 +1529,7 @@ if VoidUI.options.enable_stats then
 					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
 					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
 					local lvl = self._main_player and managers.experience:current_level() or peer:level()
-					level = rank..lvl.." "
+					level = rank or ""..lvl or"".." "
 				end
 				name:set_text(level .. player_name)
 				if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end
@@ -1563,7 +1578,7 @@ if VoidUI.options.enable_stats then
 							skillpoints = skillpoints + skills[i]
 						end
 						skills_text:set_color(skillpoints > 120 and Color.red or Color.white)
-						perk_count:set_text(outfit.skills.specializations[2] .. "/9")
+						perk_count:set_text((outfit.skills.specializations[2] or "0") .. "/9")
 						local icon, rect = tweak_data.hud_icons:get_texture("pd2_question")
 						if tweak_data.skilltree.specializations[tonumber(outfit.skills.specializations[1])] then
 							icon, rect = tweak_data.skilltree:get_specialization_icon_data(tonumber(outfit.skills.specializations[1]))							
@@ -1622,13 +1637,19 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:get_hours(webpage)
+			if not self._panel or not self._panel:child("hours") then
+				return
+			end
+			
 			local hours = self._panel:child("hours")
 			local hours_played = managers.localization:text("VoidUI_error")
 			hours:set_wrap(true)
 			local start_pos = select(2, webpage:find("var rgGames =."))
 			if start_pos then
 				local tables = json.decode(webpage:sub(start_pos, webpage:find(".var rgChangingGames", start_pos)))
-				if tables then
+				if tables and #tables == 0 then
+					hours_played = managers.localization:text("VoidUI_hidden")
+				elseif tables and #tables > 0 then
 					for i = 1, #tables do
 						if tables[i].appid == 218620 then
 							hours_played = tables[i].hours_forever:gsub(",", "") .. "h"

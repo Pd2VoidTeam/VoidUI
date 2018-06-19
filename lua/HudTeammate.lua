@@ -18,7 +18,7 @@ if VoidUI.options.teammate_panels then
 		self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 		self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
 		self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
-		self._downs_max = self._main_player and (3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)) or 3
+		self._downs_max = tweak_data.player.damage.LIVES_INIT -(Global.game_settings.difficulty == "sm_wish" and - 2 or 0)
 		self._downs = self._downs_max
 		self._primary_max = 0
 		self._secondary_max = 0
@@ -315,7 +315,7 @@ if VoidUI.options.teammate_panels then
 		})
 		weapons_panel:set_bottom(custom_player_panel:bottom())
 		weapons_panel:set_x(self._main_player and health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale) or health_panel:right() - (6 * self._mate_scale))
-		
+		self._fore_color = self._main_player and VoidUI:GetColor("c_main_fg") or VoidUI:GetColor("c_mate_fg") 
 		local weapons_background = weapons_panel:bitmap({
 			name = "weapons_background",
 			texture = "guis/textures/VoidUI/hud_weapons",
@@ -341,6 +341,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = self._main_player and"left" or "right",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
 		})
@@ -355,6 +356,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = "left",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
 		})
@@ -382,6 +384,7 @@ if VoidUI.options.teammate_panels then
 			texture = highlight_texture,
 			texture_rect = selected_rect,
 			layer = 1,
+			color = self._fore_color,
 			w = self._ammo_1_w,
 			h = self._ammo_panel_h,
 			alpha = 1,
@@ -404,6 +407,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = self._main_player and"left" or "right",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
 		})
@@ -418,6 +422,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "center",
 			align = "left",
 			font = "fonts/font_large_mf",
+			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
 		})
@@ -446,6 +451,7 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = self._ammo_1_w,
 			h = self._ammo_panel_h,
+			color = self._fore_color,
 			alpha = 1,
 		})
 		local equipment_panel = weapons_panel:panel({
@@ -463,16 +469,16 @@ if VoidUI.options.teammate_panels then
 			layer = 1,
 			w = self._equipment_panel_w,
 			h = self._equipment_panel_h,
+			color = self._fore_color,
 			alpha = 1,
 		})	
-		local icon, texture_rect = tweak_data.hud_icons:get_icon_data("equipment_doctor_bag")
 		local equipment_image = equipment_panel:bitmap({
 			name = "equipment_image",
-			texture = icon,
-			texture_rect = texture_rect,
+			texture = "guis/textures/pd2/add_icon",
 			layer = 2,
 			w = self._equipment_panel_w / 1.9,
 			h = self._equipment_panel_h / 1.6,
+			color = self._fore_color,
 			alpha = 0.6,
 		})
 		equipment_image:set_center(equipment_border:center())
@@ -481,14 +487,14 @@ if VoidUI.options.teammate_panels then
 			w = self._equipment_panel_w / 1.2,
 			h = self._equipment_panel_h,
 			font_size = self._equipment_panel_h / 2,
-			text = "x0",
+			color = self._fore_color,
+			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 3,
 			alpha = 1,
 		})
-		
 		
 		local ties_panel = weapons_panel:panel({
 			name = "ties_panel",
@@ -530,7 +536,7 @@ if VoidUI.options.teammate_panels then
 			text = "x0",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 3,
 			alpha = 1,
 		})
@@ -587,7 +593,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			layer = 4,
 			alpha = 1,
 		})	
@@ -690,10 +696,21 @@ if VoidUI.options.teammate_panels then
 			vertical = "bottom",
 			align = self._main_player and "right" or "left",
 			font_size = 19 * self._mate_scale,
-			font = "fonts/font_medium_shadow_mf"
+			font = "fonts/font_medium_noshadow_mf"
 		})
 		interact_text:set_bottom(self._main_player and health_panel:top() - self._equipment_panel_h or health_panel:top() - 1)
 		interact_text:set_x(self._main_player and 0 or 9 * self._mate_scale)
+		local interact_text_shadow = interact_panel:text({
+			name = "interact_text_shadow",
+			text = string.upper(managers.localization:text("hud_action_generic")),
+			layer = 2,
+			color = Color.black,
+			vertical = "bottom",
+			align = self._main_player and "right" or "left",
+			font_size = 19 * self._mate_scale,
+			font = "fonts/font_medium_noshadow_mf"
+		})
+		interact_text_shadow:set_position(interact_text:x() + 1, interact_text:y() + 1)
 		local interact_bar = interact_panel:bitmap({
 			name = "interact_bar",
 			texture = health_texture,
@@ -784,12 +801,6 @@ if VoidUI.options.teammate_panels then
 				name_shadow:show()
 				weapons_panel:show()
 				armor_value:show()
-				local peer = managers.network:session():peer(self:peer_id())
-				local outfit = peer and peer:blackmarket_outfit()
-				local skills = outfit and outfit.skills
-				skills = skills and skills.skills
-				self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (tonumber(skills[14]) >= 3 and 1 or 0)
-				self:reset_downs()
 			else
 				name:set_bottom(health_panel:top() - 1)
 				name:set_x(9 * self._mate_scale)
@@ -803,7 +814,6 @@ if VoidUI.options.teammate_panels then
 			end
 		else
 			weapons_panel:show()
-			self._downs_max = 3 - (managers.job:current_difficulty_stars() == 6 and 2 or 0) + (self._main_player and managers.player:upgrade_value("player", "additional_lives", 0) or 0)
 		end
 		managers.hud:align_teammate_panels()
 	end
@@ -842,10 +852,13 @@ if VoidUI.options.teammate_panels then
 			}, callback(self, self, "whisper_mode_changed"))
 		end
 		self:set_detection()
+		self:set_max_downs()
 	end
 	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
 		set_name(self, teammate_name)
+		if teammate_name == managers.localization:text("menu_jowi") then teammate_name = managers.localization:text("VoidUI_jowi") 
+		elseif teammate_name == managers.localization:text("menu_chico") then teammate_name = managers.localization:text("VoidUI_chico") end
 		teammate_name = VoidUI.options.mate_upper and utf8.to_upper(teammate_name) or teammate_name
 		local name = self._custom_player_panel:child("name")
 		local name_shadow = self._custom_player_panel:child("name_shadow")
@@ -1096,20 +1109,24 @@ if VoidUI.options.teammate_panels then
 		local ammo_amount = selected_ammo_panel:child(type.."_ammo_amount")
 		local ammo_image = selected_ammo_panel:child(type.."_selected_image")
 		local pickup = selected_ammo_panel:child(type.."_pickup")
-		local color = Color.white
+		local color = self._fore_color
 		
 		local current_left_total = current_left
 		local max_total = max
 		local peer = managers.network:session():peer(self:peer_id())
 		local outfit = peer and peer:blackmarket_outfit()
-		if VoidUI.options.totalammo == true and (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
-			current_left = current_left - current_clip
-			max = max - max_clip
+		if (self._main_player and ((type == "primary" and managers.blackmarket:equipped_primary().weapon_id ~= "saw") or (type == "secondary" and managers.blackmarket:equipped_secondary().weapon_id ~= "saw_secondary")) or ((type == "primary" and outfit and outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) ~= "saw") or (type == "secondary" and outfit and outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) ~= "saw_secondary"))) then
+			if VoidUI.options.totalammo == true then
+				current_left = current_left - current_clip
+				max = max - max_clip
+			end
+		else
+			max_total = 2
 		end
 
 		ammo_amount:set_text(string.gsub("000", "0", "", string.len(tostring(current_clip))).. tostring(current_clip).."/"..string.gsub("000", "0", "", string.len(tostring(current_left)))..tostring(current_left)) 
-		ammo_amount:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
-		ammo_image:set_color(Color(1, (current_left_total/max_total) / 0.4,(current_left_total/max_total) / 0.4)) 
+		ammo_amount:set_color(math.lerp(Color.red, self._fore_color, math.min(1, (current_left_total/max_total) / 0.4)))
+		ammo_image:set_color(ammo_amount:color()) 
 		
 		if VoidUI.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
 			pickup:stop()
@@ -1201,9 +1218,9 @@ if VoidUI.options.teammate_panels then
 			ties_image:set_color(Color(1,0,0))
 		else
 			ties_amount:set_text("x"..amount)
-			ties_amount:set_color(Color.white)
-			ties_border:set_color(Color.white)
-			ties_image:set_color(Color.white)
+			ties_amount:set_color(self._fore_color)
+			ties_border:set_color(self._fore_color)
+			ties_image:set_color(self._fore_color)
 		end
 	end
 
@@ -1239,9 +1256,9 @@ if VoidUI.options.teammate_panels then
 			equipment_image:set_color(Color(1,0,0))
 		else
 			equipment_count:set_text("x"..data.amount)
-			equipment_count:set_color(Color.white)
-			equipment_border:set_color(Color.white)
-			equipment_image:set_color(Color.white)
+			equipment_count:set_color(self._fore_color)
+			equipment_border:set_color(self._fore_color)
+			equipment_image:set_color(self._fore_color)
 		end
 	end	
 
@@ -1258,9 +1275,9 @@ if VoidUI.options.teammate_panels then
 			end
 		end
 		if visible then
-			equipment_count:set_color(Color.white)
-			equipment_border:set_color(Color.white)
-			equipment_image:set_color(Color.white)
+			equipment_count:set_color(self._fore_color)
+			equipment_border:set_color(self._fore_color)
+			equipment_image:set_color(self._fore_color)
 		else
 			equipment_count:set_color(Color(1,0,0))
 			equipment_border:set_color(Color(1,0,0))
@@ -1317,13 +1334,13 @@ if VoidUI.options.teammate_panels then
 			grenades_image:set_color(Color(1,0,0))
 		else
 			grenades_count:set_text(tweak_data and tweak_data.blackmarket and tweak_data.blackmarket.projectiles and tweak_data.blackmarket.projectiles[data.icon] and tweak_data.blackmarket.projectiles[data.icon].base_cooldown and "" or "x"..data.amount)
-			grenades_count:set_color(Color.white)
+			grenades_count:set_color(self._fore_color)
 			if self._ability_color then 
 				grenades_border:set_color(self._ability_color + Color.white * 0.05)
 				grenades_image:set_color(grenades_border:color())
 			else
-				grenades_border:set_color(Color.white)
-				grenades_image:set_color(Color.white)
+				grenades_border:set_color(self._fore_color)
+				grenades_image:set_color(self._fore_color)
 			end
 		end
 	end
@@ -1396,8 +1413,8 @@ if VoidUI.options.teammate_panels then
 				border:set_color(Color(1,0.8,0.8))
 				image:set_color(border:color())
 			else
-				border:set_color(Color.white)
-				image:set_color(Color.white)
+				border:set_color(self._fore_color)
+				image:set_color(self._fore_color)
 			end
 		end
 	end
@@ -1417,7 +1434,7 @@ if VoidUI.options.teammate_panels then
 				cooldown_panel:set_alpha(math.lerp(a,1,p))
 				count:set_alpha(cooldown_panel:alpha())
 				border:set_color(ability_color)
-				count:set_color(Color.white)
+				count:set_color(self._fore_color)
 				image:set_color(ability_color)
 			end)
 			cooldown_panel:set_alpha(1)
@@ -1725,57 +1742,39 @@ if VoidUI.options.teammate_panels then
 			texture = highlight_texture,
 			texture_rect = {0,158,503,157},
 			layer = 1,
-			x = background:left() + 7 * self._mate_scale,
 			y = background:top(),
 			w = self._w,
 			h = self._ammo_panel_h,
-			rotation = 180,
 			alpha = 1
 		})
-		local primary_weapon = panel:text({
+		primary_border:set_right(weapons_panel:right())
+		local primary_weapon = panel:bitmap({
 			name = "primary_weapon",
-			x = background:left() + 4 * self._mate_scale,
-			y = background:top(),
-			w = weapons_panel:w() - 8 * self._mate_scale,
-			h = self._ammo_panel_h,
-			font_size = self._ammo_panel_h / 2.5,
-			text = "Primary Weapon",
-			vertical = "center",
-			align = "center",
-			font = "fonts/font_large_mf",
-			wrap = true,
-			word_wrap = true,
-			layer = 2,
-			alpha = 1
+			w = weapons_panel:w() / 2 * self._mate_scale,
+			h = self._ammo_panel_h / 1.2,
+			texture = managers.blackmarket:get_weapon_icon_path("new_m4"),
+			layer = 2
 		})
+		primary_weapon:set_center(primary_border:center())
 		local secondary_border = panel:bitmap({
 			name = "secondary_border",
 			texture = highlight_texture,
 			texture_rect = {0,158,503,157},
 			layer = 1,
-			x = background:left() + 4 * self._mate_scale,
 			y = primary_border:bottom() + 1 * self._mate_scale,
 			w = self._w,
 			h = self._ammo_panel_h,
-			rotation = 180,
 			alpha = 1
 		})
-		local secondary_weapon = panel:text({
+		secondary_border:set_right(weapons_panel:right() - 3 * self._mate_scale)
+		local secondary_weapon = panel:bitmap({
 			name = "secondary_weapon",
-			x = background:left() + 2 * self._mate_scale,
-			y = primary_border:bottom() + 1 * self._mate_scale,
-			w = weapons_panel:w() - 4 * self._mate_scale,
-			h = self._ammo_panel_h,
-			font_size = self._ammo_panel_h / 2.5,
-			text = "Secondary Weapon",
-			vertical = "center",
-			align = "center",
-			font = "fonts/font_large_mf",
-			wrap = true,
-			word_wrap = true,
-			layer = 2,
-			alpha = 1
+			w = weapons_panel:w() /2 * self._mate_scale,
+			h = self._ammo_panel_h / 1.2,
+			texture = managers.blackmarket:get_weapon_icon_path("glock_17"),
+			layer = 2
 		})
+		secondary_weapon:set_center(secondary_border:center())
 		local deploy_panel = panel:panel({name = "deploy"})
 		local throw_panel = panel:panel({name = "throw"})
 		local perk_panel = panel:panel({name = "perk"})
@@ -1825,7 +1824,7 @@ if VoidUI.options.teammate_panels then
 			name = "amount",
 			visible = vis_at_start,
 			text = "x0",
-			font = "fonts/font_medium_shadow_mf",
+			font = "fonts/font_medium_noshadow_mf",
 			vertical = "bottom",
 			align = "right",
 			layer = 2,
@@ -1847,6 +1846,7 @@ if VoidUI.options.teammate_panels then
 		peer = peer or my_peer
 		if self._wait_panel then
 			if waiting then
+				local color = tweak_data.chat_colors[peer:id()] or Color.white
 				self._panel:set_visible(false)
 				self._wait_panel:set_lefttop(self._panel:lefttop())
 				local name = self._wait_panel:child("name")
@@ -1867,14 +1867,26 @@ if VoidUI.options.teammate_panels then
 				end
 				local outfit = peer:profile().outfit
 				outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
-				name:set_text((0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. "" .. peer:name())
+				local _, _, name_w, _ = name:text_rect()
+				local level = (0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. ""
+				name:set_text(level .. peer:name())
 				name_shadow:set_text(name:text())
-				if outfit.primary and outfit.primary.factory_id then self._wait_panel:child("primary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.primary.factory_id)) end
-				if outfit.secondary and outfit.secondary.factory_id then self._wait_panel:child("secondary_weapon"):set_text(managers.weapon_factory:get_weapon_name_by_factory_id(outfit.secondary.factory_id)) end
+				if name_w > (140 * self._mate_scale) then name:set_font_size(name:font_size() * ((self._mate_scale < 1 and 140 * self._mate_scale or 140)/name_w)) end
+				name_shadow:set_font_size(name:font_size())
+				name:set_color(color)
+				name:set_range_color(0, utf8.len(level), Color.white:with_alpha(1))
+				if outfit.primary and outfit.primary.factory_id then 
+					local texture = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
+					self._wait_panel:child("primary_weapon"):set_image(texture) 	
+				end
+				if outfit.secondary and outfit.secondary.factory_id then 
+					local texture = managers.blackmarket:get_weapon_icon_path(outfit.secondary and outfit.secondary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.secondary.factory_id) or "glock_17", VoidUI.options.scoreboard_skins > 1 and outfit.secondary and outfit.secondary.cosmetics)
+					self._wait_panel:child("secondary_weapon"):set_image(texture) 
+				end
 				local has_deployable = outfit.deployable and outfit.deployable ~= "nil"
 				self._wait_panel:child("deploy"):child("amount"):set_text(has_deployable and "x" .. outfit.deployable_amount or "")
 				self._wait_panel:child("throw"):child("amount"):set_text("x" .. managers.player:get_max_grenades(peer:grenade_id()))
-				self._wait_panel:child("perk"):child("amount"):set_text(outfit.skills.specializations[2] .. "/9")
+				self._wait_panel:child("perk"):child("amount"):set_text(outfit.skills.specializations[2] or "" .. "/9")
 				local deploy_image = self._wait_panel:child("deploy"):child("icon")
 				if has_deployable then
 					set_icon_data(deploy_image, tweak_data.equipments[outfit.deployable].icon)
@@ -1895,6 +1907,7 @@ if VoidUI.options.teammate_panels then
 		self._custom_player_panel:child("interact_panel"):stop()
 		self._custom_player_panel:child("interact_panel"):set_visible(enabled)
 		local interact_text = self._custom_player_panel:child("interact_panel"):child("interact_text")
+		local interact_text_shadow = self._custom_player_panel:child("interact_panel"):child("interact_text_shadow")
 		local name = self._custom_player_panel:child("name")
 		local name_shadow = self._custom_player_panel:child("name_shadow")
 		local prev_text = interact_text:text()
@@ -1913,8 +1926,10 @@ if VoidUI.options.teammate_panels then
 		end
 		interact_text:set_text(" ".. action_text)
 		interact_text:set_font_size(19 * self._mate_scale)
+		interact_text_shadow:set_text(" ".. action_text)
+		interact_text_shadow:set_font_size(19 * self._mate_scale)
 		local _,_,text_w,_ = interact_text:text_rect()
-		if text_w > 140 * self._mate_scale then interact_text:set_font_size(interact_text:font_size() * (140 * self._mate_scale/text_w)) end
+		if text_w > 140 * self._mate_scale then interact_text:set_font_size(interact_text:font_size() * (140 * self._mate_scale/text_w)) interact_text_shadow:set_font_size(interact_text:font_size()) end
 		self._custom_player_panel:child("health_panel"):child("health_bar"):set_alpha(enabled and 0.3 or 1)
 		self._custom_player_panel:child("health_panel"):child("armor_bar"):set_visible(not enabled)
 		self._custom_player_panel:child("health_panel"):child("armor_value"):set_visible(not enabled)
@@ -1928,6 +1943,7 @@ if VoidUI.options.teammate_panels then
 					name:set_alpha(math.lerp(name:alpha(), enabled == true and 0 or 1, p))
 					name_shadow:set_alpha(math.lerp(name:alpha(), enabled == true and 0 or 1, p))
 					interact_text:set_alpha(math.lerp(interact_text:alpha(),enabled == true and 1 or 0,p))
+					interact_text_shadow:set_alpha(interact_text:alpha())
 				end
 			end)
 		end)
@@ -1957,7 +1973,7 @@ if VoidUI.options.teammate_panels then
 				align = "left",
 				font_size = prev_size,
 				rotation = 360,
-				font = "fonts/font_medium_shadow_mf"
+				font = "fonts/font_medium_noshadow_mf"
 			})
 			text:set_bottom(self._custom_player_panel:child("health_panel"):top() - 1)
 			text:set_x(9 * self._mate_scale)
@@ -1971,6 +1987,7 @@ if VoidUI.options.teammate_panels then
 						name:set_alpha(math.lerp(name:alpha(), 1, p))
 						name_shadow:set_alpha(math.lerp(name:alpha(), 1, p))
 						interact_text:set_alpha(math.lerp(interact_text:alpha(), 0, p))
+						interact_text_shadow:set_alpha(interact_text:alpha())
 					end
 				end)
 			end)
@@ -2142,7 +2159,6 @@ if VoidUI.options.teammate_panels then
 		if alive(health_stored_bg) and value > 0 then	
 			health_stored:set_visible(true)
 			health_stored:set_w(self._health_w / 2.9)
-			
 			health_stored_bg:set_visible(true)
 			health_stored_bg:set_w(self._health_w / 2.9)
 			health_stored_bg:set_h(self._bg_h * value)
@@ -2150,7 +2166,7 @@ if VoidUI.options.teammate_panels then
 			health_stored_bg:set_texture_rect(811,((1- value) * 472),70,472 * value)
 			health_stored_bg:set_bottom(self._custom_player_panel:h())
 			health_stored_bg:set_color(color * 0.4 + Color.black)
-			health_stored:set_color(health_panel:child("health_bar"):color())
+			health_stored:set_color(color * 0.7 + Color.black * 0.9)
 			weapons_panel:set_x(health_stored_bg:x() - weapons_panel:w() + (8 * self._main_scale))
 			if not health_stored_max then 	
 				local health_stored_max = self._custom_player_panel:bitmap({
@@ -2162,11 +2178,11 @@ if VoidUI.options.teammate_panels then
 					h = self._bg_h,
 					alpha = 1,
 				})
-				health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
+				health_stored_max:set_color(color * (Color.white * 0.5))
 				health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))
 				health_stored_max:set_bottom(self._custom_player_panel:h())
 			else
-				health_stored_max:set_color(health_stored_bg:color() * (Color.white * 0.5))
+				health_stored_max:set_color(color * (Color.white * 0.5))
 				health_stored_max:set_right(health_panel:x() + (11 * self._main_scale))
 				health_stored_max:set_bottom(self._custom_player_panel:h())
 			end
@@ -2324,6 +2340,24 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:reset_downs()
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local downs_value = health_panel:child("downs_value")
+		self._downs = self._downs_max
+		downs_value:set_text("x".. tostring(self._downs))
+	end
+	
+	function HUDTeammate:set_max_downs()
+		local health_panel = self._custom_player_panel:child("health_panel")
+		local downs_value = health_panel:child("downs_value")
+		self._downs_max = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
+		if self._main_player then
+			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
+		elseif self._peer_id then
+			local peer = managers.network:session():peer(self._peer_id)
+			local outfit = peer and peer:blackmarket_outfit()
+			local skills = outfit and outfit.skills
+			skills = skills and skills.skills
+			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
+		end
+		self._downs_max = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
 	end

@@ -1,221 +1,204 @@
 {
-	"menu_id" : "VoidUI_scoreboard",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "scoreboard",
+	"parent_menu" : "options",
 	"title" : "VoidUI_stats_title",
-	"description" : "VoidUI_stats_desc",
-	"back_callback" : "VoidUI_save",
-	"priority" : 10,
-	"localized" :  true,
+	"priority" : 7,
 	"items" : [
 		{
 			"type" : "toggle",
 			"id" : "enable_stats",
 			"title" : "VoidUI_enable_stats_title",
 			"description" : "VoidUI_enable_stats_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_stats"
-			"priority" : 17
+			"is_parent" : true,
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "scoreboard_scale",
+			"parent" : "enable_stats",
 			"title" : "VoidUI_scoreboard_scale_title",
 			"description" : "VoidUI_scoreboard_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "scoreboard_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 16
+			"step" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_blur",
 			"title" : "VoidUI_blur_title",
 			"description" : "VoidUI_blur_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_blur"
-			"priority" : 15
+			"parent" : "enable_stats",
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_maxlevel",
 			"title" : "VoidUI_scoreboard_maxlevel_title",
 			"description" : "VoidUI_scoreboard_maxlevel_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_maxlevel"
-			"priority" : 14
-		},
-		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 13
-		},
-		{
-			"type" : "toggle",
-			"id" : "scoreboard",
-			"title" : "VoidUI_scoreboard_title",
-			"description" : "VoidUI_scoreboard_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard"
-			"priority" : 12
+			"parent" : "enable_stats",
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_accuracy",
 			"title" : "VoidUI_scoreboard_accuracy_title",
 			"description" : "VoidUI_scoreboard_accuracy_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_accuracy"
-			"priority" : 11
+			"parent" : "enable_stats",
+			"default_value" : true
+		},
+		{
+			"type" : "toggle",
+			"id" : "scoreboard_delay",
+			"title" : "VoidUI_scoreboard_delay_title",
+			"description" : "VoidUI_scoreboard_delay_desc",
+			"parent" : "enable_stats",
+			"default_value" : false
+		},
+		{
+			"type" : "divider"
+		},
+		{
+			"type" : "toggle",
+			"id" : "scoreboard",
+			"title" : "VoidUI_scoreboard_title",
+			"description" : "VoidUI_scoreboard_desc",
+			"is_parent" : true,
+			"parent" : "enable_stats",
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_character",
 			"title" : "VoidUI_scoreboard_character_title",
 			"description" : "VoidUI_scoreboard_character_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_character"
-			"priority" : 10
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_skills",
 			"title" : "VoidUI_scoreboard_skills_title",
 			"description" : "VoidUI_scoreboard_skills_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_skills"
-			"priority" : 9
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "scoreboard_kills",
+			"parent" : ["enable_stats", "scoreboard"],
 			"title" : "VoidUI_scoreboard_kills_title",
 			"description" : "VoidUI_scoreboard_kills_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disable", 
 				"VoidUI_nonspecial", 
 				"VoidUI_withspecial"
 			],
-			"value" : "scoreboard_kills",
-			"priority" : 8
+			"default_value" : 3
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_specials",
 			"title" : "VoidUI_scoreboard_specials_title",
 			"description" : "VoidUI_scoreboard_specials_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_specials"
-			"priority" : 7
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_civs",
 			"title" : "VoidUI_scoreboard_civs_title",
 			"description" : "VoidUI_scoreboard_civs_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_civs"
-			"priority" : 6
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_downs",
 			"title" : "VoidUI_scoreboard_downs_title",
 			"description" : "VoidUI_scoreboard_downs_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_downs"
-			"priority" : 6
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_weapons",
 			"title" : "VoidUI_scoreboard_weapons_title",
 			"description" : "VoidUI_scoreboard_weapons_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_weapons"
-			"priority" : 6
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "scoreboard_skins",
+			"parent" : ["enable_stats", "scoreboard"],
 			"title" : "VoidUI_scoreboard_skins_title",
 			"description" : "VoidUI_scoreboard_skins_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_disable", 
 				"VoidUI_rarity", 
 				"VoidUI_norarity"
 			],
-			"value" : "scoreboard_skins",
-			"priority" : 5
+			"default_value" : 2
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_armor",
 			"title" : "VoidUI_scoreboard_armor_title",
 			"description" : "VoidUI_scoreboard_armor_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_armor"
-			"priority" : 4
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_perk",
 			"title" : "VoidUI_scoreboard_perk_title",
 			"description" : "VoidUI_scoreboard_perk_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_perk"
-			"priority" : 3
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_playtime",
 			"title" : "VoidUI_scoreboard_playtime_title",
 			"description" : "VoidUI_scoreboard_playtime_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_playtime"
-			"priority" : 2
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "multiple_choice",
 			"id" : "scoreboard_toggle",
+			"parent" : ["enable_stats", "scoreboard"],
 			"title" : "VoidUI_scoreboard_toggle_title",
 			"description" : "VoidUI_scoreboard_toggle_desc",
-			"callback" : "basic_option_clbk",
 			"items" : [
 				"VoidUI_jump",
 				"VoidUI_crouch",
 				"VoidUI_rmb"
 			]
-			"value" : "scoreboard_toggle"
-			"priority" : 2
+			"default_value" : 1
 		},
 		{
 			"type" : "toggle",
 			"id" : "scoreboard_ping",
 			"title" : "VoidUI_scoreboard_ping_title",
 			"description" : "VoidUI_scoreboard_ping_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "scoreboard_ping"
-			"priority" : 1
+			"is_parent" : true,
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "ping_frequency",
 			"title" : "VoidUI_ping_frequency_title",
 			"description" : "VoidUI_ping_frequency_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "ping_frequency",
-			"default_value" : 1,
+			"parent" : ["enable_stats", "scoreboard_ping", "scoreboard"],
+			"suffix" : "s",
+			"default_value" : 2,
 			"max" : 10,
 			"min" : 1,
-			"step" : 1,
-			"localized" :  true,
-			"priority" : 0
+			"step" : 0
 		}
 		
 	]

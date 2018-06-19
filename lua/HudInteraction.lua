@@ -66,14 +66,27 @@ if VoidUI.options.enable_interact then
 			align = "center",
 			layer = 2,
 			color = Color.white,
-			font = "fonts/font_medium_shadow_mf",
-			font_size = tweak_data.hud_present.text_size / 1.4 * self._scale,
+			font = "fonts/font_medium_mf",
+			font_size = tweak_data.hud_present.text_size / 1.5 * self._scale,
 			h = 32 * self._scale
 		})
-		
+		local interaction_time_bg = self._hud_panel:text({
+			name = "interaction_time_bg",
+			alpha = 1,
+			visible = false,
+			text = "1s",
+			valign = "center",
+			align = "center",
+			layer = 1,
+			color = Color.black,
+			font = "fonts/font_medium_mf",
+			font_size = tweak_data.hud_present.text_size / 1.5 * self._scale,
+			h = 32 * self._scale
+		})		
 		interact_text:set_y(self._hud_panel:h() / 2 + VoidUI.options.interact_y)
 		invalid_text:set_bottom(interact_text:bottom())
 		interaction_time:set_top(interact_text:bottom() + 10 * self._scale)
+		interaction_time_bg:set_position(1, interaction_time:y() + 1)
 	end
 
 	function HUDInteraction:show_interact(data)
@@ -173,7 +186,11 @@ if VoidUI.options.enable_interact then
 			self._interact_bar:set_x(self._hud_panel:w() / 2 - ((text_w - (4 * self._scale)) / 2))
 		end
 		self._hud_panel:child("interaction_time"):set_visible(total - current > 0 and VoidUI.options.show_interact or false)
-		if total - current > 0 then self._hud_panel:child("interaction_time"):set_text(string.format("%.1fs", total - current)) end
+		self._hud_panel:child("interaction_time_bg"):set_visible(self._hud_panel:child("interaction_time"):visible())
+		if total - current > 0 then 
+			self._hud_panel:child("interaction_time"):set_text(string.format("%.1fs", total - current)) 
+			self._hud_panel:child("interaction_time_bg"):set_text(string.format("%.1fs", total - current))
+		end
 		local bg = self._interact_circle._bg_circle
 		if self._interact_circle_locked and self._interact_circle_locked._circle:alpha() > 0 then
 			self._interact_bar_bg:set_color(Color(0.015,0.1,0.015))
@@ -206,6 +223,7 @@ if VoidUI.options.enable_interact then
 
 		end
 		self._hud_panel:child("interaction_time"):set_visible(false)
+		self._hud_panel:child("interaction_time_bg"):set_visible(false)
 		
 	end
 	function HUDInteraction:set_bar_valid(valid, text_id)

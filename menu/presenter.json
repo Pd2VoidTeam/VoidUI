@@ -1,158 +1,131 @@
 {
-	"menu_id" : "VoidUI_presenter",
-	"parent_menu_id" : "VoidUI_options",
+	"menu_id" : "presenter",
+	"parent_menu" : "options",
 	"title" : "VoidUI_presenter_title",
-	"description" : "VoidUI_presenter_desc",
-	"back_callback" : "VoidUI_save",
-	"priority" : 10,
-	"localized" :  true,
+	"priority" : 5,
 	"items" : [
 		{
-			"type" : "button",
-			"id" : "voidui_presenter",
-			"title" : "VoidUI_presenter_panel",
-			"priority" : 20
+			"type" : "label",
+			"parent" : "enable_presenter",
+			"title" : "VoidUI_presenter_panel"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_presenter",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_presenter_title",
 			"description" : "VoidUI_enable_presenter_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_presenter"
-			"priority" : 19
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "presenter_scale",
+			"parent" : "enable_presenter",
 			"title" : "VoidUI_presenter_scale_title",
 			"description" : "VoidUI_presenter_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "presenter_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 18
+			"step" : 2
 		},
 		{
 			"type" : "slider",
 			"id" : "presenter_buffer",
+			"parent" : "enable_presenter",
 			"title" : "VoidUI_presenter_buffer_title",
 			"description" : "VoidUI_presenter_buffer_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "presenter_buffer",
 			"default_value" : 5,
 			"max" : 10,
 			"min" : 1,
-			"step" : 1,
-			"localized" :  true
-			"priority" : 17
+			"step" : 0
 		},
 		{
 			"type" : "toggle",
 			"id" : "presenter_sound",
+			"parent" : "enable_presenter",
 			"title" : "VoidUI_presenter_sound_title",
 			"description" : "VoidUI_presenter_sound_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "presenter_sound"
-			"priority" : 16
+			"default_value" : false
 		},
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 14
+			"type" : "divider"
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_hint",
-			"title" : "VoidUI_hint_panel",
-			"priority" : 13
+			"type" : "label",
+			"parent" : "enable_hint",
+			"title" : "VoidUI_hint_panel"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_hint",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_hint_title",
 			"description" : "VoidUI_enable_hint_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_hint"
-			"priority" : 12
-		},
-		{
-			"type" : "slider",
-			"id" : "hint_scale",
-			"title" : "VoidUI_hint_scale_title",
-			"description" : "VoidUI_hint_scale_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "hint_scale",
-			"default_value" : 1,
-			"max" : 2,
-			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 11
-		},
-		{
-			"type" : "toggle",
-			"id" : "hint_color",
-			"title" : "VoidUI_hint_color_title",
-			"description" : "VoidUI_hint_color_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "hint_color"
-			"priority" : 10
-		},
-		{
-			"type" : "toggle",
-			"id" : "hint_anim",
-			"title" : "VoidUI_hint_anim_title",
-			"description" : "VoidUI_hint_anim_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "hint_anim"
-			"priority" : 9
+			"default_value" : true
 		},
 		{
 			"type" : "toggle",
 			"id" : "vape_hints",
 			"title" : "VoidUI_vape_hints_title",
 			"description" : "VoidUI_vape_hints_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "vape_hints"
-			"priority" : 8
-		},		
+			"default_value" : true
+		},	
 		{
-			"type" : "divider",
-			"size" : 25,
-			"priority" : 7
+			"type" : "slider",
+			"id" : "hint_scale",
+			"parent" : "enable_hint",
+			"title" : "VoidUI_hint_scale_title",
+			"description" : "VoidUI_hint_scale_desc",
+			"percentage" : true,
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 2
 		},
 		{
-			"type" : "button",
-			"id" : "voidui_challanges",
-			"title" : "VoidUI_challanges_panel",
-			"priority" : 6
+			"type" : "toggle",
+			"id" : "hint_color",
+			"parent" : "enable_hint",
+			"title" : "VoidUI_hint_color_title",
+			"description" : "VoidUI_hint_color_desc",
+			"default_value" : true
+		},
+		{
+			"type" : "toggle",
+			"id" : "hint_anim",
+			"parent" : "enable_hint",
+			"title" : "VoidUI_hint_anim_title",
+			"description" : "VoidUI_hint_anim_desc",
+			"default_value" : true
+		},	
+		{
+			"type" : "divider"
+		},
+		{
+			"type" : "label",
+			"parent" : "enable_challanges",
+			"title" : "VoidUI_challanges_panel"
 		},
 		{
 			"type" : "toggle",
 			"id" : "enable_challanges",
+			"is_parent" : true,
 			"title" : "VoidUI_enable_challanges_title",
 			"description" : "VoidUI_enable_challanges_desc",
-			"callback" : "toggle_option_clbk",
-			"value" : "enable_challanges"
-			"priority" : 5
+			"default_value" : true
 		},
 		{
 			"type" : "slider",
 			"id" : "challanges_scale",
+			"parent" : "enable_challanges",
 			"title" : "VoidUI_presenter_scale_title",
 			"description" : "VoidUI_hint_challanges_desc",
-			"callback" : "basic_option_clbk",
-			"value" : "challanges_scale",
+			"percentage" : true,
 			"default_value" : 1,
 			"max" : 2,
 			"min" : 0.65,
-			"step" : 0.01,
-			"localized" :  true
-			"priority" : 4
+			"step" : 2
 		}
 		
 	]

@@ -1,0 +1,84 @@
+{
+	"menu_id" : "joining",
+	"parent_menu" : "options",
+	"title" : "VoidUI_joining_title",
+	"priority" : 9,
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "enable_joining",
+			"title" : "VoidUI_enable_joining_title",
+			"description" : "VoidUI_enable_joining_desc",
+			"default_value" : true,
+			"is_parent" : true
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_rank",
+			"title" : "VoidUI_mate_name_title",
+			"description" : "VoidUI_joining_rank_desc",
+			"default_value" : true,
+			"parent" : "enable_joining"
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_time",
+			"title" : "VoidUI_joining_time_title",
+			"description" : "VoidUI_joining_time_desc",
+			"default_value" : true,
+			"parent" : "enable_joining"
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_border",
+			"title" : "VoidUI_joining_border_title",
+			"description" : "VoidUI_joining_border_desc",
+			"default_value" : true,
+			"parent" : "enable_joining"
+		},
+		{
+			"type" : "multiple_choice",
+			"id" : "joining_anim",
+			"title" : "VoidUI_joining_anim_title",
+			"description" : "VoidUI_joining_anim_desc",
+			"parent" : "enable_joining",
+			"items" : [
+				"VoidUI_joining_anim_off",
+				"VoidUI_joining_anim_rot",
+				"VoidUI_joining_anim_grow",
+				"VoidUI_joining_anim_full"
+			]
+			"default_value" : 4
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_mods",
+			"title" : "VoidUI_joining_mods_title",
+			"description" : "VoidUI_joining_mods_desc",
+			"is_parent" : true,
+			"default_value" : false,
+			"parent" : "enable_joining"
+		},
+		{
+			"type" : "slider",
+			"id" : "joining_mods_scale",
+			"title" : "VoidUI_joining_mods_scale_title",
+			"description" : "VoidUI_joining_mods_scale_desc",
+			"parent" : ["enable_joining", "joining_mods"],
+			"percentage" : true,
+			"default_value" : 1,
+			"max" : 2,
+			"min" : 0.65,
+			"step" : 2
+		},
+		{
+			"type" : "toggle",
+			"id" : "joining_drawing",
+			"title" : "VoidUI_joining_drawing_title",
+			"description" : "VoidUI_joining_drawing_desc",
+			"default_value" : true,
+			"parent" : "enable_joining"
+		}
+		
+	]
+}

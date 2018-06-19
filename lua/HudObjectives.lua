@@ -225,6 +225,7 @@ if VoidUI.options.enable_objectives then
 		local objective_border = objective_panel:child("objective_border")
 		local objective_text_bg_right = objective_panel:child("objective_text_bg_right")
 		objective_panel:child("objective_text"):set_text(data.text..": "..current .. "/" .. amount)
+		objective_text:set_font_size(tweak_data.hud.active_objective_title_font_size * self._scale)
 		if current > 0 then objective_panel:child("objective_text"):animate(callback(self, self, "_animate_objective_count")) end
 		local _, y, w, h = objective_panel:child("objective_text"):text_rect()
 		objective_text_bg:set_size(w - 17 * self._scale, 30 * self._scale)
