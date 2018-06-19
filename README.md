@@ -2,43 +2,52 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 Copyright (C) 2017 Xeletron
 
-## Whats new in Version 1.1.2 (2017.12.19)
-- Added loading screens
-- Added tagging notifications for the Tag Team perk-deck
-- Added hud effects for the Tag Team perk-deck
-- Added the ability for custom hint notifications to use the color names feature
-- Added interaction complete animation to name labels
-- Added the option to disable the exp bar on the stats screen when you are at max level
-- Scoreboard panels will now show the equipped armor of bots if they have them via other mods
-- Made hint notifications color bot names as well
-- Made the loading screen and stats screen show the days of Reservoir Dogs Heist correctly.
-- Made the heist intro, statscreen and timer panel show the variations of the bank heist
-- Updated the heist intro screen and added options for it
-- Updated the teammate carry text to support cyrillic characters
-- Fixed scoreboard panels getting reset when their owner is released from custody
-- Fixed a crash related to teammates using custom perk-decks
-- Fixed damage reduction bars sometimes not being updated correctly
-- Fixed names on hint notifications not being colored if the player has a bracket in their name
-- Fixed the ability bar not showing the current amount when using the Tag Team perk-deck
-- Fixed the interaction complete animation not being scaled correctly
-- Fixed the interaction bar length issue when interacting with bugged objects in The Golden Grin Casino
-- Fixed crash related to the secured loot panel and the BeardLib-Editor
-- Fixed the throwable indicator sometimes showing wrong values for ability perk-decks
-- Fixed last interaction appearing while flashed when using the Inverted Flashbang Glare mod 
-- Fixed multiple crashes related to jokers
-- Fixed a crash related to the scoreboard and players skill build
-- Fixed a log file error
+## Whats new in Version 1.2 (2018.06.19)
+- Added custom options menu
+- Added joining player panels
+- Added better fade-in animation for loading screens
+- Added Chinese localization made by CoolLKK 
+- Added the ability to disable the waypoint modifications
+- Added the options to only show hudpanels of player teammates, or dont show them at all
+- Added achievement milestone notifications
+- Added voice chatting players indicators
+- Added the option to show your trade delay on the scoreboard
+- Fixed a crash with mutators and the tabpanel
+- Fixed a crash with levels and the tabpanel
+- Fixed a crash with assault lines
+- Fixed a crash with the presenter panel
+- Fixed the blackscreen panel sometimes getting created multiple times
+- Fixed chat button causing textboxes to lock up in the beardlib-editor
+- Fixed blackscreen skip time getting reset to the vanilla value
+- Fixed down counters not setting the maximum amount of downs correctly
+- Fixed the pager counter not showing the correct amount of pagers during crime-spree
+- Fixed the down counter not updating when the player changes loadouts on the briefing screen
+- Fixed challenge notifications not working
+- Fixed the timer panel displaying an error as heist name during the Crime-Spree version of Bank heist
+- Fixed the width of objectives sometimes being incorrect
+- Fixed a crash related to the loading screens and the BeardLib-Editor
+- Fixed the stored health meter for ex-president not working correctly
+- Fixed hint notifications sometimes coloring wrong parts of the text
+- Fixed the player and teammate panels incorrectly showing the player having 0 medicbags when they have no equipment 
+- Fixed the exp bar and tracked achievements on the statspanel being too long on 21:9 monitors
+- Fixed hudpanels always displaying saws if they were low on ammo
+- Fixed the stats panel showing the current song as nothing on music locked heists
+- Scarface's and John Wick's name will be shortened on their hud panels
+- Changed the equiped weapons on drop-in promts to an icon of the weapon
+- Russian translation were remade by Borderkeeper 
+- Updated the localization files
 
 
 ## Credits
 - Most part of the hud made by Xeletron
 - Small lua tweaks made by Fanged Hex
 - English language localization tweaks made by VxWolf
-- Russian localization made by Skyfrost
+- Russian localization made by Skyfrost and Borderkeeper
 - French localization made by Esawo
+- Chinese localization made by CoolLKK
 
 ## Installing
-- Download and install BLT from https://github.com/JamesWilko/Payday-2-BLT/releases
+- Download and install [BLT](https://github.com/JamesWilko/Payday-2-BLT/releases) or [SuperBLT](https://superblt.znix.xyz)
 - Download 'VoidUI.zip'. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
 - If the game is running, restart it.
 
