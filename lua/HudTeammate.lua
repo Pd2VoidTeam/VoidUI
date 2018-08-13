@@ -1289,12 +1289,7 @@ if VoidUI.options.teammate_panels then
 	end
 
 	function HUDTeammate:set_grenades(data)
-		if not PlayerBase.USE_GRENADES then
-			grenades_count:set_text("")
-			grenades_border:set_color(Color(1,0,0))
-			grenades_image:set_color(Color(1,0,0))
-		end
-		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon)
+		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon, {0, 0, 32, 32})
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
@@ -1302,6 +1297,11 @@ if VoidUI.options.teammate_panels then
 		local grenades_count = grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
 		local grenades_icon_ghost = grenades_panel:child("grenades_icon_ghost")
+		if not PlayerBase.USE_GRENADES then
+			grenades_count:set_text("")
+			grenades_border:set_color(Color(1,0,0))
+			grenades_image:set_color(Color(1,0,0))
+		end
 		grenades_image:set_image(icon, unpack(texture_rect))
 		cooldown_image:set_image(icon, unpack(texture_rect))
 		grenades_icon_ghost:set_image(icon, unpack(texture_rect))
@@ -1309,14 +1309,14 @@ if VoidUI.options.teammate_panels then
 	end
 	
 	function HUDTeammate:set_ability_icon(icon)
+		log("Icon: "..tostring(icon))
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
-		local grenades_count = grenades_panel:child("grenades_count")
-		local grenades_border = grenades_panel:child("grenades_border")
-		icon = tweak_data.hud_icons[icon]
-		grenades_image:set_image(icon.texture, unpack(icon.texture_rect))
+		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {0, 0, 32, 32})
+		grenades_image:set_image(texture, unpack(texture_rect))
 	end
+	
 	function HUDTeammate:set_grenades_amount(data)
 		if not PlayerBase.USE_GRENADES then
 			return

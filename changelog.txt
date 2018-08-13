@@ -1,3 +1,8 @@
+Version 1.2.1 (2018.08.13)
+- Fixed crash when somebody has the Pocket ECM Device equiped
+- Fixed a crash with the joining player panel
+- Fixed a crash with the presenter panel
+
 Version 1.2 (2018.06.19)
 - Added custom options menu
 - Added joining player panels

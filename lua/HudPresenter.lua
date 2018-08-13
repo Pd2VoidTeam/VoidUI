@@ -180,7 +180,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 			for i = self._id - 1, self._id - self._active, -1 
 			do
 				local present_panel = self._hud_panel:child("present_panel_"..i)
-				if presenter_panel then
+				if present_panel then
 					local slot = present_panel:child("slot")
 					slot:set_text(slot:text()+1)
 					present_panel:animate(callback(self, self, "_animate_move_queue"), tonumber(slot:text()))
