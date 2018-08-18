@@ -1,4 +1,14 @@
-Version 1.2
+Version 1.2.2
+- Added compatibility with Holdout
+- Added wave popup panel to Safehouse Raid
+
+
+Version 1.2.1 (2018.08.13)
+- Fixed crash when somebody has the Pocket ECM Device equiped
+- Fixed a crash with the joining player panel
+- Fixed a crash with the presenter panel
+
+Version 1.2 (2018.06.19)
 - Added custom options menu
 - Added joining player panels
 - Added better fade-in animation for loading screens
@@ -78,10 +88,8 @@ Version 1.1.1 (2017.11.03)
 - Fixed a crash related to stopping ai when custom name labels are disabled
 - Fixed crash when AI returns from custody
 - Fixed crash related to AI getting downed while the scoreboard is disabled
-- Fixed blackscreen not displaying the correct skip button when using a controller
 - Fixed a crash with teammate interactions when the player panels are disabled
 - Fixed a crash that could occur when quiting the game at the same time the hostage count gets updated
-- Fixed a crash related to skills and perk-decks
 - Fixed a crash related to trading jokers
 
 Version 1.1 (2017.10.15)
