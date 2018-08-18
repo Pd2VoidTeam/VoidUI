@@ -31,3 +31,31 @@ Beware that due to this being in development, crashes or bugs are very likely. I
 - Fixed the player and teammate panels incorrectly showing the player having 0 medicbags when they have no equipment 
 - Fixed the exp bar and tracked achievements on the statspanel being too long on 21:9 monitors
 - Fixed hudpanels always displaying saws if they were low on ammo
+
+## Credits
+- Most part of the hud made by Xeletron
+- Small lua tweaks made by Fanged Hex
+- English language localization tweaks made by VxWolf
+- Russian localization made by Skyfrost and Borderkeeper
+- French localization made by Esawo
+- Chinese localization made by CoolLKK
+- Portuguese localization made by Kazenin (Aldo Raine)
+
+## Installing
+- Download and install [BLT](https://github.com/JamesWilko/Payday-2-BLT/releases) or [SuperBLT](https://superblt.znix.xyz)
+- Download 'VoidUI-Development.zip'. Drop the 'VoidUI-Development' folder in the archive into your 'mods' folder.
+- If the game is running, restart it.
+
+## GNU General Public License
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program (LICENSE file). If not, see <http://www.gnu.org/licenses/>.
