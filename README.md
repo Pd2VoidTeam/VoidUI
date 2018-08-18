@@ -14,6 +14,7 @@ VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD
 - Russian localization made by Skyfrost and Borderkeeper
 - French localization made by Esawo
 - Chinese localization made by CoolLKK
+- Portuguese localization made by Kazenin (Aldo Raine)
 
 ## Installing
 - Download and install [BLT](https://github.com/JamesWilko/Payday-2-BLT/releases) or [SuperBLT](https://superblt.znix.xyz)
