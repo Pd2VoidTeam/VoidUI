@@ -1,10 +1,16 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in Version 1.2.1 (2018.08.13)
-- Fixed crash when somebody has the Pocket ECM Device equiped
-- Fixed a crash with the joining player panel
-- Fixed a crash with the presenter panel
+## Whats new in Version 1.2.2 (2018.08.19)
+- Added an assault badge for Holdout
+- Added wave popup panel
+- Added a Houldout version of the tab panel
+- Added counter that shows the amount of Pocket ECM Devices left
+- Made the ammo couter smaller if you have over 999 total ammo to avoid overlapping
+- Enabled the wave popup panel in Safehouse Raid
+- Fixed "disable notification sounds" option not muting hint notification sounds
+- Fixed crash when trying to play Holdout
+- Fixed a crashed related to the downs counter
 
 
 ## Credits
