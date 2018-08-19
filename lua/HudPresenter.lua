@@ -112,7 +112,7 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 		present_bg_right:set_left(present_bg:right())
 		local title = present_panel:text({
 			name = "title",
-			text = params.title or "ERROR",
+			text = params.title or " ",
 			vertical = "top",
 			valign = "left",
 			layer = 2,
@@ -122,11 +122,14 @@ if RequiredScript == "lib/managers/hud/hudpresenter" and VoidUI.options.enable_p
 			font = tweak_data.hud_present.title_font,
 			font_size = tweak_data.hud_present.title_size / 1.5 * self._scale
 		})
+		if params.title == nil and managers.skirmish:is_skirmish() then
+			title:set_text(managers.localization:text("hud_skirmish"))
+		end
 		local _, _, title_w, title_h = title:text_rect()
 		title:set_h(title_h)
 		local text = present_panel:text({
 			name = "text",
-			text = params.text,
+			text = params.text or "",
 			vertical = "top",
 			valign = "top",
 			layer = 2,

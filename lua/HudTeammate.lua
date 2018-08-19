@@ -597,6 +597,20 @@ if VoidUI.options.teammate_panels then
 			layer = 4,
 			alpha = 1,
 		})	
+		
+		local jammer_count = grenades_panel:text({
+			name = "jammer_count",
+			w = self._equipment_panel_w / 1.1,
+			h = self._equipment_panel_h,
+			font_size = self._equipment_panel_h / 2.5,
+			text = "",
+			vertical = "top",
+			align = "right",
+			font = "fonts/font_medium_noshadow_mf",
+			layer = 4,
+			alpha = 1,
+		})	
+
 		local cooldown_panel = grenades_panel:panel({
 			name = "cooldown_panel",
 			layer = 1,
@@ -854,6 +868,7 @@ if VoidUI.options.teammate_panels then
 		self:set_detection()
 		self:set_max_downs()
 	end
+
 	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
 		set_name(self, teammate_name)
@@ -894,6 +909,7 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:ai()
 		return self._ai
 	end
+	
 	function HUDTeammate:set_cheater(state)
 		self._custom_player_panel:child("name"):set_color(state and tweak_data.screen_colors.pro_color or Color.white)
 	end
@@ -1107,6 +1123,7 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
 		local selected_ammo_panel = self._custom_player_panel:child("weapons_panel"):child(type.."_ammo_panel")
 		local ammo_amount = selected_ammo_panel:child(type.."_ammo_amount")
+		local firemode = selected_ammo_panel:child(type.."firemode")
 		local ammo_image = selected_ammo_panel:child(type.."_selected_image")
 		local pickup = selected_ammo_panel:child(type.."_pickup")
 		local color = self._fore_color
@@ -1126,7 +1143,8 @@ if VoidUI.options.teammate_panels then
 
 		ammo_amount:set_text(string.gsub("000", "0", "", string.len(tostring(current_clip))).. tostring(current_clip).."/"..string.gsub("000", "0", "", string.len(tostring(current_left)))..tostring(current_left)) 
 		ammo_amount:set_color(math.lerp(Color.red, self._fore_color, math.min(1, (current_left_total/max_total) / 0.4)))
-		ammo_image:set_color(ammo_amount:color()) 
+		ammo_image:set_color(ammo_amount:color())
+		ammo_amount:set_font_size(current_left > 999 and self._ammo_panel_h / 1.6 or self._ammo_panel_h / 1.4)
 		
 		if VoidUI.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
 			pickup:stop()
@@ -1324,7 +1342,7 @@ if VoidUI.options.teammate_panels then
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
-		local grenades_count = grenades_panel:child("grenades_count")
+		local grenades_count = self:is_using_grenade("pocket_ecm_jammer") and grenades_panel:child("jammer_count") or grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
 		
 		if data.amount == 0 then
@@ -1345,6 +1363,16 @@ if VoidUI.options.teammate_panels then
 		end
 	end
 
+	function HUDTeammate:is_using_grenade(grenade)
+		if self._main_player then
+			return self._main_player and managers.blackmarket:equipped_grenade() == grenade
+		else
+			local peer = managers.network:session():peer(self:peer_id())
+			local outfit = peer and peer:blackmarket_outfit()
+			return outfit and outfit.grenade == grenade
+		end
+		
+	end
 	function HUDTeammate:set_grenade_cooldown(data)
 		if not PlayerBase.USE_GRENADES then
 			return
@@ -2357,7 +2385,7 @@ if VoidUI.options.teammate_panels then
 			skills = skills and skills.skills
 			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
 		end
-		self._downs_max = managers.crime_spree:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
+		self._downs_max = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
 	end

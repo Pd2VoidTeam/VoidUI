@@ -1146,6 +1146,59 @@ if VoidUI.options.enable_stats then
 				ghost_icon_shadow:set_visible(false)
 			end
 		end
+	
+	elseif RequiredScript == "lib/managers/hud/hudstatsscreenskirmish" then
+		
+		function HUDStatsScreenSkirmish:_update_stats_screen_day(top_panel)
+			local job_data = managers.job:current_job_data()
+			local stage_data = managers.job:current_stage_data()
+			local has_stage_data = stage_data and true or false
+			local days_title = top_panel:child("days_title")
+			local days_title_shadow = top_panel:child("days_title_shadow")
+			top_panel:set_visible(has_stage_data)
+			local ransom_amount = managers.skirmish:current_ransom_amount()
+			self._full_hud_panel:child("extras_panel"):child("payday"):set_text(managers.localization:to_upper_text("hud_skirmish_ransom")..managers.experience:cash_string(ransom_amount))
+			self._full_hud_panel:child("extras_panel"):child("payday_shadow"):set_text(self._full_hud_panel:child("extras_panel"):child("payday"):text())
+			local wave_number = managers.hud._hud_assault_corner._wave_number
+			if has_stage_data then
+				local job_chain = managers.job:current_job_chain_data()
+				local day = managers.job:current_stage()
+				local macro = {
+					current = managers.network:session():is_host() and managers.groupai:state():get_assault_number() or wave_number,
+					max = managers.job:current_level_wave_count() or 0
+				}
+				days_title:set_text(managers.localization:to_upper_text("hud_assault_waves", macro))
+				days_title_shadow:set_text(managers.localization:to_upper_text("hud_assault_waves", macro))
+				local level_data = managers.job:current_level_data()
+				if level_data then
+					local day_title = top_panel:child("day_title")
+					local day_title_shadow = top_panel:child("day_title_shadow")
+					day_title:set_text(managers.localization:text(managers.skirmish:is_weekly_skirmish() and "hud_weekly_skirmish" or "hud_skirmish")..": "..(managers.localization:text(level_data.name_id)))
+					day_title_shadow:set_text(day_title:text())
+
+					if not top_panel:child("waves_panel") then
+						waves_panel = top_panel:panel({name = "waves_panel", w = 150, h = 4})
+						waves_panel:set_center_x(top_panel:w() / 2)
+						waves_panel:set_bottom(day_title:top())
+						days_title:set_y(days_title:y() - 5)
+						days_title_shadow:set_y(days_title_shadow:y() - 5)
+					end
+					waves_panel:clear()
+					local max_waves = managers.job:current_level_wave_count()
+					for i = 1, max_waves do
+						waves_panel:bitmap({
+							name = "panel_"..i-1,
+							texture = "guis/textures/VoidUI/hud_extras",
+							texture_rect = {711, 196, 34, 12},
+							x = 12+(i-1)*(waves_panel:w() / (max_waves)-3),
+							w = (waves_panel:w() / max_waves),
+							color = i <= wave_number and tweak_data.screen_colors.skirmish_color or Color.white,
+							h = 4,
+						})
+					end
+				end
+			end
+		end
 
 	elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		HUDScoreboard = HUDScoreboard or class()

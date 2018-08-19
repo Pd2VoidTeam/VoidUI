@@ -338,6 +338,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
+	function HUDManager:show_hint(params)
+		self._hud_hint:show(params)
+	
+		if params.event and not VoidUI.options.presenter_sound then
+			self._sound_source:post_event(params.event)
+		end
+	end
+
 	if VoidUI.options.teammate_panels or VoidUI.options.enable_labels then 
 		local set_ai_stopped = HUDManager.set_ai_stopped
 		function HUDManager:set_ai_stopped(ai_id, stopped)

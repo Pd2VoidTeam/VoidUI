@@ -150,6 +150,9 @@ if VoidUI.options.enable_blackscreen then
 					vertical = "bottom",
 					color = tweak_data.screen_colors.risk,
 				})
+				if managers.skirmish:is_skirmish() then
+					level_text:set_text(managers.localization:to_upper_text(managers.skirmish:is_weekly_skirmish() and "hud_weekly_skirmish" or "hud_skirmish")..": "..level_text:text())
+				end
 				level_text:set_bottom(risk_panel:top())
 				level_text:set_center_x(risk_panel:center_x())
 			end
