@@ -1775,7 +1775,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 					end
 				end	
 			end
-		elseif button == Idstring("1") and self._num_draw_points > 0 and self._dropin_draw_panel and self._dropin_draw_panel:child("draw") then
+		elseif button == Idstring("1") and self._num_draw_points and self._num_draw_points > 0 and self._dropin_draw_panel and self._dropin_draw_panel:child("draw") then
 			self._dropin_draw_panel:child("draw"):clear()
 			self._num_draw_points = 0
 			self._dropin_draw_panel:child("points_panel"):set_text("100%")

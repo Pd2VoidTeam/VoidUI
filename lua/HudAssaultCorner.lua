@@ -5,7 +5,6 @@ if VoidUI.options.enable_assault then
 			init(self, hud, full_hud, tweak_hud)
 			hud.panel:child("assault_panel"):set_alpha(0)
 			hud.panel:child("hostages_panel"):set_alpha(0)
-			if hud.panel:child("wave_panel") then hud.panel:child("wave_panel"):set_alpha(0) end
 			hud.panel:child("point_of_no_return_panel"):set_alpha(0)
 			hud.panel:child("casing_panel"):set_alpha(0)
 			hud.panel:child("buffs_panel"):set_alpha(0)
@@ -64,6 +63,8 @@ if VoidUI.options.enable_assault then
 						layer = 4
 				})
 				assaultbox_skulls:set_center(icon_assaultbox:center_x() - 1, icon_assaultbox:center_y())
+			elseif managers.skirmish.is_skirmish() then
+				icon_assaultbox:set_texture_rect(1186, 0, 116, 140)
 			elseif difficulty > 0 then
 				local assaultbox_skulls = assault_panel:bitmap({
 					name = "assaultbox_skulls",
@@ -112,8 +113,6 @@ if VoidUI.options.enable_assault then
 				layer = 1,
 				w = VoidUI.options.show_badge and background:w() or background:w() - 20 * self._scale
 			}):set_center(background:center())
-			self._max_waves = tweak_data.safehouse.combat.waves[Global.game_settings.difficulty or "normal"]
-			self._wave_number = 0
 			self._icons_panel = self._custom_hud_panel:panel({
 				name = "icons_panel",
 				w = 240 * self._scale,
@@ -452,7 +451,62 @@ if VoidUI.options.enable_assault then
 				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
-			
+
+			if self:should_display_waves() then
+				hostages_panel:hide()
+				local wave_panel = icons_panel:panel({
+					name = "wave_panel",
+					w = panel_w,
+					h = panel_h
+				})
+				table.insert(self._icons, {panel=wave_panel, position=1})
+				local waves_background = wave_panel:bitmap({
+					name = "waves_background",
+					texture = highlight_texture,
+					texture_rect = {0,316,171,150},
+					layer = 1,
+					color = Color.black,
+					w = panel_w,
+					h = panel_h,
+				})
+				local waves_border = wave_panel:bitmap({
+					name = "waves_border",
+					texture = highlight_texture,
+					texture_rect = {172,316,171,150},
+					layer = 2,
+					w = panel_w,
+					h = panel_h,
+				})
+				local waves_icon = wave_panel:bitmap({
+					name = "waves_icon",
+					texture = "guis/textures/pd2/specialization/icons_atlas",
+					texture_rect = {192,64,64,64},
+					valign = "top",
+					alpha = 0.6,
+					layer = 2,
+					w = panel_w / 1.7,
+					h = panel_h / 1.3,
+					x = 0,
+					y = 0
+				})
+				waves_icon:set_center(waves_border:center())
+				local num_waves = wave_panel:text({
+					name = "num_waves",
+					text = "0/"..self._max_waves,
+					valign = "center",
+					vertical = "bottom",
+					align = "right",
+					w = panel_w / 1.2,
+					h = panel_h,
+					layer = 3,
+					x = 0,
+					y = 0,
+					color = Color.white,
+					font = "fonts/font_medium_noshadow_mf",
+					font_size = panel_h / 2
+				})
+			end
+
 			local pagers_panel = icons_panel:panel({
 				name = "pagers_panel",
 				w = panel_w,
@@ -536,60 +590,13 @@ if VoidUI.options.enable_assault then
 				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
-			if self._hud_panel:child("wave_panel") then
-				hostages_panel:hide()
-				local wave_panel = icons_panel:panel({
-					name = "wave_panel",
-					w = panel_w,
-					h = panel_h
-				})
-				table.insert(self._icons, {panel=wave_panel, position=1})
-				local waves_background = wave_panel:bitmap({
-					name = "waves_background",
-					texture = highlight_texture,
-					texture_rect = {0,316,171,150},
-					layer = 1,
-					color = Color.black,
-					w = panel_w,
-					h = panel_h,
-				})
-				local waves_border = wave_panel:bitmap({
-					name = "waves_border",
-					texture = highlight_texture,
-					texture_rect = {172,316,171,150},
-					layer = 2,
-					w = panel_w,
-					h = panel_h,
-				})
-				local waves_icon = wave_panel:bitmap({
-					name = "waves_icon",
-					texture = "guis/textures/pd2/specialization/icons_atlas",
-					texture_rect = {192,64,64,64},
-					valign = "top",
-					alpha = 0.6,
-					layer = 2,
-					w = panel_w / 1.7,
-					h = panel_h / 1.3,
-					x = 0,
-					y = 0
-				})
-				waves_icon:set_center(waves_border:center())
-				local num_waves = wave_panel:text({
-					name = "num_waves",
-					text = "0/3",
-					valign = "center",
-					vertical = "bottom",
-					align = "right",
-					w = panel_w / 1.2,
-					h = panel_h,
-					layer = 3,
-					x = 0,
-					y = 0,
-					color = Color.white,
-					font = "fonts/font_medium_noshadow_mf",
-					font_size = panel_h / 2
-				})
-			end
+			
+		end
+		function HUDAssaultCorner:setup_wave_display(top, right)
+			
+			self._max_waves = 0
+			self._wave_number = 0
+			self._max_waves = managers.job:current_level_wave_count()
 		end
 		function HUDAssaultCorner:_animate_text(text_panel, bg_box, color, color_function)
 			local assault_panel = self._custom_hud_panel:child("assault_panel")
@@ -898,6 +905,7 @@ if VoidUI.options.enable_assault then
 					assaultbox_skulls:set_font_size(15 * (15 / w))
 				end
 			end
+			local started_now = not self._assault
 			self:_set_text_list(text_list)
 			if self._assault then 
 				self:_set_text_list(self:_get_endless_strings())
@@ -931,6 +939,10 @@ if VoidUI.options.enable_assault then
 			text_panel:stop()
 			text_panel:animate(callback(self, self, "_animate_text"), nil, nil, callback(self, self, "assault_attention_color_function"))
 			self:_set_feedback_color(self._assault_color)
+
+			if (managers.job:current_level_id() == "chill_combat" or managers.skirmish:is_skirmish()) and started_now then
+				self:_popup_wave_started()
+			end
 		end
 		function HUDAssaultCorner:_end_assault()
 			if not self._assault then
@@ -949,12 +961,16 @@ if VoidUI.options.enable_assault then
 			self._start_assault_after_hostage_offset = nil
 			local icon_assaultbox = self._custom_hud_panel:child("assault_panel"):child("icon_assaultbox")
 			icon_assaultbox:stop()
-			if self:is_safehouse_raid() then
+			if self:should_display_waves() then
 				self:_update_assault_hud_color(self._assault_survived_color)
 				self:_set_text_list(self:_get_survived_assault_strings())
 				text_panel:stop()
 				text_panel:clear()
 				text_panel:animate(callback(self, self, "_animate_text"), nil, nil, callback(self, self, "assault_attention_color_function"))
+
+				if managers.job:current_level_id() == "chill_combat" or managers.skirmish:is_skirmish() then
+					self:_popup_wave_finished()
+				end
 			else
 				self:_close_assault_box()
 			end
@@ -1310,7 +1326,7 @@ if VoidUI.options.enable_assault then
 			local cuffed = string.sub(cuffed_panel:child("num_cuffed"):text(), 2)
 			cuffed_panel:set_visible(VoidUI.options.hostages)
 			pagers_panel:set_visible(VoidUI.options.pagers)
-			if self:is_safehouse_raid() then
+			if self:should_display_waves() then
 				cuffed_panel:set_visible(true)
 				cuffed_panel:child("num_cuffed"):set_text("x".. data.nr_hostages)
 			elseif is_whisper_mode or VoidUI.options.hostages == false then
@@ -1464,6 +1480,75 @@ if VoidUI.options.enable_assault then
 				self._timer_noreturnbox:set_current(t / TOTAL_T)
 			end
 			self._custom_hud_panel:child("point_of_no_return_panel"):child("timer_panel"):animate(callback(self, self, "_animate_noreturn_timer"))
+		end
+
+		function HUDAssaultCorner:_popup_wave(text, color)
+			local popup_panel = self._hud_panel:panel({
+				w = 350,
+				name = "wave_popup",
+				h = 40
+			})
+		
+			popup_panel:set_center_x(self._hud_panel:w() / 2)
+			popup_panel:set_center_y(self._hud_panel:h() / 5)
+		
+			local background = popup_panel:bitmap({
+				name = "background",
+				texture = "guis/textures/VoidUI/hud_highlights",
+				texture_rect = {0,467,503,160},
+				layer = -1,
+				color = color
+			})
+
+			local text = popup_panel:text({
+				name = "text",
+				vertical = "center",
+				align = "center",
+				text = text,
+				font = "fonts/font_large_mf",
+				font_size = 35,
+				color = color
+			})
+		
+			local function animate_popup(panel)
+				local cx = panel:center_x()
+				local cy = panel:center_y()
+		
+				over(0.25, function (p)
+					if alive(panel) then
+						panel:set_w(math.lerp(500, 350, p))
+						panel:set_h(p * 40)
+						background:set_size(panel:size())
+						text:set_size(panel:size())
+						panel:set_center_x(cx)
+						panel:set_center_y(cy)
+					end
+				end)
+				over(3, function (p)
+					if alive(panel) then
+						panel:set_w(math.lerp(350, 330, p))
+						background:set_size(panel:size())
+						text:set_size(panel:size())
+						panel:set_center_x(cx)
+					end
+				end)
+				over(0.25, function (p)
+					if alive(panel) then
+						panel:set_w(math.lerp(500, 330, (1 - p)))
+						panel:set_h((1 - p) * 40)
+						background:set_size(panel:size())
+						text:set_size(panel:size())
+						panel:set_center_x(cx)
+						panel:set_center_y(cy)
+					end
+				end)
+		
+				if alive(panel) then
+					panel:parent():remove(panel)
+				end
+			end
+		
+			popup_panel:animate(animate_popup)
 		end
 
 		function HUDAssaultCorner:whisper_mode_changed()

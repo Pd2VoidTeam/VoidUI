@@ -41,6 +41,7 @@ VoidUI.hook_files = {
 	["lib/managers/hud/hudwaitinglegend"] = {"HudManager.lua"},
 	["lib/units/civilians/civiliandamage"] = {"HudScoreboard.lua"},
 	["lib/managers/hud/newhudstatsscreen"] = {"HudScoreboard.lua"},
+	["lib/managers/hud/hudstatsscreenskirmish"] = {"HudScoreboard.lua"},
 	["lib/units/player_team/teamaiinventory"] = {"HudManager.lua"},
 	["lib/managers/achievmentmanager"] = {"HudManager.lua"},
 	["lib/managers/playermanager"] = {"HudManager.lua"},

@@ -1,18 +1,13 @@
 {
     "name" : "Void UI",
 	"description" : "A hud modification that aims to give the in game hud a fresh new look with some additional features.",
-    "author" : "Xeletron, Fanged Hex, VxWolf\nTranslation: Skyfrost, Esawo, CoolLKK\nSpecial thanks: Canada, B.Costa, CrafterBlade",
+    "author" : "Xeletron, Fanged Hex, VxWolf\nTranslation: Borderkeeper, Skyfrost, Esawo, CoolLKK\nSpecial thanks: Canada, B.Costa, CrafterBlade",
 	"contact" : "xeletron1@gmail.com",
-    "version" : "1.2",
+    "version" : "1.2.2",
 	"blt_version" : 2,
 	"image" : "mod_icon.png",
     "color" : "40 40 40",
 	"priority" : 100,
-    "updates" : [
-        {
-            "identifier" : "VoidUI"
-        }
-    ],
     "hooks" : [  
 		{"hook_id" : "lib/managers/menumanager", "script_path" : "Main.lua"},
         {"hook_id" : "lib/managers/hud/Hudteammate", "script_path" : "Main.lua"},
@@ -49,6 +44,7 @@
 		{"hook_id" : "lib/managers/hud/hudplayerdowned", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/units/civilians/civiliandamage", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/hud/newhudstatsscreen", "script_path" : "Main.lua"},
+		{"hook_id" : "lib/managers/hud/hudstatsscreenskirmish", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/units/player_team/teamaiinventory", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/achievmentmanager", "script_path" : "Main.lua"},
 		{"hook_id" : "lib/managers/hud/hudchallengenotification", "script_path" : "Main.lua"},
