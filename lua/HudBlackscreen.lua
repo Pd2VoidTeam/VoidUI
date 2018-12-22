@@ -306,8 +306,8 @@ if VoidUI.options.enable_blackscreen then
 		end
 		if VoidUI.options.blackscreen_linger then
 			local at_exit = IngameWaitingForPlayersState.at_exit
-			function IngameWaitingForPlayersState:at_exit()
-				at_exit(self)
+			function IngameWaitingForPlayersState:at_exit(next_state)
+				at_exit(self, next_state)
 				managers.hud:show(Idstring("guis/level_intro"))
 				managers.hud:blackscreen_fade_out_mid_text()
 			end

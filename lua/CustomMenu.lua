@@ -1010,7 +1010,7 @@ function VoidUIMenu:CreateToggle(params)
 	local check_bg = toggle_panel:bitmap({
 		name = "check_bg",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {711,150,40,41},
+		texture_rect = {710,0,40,41},
 		x = 2,
 		y = 2,
 		w = 22,
@@ -1020,7 +1020,7 @@ function VoidUIMenu:CreateToggle(params)
 	local check = toggle_panel:bitmap({
 		name = "check",
 		texture = "guis/textures/VoidUI/hud_extras",
-		texture_rect = {752,150,40,41},
+		texture_rect = {750,0,40,41},
 		x = 2,
 		y = 2,
 		w = params.value and 22 or 44,

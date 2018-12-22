@@ -62,7 +62,7 @@ if VoidUI.options.enable_voice then
             local image = panel:bitmap({
                 x = text:right() + 2,
                 texture = "guis/textures/VoidUI/hud_extras",
-                texture_rect = {835,150,40,40},
+                texture_rect = {834,0,40,40},
                 w = text:h(),
                 h = text:h(),
                 color = color

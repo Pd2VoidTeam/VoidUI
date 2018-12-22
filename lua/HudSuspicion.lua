@@ -21,7 +21,7 @@ if VoidUI.options.enable_suspicion then
 		local suspicion_left_blue = self._suspicion_panel:bitmap({
 			name = "suspicion_left_blue",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {400,150,-90,88},
+			texture_rect = {400,0,-90,88},
 			color = Color(0,0.47,1),
 			alpha = 1,
 			w = 39 * self._scale,
@@ -32,7 +32,7 @@ if VoidUI.options.enable_suspicion then
 		local suspicion_left_red = self._suspicion_panel:bitmap({
 			name = "suspicion_left_red",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {400,150,-90,88},
+			texture_rect = {400,0,-90,88},
 			color = Color(1,0.2,0),
 			alpha = 1,
 			w = 39 * self._scale,
@@ -43,7 +43,7 @@ if VoidUI.options.enable_suspicion then
 		local suspicion_right_blue = self._suspicion_panel:bitmap({
 			name = "suspicion_right_blue",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {310,150,90,88},
+			texture_rect = {310,0,90,88},
 			color = Color(0,0.47,1),
 			alpha = 1,
 			w = 39 * self._scale,
@@ -54,7 +54,7 @@ if VoidUI.options.enable_suspicion then
 		local suspicion_right_red = self._suspicion_panel:bitmap({
 			name = "suspicion_right_red",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {310,150,90,88},
+			texture_rect = {310,0,90,88},
 			color = Color(1,0.2,0),
 			alpha = 1,
 			w = 39 * self._scale,
@@ -89,7 +89,7 @@ if VoidUI.options.enable_suspicion then
 		local left_shade = self._suspicion_panel:bitmap({
 			name = "left_shade",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {710,150,-309,88},
+			texture_rect = {710,0,-309,88},
 			layer = 6,
 			alpha = 0.3,
 			w = 130 * self._scale,
@@ -100,7 +100,7 @@ if VoidUI.options.enable_suspicion then
 		local right_shade = self._suspicion_panel:bitmap({
 			name = "right_shade",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {401,150,309,88},
+			texture_rect = {401,0,309,88},
 			layer = 6,
 			alpha = 0.3,
 			w = 130 * self._scale,
@@ -111,7 +111,7 @@ if VoidUI.options.enable_suspicion then
 		local left_fill = self._suspicion_fill_panel:bitmap({
 			name = "left_fill",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {309,150, -309,88},
+			texture_rect = {309,0, -309,88},
 			layer = 3,
 			w = 130 * self._scale,
 			h = 20 * self._scale,
@@ -120,7 +120,7 @@ if VoidUI.options.enable_suspicion then
 		local right_fill = self._suspicion_fill_panel:bitmap({
 			name = "right_fill",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {0,150,309,88},
+			texture_rect = {0,0,309,88},
 			layer = 3,
 			w = 130 * self._scale,
 			h = 20 * self._scale,
@@ -130,7 +130,7 @@ if VoidUI.options.enable_suspicion then
 		local left_background = self._misc_panel:bitmap({
 			name = "left_background",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {309,150, -309,88},
+			texture_rect = {309,0, -309,88},
 			alpha = 0.2,
 			layer = 0,
 			w = 130 * self._scale,
@@ -140,7 +140,7 @@ if VoidUI.options.enable_suspicion then
 		local right_background = self._misc_panel:bitmap({
 			name = "right_background",
 			texture = "guis/textures/VoidUI/hud_extras",
-			texture_rect = {0,150,309,88},
+			texture_rect = {0,0,309,88},
 			alpha = 0.2,
 			layer = 0,
 			w = 130 * self._scale,

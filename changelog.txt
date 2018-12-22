@@ -1,3 +1,10 @@
+Version 1.2.3
+- Fixed crash after update 197
+- Fixed a crash with the Broken Arrow custom map
+- Updated texture files
+- Added Italian localization made by LycanCHKN
+- Added better captain badge made by Jarey
+
 Version 1.2.2 (2018.08.19)
 - Added an assault badge for Holdout
 - Added wave popup panel

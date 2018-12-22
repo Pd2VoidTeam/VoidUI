@@ -73,8 +73,9 @@ if VoidUI.options.enable_stats then
 				vertical = "middle"
 			})
 			if self._progress then
+				local max = type(self._progress.max) == "function" and self._progress:max() or self._progress.max
 				self._count = self._panel:text({
-					text = self._progress:get().."/"..self._progress.max,
+					text = self._progress:get().."/"..max,
 					name = "progress_count",
 					font = "fonts/font_small_mf",
 					font_size = 12 * self._scale,
@@ -89,7 +90,7 @@ if VoidUI.options.enable_stats then
 				
 				self._bar = self._panel:bitmap({
 				name = "progress_bg",
-				w = self._panel:w() * (self._progress:get() / self._progress.max),
+				w = self._panel:w() * (self._progress:get() / max),
 				h = self._panel:h(),
 				alpha = 0.8,
 			})
@@ -1189,7 +1190,7 @@ if VoidUI.options.enable_stats then
 						waves_panel:bitmap({
 							name = "panel_"..i-1,
 							texture = "guis/textures/VoidUI/hud_extras",
-							texture_rect = {711, 196, 34, 12},
+							texture_rect = {710, 46, 34, 12},
 							x = 12+(i-1)*(waves_panel:w() / (max_waves)-3),
 							w = (waves_panel:w() / max_waves),
 							color = i <= wave_number and tweak_data.screen_colors.skirmish_color or Color.white,

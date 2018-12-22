@@ -76,8 +76,8 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 			texture = extras,
 			name = "indicator",
 			texture_rect = {
-				1085,
-				174,
+				875,
+				0,
 				55,
 				54
 			},
@@ -87,8 +87,8 @@ if RequiredScript == "lib/utils/levelloadingscreenguiscript" then
 			texture = extras,
 			name = "logo",
 			texture_rect = {
-				1149,
-				201,
+				933,
+				4,
 				37,
 				37
 			},
@@ -318,8 +318,8 @@ elseif RequiredScript == "lib/utils/lightloadingscreenguiscript" then
 			texture = extras,
 			name = "indicator",
 			texture_rect = {
-				1085,
-				174,
+				875,
+				0,
 				55,
 				54
 			},
@@ -329,8 +329,8 @@ elseif RequiredScript == "lib/utils/lightloadingscreenguiscript" then
 			texture = extras,
 			name = "logo",
 			texture_rect = {
-				1149,
-				201,
+				933,
+				4,
 				37,
 				37
 			},

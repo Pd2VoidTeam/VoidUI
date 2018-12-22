@@ -30,15 +30,16 @@ if VoidUI.options.enable_assault then
 			})
 			assault_panel:set_top(0)
 			assault_panel:set_right(self._custom_hud_panel:w())
-			local extras_texture = "guis/textures/VoidUI/hud_extras"
+			local difficulty = math.min(managers.job:current_difficulty_stars(), 6)
+			local badges_texture = "guis/textures/VoidUI/hud_badges"
 			local icon_assaultbox = assault_panel:bitmap({
 				halign = "right",
 				valign = "top",
 				name = "icon_assaultbox",
 				visible = VoidUI.options.show_badge,
 				layer = 3,
-				texture = extras_texture,
-				texture_rect = {0, 0, 116, 140},
+				texture = badges_texture,
+				texture_rect = {0, difficulty * 140, 116, 139},
 				x = 0,
 				y = 10 * self._scale,
 				w = 60 * self._scale,
@@ -46,9 +47,8 @@ if VoidUI.options.enable_assault then
 			})
 			icon_assaultbox:set_right(icon_assaultbox:parent():w() - 10)
 			
-			local difficulty = managers.job:current_difficulty_stars()
 			if managers.crime_spree:is_active() then 
-				icon_assaultbox:set_texture_rect(812, 0, 116, 140)
+				icon_assaultbox:set_texture_rect(116, 0, 116, 139)
 				local assaultbox_skulls = assault_panel:text({
 						name = "assaultbox_skulls",
 						align = "center",
@@ -64,18 +64,9 @@ if VoidUI.options.enable_assault then
 				})
 				assaultbox_skulls:set_center(icon_assaultbox:center_x() - 1, icon_assaultbox:center_y())
 			elseif managers.skirmish.is_skirmish() then
-				icon_assaultbox:set_texture_rect(1186, 0, 116, 140)
-			elseif difficulty > 0 then
-				local assaultbox_skulls = assault_panel:bitmap({
-					name = "assaultbox_skulls",
-					visible = VoidUI.options.show_badge,
-					layer = 4,
-					texture = extras_texture,
-					texture_rect = {difficulty * 116, 0, 116, 140},
-					w = 60 * self._scale,
-					h = 70 * self._scale
-				})
-				assaultbox_skulls:set_center(icon_assaultbox:center())
+				icon_assaultbox:set_texture_rect(116, 140, 116, 139)
+			elseif managers.wdu then 
+				icon_assaultbox:set_texture_rect(116, 280, 116, 140)
 			end
 			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 			local assaultbox_panel = assault_panel:panel({
@@ -189,8 +180,8 @@ if VoidUI.options.enable_assault then
 				name = "icon_noreturnbox",
 				visible = true,
 				layer = 2,
-				texture = extras_texture,
-				texture_rect = {1038,0,148,148},
+				texture = "guis/textures/VoidUI/hud_extras",
+				texture_rect = {976,0,88,88},
 				x = 0,
 				y = 2 * self._scale,
 				w = 56 * self._scale,
@@ -295,9 +286,9 @@ if VoidUI.options.enable_assault then
 			local vip_icon = buffs_panel:bitmap({
 				name = "vip_icon",
 				visible = true,
-				layer = 5,
-				texture = extras_texture,
-				texture_rect = {929, 0, 109, 148},
+				layer = 15,
+				texture = badges_texture,
+				texture_rect = {119, 832, 110, 148},
 				x = 0,
 				y = 10 * self._scale,
 				w = 60 * self._scale,
@@ -624,6 +615,10 @@ if VoidUI.options.enable_assault then
 					text_string = managers.localization:to_upper_text(text_id)
 				elseif text_id == Idstring("mask-up") then
 					text_string = utf8.to_upper(managers.localization:text("hud_instruct_mask_on", {BTN_USE_ITEM = managers.localization:btn_macro("use_item")}))
+				elseif managers.wdu and text_id == Idstring("risk") then	
+					for i = 1, managers.job:current_difficulty_stars() do
+						text_string = text_string .. managers.localization:get_default_macro("BTN_SKULL")
+					end
 				elseif text_id == Idstring("risk") and self._badge then
 					text_string = managers.localization:to_upper_text(text_list[1])
 				elseif text_id == Idstring("risk") and not self._badge then
@@ -913,7 +908,7 @@ if VoidUI.options.enable_assault then
 				self._assault = true
 			end
 			
-			if Network:is_server() and managers.groupai:state():get_hunt_mode() then self:_set_text_list(self:_get_endless_strings()) end
+			if Network:is_server() and managers.groupai:state():get_hunt_mode() and not managers.wdu then self:_set_text_list(self:_get_endless_strings()) end
 			if assaultbox_panel:child("text_panel") then
 				assaultbox_panel:child("text_panel"):stop()
 				assaultbox_panel:child("text_panel"):clear()

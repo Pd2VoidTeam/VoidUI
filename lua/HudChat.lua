@@ -69,7 +69,7 @@ if VoidUI.options.enable_chat then
 		scrollbar:set_size(scrollbar_panel:w() - 10 * self._scale, scrollbar_panel:h() - 10 * self._scale)
 		self:_create_input_panel()
 		self:_layout_input_panel()
-		self:_layout_output_panel()
+		self:_layout_custom_output_panel()
 	end
 
 	function HUDChat:_create_input_panel()
@@ -230,7 +230,7 @@ if VoidUI.options.enable_chat then
 			character = character
 		})
 		line:set_kern(line:kern())
-		self:_layout_output_panel()
+		self:_layout_custom_output_panel()
 		line:animate(callback(self, self, "_animate_message_received"), line_shadow)
 		if not self._focus then
 			local output_panel = self._panel:child("output_panel")
@@ -260,17 +260,17 @@ if VoidUI.options.enable_chat then
 	function HUDChat:scroll_chat(dir)
 		if self._lines_count > 10 * self._scale then
 			self._scroll = math.clamp(self._scroll + dir * self._scale, -(HUDChat.line_height * self._scale * (self._lines_count - 10)), 0)
-			self:_layout_output_panel()	
+			self:_layout_custom_output_panel()	
 		end
 	end
 
 	function HUDChat:set_chat_scroll(dir)
 		if self._lines_count > 10 * self._scale then
 			self._scroll = math.clamp(dir * self._scale, -(HUDChat.line_height * self._scale * (self._lines_count - 10)), 0)
-			self:_layout_output_panel()	
+			self:_layout_custom_output_panel()	
 		end
 	end
-	function HUDChat:_layout_output_panel()
+	function HUDChat:_layout_custom_output_panel()
 		local output_panel = self._panel:child("output_panel")
 		local scrollbar_panel = self._panel:child("scrollbar_panel")
 		local scrollbar = scrollbar_panel:child("scrollbar")	
@@ -313,7 +313,7 @@ if VoidUI.options.enable_chat then
 		self._input_panel:stop()
 		self._input_panel:animate(callback(self, self, "_animate_focus"), true, self._panel:child("output_bg"):alpha(), output_panel:x(), self._panel:child("output_bg"):w())
 		self._focus = true
-		self:_layout_output_panel()
+		self:_layout_custom_output_panel()
 		self._ws:connect_keyboard(Input:keyboard())
 		self._input_panel:key_press(callback(self, self, "key_press"))
 		self._input_panel:key_release(callback(self, self, "key_release"))
@@ -361,7 +361,7 @@ if VoidUI.options.enable_chat then
 		end
 		self._focus = false
 		self._scroll = 0
-		self:_layout_output_panel()
+		self:_layout_custom_output_panel()
 		self._ws:disconnect_keyboard()
 		self._input_panel:key_press(nil)
 		self._input_panel:enter_text(nil)
@@ -446,10 +446,10 @@ if VoidUI.options.enable_chat then
 			self:scroll_chat(HUDChat.line_height * self._scale)
 		elseif self._key_pressed == Idstring("page up") and self._lines_count > 10 * self._scale then
 			self._scroll = -(HUDChat.line_height * self._scale * (self._lines_count - 10))
-			self:_layout_output_panel()
+			self:_layout_custom_output_panel()
 		elseif self._key_pressed == Idstring("page down") then
 			self._scroll = 0
-			self:_layout_output_panel()
+			self:_layout_custom_output_panel()
 		elseif k == Idstring("enter") then
 			if type(self._enter_callback) ~= "number" then
 				self._enter_callback()
