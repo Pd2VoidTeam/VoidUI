@@ -1,4 +1,4 @@
-Version 1.2.3
+Version 1.2.3 (2018.12.22)
 - Fixed crash after update 197
 - Fixed a crash with the Broken Arrow custom map
 - Updated texture files
