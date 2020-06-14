@@ -1,12 +1,11 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in Version 1.2.3 (2018.12.22)
-- Fixed crash after update 197
-- Fixed a crash with the Broken Arrow custom map
-- Updated texture files
-- Added Italian localization made by LycanCHKN
-- Added better captain badge made by Jarey
+## Whats new in 1.2.4 (2020.06.14)
+- Fixed crash on stealth only heists
+- Fixed rare crash during loading
+- Fixed hostages panel sometimes getting stuck when Point Of No Return activates
+- Added better assault badges made by Jarey
 
 
 ## Credits
