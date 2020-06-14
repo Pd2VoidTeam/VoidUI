@@ -552,7 +552,7 @@ if VoidUI.options.enable_stats then
 			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
 			music = managers.localization:text("VoidUI_nosong")
-			if (level_data and level_data.music == "no_music") or Global.music_manager.current_track then
+			if level_data and ((level_data.music_ext_start and Global.music_manager.current_music_ext) or (not level_data.music_ext_start and Global.music_manager.current_track)) then
 				music = managers.music:current_track_string()
 			end
 			local track_text = extras_panel:text({
@@ -1583,7 +1583,7 @@ if VoidUI.options.enable_stats then
 					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
 					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
 					local lvl = self._main_player and managers.experience:current_level() or peer:level()
-					level = rank or ""..lvl or"".." "
+					level = (rank or "")..(lvl or"").." "
 				end
 				name:set_text(level .. player_name)
 				if ai or not VoidUI.options.scoreboard_skills then name:set_h(self._h) name:set_y(0) else name:set_h(self._h / 2) name:set_y(2) end

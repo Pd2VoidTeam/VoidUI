@@ -1373,7 +1373,7 @@ if VoidUI.options.enable_assault then
 			end
 		end
 		function HUDAssaultCorner:show_point_of_no_return_timer()
-			local delay_time = self._assault and 1.2 or 0
+			local delay_time = self._assault and 1.3 or 0
 			local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
 			local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
 			local text_panel = point_of_no_return_panel:child("text_panel")
@@ -1398,7 +1398,6 @@ if VoidUI.options.enable_assault then
 			noreturnbox_panel:child("text_panel"):animate(callback(self, self, "_animate_text"), text_panel:script().text_list, self._noreturn_color)
 			
 			self:_end_assault()
-			self:_set_hostage_offseted(true, true)
 			point_of_no_return_panel:stop()
 			point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
 			self:_set_feedback_color(self._noreturn_color)
@@ -1440,7 +1439,7 @@ if VoidUI.options.enable_assault then
 			local icon_noreturnbox = point_of_no_return_panel:child("icon_noreturnbox")
 			local point_of_no_return_timer = point_of_no_return_panel:child("point_of_no_return_timer")
 			wait(delay_time)
-			--self:_hide_hostages()
+			self:_set_hostage_offseted(true, true)
 			
 			background:set_x(noreturnbox_panel:w())
 			border:set_x(background:x() - 1 * self._scale)

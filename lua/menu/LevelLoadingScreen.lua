@@ -471,7 +471,7 @@ elseif RequiredScript == "lib/network/base/hostnetworksession" then
 	function HostNetworkSession:load_level(...)
 		if managers.network and managers.network.matchmake and managers.network:session() and VoidUI.options.loading_players then
 			local lobby_handler = managers.network.matchmake.lobby_handler
-			if not alive(lobby_handler) or lobby_handler.get_lobby_data == nil then
+			if not alive(lobby_handler) or lobby_handler.get_lobby_data == nil or lobby_handler:get_lobby_data() == nil then
 				return load_level(self, ...)
 			end
 			local peers = {}

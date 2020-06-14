@@ -1327,7 +1327,6 @@ if VoidUI.options.teammate_panels then
 	end
 	
 	function HUDTeammate:set_ability_icon(icon)
-		log("Icon: "..tostring(icon))
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")

@@ -1,3 +1,9 @@
+Version 1.2.4 (2020.06.14)
+- Fixed crash on stealth only heists
+- Fixed rare crash during loading
+- Fixed hostages panel sometimes getting stuck when Point Of No Return activates
+- Added better assault badges made by Jarey
+
 Version 1.2.3 (2018.12.22)
 - Fixed crash after update 197
 - Fixed a crash with the Broken Arrow custom map
