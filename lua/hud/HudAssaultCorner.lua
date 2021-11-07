@@ -1628,12 +1628,12 @@ if VoidUI.options.enable_assault then
 		end
 	elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		
-		local update = GroupAIStateBase.update
-		function GroupAIStateBase:update(t, dt)
-			update(self, t, dt)
-			if not self._last_updated then self._last_updated = t end
-			if self._last_updated and self._last_updated + 50 <= t then managers.groupai:state():sync_hostage_headcount() end
-		end
+		-- local update = GroupAIStateBase.update
+		-- function GroupAIStateBase:update(t, dt)
+		-- 	update(self, t, dt)
+		-- 	if not self._last_updated then self._last_updated = t end
+		-- 	if self._last_updated and self._last_updated + 50 <= t then managers.groupai:state():sync_hostage_headcount() end
+		-- end
 
 	elseif RequiredScript == "lib/managers/objectinteractionmanager" then
 		local interact = ObjectInteractionManager.end_action_interact

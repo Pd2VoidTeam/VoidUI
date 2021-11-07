@@ -51,7 +51,8 @@ elseif RequiredScript == "lib/network/handlers/unitnetworkhandler" then
 		mark_minion(self, unit, minion_owner_peer_id, convert_enemies_health_multiplier_level, passive_convert_enemies_health_multiplier_level, sender)
 		if unit then
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
-			local color_id = minion_owner_peer_id and managers.network:session():peer(minion_owner_peer_id).unit and managers.criminals:character_color_id_by_unit(managers.network:session():peer(minion_owner_peer_id):unit()) or 1
+			local get_owner = managers.network and managers.network:session() and managers.network:session():peer(minion_owner_peer_id):unit()
+			local color_id = minion_owner_peer_id and managers.criminals and managers.criminals:character_color_id_by_unit(get_owner) or 1
 			if VoidUI.options.outlines then
 				unit:contour():add("joker", nil, 1)
 				unit:contour():change_color("joker", tweak_data.peer_vector_colors[color_id])

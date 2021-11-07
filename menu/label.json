@@ -75,14 +75,6 @@
 			"step" : 2
 		},
 		{
-			"type" : "toggle",
-			"id" : "label_minrank",
-			"parent" : ["enable_labels", "label_minmode"],
-			"title" : "VoidUI_minrank_title",
-			"description" : "VoidUI_minrank_desc",
-			"default_value" : true
-		},
-		{
 			"type" : "slider",
 			"id" : "label_minmode_dist",
 			"parent" : ["enable_labels", "label_minmode"],

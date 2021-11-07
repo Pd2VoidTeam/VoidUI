@@ -1895,13 +1895,17 @@ if VoidUI.options.teammate_panels then
 				local outfit = peer:profile().outfit
 				outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
 				local _, _, name_w, _ = name:text_rect()
-				local level = (0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. ""
-				name:set_text(level .. peer:name())
+				local peer_name_string = " " .. peer:name()
+				local color_range_offset = utf8.len(peer_name_string) + 2
+				local experience, color_ranges = managers.experience:gui_string(peer:level(), peer:rank(), color_range_offset)
+				name:set_text(peer_name_string .. " (" .. experience .. ")")
 				name_shadow:set_text(name:text())
 				if name_w > (140 * self._mate_scale) then name:set_font_size(name:font_size() * ((self._mate_scale < 1 and 140 * self._mate_scale or 140)/name_w)) end
 				name_shadow:set_font_size(name:font_size())
 				name:set_color(color)
-				name:set_range_color(0, utf8.len(level), Color.white:with_alpha(1))
+				for _, color_range in ipairs(color_ranges or {}) do
+					name:set_range_color(color_range.start, color_range.stop, color_range.color)
+				end
 				if outfit.primary and outfit.primary.factory_id then 
 					local texture = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
 					self._wait_panel:child("primary_weapon"):set_image(texture) 	

@@ -136,9 +136,17 @@ if RequiredScript == "lib/managers/hudmanager" then
 		end
 
 		function HUDManager:update_vehicle_label_by_id(label_id, num_players)
+			if not label_id then
+				return
+			end
 			for _, data in pairs(self._hud.name_labels) do
 				if data.id == label_id then
 					local name = VoidUI.options.label_upper and utf8.to_upper(data.character_name) or data.character_name
+					if not name then
+						data.text:set_text("")
+		
+						return
+					end
 					if num_players > 0 then
 						name = name.." (" .. num_players .. ")"
 					end
@@ -672,9 +680,12 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				peer_id = data.unit:network():peer():id()
 				local level = data.unit:network():peer():level()
 				rank = data.unit:network():peer():rank()
+		
 				if level then
-					experience = (rank > 0 and managers.experience:rank_string(rank) .. "Ї" or "") .. level .. " "
-					data.name = experience .. data.name
+					local color_range_offset = utf8.len(data.name) + 2
+					local experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+					data.name_color_ranges = color_ranges
+					data.name = data.name .. " (" .. experience .. ")"
 				end
 			end
 			local panel = hud.panel:panel({
@@ -1487,24 +1498,23 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			})
 			progressbar:set_x(progressbar_bg:x())
 			progressbar:set_center_y(progressbar_bg:center_y())
-			local level = "" 
 			local peer = managers.network:session():peer(id)
-			if peer and VoidUI.options.joining_rank then 
-				level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() and peer:level().. " " or "")
-			end
+			local peer_name_string = " " .. peer:name()
+			local color_range_offset = utf8.len(peer_name_string) + 2
+			local experience, color_ranges = managers.experience:gui_string(peer:level(), peer:rank(), color_range_offset)
 			local title_text = panel:text({
 				name = "title_text",
 				font_size = 25,
 				font = tweak_data.menu.pd2_large_font,
-				text = level..managers.localization:text("dialog_dropin_title", {USER = nick}),
 				layer = 2,
 			})
+			title_text:set_text(peer_name_string .. " (" .. experience .. ")")
 			managers.hud:make_fine_text(title_text)
 			if title_text:w() > 400 then
 				title_text:set_font_size(title_text:font_size() * (400/title_text:w()))
 				title_text:set_w(title_text:w() * (400/title_text:w()))
 			end
-			title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
+			-- title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
 			title_text:set_center_x(panel:w() / 2)
 			title_text:set_bottom(progressbar_bg:top() - 5)
 			local title_text_shadow = panel:text({

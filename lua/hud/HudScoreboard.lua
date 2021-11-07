@@ -1665,10 +1665,13 @@ if VoidUI.options.enable_stats then
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
 				if loadout then
 					local primary =	loadout.primary and managers.weapon_factory:get_weapon_id_by_factory_id(loadout.primary:gsub("_npc", "")) or (unit:inventory() and unit:inventory():equipped_unit() and unit:inventory():equipped_unit():base() and unit:inventory():equipped_unit():base()._factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(unit:inventory():equipped_unit():base()._factory_id:gsub("_npc","")))
-					local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m4", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
+					local texture = managers.blackmarket:get_weapon_icon_path(primary)
 					primary_icon:set_image(texture)
-					primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
-					primary_rarity:set_image(rarity and rarity)
+					primary_rarity:set_visible(false)
+					-- local texture, rarity = managers.blackmarket:get_weapon_icon_path(primary or "new_m4", VoidUI.options.scoreboard_skins > 1 and unit:inventory() and unit:inventory():equipped_unit():base() and {id = unit:inventory():equipped_unit():base()._cosmetics_id} or nil)
+					-- primary_icon:set_image(texture)
+					-- primary_rarity:set_visible(VoidUI.options.scoreboard_skins == 2 and rarity and true or false)
+					-- primary_rarity:set_image(rarity and rarity)
 					secondary_icon:set_image(managers.blackmarket:get_mask_icon(loadout.mask))
 					armor_icon:set_image("guis/textures/pd2/blackmarket/icons/armors/".. (loadout.armor and loadout.armor or "level_1"))
 					local ability = tweak_data.upgrades.crew_ability_definitions[loadout.ability]
@@ -1772,7 +1775,8 @@ if VoidUI.options.enable_stats then
 			return melee_weapon_texture
 		end
 		
-	elseif RequiredScript == "lib/units/enemies/cop/copdamage" and VoidUI.options.scoreboard then
+	elseif RequiredScript == "lib/units/enemies/cop/copdamage" and VoidUI.options.scoreboard and not CopDamage.Killfix then
+		CopDamage.Killfix = true
 		local on_damage_received = CopDamage._on_damage_received
 		function CopDamage:_on_damage_received(damage_info)
 			if self._dead then
@@ -1783,12 +1787,10 @@ if VoidUI.options.enable_stats then
 		end
 		
 	elseif RequiredScript == "lib/units/civilians/civiliandamage" and VoidUI.options.scoreboard then
-		local on_damage_received = CivilianDamage._on_damage_received
-		function CivilianDamage:_on_damage_received(damage_info)
+		Hooks:PostHook(CivilianDamage, "_on_damage_received", "CivKillScoreFix", function(self, damage_info)
 			if self._dead then
 				managers.hud:scoreboard_unit_killed(damage_info.attacker_unit, "civs")
 			end
-			on_damage_received(self, damage_info)
-		end
+		end)
 	end
 end

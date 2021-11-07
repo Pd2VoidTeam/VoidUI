@@ -1,12 +1,20 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.4 (2020.06.14)
-- Fixed crash on stealth only heists
-- Fixed rare crash during loading
-- Fixed hostages panel sometimes getting stuck when Point Of No Return activates
-- Added better assault badges made by Jarey
-
+## Whats new in 1.2.5 (2021.11.07)
+- Fixed set_damage_absorption() crash when exiting a lobby when the custom assault panel is enabled
+ - Fixed a crash when using weapon skins/colors on bots when the scoreboard enabled is enabled
+ - Fixed civilian kill crash when scoreboard is enabled
+ - Fixed vehicle label crash
+ - Fixing joker outlines crash
+ - Fixed voice chat crash
+ - Fixed presenter crash
+ - Removed the connected players option from the level loading screen (It may return in the future)
+ - Fixed infamy 3.0 issues
+ - Fixed json errors
+ - Updated Italian trasnlations by LycanCHKN
+ - Added auto updating
+ - Fixed double kills when scoreboard is enabled
 
 ## Credits
 - Most of the hud made by Xeletron
