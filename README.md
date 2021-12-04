@@ -26,7 +26,7 @@ VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD
 - Italian localization made by LycanCHKN
 
 ## Installing
-- Download and install [BLT](https://github.com/JamesWilko/Payday-2-BLT/releases) or [SuperBLT](https://superblt.znix.xyz)
+- Download and install [SuperBLT](https://superblt.znix.xyz)
 - Download 'VoidUI.zip'. Drop the 'VoidUI-master' folder in the archive into your 'mods' folder.
 - If the game is running, restart it.
 
