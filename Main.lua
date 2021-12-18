@@ -76,7 +76,7 @@ function VoidUI:Load()
 	end
 end
 function VoidUI:LoadTextures()
-	for _, file in pairs(SystemFS:list(VoidUI.mod_path.. "guis/textures/VoidUI")) do
+	for _, file in pairs(file.GetFiles(VoidUI.mod_path.. "guis/textures/VoidUI")) do
 		DB:create_entry(Idstring("texture"), Idstring("guis/textures/VoidUI/".. file:gsub(".texture", "")), VoidUI.mod_path.. "guis/textures/VoidUI/".. file)
 	end
 end
