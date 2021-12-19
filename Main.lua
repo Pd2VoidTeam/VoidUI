@@ -262,7 +262,7 @@ Hooks:Add("MenuManagerBuildCustomMenus", "MenuManagerBuildCustomMenus_VoidUI", f
 	local item = node:create_item({type = "CoreMenuItem.Item"}, item_params)
     node:add_item(item)
 	
-	local menus = SystemFS:list(VoidUI.mod_path.. "menu/")
+	local menus = file.GetFiles(VoidUI.mod_path.. "menu/")
 	for i= 1, #menus do
 		table.insert(VoidUI.menus, VoidUI.mod_path .. "menu/"..menus[i])
 	end
