@@ -243,6 +243,13 @@ if VoidUI.options.teammate_panels then
 			color = Color.white
 		})	
 		armor_value:set_bottom(health_value:top() * 1.25)
+
+		local copr_overlay_panel = health_panel:panel({
+			name = "copr_overlay_panel",
+			layer = 4,
+			w = health_panel:w(),
+			h = health_panel:h()
+		})
 		
 		local condition_timer = custom_player_panel:text({
 			name = "condition_timer",
@@ -285,6 +292,7 @@ if VoidUI.options.teammate_panels then
 		})
 		health_stored:set_right(health_panel:x() + (11 * self._main_scale))
 		health_stored:set_bottom(custom_player_panel:h())
+		
 		local absorb_color = tweak_data.chat_colors[5]
 		local absorb_shield_bar = health_panel:bitmap({
 			name = "absorb_shield_bar",
@@ -960,6 +968,15 @@ if VoidUI.options.teammate_panels then
 		local show_health_value = self._main_player and VoidUI.options.main_health or VoidUI.options.mate_health
 		local amount = math.clamp(data.current / data.total, 0, 1)
 		if amount < math.clamp(health_bar:h() / self._bg_h, 0, 1) then self:_damage_taken() end
+		
+		if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") and self._id == HUDManager.PLAYER_PANEL then
+			local static_damage_ratio = managers.player:upgrade_value_nil("player", "copr_static_damage_ratio")
+	
+			if static_damage_ratio then
+				amount = math.floor((amount + 0.01) / static_damage_ratio) * static_damage_ratio
+			end
+		end
+		
 		health_bar:stop()
 		health_bar:animate(function(o)
 			local s = math.clamp(health_bar:h() / self._bg_h, 0, 1)
@@ -2391,5 +2408,38 @@ if VoidUI.options.teammate_panels then
 		self._downs_max = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))
+	end
+
+	function HUDTeammate:set_copr_indicator(enabled, static_damage_ratio)
+		local health_panel = self._custom_player_panel:child("health_panel")
+		local copr_overlay_panel = health_panel:child("copr_overlay_panel")
+		local health_bar = health_panel:child("health_bar")	
+
+		if alive(copr_overlay_panel) then
+			copr_overlay_panel:clear()
+			copr_overlay_panel:set_visible(enabled)	
+			if enabled then
+				local color = tweak_data.chat_colors[self._color_id] or Color.white
+				
+				local num_notches = math.ceil(1 / static_damage_ratio)
+				local w = copr_overlay_panel:w()
+				local h = copr_overlay_panel:h() / num_notches
+				local texture_h = 472 / num_notches
+	
+				for i = 0, num_notches - 1, 2 do
+					local notch = copr_overlay_panel:bitmap({
+						layer = 0,
+						name = tostring(i),
+						texture = "guis/textures/VoidUI/hud_health",
+						texture_rect = {881, texture_h * i, 202, texture_h},
+						y = h* i,
+						w = w,
+						h = h,
+						blend_mode = "sub",
+						color = color * 0.45
+					})
+				end
+			end
+		end
 	end
 end
