@@ -1,9 +1,9 @@
 {
     "name" : "Void UI",
 	"description" : "A hud modification that aims to give the in game hud a fresh new look with some additional features.",
-    "author" : "Xeletron, Fanged Hex, VxWolf\nTranslation: Borderkeeper, Skyfrost, Esawo, CoolLKK, LycanCHKN\nSpecial thanks: Canada, B.Costa, CrafterBlade",
+    "author" : "Xeletron, test1, Fanged Hex, VxWolf\nTranslation: Borderkeeper, Skyfrost, Esawo, CoolLKK, LycanCHKN\nSpecial thanks: Canada, B.Costa, CrafterBlade",
 	"contact" : "xeletron1@gmail.com",
-    "version" : "1.2.5",
+    "version" : "1.2.6",
 	"blt_version" : 2,
 	"image" : "mod_icon.png",
     "color" : "40 40 40",

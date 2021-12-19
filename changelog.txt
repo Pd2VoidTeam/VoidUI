@@ -1,3 +1,7 @@
+Version 1.2.6 (2021.12.19)
+ - Added support for the Leech perk deck
+ - Changed SystemFS:list to BLT function, should fix Linux compatibility
+
 Version 1.2.5 (2021.11.07)
  - Fixed set_damage_absorption() crash when exiting a lobby when the custom assault panel is enabled
  - Fixed a crash when using weapon skins/colors on bots when the scoreboard enabled is enabled
