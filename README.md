@@ -1,11 +1,10 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.7 Dev (2022.01.30)
+## Whats new in 1.2.7 (2022.01.30)
 
  - Added the pager tracker to the scoreboard
  - Hidden new downs counter
- - WIP teammate downs start at 4 instead of 0
  - Fixed a crash with the Realtime XP mod
  - May fix a crash when somewone joins mid game with the joining panel option on
 
