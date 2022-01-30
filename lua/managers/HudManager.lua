@@ -532,7 +532,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 
 		local ext_inventory_changed = HUDManager.on_ext_inventory_changed
 		function HUDManager:on_ext_inventory_changed()
-			if self._teammate_panels[HUDManager.PLAYER_PANEL] then
+			if self._teammate_panels and self._teammate_panels[HUDManager.PLAYER_PANEL] then
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_bodybags()
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_info_visible()
 			end
@@ -1670,7 +1670,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			local progressbar = panel:child("progressbar")
 			local Time = os.clock()-self._person_joining
 			local remaining = (Time/progress_percentage*100)-Time
-			progressbar:stop()
+			
 			local function set_progress(o)
 				local w = o:w()
 				local max_w = panel:child("progressbar_bg"):w()
@@ -1688,6 +1688,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 				progress_text:set_text(string.format(text, progress_percentage, remaining))
 				progress_text_shadow:set_text(progress_text:text())
 			end
+			progressbar:stop()
 			progressbar:animate(set_progress)
 		elseif self._joining_queue then
 			for i, data in pairs(self._joining_queue) do

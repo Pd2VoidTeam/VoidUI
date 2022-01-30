@@ -579,6 +579,41 @@ if VoidUI.options.enable_stats then
 			managers.hud:make_fine_text(track_text_shadow)
 			track_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
 			track_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
+			local pagers_used = managers.groupai:state():get_nr_successful_alarm_pager_bluffs()
+			local max_pagers_data = managers.player:has_category_upgrade("player", "corpse_alarm_pager_bluff") and tweak_data.player.alarm_pager.bluff_success_chance_w_skill or tweak_data.player.alarm_pager.bluff_success_chance
+			local max_num_pagers = #max_pagers_data
+
+			for i, chance in ipairs(max_pagers_data) do
+				if chance == 0 then
+					max_num_pagers = i - 1
+
+					break
+				end
+			end
+			local pagers_text = extras_panel:text({
+				name = "pagers_text",
+				font_size = 20 * self._scale,
+				font = "fonts/font_medium_mf",
+				text = "\n\n" .. managers.localization:text("hud_stats_pagers_used") .. " " .. tostring(pagers_used) .. "/" .. tostring(max_num_pagers),
+				align = "right",
+				layer = 1,
+			})
+			managers.hud:make_fine_text(pagers_text)
+			pagers_text:set_center_x(extras_panel:w() / 2)
+			pagers_text:set_top(extras_panel:h() / (3 / self._scale))
+			local pagers_text_shadow = extras_panel:text({
+				name = "pagers_text_shadow",
+				font_size = 20 * self._scale,
+				font = "fonts/font_medium_mf",
+				text = pagers_text:text(),
+				align = "right",
+				color = Color.black,
+				layer = -2,
+				rotation = 360,
+			})
+			managers.hud:make_fine_text(pagers_text_shadow)
+			pagers_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
+			pagers_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
 			if self._scoreboard_panels and #self._scoreboard_panels > 0 and managers.achievment and #managers.achievment:get_tracked_fill() then
 				local toggle_text = extras_panel:text({
 					name = "track_text",

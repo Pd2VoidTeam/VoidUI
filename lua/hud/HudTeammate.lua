@@ -30,6 +30,7 @@ if VoidUI.options.teammate_panels then
 		self._player_panel:child("cable_ties_panel"):set_visible(false)
 		self._player_panel:child("grenades_panel"):set_visible(false)
 
+		self._player_panel:child("revive_panel"):set_visible(false)
 		
 		teammate_panel:child("name"):set_visible(false)
 		teammate_panel:child("name_bg"):set_visible(false)
@@ -2396,15 +2397,15 @@ if VoidUI.options.teammate_panels then
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local downs_value = health_panel:child("downs_value")
 		self._downs_max = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
-		if self._main_player then
-			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
-		elseif self._peer_id then
-			local peer = managers.network:session():peer(self._peer_id)
-			local outfit = peer and peer:blackmarket_outfit()
-			local skills = outfit and outfit.skills
-			skills = skills and skills.skills
-			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
-		end
+		-- if self._main_player then
+		-- 	self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
+		-- elseif self._peer_id then
+		-- 	local peer = managers.network:session():peer(self._peer_id)
+		-- 	local outfit = peer and peer:blackmarket_outfit()
+		-- 	local skills = outfit and outfit.skills
+		-- 	skills = skills and skills.skills
+		-- 	self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
+		-- end
 		self._downs_max = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
 		self._downs = self._downs_max
 		downs_value:set_text("x".. tostring(self._downs))

@@ -1,10 +1,13 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.6 (2021.12.19)
+## Whats new in 1.2.7 Dev (2022.01.30)
 
- - Added support for the Leech perk deck
- - Changed SystemFS:list to BLT function, should fix Linux compatibility
+ - Added the pager tracker to the scoreboard
+ - Hidden new downs counter
+ - WIP teammate downs start at 4 instead of 0
+ - Fixed a crash with the Realtime XP mod
+ - May fix a crash when somewone joins mid game with the joining panel option on
 
 ## Credits
 - Most of the hud made by Xeletron
