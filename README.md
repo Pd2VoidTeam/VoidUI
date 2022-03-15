@@ -1,12 +1,15 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.7 (2022.01.30)
+## Whats new in 1.2.8 (2022.03.15)
 
- - Added the pager tracker to the scoreboard
- - Hidden new downs counter
- - Fixed a crash with the Realtime XP mod
- - May fix a crash when somewone joins mid game with the joining panel option on
+ - Added support for custom point of no return timers
+ - Changed downs counter to use the new networked values introduced in update 217
+ - Attempted to fix a crash related to the player joining progressbar
+ - Attempted to fix a crash related to bot loadouts on the scoreboard
+ - Fixed police hostages count not syncing properly for clients
+ - Fixed name labels having incorrect formatting after joining a game
+ - Fixed player names being invisible when the player panels are disabled
 
 ## Credits
 - Most of the hud made by Xeletron
