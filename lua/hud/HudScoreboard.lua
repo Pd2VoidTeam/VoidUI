@@ -1695,7 +1695,7 @@ if VoidUI.options.enable_stats then
 			local perk_count = self._panel:child("perk_count")
 			
 			local unit = managers.criminals:character_unit_by_name(character_name)
-			if unit then
+			if unit and alive(unit) then
 				local loadout = unit and unit:base() and unit:base()._loadout
 				melee_icon:set_image(self:get_melee_weapon("weapon"))
 				if loadout then

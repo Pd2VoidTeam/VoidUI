@@ -18,8 +18,8 @@ if VoidUI.options.teammate_panels then
 		self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 		self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
 		self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
-		self._downs_max = tweak_data.player.damage.LIVES_INIT -(Global.game_settings.difficulty == "sm_wish" and - 2 or 0)
-		self._downs = self._downs_max
+		self._downs_max = 0
+		self._downs = 0
 		self._primary_max = 0
 		self._secondary_max = 0
 		self._max_cooldown = 0
@@ -29,7 +29,6 @@ if VoidUI.options.teammate_panels then
 		self._player_panel:child("deployable_equipment_panel"):set_visible(false)
 		self._player_panel:child("cable_ties_panel"):set_visible(false)
 		self._player_panel:child("grenades_panel"):set_visible(false)
-
 		self._player_panel:child("revive_panel"):set_visible(false)
 		
 		teammate_panel:child("name"):set_visible(false)
@@ -176,7 +175,7 @@ if VoidUI.options.teammate_panels then
 			w = self._health_value,
 			h = self._health_value,
 			font_size = self._health_value / 1.5,
-			text = "x".. tostring(self._downs),
+			text = "x0",
 			vertical = "top",
 			align = "center",
 			font = "fonts/font_medium_noshadow_mf",
@@ -875,7 +874,6 @@ if VoidUI.options.teammate_panels then
 			}, callback(self, self, "whisper_mode_changed"))
 		end
 		self:set_detection()
-		self:set_max_downs()
 	end
 
 	local set_name = HUDTeammate.set_name
@@ -935,7 +933,6 @@ if VoidUI.options.teammate_panels then
 		else
 			if icon_data == "mugshot_in_custody" then
 				downs_value:set_visible(false)
-				self:reset_downs()
 			end
 			condition_icon:set_visible(true)
 			health_value:set_visible(false)
@@ -2194,7 +2191,6 @@ if VoidUI.options.teammate_panels then
 		self:teammate_progress(false, false, false, false)
 		self._peer_id = nil
 		self._ai = nil
-		self:reset_downs()
 	end
 
 	function HUDTeammate:set_stored_health_max(stored_health_ratio)
@@ -2379,36 +2375,13 @@ if VoidUI.options.teammate_panels then
 		end)
 	end
 
-	function HUDTeammate:downed()
-		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs = math.clamp(self._downs - 1, 0, self._downs_max)
-		downs_value:set_text("x".. tostring(self._downs))
-	end
-
-	function HUDTeammate:reset_downs()
-		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs = self._downs_max
-		downs_value:set_text("x".. tostring(self._downs))
-	end
-	
-	function HUDTeammate:set_max_downs()
-		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs_max = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
-		if self._main_player then
-			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
-		elseif self._peer_id then
-			local peer = managers.network:session():peer(self._peer_id)
-			local outfit = peer and peer:blackmarket_outfit()
-			local skills = outfit and outfit.skills
-			skills = skills and skills.skills
-			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
+	function HUDTeammate:set_revives_amount(revive_amount)
+		if revive_amount then
+			local health_panel = self._custom_player_panel:child("health_panel")
+			local downs_value = health_panel:child("downs_value")
+			revive_amount = math.max(revive_amount - 1, 0)
+			downs_value:set_text("x".. tostring(revive_amount))
 		end
-		self._downs_max = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
-		self._downs = self._downs_max
-		downs_value:set_text("x".. tostring(self._downs))
 	end
 
 	function HUDTeammate:set_copr_indicator(enabled, static_damage_ratio)

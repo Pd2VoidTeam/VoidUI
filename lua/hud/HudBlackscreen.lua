@@ -252,7 +252,9 @@ if VoidUI.options.enable_blackscreen then
 			if VoidUI.options.blackscreen_linger then
 				local job_panel = self._blackscreen_panel:child("job_panel")
 				local hud_panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel
-				hud_panel:set_alpha(0)
+				if VoidUI.options.teammate_panels then
+					hud_panel:set_alpha(0)
+				end
 				local t = 0.7
 				local d = t
 				wait(1.6)
@@ -260,7 +262,9 @@ if VoidUI.options.enable_blackscreen then
 					local dt = coroutine.yield()
 					t = t - dt
 					self._blackscreen_panel:set_alpha(math.min(t / (d - 0.2), 1))
-					hud_panel:set_alpha(math.min(1 - (t - 0.3) / (d - 0.3), 1))
+					if VoidUI.options.teammate_panels then
+						hud_panel:set_alpha(math.min(1 - (t - 0.3) / (d - 0.3), 1))
+					end
 				end
 				self._blackscreen_panel:set_alpha(0)
 				hud_panel:set_alpha(1)
