@@ -597,6 +597,7 @@ if VoidUI.options.enable_stats then
 				text = "\n\n" .. managers.localization:text("hud_stats_pagers_used") .. " " .. tostring(pagers_used) .. "/" .. tostring(max_num_pagers),
 				align = "right",
 				layer = 1,
+				visible = managers.groupai and managers.groupai:state():whisper_mode()
 			})
 			managers.hud:make_fine_text(pagers_text)
 			pagers_text:set_center_x(extras_panel:w() / 2)
@@ -610,6 +611,7 @@ if VoidUI.options.enable_stats then
 				color = Color.black,
 				layer = -2,
 				rotation = 360,
+				visible = managers.groupai and managers.groupai:state():whisper_mode()
 			})
 			managers.hud:make_fine_text(pagers_text_shadow)
 			pagers_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)

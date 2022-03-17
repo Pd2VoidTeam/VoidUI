@@ -369,10 +369,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				return
 			end
 			local panel = teammate_panel._panel:child("custom_player_panel") and teammate_panel._panel:child("custom_player_panel"):child("health_panel")
-			local name = panel and teammate_panel._panel:child("custom_player_panel"):child("name") and string.gsub(teammate_panel._panel:child("custom_player_panel"):child("name"):text(), "%W", "") or (teammate_panel._panel:child("name") and string.gsub(teammate_panel._panel:child("name"):text(), "%W", ""))
+			local name = panel and panel:child("name")
 			local label
 			for _, lbl in ipairs(self._hud.name_labels) do
-				if string.gsub(lbl.character_name, "%W", "") == name then
+				if lbl.character_name:gsub("%W", "") == name then
 					label = lbl
 					break
 				end

@@ -420,20 +420,20 @@ elseif RequiredScript == "lib/setups/setup" then
 						end
 					end
 					level_tweak_data.briefing = VoidUI.options.loading_briefing and managers.localization:text(level_tweak_data.briefing_id) or ""
-					--[[ if VoidUI.LoadingScreenInfo and VoidUI.options.loading_players then
+					if VoidUI.LoadingScreenInfo and VoidUI.options.loading_players then
 						level_tweak_data.peers = VoidUI.LoadingScreenInfo.peers
 						level_tweak_data.additional_players = VoidUI.LoadingScreenInfo.additional_players
 						level_tweak_data.player_count = VoidUI.LoadingScreenInfo.player_count
 						level_tweak_data.chat_colors = tweak_data.chat_colors
 						VoidUI.LoadingScreenInfo = nil
-					end ]]
+					end
 				end
 			end
 		end
 		return _start_loading_screen(self, ...)
 	end
 	
---[[ elseif RequiredScript == "lib/network/base/clientnetworksession" then
+elseif RequiredScript == "lib/network/base/clientnetworksession" then
 	local ok_to_load_level = ClientNetworkSession.ok_to_load_level
 	function ClientNetworkSession:ok_to_load_level(load_counter, ...)
 		if not VoidUI.options.loading_players and self._closing or self._received_ok_to_load_level or self._load_counter == load_counter then
@@ -494,5 +494,5 @@ elseif RequiredScript == "lib/network/base/hostnetworksession" then
 			}
 		end
 		return load_level(self, ...)
-	end ]]
+	end
 end
