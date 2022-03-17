@@ -1,3 +1,7 @@
+Version 1.2.9 (2022.03.17)
+ - Should fix the gsub name labels crash
+ - Hide pager counter when the heist goes load
+
 Version 1.2.8 (2022.03.15)
  - Added support for custom point of no return timers
  - Changed downs counter to use the new networked values introduced in update 217

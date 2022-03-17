@@ -85,14 +85,7 @@
 			"default_value" : true,
 			"parent" : "enable_loadingscreen"
 		},
-		{
-			"type" : "toggle",
-			"id" : "loading_players",
-			"title" : "VoidUI_loading_players_title",
-			"description" : "VoidUI_loading_players_desc",
-			"default_value" : true,
-			"parent" : "enable_loadingscreen"
-		},
+		
 		{
 			"type" : "toggle",
 			"id" : "loading_briefing",
