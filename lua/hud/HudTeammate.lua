@@ -18,8 +18,8 @@ if VoidUI.options.teammate_panels then
 		self._ammo_panel_h = self._main_player and 39 * self._main_scale or 30 * self._mate_scale
 		self._equipment_panel_w = self._main_player and 47 * self._main_scale or 36 * self._mate_scale
 		self._equipment_panel_h = self._main_player and 40 * self._main_scale or 30 * self._mate_scale
-		self._downs_max = tweak_data.player.damage.LIVES_INIT -(Global.game_settings.difficulty == "sm_wish" and - 2 or 0)
-		self._downs = self._downs_max
+		self._downs_max = 0
+		self._downs = 0
 		self._primary_max = 0
 		self._secondary_max = 0
 		self._max_cooldown = 0
@@ -29,7 +29,7 @@ if VoidUI.options.teammate_panels then
 		self._player_panel:child("deployable_equipment_panel"):set_visible(false)
 		self._player_panel:child("cable_ties_panel"):set_visible(false)
 		self._player_panel:child("grenades_panel"):set_visible(false)
-
+		self._player_panel:child("revive_panel"):set_visible(false)
 		
 		teammate_panel:child("name"):set_visible(false)
 		teammate_panel:child("name_bg"):set_visible(false)
@@ -175,7 +175,7 @@ if VoidUI.options.teammate_panels then
 			w = self._health_value,
 			h = self._health_value,
 			font_size = self._health_value / 1.5,
-			text = "x".. tostring(self._downs),
+			text = "x0",
 			vertical = "top",
 			align = "center",
 			font = "fonts/font_medium_noshadow_mf",
@@ -243,6 +243,13 @@ if VoidUI.options.teammate_panels then
 			color = Color.white
 		})	
 		armor_value:set_bottom(health_value:top() * 1.25)
+
+		local copr_overlay_panel = health_panel:panel({
+			name = "copr_overlay_panel",
+			layer = 4,
+			w = health_panel:w(),
+			h = health_panel:h()
+		})
 		
 		local condition_timer = custom_player_panel:text({
 			name = "condition_timer",
@@ -285,6 +292,7 @@ if VoidUI.options.teammate_panels then
 		})
 		health_stored:set_right(health_panel:x() + (11 * self._main_scale))
 		health_stored:set_bottom(custom_player_panel:h())
+		
 		local absorb_color = tweak_data.chat_colors[5]
 		local absorb_shield_bar = health_panel:bitmap({
 			name = "absorb_shield_bar",
@@ -597,6 +605,20 @@ if VoidUI.options.teammate_panels then
 			layer = 4,
 			alpha = 1,
 		})	
+		
+		local jammer_count = grenades_panel:text({
+			name = "jammer_count",
+			w = self._equipment_panel_w / 1.1,
+			h = self._equipment_panel_h,
+			font_size = self._equipment_panel_h / 2.5,
+			text = "",
+			vertical = "top",
+			align = "right",
+			font = "fonts/font_medium_noshadow_mf",
+			layer = 4,
+			alpha = 1,
+		})	
+
 		local cooldown_panel = grenades_panel:panel({
 			name = "cooldown_panel",
 			layer = 1,
@@ -852,8 +874,8 @@ if VoidUI.options.teammate_panels then
 			}, callback(self, self, "whisper_mode_changed"))
 		end
 		self:set_detection()
-		self:set_max_downs()
 	end
+
 	local set_name = HUDTeammate.set_name
 	function HUDTeammate:set_name(teammate_name)
 		set_name(self, teammate_name)
@@ -894,6 +916,7 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:ai()
 		return self._ai
 	end
+	
 	function HUDTeammate:set_cheater(state)
 		self._custom_player_panel:child("name"):set_color(state and tweak_data.screen_colors.pro_color or Color.white)
 	end
@@ -910,7 +933,6 @@ if VoidUI.options.teammate_panels then
 		else
 			if icon_data == "mugshot_in_custody" then
 				downs_value:set_visible(false)
-				self:reset_downs()
 			end
 			condition_icon:set_visible(true)
 			health_value:set_visible(false)
@@ -944,6 +966,15 @@ if VoidUI.options.teammate_panels then
 		local show_health_value = self._main_player and VoidUI.options.main_health or VoidUI.options.mate_health
 		local amount = math.clamp(data.current / data.total, 0, 1)
 		if amount < math.clamp(health_bar:h() / self._bg_h, 0, 1) then self:_damage_taken() end
+		
+		if managers.player:has_activate_temporary_upgrade("temporary", "copr_ability") and self._id == HUDManager.PLAYER_PANEL then
+			local static_damage_ratio = managers.player:upgrade_value_nil("player", "copr_static_damage_ratio")
+	
+			if static_damage_ratio then
+				amount = math.floor((amount + 0.01) / static_damage_ratio) * static_damage_ratio
+			end
+		end
+		
 		health_bar:stop()
 		health_bar:animate(function(o)
 			local s = math.clamp(health_bar:h() / self._bg_h, 0, 1)
@@ -1107,6 +1138,7 @@ if VoidUI.options.teammate_panels then
 	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
 		local selected_ammo_panel = self._custom_player_panel:child("weapons_panel"):child(type.."_ammo_panel")
 		local ammo_amount = selected_ammo_panel:child(type.."_ammo_amount")
+		local firemode = selected_ammo_panel:child(type.."firemode")
 		local ammo_image = selected_ammo_panel:child(type.."_selected_image")
 		local pickup = selected_ammo_panel:child(type.."_pickup")
 		local color = self._fore_color
@@ -1126,7 +1158,8 @@ if VoidUI.options.teammate_panels then
 
 		ammo_amount:set_text(string.gsub("000", "0", "", string.len(tostring(current_clip))).. tostring(current_clip).."/"..string.gsub("000", "0", "", string.len(tostring(current_left)))..tostring(current_left)) 
 		ammo_amount:set_color(math.lerp(Color.red, self._fore_color, math.min(1, (current_left_total/max_total) / 0.4)))
-		ammo_image:set_color(ammo_amount:color()) 
+		ammo_image:set_color(ammo_amount:color())
+		ammo_amount:set_font_size(current_left > 999 and self._ammo_panel_h / 1.6 or self._ammo_panel_h / 1.4)
 		
 		if VoidUI.options.ammo_pickup and type == "primary" and self._primary_max < current_left and current_left - self._primary_max ~= 0 then
 			pickup:stop()
@@ -1309,7 +1342,6 @@ if VoidUI.options.teammate_panels then
 	end
 	
 	function HUDTeammate:set_ability_icon(icon)
-		log("Icon: "..tostring(icon))
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
@@ -1324,7 +1356,7 @@ if VoidUI.options.teammate_panels then
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
-		local grenades_count = grenades_panel:child("grenades_count")
+		local grenades_count = self:is_using_grenade("pocket_ecm_jammer") and grenades_panel:child("jammer_count") or grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
 		
 		if data.amount == 0 then
@@ -1345,6 +1377,16 @@ if VoidUI.options.teammate_panels then
 		end
 	end
 
+	function HUDTeammate:is_using_grenade(grenade)
+		if self._main_player then
+			return self._main_player and managers.blackmarket:equipped_grenade() == grenade
+		else
+			local peer = managers.network:session():peer(self:peer_id())
+			local outfit = peer and peer:blackmarket_outfit()
+			return outfit and outfit.grenade == grenade
+		end
+		
+	end
 	function HUDTeammate:set_grenade_cooldown(data)
 		if not PlayerBase.USE_GRENADES then
 			return
@@ -1868,13 +1910,17 @@ if VoidUI.options.teammate_panels then
 				local outfit = peer:profile().outfit
 				outfit = outfit or managers.blackmarket:unpack_outfit_from_string(peer:profile().outfit_string) or {}
 				local _, _, name_w, _ = name:text_rect()
-				local level = (0 < peer:rank() and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() .. " " or "") .. ""
-				name:set_text(level .. peer:name())
+				local peer_name_string = " " .. peer:name()
+				local color_range_offset = utf8.len(peer_name_string) + 2
+				local experience, color_ranges = managers.experience:gui_string(peer:level(), peer:rank(), color_range_offset)
+				name:set_text(peer_name_string .. " (" .. experience .. ")")
 				name_shadow:set_text(name:text())
 				if name_w > (140 * self._mate_scale) then name:set_font_size(name:font_size() * ((self._mate_scale < 1 and 140 * self._mate_scale or 140)/name_w)) end
 				name_shadow:set_font_size(name:font_size())
 				name:set_color(color)
-				name:set_range_color(0, utf8.len(level), Color.white:with_alpha(1))
+				for _, color_range in ipairs(color_ranges or {}) do
+					name:set_range_color(color_range.start, color_range.stop, color_range.color)
+				end
 				if outfit.primary and outfit.primary.factory_id then 
 					local texture = managers.blackmarket:get_weapon_icon_path(outfit.primary and outfit.primary.factory_id and managers.weapon_factory:get_weapon_id_by_factory_id(outfit.primary.factory_id) or "new_m4", VoidUI.options.scoreboard_skins > 1 and outfit.primary and outfit.primary.cosmetics)
 					self._wait_panel:child("primary_weapon"):set_image(texture) 	
@@ -2145,7 +2191,6 @@ if VoidUI.options.teammate_panels then
 		self:teammate_progress(false, false, false, false)
 		self._peer_id = nil
 		self._ai = nil
-		self:reset_downs()
 	end
 
 	function HUDTeammate:set_stored_health_max(stored_health_ratio)
@@ -2330,35 +2375,45 @@ if VoidUI.options.teammate_panels then
 		end)
 	end
 
-	function HUDTeammate:downed()
-		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs = math.clamp(self._downs - 1, 0, self._downs_max)
-		downs_value:set_text("x".. tostring(self._downs))
+	function HUDTeammate:set_revives_amount(revive_amount)
+		if revive_amount then
+			local health_panel = self._custom_player_panel:child("health_panel")
+			local downs_value = health_panel:child("downs_value")
+			revive_amount = math.max(revive_amount - 1, 0)
+			downs_value:set_text("x".. tostring(revive_amount))
+		end
 	end
 
-	function HUDTeammate:reset_downs()
+	function HUDTeammate:set_copr_indicator(enabled, static_damage_ratio)
 		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs = self._downs_max
-		downs_value:set_text("x".. tostring(self._downs))
-	end
+		local copr_overlay_panel = health_panel:child("copr_overlay_panel")
+		local health_bar = health_panel:child("health_bar")	
+
+		if alive(copr_overlay_panel) then
+			copr_overlay_panel:clear()
+			copr_overlay_panel:set_visible(enabled)	
+			if enabled then
+				local color = tweak_data.chat_colors[self._color_id] or Color.white
+				
+				local num_notches = math.ceil(1 / static_damage_ratio)
+				local w = copr_overlay_panel:w()
+				local h = copr_overlay_panel:h() / num_notches
+				local texture_h = 472 / num_notches
 	
-	function HUDTeammate:set_max_downs()
-		local health_panel = self._custom_player_panel:child("health_panel")
-		local downs_value = health_panel:child("downs_value")
-		self._downs_max = Global.game_settings.one_down and 2 or tweak_data.player.damage.LIVES_INIT
-		if self._main_player then
-			self._downs_max = self._downs_max - (managers.player:upgrade_value("player", "additional_lives", 0) == 1 and 0 or 1)
-		elseif self._peer_id then
-			local peer = managers.network:session():peer(self._peer_id)
-			local outfit = peer and peer:blackmarket_outfit()
-			local skills = outfit and outfit.skills
-			skills = skills and skills.skills
-			self._downs_max = self._downs_max - (tonumber(skills[14] or 0) >= 3 and 0 or 1)
+				for i = 0, num_notches - 1, 2 do
+					local notch = copr_overlay_panel:bitmap({
+						layer = 0,
+						name = tostring(i),
+						texture = "guis/textures/VoidUI/hud_health",
+						texture_rect = {881, texture_h * i, 202, texture_h},
+						y = h* i,
+						w = w,
+						h = h,
+						blend_mode = "sub",
+						color = color * 0.45
+					})
+				end
+			end
 		end
-		self._downs_max = managers.modifiers:modify_value("PlayerDamage:GetMaximumLives", self._downs_max)
-		self._downs = self._downs_max
-		downs_value:set_text("x".. tostring(self._downs))
 	end
 end

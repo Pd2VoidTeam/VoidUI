@@ -54,6 +54,7 @@ if VoidUI.options.enable_hint then
 		self._hint_panel:stop()
 		self._hint_panel:animate(callback(self, self, "_animate_show"), callback(self, self, "show_done"), params)
 	end
+	
 	function HUDHint:stop()
 		self._stop = true
 	end

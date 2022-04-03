@@ -47,7 +47,7 @@
 				"VoidUI_joining_anim_rot",
 				"VoidUI_joining_anim_grow",
 				"VoidUI_joining_anim_full"
-			]
+			],
 			"default_value" : 4
 		},
 		{

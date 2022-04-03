@@ -123,12 +123,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 				if data.peer_id == peer:id() then
 					local name = data.character_name
 					local experience = ""
-					if peer:level() then
-						experience = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. peer:level() .. " "
-						name =  experience .. (VoidUI.options.label_upper and utf8.to_upper(name) or name)
+					local level = peer:level()
+					local rank =  peer:rank()
+					if level then
+						local color_range_offset = utf8.len(data.name) + 2
+						experience, color_ranges = managers.experience:gui_string(level, rank, color_range_offset)
+						name = experience.. " "..name
 					end
 					data.text:set_text(name)
-					data.text:set_range_color(0, utf8.len(experience), Color.white) 
+					for _, color_range in ipairs(data.name_color_ranges or {}) do
+						data.text:set_range_color(0, color_range.start, Color.white)
+						data.text:set_range_color(color_range.start, color_range.stop, color_range.color)
+					end
 					self:align_teammate_name_label(data.panel, data.interact)
 				else
 				end
@@ -136,9 +142,17 @@ if RequiredScript == "lib/managers/hudmanager" then
 		end
 
 		function HUDManager:update_vehicle_label_by_id(label_id, num_players)
+			if not label_id then
+				return
+			end
 			for _, data in pairs(self._hud.name_labels) do
 				if data.id == label_id then
 					local name = VoidUI.options.label_upper and utf8.to_upper(data.character_name) or data.character_name
+					if not name then
+						data.text:set_text("")
+		
+						return
+					end
 					if num_players > 0 then
 						name = name.." (" .. num_players .. ")"
 					end
@@ -338,6 +352,14 @@ if RequiredScript == "lib/managers/hudmanager" then
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
+	function HUDManager:show_hint(params)
+		self._hud_hint:show(params)
+	
+		if params.event and not VoidUI.options.presenter_sound then
+			self._sound_source:post_event(params.event)
+		end
+	end
+
 	if VoidUI.options.teammate_panels or VoidUI.options.enable_labels then 
 		local set_ai_stopped = HUDManager.set_ai_stopped
 		function HUDManager:set_ai_stopped(ai_id, stopped)
@@ -347,10 +369,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				return
 			end
 			local panel = teammate_panel._panel:child("custom_player_panel") and teammate_panel._panel:child("custom_player_panel"):child("health_panel")
-			local name = panel and teammate_panel._panel:child("custom_player_panel"):child("name") and string.gsub(teammate_panel._panel:child("custom_player_panel"):child("name"):text(), "%W", "") or (teammate_panel._panel:child("name") and string.gsub(teammate_panel._panel:child("name"):text(), "%W", ""))
+			local name = panel and panel:child("name")
 			local label
 			for _, lbl in ipairs(self._hud.name_labels) do
-				if string.gsub(lbl.character_name, "%W", "") == name then
+				if lbl.character_name:gsub("%W", "") == name then
 					label = lbl
 					break
 				end
@@ -516,7 +538,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 
 		local ext_inventory_changed = HUDManager.on_ext_inventory_changed
 		function HUDManager:on_ext_inventory_changed()
-			if self._teammate_panels[HUDManager.PLAYER_PANEL] then
+			if self._teammate_panels and self._teammate_panels[HUDManager.PLAYER_PANEL] then
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_bodybags()
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_info_visible()
 			end
@@ -546,17 +568,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then	
 		HUDManager.player_downed = HUDManager.player_downed or function(self, i)
-			if self._teammate_panels and self._teammate_panels[i].downed then
-				self._teammate_panels[i]:downed()
-			end
 			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels then
 				self._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
-			end
-		end
-
-		HUDManager.player_reset_downs = HUDManager.player_reset_downs or function(self, i)
-			if self._teammate_panels and self._teammate_panels[i].reset_downs then
-				self._teammate_panels[i]:reset_downs()
 			end
 		end
 	end
@@ -664,9 +677,11 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				peer_id = data.unit:network():peer():id()
 				local level = data.unit:network():peer():level()
 				rank = data.unit:network():peer():rank()
+		
 				if level then
-					experience = (rank > 0 and managers.experience:rank_string(rank) .. "Ї" or "") .. level .. " "
-					data.name = experience .. data.name
+					local experience, color_ranges = managers.experience:gui_string(level, rank, 0)
+					data.name_color_ranges = color_ranges
+					data.name = experience.. " "..data.name
 				end
 			end
 			local panel = hud.panel:panel({
@@ -720,7 +735,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				w = 256 * large_scale,
 				h = 18 * large_scale
 			})
-			text:set_range_color(0, utf8.len(experience), Color.white) 
+			for _, color_range in ipairs(data.name_color_ranges or {}) do
+				text:set_range_color(0, color_range.start, Color.white)
+				text:set_range_color(color_range.start, color_range.stop, color_range.color)
+			end
 			local text_shadow = extended_panel:text({
 				name = "text_shadow",
 				text = data.name,
@@ -776,7 +794,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				w = 100,
 				h = 18
 			})
-			min_text:set_range_color(0, VoidUI.options.label_minrank and utf8.len(experience) or 0, Color.white) 
+			for _, color_range in ipairs(data.name_color_ranges or {}) do
+				min_text:set_range_color(0, color_range.start, Color.white)
+				min_text:set_range_color(color_range.start, color_range.stop, color_range.color)
+			end
 			local min_text_shadow = minmode_panel:text({
 				name = "text_shadow",
 				text = VoidUI.options.label_minrank and data.name or character_name,
@@ -1479,24 +1500,23 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			})
 			progressbar:set_x(progressbar_bg:x())
 			progressbar:set_center_y(progressbar_bg:center_y())
-			local level = "" 
 			local peer = managers.network:session():peer(id)
-			if peer and VoidUI.options.joining_rank then 
-				level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "") .. (peer:level() and peer:level().. " " or "")
-			end
+			local peer_name_string = " " .. peer:name()
+			local color_range_offset = utf8.len(peer_name_string) + 2
+			local experience, color_ranges = managers.experience:gui_string(peer:level(), peer:rank(), color_range_offset)
 			local title_text = panel:text({
 				name = "title_text",
 				font_size = 25,
 				font = tweak_data.menu.pd2_large_font,
-				text = level..managers.localization:text("dialog_dropin_title", {USER = nick}),
 				layer = 2,
 			})
+			title_text:set_text(peer_name_string .. " (" .. experience .. ")")
 			managers.hud:make_fine_text(title_text)
 			if title_text:w() > 400 then
 				title_text:set_font_size(title_text:font_size() * (400/title_text:w()))
 				title_text:set_w(title_text:w() * (400/title_text:w()))
 			end
-			title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
+			-- title_text:set_range_color(utf8.len(level), utf8.len(level) + utf8.len(nick) , color)
 			title_text:set_center_x(panel:w() / 2)
 			title_text:set_bottom(progressbar_bg:top() - 5)
 			local title_text_shadow = panel:text({
@@ -1646,13 +1666,13 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			return
 		end
 		local panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id)
-		if panel then
+		if panel and panel:child("progressbar") then
 			local progress_text = panel:child("progress_text")
 			local progress_text_shadow = panel:child("progress_text_shadow")
 			local progressbar = panel:child("progressbar")
 			local Time = os.clock()-self._person_joining
 			local remaining = (Time/progress_percentage*100)-Time
-			progressbar:stop()
+			
 			local function set_progress(o)
 				local w = o:w()
 				local max_w = panel:child("progressbar_bg"):w()
@@ -1670,6 +1690,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 				progress_text:set_text(string.format(text, progress_percentage, remaining))
 				progress_text_shadow:set_text(progress_text:text())
 			end
+			progressbar:stop()
 			progressbar:animate(set_progress)
 		elseif self._joining_queue then
 			for i, data in pairs(self._joining_queue) do

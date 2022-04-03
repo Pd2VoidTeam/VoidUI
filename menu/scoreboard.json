@@ -176,7 +176,7 @@
 				"VoidUI_jump",
 				"VoidUI_crouch",
 				"VoidUI_rmb"
-			]
+			],
 			"default_value" : 1
 		},
 		{

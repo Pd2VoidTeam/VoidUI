@@ -131,7 +131,6 @@ if VoidUI.options.enable_objectives then
 		if data.id == self._active_objective_id then
 			return
 		end
-		print("[HUDObjectives] activate_objective", data.id, data.amount)
 		local objectives_panel = self._hud_panel:child("objectives_panel")
 		local objective_panel = self._objectives[#self._objectives]
 		self._active_objective_id = data.id	

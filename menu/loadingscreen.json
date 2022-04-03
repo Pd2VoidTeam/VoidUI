@@ -54,7 +54,7 @@
 			"id" : "blackscreen_time",
 			"title" : "VoidUI_blackscreen_time_title",
 			"description" : "VoidUI_blackscreen_time_desc",
-			"parent" : "enable_blackscreen"
+			"parent" : "enable_blackscreen",
 			"default_value" : 0,
 			"suffix" : "s",
 			"max" : 2,
@@ -85,14 +85,7 @@
 			"default_value" : true,
 			"parent" : "enable_loadingscreen"
 		},
-		{
-			"type" : "toggle",
-			"id" : "loading_players",
-			"title" : "VoidUI_loading_players_title",
-			"description" : "VoidUI_loading_players_desc",
-			"default_value" : true,
-			"parent" : "enable_loadingscreen"
-		},
+		
 		{
 			"type" : "toggle",
 			"id" : "loading_briefing",

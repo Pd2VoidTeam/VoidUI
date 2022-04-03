@@ -30,15 +30,16 @@ if VoidUI.options.enable_assault then
 			})
 			assault_panel:set_top(0)
 			assault_panel:set_right(self._custom_hud_panel:w())
-			local extras_texture = "guis/textures/VoidUI/hud_extras"
+			local difficulty = math.min(managers.job:current_difficulty_stars(), 6)
+			local badges_texture = "guis/textures/VoidUI/hud_badges"
 			local icon_assaultbox = assault_panel:bitmap({
 				halign = "right",
 				valign = "top",
 				name = "icon_assaultbox",
 				visible = VoidUI.options.show_badge,
 				layer = 3,
-				texture = extras_texture,
-				texture_rect = {0, 0, 116, 140},
+				texture = badges_texture,
+				texture_rect = {0, difficulty * 140, 116, 139},
 				x = 0,
 				y = 10 * self._scale,
 				w = 60 * self._scale,
@@ -46,9 +47,8 @@ if VoidUI.options.enable_assault then
 			})
 			icon_assaultbox:set_right(icon_assaultbox:parent():w() - 10)
 			
-			local difficulty = managers.job:current_difficulty_stars()
 			if managers.crime_spree:is_active() then 
-				icon_assaultbox:set_texture_rect(812, 0, 116, 140)
+				icon_assaultbox:set_texture_rect(116, 0, 116, 139)
 				local assaultbox_skulls = assault_panel:text({
 						name = "assaultbox_skulls",
 						align = "center",
@@ -64,18 +64,9 @@ if VoidUI.options.enable_assault then
 				})
 				assaultbox_skulls:set_center(icon_assaultbox:center_x() - 1, icon_assaultbox:center_y())
 			elseif managers.skirmish.is_skirmish() then
-				icon_assaultbox:set_texture_rect(1186, 0, 116, 140)
-			elseif difficulty > 0 then
-				local assaultbox_skulls = assault_panel:bitmap({
-					name = "assaultbox_skulls",
-					visible = VoidUI.options.show_badge,
-					layer = 4,
-					texture = extras_texture,
-					texture_rect = {difficulty * 116, 0, 116, 140},
-					w = 60 * self._scale,
-					h = 70 * self._scale
-				})
-				assaultbox_skulls:set_center(icon_assaultbox:center())
+				icon_assaultbox:set_texture_rect(116, 140, 116, 139)
+			elseif managers.wdu then 
+				icon_assaultbox:set_texture_rect(116, 280, 116, 140)
 			end
 			local weapons_texture = "guis/textures/VoidUI/hud_weapons"
 			local assaultbox_panel = assault_panel:panel({
@@ -189,8 +180,8 @@ if VoidUI.options.enable_assault then
 				name = "icon_noreturnbox",
 				visible = true,
 				layer = 2,
-				texture = extras_texture,
-				texture_rect = {1038,0,148,148},
+				texture = "guis/textures/VoidUI/hud_extras",
+				texture_rect = {976,0,88,88},
 				x = 0,
 				y = 2 * self._scale,
 				w = 56 * self._scale,
@@ -295,9 +286,9 @@ if VoidUI.options.enable_assault then
 			local vip_icon = buffs_panel:bitmap({
 				name = "vip_icon",
 				visible = true,
-				layer = 5,
-				texture = extras_texture,
-				texture_rect = {929, 0, 109, 148},
+				layer = 15,
+				texture = badges_texture,
+				texture_rect = {119, 832, 110, 148},
 				x = 0,
 				y = 10 * self._scale,
 				w = 60 * self._scale,
@@ -624,6 +615,10 @@ if VoidUI.options.enable_assault then
 					text_string = managers.localization:to_upper_text(text_id)
 				elseif text_id == Idstring("mask-up") then
 					text_string = utf8.to_upper(managers.localization:text("hud_instruct_mask_on", {BTN_USE_ITEM = managers.localization:btn_macro("use_item")}))
+				elseif managers.wdu and text_id == Idstring("risk") then	
+					for i = 1, managers.job:current_difficulty_stars() do
+						text_string = text_string .. managers.localization:get_default_macro("BTN_SKULL")
+					end
 				elseif text_id == Idstring("risk") and self._badge then
 					text_string = managers.localization:to_upper_text(text_list[1])
 				elseif text_id == Idstring("risk") and not self._badge then
@@ -913,7 +908,7 @@ if VoidUI.options.enable_assault then
 				self._assault = true
 			end
 			
-			if Network:is_server() and managers.groupai:state():get_hunt_mode() then self:_set_text_list(self:_get_endless_strings()) end
+			if Network:is_server() and managers.groupai:state():get_hunt_mode() and not managers.wdu then self:_set_text_list(self:_get_endless_strings()) end
 			if assaultbox_panel:child("text_panel") then
 				assaultbox_panel:child("text_panel"):stop()
 				assaultbox_panel:child("text_panel"):clear()
@@ -1332,19 +1327,23 @@ if VoidUI.options.enable_assault then
 			elseif is_whisper_mode or VoidUI.options.hostages == false then
 				hostages_panel:child("num_hostages"):set_text("x".. data.nr_hostages)
 			elseif VoidUI.options.hostages then
-				local police = 0
-				
-				for _, unit in pairs(managers.enemy:all_enemies()) do
-					if (unit and unit.unit and alive(unit.unit)) and (unit.unit:anim_data() and unit.unit:anim_data().hands_up or unit.unit:anim_data() and unit.unit:anim_data().surrender or unit.unit:base() and unit.unit:base().mic_is_being_moved)then
-						police = police + 1
+				DelayedCalls:Add("VoidAssaultHostage", 0.01, function()
+					local police_hostages = 0
+					if Network:is_server() then
+						police_hostages = managers.groupai:state():police_hostage_count()
+					else
+						for _, enemy in pairs(managers.enemy:all_enemies()) do
+							if enemy and alive(enemy.unit) and not enemy.unit:character_damage():dead() and enemy.unit:brain():surrendered() then
+								police_hostages = police_hostages + 1
+							end
+						end
 					end
-				end
-				
-				hostages_panel:child("num_hostages"):set_text("x" .. math.clamp(data.nr_hostages - police, 0, data.nr_hostages))
-				cuffed_panel:child("num_cuffed"):set_text("x".. police)
+					hostages_panel:child("num_hostages"):set_text("x" .. math.clamp(data.nr_hostages - police_hostages, 0, data.nr_hostages))
+					cuffed_panel:child("num_cuffed"):set_text("x".. police_hostages)
+					if string.sub(hostages_panel:child("num_hostages"):text(), 2) ~= hostages then hostages_panel:child("hostages_background"):stop() hostages_panel:child("hostages_background"):animate(callback(self, self, "_blink_background")) end
+					if string.sub(cuffed_panel:child("num_cuffed"):text(), 2) ~= cuffed then cuffed_panel:child("cuffed_background"):stop() cuffed_panel:child("cuffed_background"):animate(callback(self, self, "_blink_background")) end
+				end)
 			end
-			if string.sub(hostages_panel:child("num_hostages"):text(), 2) ~= hostages then hostages_panel:child("hostages_background"):stop() hostages_panel:child("hostages_background"):animate(callback(self, self, "_blink_background")) end
-			if string.sub(cuffed_panel:child("num_cuffed"):text(), 2) ~= cuffed then cuffed_panel:child("cuffed_background"):stop() cuffed_panel:child("cuffed_background"):animate(callback(self, self, "_blink_background")) end
 		end
 		
 		function HUDAssaultCorner:_blink_background(background)
@@ -1377,21 +1376,13 @@ if VoidUI.options.enable_assault then
 				self._timer_noreturnbox:set_current(time / self._noreturn_time)
 			end
 		end
-		function HUDAssaultCorner:show_point_of_no_return_timer()
-			local delay_time = self._assault and 1.2 or 0
+		function HUDAssaultCorner:show_point_of_no_return_timer(id)
+			local delay_time = self._assault and 1.3 or 0
+			self:_update_noreturn_custom(id)
 			local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
 			local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
 			local text_panel = point_of_no_return_panel:child("text_panel")
-			text_panel:script().text_list = {}
-			local msg = {
-				"hud_assault_point_no_return_in",
-				"hud_assault_end_line",
-				"hud_assault_point_no_return_in",
-				"hud_assault_end_line"
-			}
-			for _, text_id in ipairs(msg) do
-				table.insert(text_panel:script().text_list, text_id)
-			end
+			
 			if noreturnbox_panel:child("text_panel") then
 				noreturnbox_panel:child("text_panel"):stop()
 				noreturnbox_panel:child("text_panel"):clear()
@@ -1400,15 +1391,39 @@ if VoidUI.options.enable_assault then
 			end
 			
 			noreturnbox_panel:child("text_panel"):stop()
-			noreturnbox_panel:child("text_panel"):animate(callback(self, self, "_animate_text"), text_panel:script().text_list, self._noreturn_color)
+			noreturnbox_panel:child("text_panel"):animate(callback(self, self, "_animate_text"), text_panel:script().text_list, self._noreturn_data.color)
 			
 			self:_end_assault()
-			self:_set_hostage_offseted(true, true)
 			point_of_no_return_panel:stop()
 			point_of_no_return_panel:animate(callback(self, self, "_animate_show_noreturn"), delay_time)
 			self:_set_feedback_color(self._noreturn_color)
 			self._point_of_no_return = true
 		end
+
+		function HUDAssaultCorner:_update_noreturn_custom(id)
+			local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
+			local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
+			local text_panel = point_of_no_return_panel:child("text_panel")
+			local border = noreturnbox_panel:child("border")
+			
+			local noreturn_data = self:_get_noreturn_data(id)
+
+			text_panel:script().text_list = {
+				noreturn_data.text_id,
+				"hud_assault_end_line",
+				noreturn_data.text_id,
+				"hud_assault_end_line"
+			}
+
+			if noreturn_data.color ~= self._noreturn_data.color then
+				border:set_color(noreturn_data.color)
+			end
+
+			self._noreturn_time = 0
+			self._noreturn_time_current = 0
+			self._noreturn_data = noreturn_data
+		end
+
 		function HUDAssaultCorner:hide_point_of_no_return_timer()
 			local point_of_no_return_panel = self._custom_hud_panel:child("point_of_no_return_panel")
 			local noreturnbox_panel = point_of_no_return_panel:child("noreturnbox_panel")
@@ -1426,10 +1441,12 @@ if VoidUI.options.enable_assault then
 				local t = 0
 				while t < 0.5 do
 					t = t + coroutine.yield()
+					local color = self._noreturn_data.color or Color(1, 1, 0, 0)
+					local flash_color = self._noreturn_data.flash_color or Color(1, 1, 0.8, 0.2)
 					local n = 1 - math.sin(t * 180)
-					local r = math.lerp(1 or self._point_of_no_return_color.r, 1, n)
-					local g = math.lerp(0 or self._point_of_no_return_color.g, 0.8, n)
-					local b = math.lerp(0 or self._point_of_no_return_color.b, 0.2, n)
+					local r = math.lerp(color.r, flash_color.r, n)
+					local g = math.lerp(color.g, flash_color.g, n)
+					local b = math.lerp(color.b, flash_color.b, n)
 					o:set_color(Color(r, g, b))
 					o:set_font_size(math.lerp(20 * self._scale, 25 * self._scale, n))
 				end
@@ -1445,7 +1462,7 @@ if VoidUI.options.enable_assault then
 			local icon_noreturnbox = point_of_no_return_panel:child("icon_noreturnbox")
 			local point_of_no_return_timer = point_of_no_return_panel:child("point_of_no_return_timer")
 			wait(delay_time)
-			--self:_hide_hostages()
+			self:_set_hostage_offseted(true, true)
 			
 			background:set_x(noreturnbox_panel:w())
 			border:set_x(background:x() - 1 * self._scale)
@@ -1634,12 +1651,12 @@ if VoidUI.options.enable_assault then
 		end
 	elseif RequiredScript == "lib/managers/group_ai_states/groupaistatebase" then
 		
-		local update = GroupAIStateBase.update
-		function GroupAIStateBase:update(t, dt)
-			update(self, t, dt)
-			if not self._last_updated then self._last_updated = t end
-			if self._last_updated and self._last_updated + 50 <= t then managers.groupai:state():sync_hostage_headcount() end
-		end
+		-- local update = GroupAIStateBase.update
+		-- function GroupAIStateBase:update(t, dt)
+		-- 	update(self, t, dt)
+		-- 	if not self._last_updated then self._last_updated = t end
+		-- 	if self._last_updated and self._last_updated + 50 <= t then managers.groupai:state():sync_hostage_headcount() end
+		-- end
 
 	elseif RequiredScript == "lib/managers/objectinteractionmanager" then
 		local interact = ObjectInteractionManager.end_action_interact

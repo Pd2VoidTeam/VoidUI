@@ -1,7 +1,64 @@
-Version 1.2.2
-- Added compatibility with Holdout
-- Added wave popup panel to Safehouse Raid
+Version 1.2.9 (2022.03.17)
+ - Should fix the gsub name labels crash
+ - Hide pager counter when the heist goes load
 
+Version 1.2.8 (2022.03.15)
+ - Added support for custom point of no return timers
+ - Changed downs counter to use the new networked values introduced in update 217
+ - Attempted to fix a crash related to the player joining progressbar
+ - Attempted to fix a crash related to bot loadouts on the scoreboard
+ - Fixed police hostages count not syncing properly for clients
+ - Fixed name labels having incorrect formatting after joining a game
+ - Fixed player names being invisible when the player panels are disabled
+
+Version 1.2.7 (2022.01.30)
+ - Added the pager tracker to the scoreboard
+ - Hidden new downs counter
+ - Fixed a crash with the Realtime XP mod
+ - May fix a crash when somewone joins mid game with the joining panel option on
+
+Version 1.2.6 (2021.12.19)
+ - Added support for the Leech perk deck
+ - Changed SystemFS:list to BLT function, should fix Linux compatibility
+
+Version 1.2.5 (2021.11.07)
+ - Fixed set_damage_absorption() crash when exiting a lobby when the custom assault panel is enabled
+ - Fixed a crash when using weapon skins/colors on bots when the scoreboard enabled is enabled
+ - Fixed civilian kill crash when scoreboard is enabled
+ - Fixed vehicle label crash
+ - Fixing joker outlines crash
+ - Fixed voice chat crash
+ - Fixed presenter crash
+ - Removed the connected players option from the level loading screen (It may return in the future)
+ - Fixed infamy 3.0 issues
+ - Fixed json errors
+ - Updated Italian trasnlations by LycanCHKN
+ - Added auto updating
+ - Fixed double kills when scoreboard is enabled
+
+Version 1.2.4 (2020.06.14)
+- Fixed crash on stealth only heists
+- Fixed rare crash during loading
+- Fixed hostages panel sometimes getting stuck when Point Of No Return activates
+- Added better assault badges made by Jarey
+
+Version 1.2.3 (2018.12.22)
+- Fixed crash after update 197
+- Fixed a crash with the Broken Arrow custom map
+- Updated texture files
+- Added Italian localization made by LycanCHKN
+- Added better captain badge made by Jarey
+
+Version 1.2.2 (2018.08.19)
+- Added an assault badge for Holdout
+- Added wave popup panel
+- Added a Houldout version of the tab panel
+- Added counter that shows the amount of Pocket ECM Devices left
+- Made the ammo couter smaller if you have over 999 total ammo to avoid overlapping
+- Enabled the wave popup panel in Safehouse Raid
+- Fixed "disable notification sounds" option not muting hint notification sounds
+- Fixed crash when trying to play Holdout
+- Fixed a crashed related to the downs counter
 
 Version 1.2.1 (2018.08.13)
 - Fixed crash when somebody has the Pocket ECM Device equiped

@@ -150,6 +150,9 @@ if VoidUI.options.enable_blackscreen then
 					vertical = "bottom",
 					color = tweak_data.screen_colors.risk,
 				})
+				if managers.skirmish:is_skirmish() then
+					level_text:set_text(managers.localization:to_upper_text(managers.skirmish:is_weekly_skirmish() and "hud_weekly_skirmish" or "hud_skirmish")..": "..level_text:text())
+				end
 				level_text:set_bottom(risk_panel:top())
 				level_text:set_center_x(risk_panel:center_x())
 			end
@@ -249,7 +252,9 @@ if VoidUI.options.enable_blackscreen then
 			if VoidUI.options.blackscreen_linger then
 				local job_panel = self._blackscreen_panel:child("job_panel")
 				local hud_panel = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2).panel
-				hud_panel:set_alpha(0)
+				if VoidUI.options.teammate_panels then
+					hud_panel:set_alpha(0)
+				end
 				local t = 0.7
 				local d = t
 				wait(1.6)
@@ -257,7 +262,9 @@ if VoidUI.options.enable_blackscreen then
 					local dt = coroutine.yield()
 					t = t - dt
 					self._blackscreen_panel:set_alpha(math.min(t / (d - 0.2), 1))
-					hud_panel:set_alpha(math.min(1 - (t - 0.3) / (d - 0.3), 1))
+					if VoidUI.options.teammate_panels then
+						hud_panel:set_alpha(math.min(1 - (t - 0.3) / (d - 0.3), 1))
+					end
 				end
 				self._blackscreen_panel:set_alpha(0)
 				hud_panel:set_alpha(1)
@@ -303,8 +310,8 @@ if VoidUI.options.enable_blackscreen then
 		end
 		if VoidUI.options.blackscreen_linger then
 			local at_exit = IngameWaitingForPlayersState.at_exit
-			function IngameWaitingForPlayersState:at_exit()
-				at_exit(self)
+			function IngameWaitingForPlayersState:at_exit(next_state)
+				at_exit(self, next_state)
 				managers.hud:show(Idstring("guis/level_intro"))
 				managers.hud:blackscreen_fade_out_mid_text()
 			end
