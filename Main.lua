@@ -47,9 +47,7 @@ VoidUI.hook_files = {
 	["lib/units/civilians/civiliandamage"] = {"hud/HudScoreboard.lua"},
 	["lib/managers/hud/newhudstatsscreen"] = {"hud/HudScoreboard.lua"},
 	["lib/managers/hud/hudstatsscreenskirmish"] = {"hud/HudScoreboard.lua"},
-	["lib/network/base/clientnetworksession"] = {"menu/LevelLoadingScreen.lua"},
-	["lib/network/base/hostnetworksession"] = {"menu/LevelLoadingScreen.lua"},
-	["lib/setups/setup"] = {"menu/LevelLoadingScreen.lua"},
+	["lib/setups/setup"] = {"Setup.lua"},
 	["lib/managers/menumanager"] = {"menu/CustomMenu.lua"},
 	["lib/network/matchmaking/networkvoicechatsteam"] = {"hud/HudVoice.lua"}	
 }

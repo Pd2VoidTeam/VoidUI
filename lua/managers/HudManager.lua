@@ -1,17 +1,13 @@
 if RequiredScript == "lib/managers/hudmanager" then
 	-- Assault Corner
 	if VoidUI.options.enable_assault then		
-		local sync_start_anticipation_music = HUDManager.sync_start_anticipation_music
-		function HUDManager:sync_start_anticipation_music()
-			sync_start_anticipation_music(self)
+		Hooks:PostHook(HUDManager,"sync_start_anticipation_music","void_sync_start_anticipation_music", function(self)
 			managers.hud:assault_anticipation()
-		end
+		end)
 		
-		show_endscreen_hud = HUDManager.show_endscreen_hud
-		function HUDManager:show_endscreen_hud()
-			show_endscreen_hud(self)
+		Hooks:PostHook(HUDManager,"show_endscreen_hud","void_show_endscreen_hud", function(self)
 			self._hud_assault_corner:stop_ecm()
-		end
+		end)
 	end
 	
 	function HUDManager:setup_anticipation(total_t)
@@ -41,24 +37,22 @@ if RequiredScript == "lib/managers/hudmanager" then
 	end
 	
 	if VoidUI.options.enable_waypoints then
-		local add_waypoint = HUDManager.add_waypoint
-		function HUDManager:add_waypoint(id, data)
-			add_waypoint(self, id, data)
-			
-			if self._hud.waypoints[id] then
+		Hooks:PostHook(HUDManager,"add_waypoint","void_add_waypoint", function(self, id, data)
+			local waypoint = self._hud.waypoints[id]		
+			if waypoint then
 				local scale = VoidUI.options.waypoint_scale
-				local bitmap = self._hud.waypoints[id].bitmap
-				local arrow = self._hud.waypoints[id].arrow
-				local distance = self._hud.waypoints[id].distance
-				local text = self._hud.waypoints[id].text
-				local timer = self._hud.waypoints[id].timer_gui
+				local bitmap = waypoint.bitmap
+				local arrow = waypoint.arrow
+				local distance = waypoint.distance
+				local text = waypoint.text
+				local timer = waypoint.timer_gui
 				
 				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
 				arrow:set_size(arrow:w() * scale, arrow:h() * scale)
 				text:set_font_size(text:font_size() * scale)
 				text:set_size(text:w() * scale, text:h() * scale)
-				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
-				self._hud.waypoints[id].radius = VoidUI.options.waypoint_radius
+				waypoint.size = Vector3(bitmap:w(), bitmap:h(), 0)
+				waypoint.radius = VoidUI.options.waypoint_radius
 				
 				if data.distance then
 					distance:set_font_size(distance:font_size() * scale)
@@ -69,23 +63,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 					timer:set_font_size(timer:font_size() * scale)
 				end
 			end
-		end
+		end)
 		
-		local change_waypoint_icon = HUDManager.change_waypoint_icon
-		function HUDManager:change_waypoint_icon(id, icon)
-			change_waypoint_icon(self, id, icon)
-			
+		Hooks:PostHook(HUDManager,"change_waypoint_icon","void_change_waypoint_icon", function(self, id, icon)		
 			if self._hud.waypoints[id] then
 				local scale = VoidUI.options.waypoint_scale
 				local bitmap = self._hud.waypoints[id].bitmap
 				bitmap:set_size(bitmap:w() * scale, bitmap:h() * scale)
 				self._hud.waypoints[id].size = Vector3(bitmap:w(), bitmap:h(), 0)
 			end
-		end
+		end)
 		
-		local update_waypoints = HUDManager._update_waypoints
-		function HUDManager:_update_waypoints(t, dt)
-			update_waypoints(self, t, dt)
+		Hooks:PostHook(HUDManager,"_update_waypoints","void_update_waypoints", function(self, t, dt)
 			local cam = managers.viewport:get_current_camera()
 			if not cam then
 				return
@@ -114,7 +103,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 					data.text:set_visible(true)
 				end
 			end
-		end
+		end)
 	end
 	-- Name Labels
 	if VoidUI.options.enable_labels then
@@ -166,13 +155,11 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	
-		local update_name_labels = HUDManager._update_name_labels
-		function HUDManager:_update_name_labels(t, dt)	
+		Hooks:PostHook(HUDManager,"_update_name_labels","void_update_name_labels", function(self, t, dt)
 			local cam = managers.viewport:get_current_camera()
 			if not cam then
 				return
 			end
-			update_name_labels(self, t, dt)
 			
 			local nl_w_pos = Vector3()
 			local nl_dir = Vector3()
@@ -220,12 +207,10 @@ if RequiredScript == "lib/managers/hudmanager" then
 					data.panel:child("extended_panel"):set_visible(true)
 				end
 			end
-		end
+		end)
 	end
 
-	local setup_player_info_hud_pd2 = HUDManager._setup_player_info_hud_pd2
-	function HUDManager:_setup_player_info_hud_pd2()
-		setup_player_info_hud_pd2(self)
+	Hooks:PostHook(HUDManager,"_setup_player_info_hud_pd2","void_setup_player_info_hud_pd2", function(self)
 		if VoidUI.options.scoreboard and VoidUI.options.enable_stats and not self._hud_statsscreen then
 			self:_setup_stats_screen()
 			self:show_stats_screen()
@@ -235,7 +220,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 			self:_create_voice_panel(hud)
 		end
-	end
+	end)
+
 	if VoidUI.options.enable_voice then
 		function HUDManager:_create_voice_panel(hud)
 			if managers.network:session() then
@@ -255,21 +241,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end
 	end
+
 	--Stat Panel
 	if VoidUI.options.scoreboard and VoidUI.options.enable_stats then
-		local reset_player_hpbar = HUDManager.reset_player_hpbar
-		function HUDManager:reset_player_hpbar()
-			reset_player_hpbar(self)
+		Hooks:PostHook(HUDManager,"reset_player_hpbar","void_reset_player_hpbar", function(self)
 			local character_name = managers.criminals:local_character_name()
 			local crim_entry = managers.criminals:character_static_data_by_name(character_name)
 			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels and self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL] then
 				self._hud_statsscreen._scoreboard_panels[HUDManager.PLAYER_PANEL]:set_player(character_name, managers.network:session():local_peer():name(), false, managers.network:session():local_peer():id())
 			end
-		end
+		end)
 		
-		local update = HUDManager.update
-		function HUDManager:update(t, dt)
-			update(self, t, dt)
+		Hooks:PostHook(HUDManager,"update","void_hudmanager_update", function(self, t, dt)
 			self._last_sc_update = self._last_sc_update or t
 			local peers = managers.network:session() and managers.network:session():peers()
 			if self._hud_statsscreen and peers and self._last_sc_update + VoidUI.options.ping_frequency < t then
@@ -281,32 +264,28 @@ if RequiredScript == "lib/managers/hudmanager" then
 					end
 				end
 			end
-		end
+		end)
 	end
 	
 	-- Player and Teammate Panels
 	if VoidUI.options.teammate_panels then
-		local show = HUDManager.show
-		function HUDManager:show(name)
-			show(self, name)
+		Hooks:PostHook(HUDManager,"show","void_hudmanager_show", function(self, name)
 			if name == PlayerBase.PLAYER_DOWNED_HUD and self._teammate_panels[HUDManager.PLAYER_PANEL] then
 				local health_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]._custom_player_panel:child("health_panel")
 				health_panel:child("armor_value"):hide()
 				health_panel:child("health_value"):hide()
 				health_panel:child("health_bar"):hide()
 			end
-		end
+		end)
 		
-		local hide = HUDManager.hide
-		function HUDManager:hide(name)
-			hide(self, name)
+		Hooks:PostHook(HUDManager,"hide","void_hudmanager_hide", function(self, name)
 			if name == PlayerBase.PLAYER_DOWNED_HUD and self._teammate_panels[HUDManager.PLAYER_PANEL] then
 				local health_panel = self._teammate_panels[HUDManager.PLAYER_PANEL]._custom_player_panel:child("health_panel")
 				health_panel:child("armor_value"):show()
 				health_panel:child("health_value"):show()
 				health_panel:child("health_bar"):show()
 			end
-		end
+		end)
 		
 		function HUDManager:pd_start_timer(data)
 			local hud = managers.hud:script(PlayerBase.PLAYER_DOWNED_HUD)
@@ -361,9 +340,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	end
 
 	if VoidUI.options.teammate_panels or VoidUI.options.enable_labels then 
-		local set_ai_stopped = HUDManager.set_ai_stopped
-		function HUDManager:set_ai_stopped(ai_id, stopped)
-			set_ai_stopped(self, ai_id, stopped)
+		Hooks:PostHook(HUDManager,"set_ai_stopped","void_set_ai_stopped", function(self, ai_id, stopped)
 			local teammate_panel = self._teammate_panels[ai_id]
 			if not teammate_panel or stopped and not teammate_panel._ai then
 				return
@@ -409,7 +386,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 					label.panel:child("extended_panel"):remove(label.panel:child("extended_panel"):child("stopped"))
 				end
 			end
-		end
+		end)
 		
 		function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success)
 			local name_label = self:_name_label_by_peer_id(peer_id)
@@ -490,6 +467,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
 			end
 		end
+
 		function HUDManager:_animate_interaction_complete(bar, panel)
 			local center_x = bar:center_x()
 			local w = bar:w()
@@ -512,13 +490,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			return 300
 		end
 		
-		local create_teammates_panel = HUDManager._create_teammates_panel
-		function HUDManager:_create_teammates_panel(...)
+		Hooks:PreHook(HUDManager,"_create_teammates_panel","void_create_teammates_panel", function(self, ...)
 			self._main_scale = VoidUI.options.hud_main_scale
 			self._mate_scale = VoidUI.options.hud_mate_scale
-			create_teammates_panel(self, ...)
+		end)
+
+		Hooks:PostHook(HUDManager,"_create_teammates_panel","void_create_teammates_panel", function(self, ...)
 			self:align_teammate_panels()
-		end
+		end)
 		
 		function HUDManager:align_teammate_panels()
 			for i, data in ipairs(self._hud.teammate_panels_data) do
@@ -536,14 +515,12 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end	
 
-		local ext_inventory_changed = HUDManager.on_ext_inventory_changed
-		function HUDManager:on_ext_inventory_changed()
+		Hooks:PreHook(HUDManager,"on_ext_inventory_changed","void_on_ext_inventory_changed", function(self)
 			if self._teammate_panels and self._teammate_panels[HUDManager.PLAYER_PANEL] then
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_bodybags()
 				self._teammate_panels[HUDManager.PLAYER_PANEL]:set_info_visible()
 			end
-			ext_inventory_changed(self)
-		end
+		end)
 
 		function HUDManager:hide_player_gear(panel_id)
 			if self._teammate_panels[panel_id] and self._teammate_panels[panel_id]:panel() and self._teammate_panels[panel_id]:panel():child("player") then
@@ -561,13 +538,13 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end	
 		
-		HUDManager.set_teammate_ability_color = HUDManager.set_teammate_ability_color or function(self, i, color)
+		function HUDManager:set_teammate_ability_color(i, color)
 			self._teammate_panels[i]:set_ability_color(color)
 		end		
 	end		
 	
 	if VoidUI.options.teammate_panels or (VoidUI.options.scoreboard and VoidUI.options.enable_stats) then	
-		HUDManager.player_downed = HUDManager.player_downed or function(self, i)
+		function HUDManager:player_downed(i)
 			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels then
 				self._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 			end
@@ -576,12 +553,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	--Stat Screen and Scoreboard
 	if VoidUI.options.scoreboard and VoidUI.options.enable_stats then
-		local add_teammate_panel = HUDManager.add_teammate_panel
-		function HUDManager:add_teammate_panel(character_name, player_name, ai, peer_id)
-			local add_panel = add_teammate_panel(self, character_name, player_name, ai, peer_id)
+		Hooks:PostHook(HUDManager,"add_teammate_panel","void_add_teammate_panel", function(self, character_name, player_name, ai, peer_id)
 			self._hud_statsscreen:add_scoreboard_panel(character_name, player_name, ai, peer_id)
-			return add_panel
-		end
+		end)
 		
 		function HUDManager:scoreboard_unit_killed(killer_unit, stat)
 			
@@ -608,36 +582,34 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end
 		
-		local remove_teammate_panel = HUDManager.remove_teammate_panel
-		function HUDManager:remove_teammate_panel(id)
+		Hooks:PreHook(HUDManager,"remove_teammate_panel","void_remove_teammate_panel", function(self, id)
 			self._hud_statsscreen:free_scoreboard_panel(id)
-			remove_teammate_panel(self, id)
-		end
+		end)
 	end	
 
 	--Assault Corner
 	if VoidUI.options.enable_assault then
-		HUDManager.assault_anticipation = HUDManager.assault_anticipation or function(self)
+		function HUDManager:assault_anticipation()
 			if self._hud_assault_corner then
 				self._hud_assault_corner:set_assault_phase()
 			end
 		end
 		
-		HUDManager.add_ecm_timer = HUDManager.add_ecm_timer or function(self, unit)
-			if unit and unit:base():battery_life() then
+		function HUDManager:add_ecm_timer(unit)
+			if alive(unit) and unit:base():battery_life() then
 				self._jammers = self._jammers or {}
 				table.insert(self._jammers, unit)
 				self:start_ecm_timer()
 			end
 		end
 		
-		HUDManager.start_ecm_timer = HUDManager.start_ecm_timer or function(self)		
+		function HUDManager:start_ecm_timer()		
 			if self._hud_assault_corner and self._jammers and #self._jammers > 0 then
 				self._hud_assault_corner:ecm_timer(self._jammers[VoidUI.options.jammers == 2 and 1 or #managers.hud._jammers]:base():battery_life())
 			end
 		end
 
-		HUDManager.pager_used = HUDManager.pager_used or function(self)
+		function HUDManager:pager_used()
 			if self._hud_assault_corner then
 				self._hud_assault_corner:pager_used()
 			end
@@ -1156,56 +1128,45 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 
 	--Timer panel
 	if VoidUI.options.enable_timer then
-		local loot_value = HUDManager.loot_value_updated
-		function HUDManager:loot_value_updated(...)
+		Hooks:PreHook(HUDManager,"loot_value_updated","void_loot_value_updated", function(self, ...)
 			if self._hud_heist_timer then
 				self._hud_heist_timer:loot_value_changed()
 			end
-			return loot_value(self, ...)
-		end	
+		end)
 	end
 	
 elseif RequiredScript == "lib/units/player_team/teamaidamage" then
 	
 	if VoidUI.options.teammate_panels then
-		local apply_damage_orig = TeamAIDamage._apply_damage
-		function TeamAIDamage:_apply_damage(attack_data, result)
-			local damage_percent, health_subtracted = apply_damage_orig(self, attack_data, result)
+		Hooks:PostHook(TeamAIDamage,"_apply_damage","void_apply_damage", function(self, attack_data, result)
 			local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 			managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
-			return damage_percent, health_subtracted
-		end	
+		end	)
 		
-		local regenerated = TeamAIDamage._regenerated
-		function TeamAIDamage:_regenerated()
-			regenerated(self)
+		Hooks:PostHook(TeamAIDamage,"_regenerated","void_regenerated", function(self)
 			local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 			managers.hud:set_teammate_health(i, {current = self._health, total = self._HEALTH_INIT})
-		end
+		end)
 	end
 	
 	if VoidUI.options.enable_stats and VoidUI.options.scoreboard then
-		local check_bleed_out = TeamAIDamage._check_bleed_out
-		function TeamAIDamage:_check_bleed_out()
+		Hooks:PreHook(TeamAIDamage,"_check_bleed_out","void_check_bleed_out", function(self)
 			if self._health <= 0 then
 				local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 				if managers.hud._hud_statsscreen then
 					managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 				end
 			end
-			check_bleed_out(self)
-		end
+		end)
 	end
 	
 elseif RequiredScript == "lib/units/player_team/huskteamaidamage" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
-	local on_bleedout = HuskTeamAIDamage._on_bleedout
-	function HuskTeamAIDamage:_on_bleedout()
-		on_bleedout(self)
+	Hooks:PostHook(HuskTeamAIDamage,"_on_bleedout","void_on_bleedout", function(self)
 		local i = managers.criminals:character_data_by_unit(self._unit).panel_id
 		if managers.hud._hud_statsscreen then
 			managers.hud._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 		end
-	end
+	end)
 	
 elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" and VoidUI.options.enable_subtitles then
 	
@@ -1349,23 +1310,19 @@ elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.
 		managers.hud:make_fine_text(self._btn_text)
 	end
 elseif RequiredScript == "lib/units/player_team/teamaiinventory" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
-	local _ensure_weapon_visibility = TeamAIInventory._ensure_weapon_visibility
-	function TeamAIInventory:_ensure_weapon_visibility(override_weapon, override)
-		_ensure_weapon_visibility(self, override_weapon, override)
+	Hooks:PostHook(TeamAIInventory,"_ensure_weapon_visibility","void_ensure_weapon_visibility", function(self, override_weapon, override)
 		local panel = managers.hud and managers.hud._hud_statsscreen:get_scoreboard_panel_by_character(managers.criminals:character_name_by_unit(self._unit))
 		if panel then panel:sync_bot_loadout(panel._character) end
-	end
+	end)
+	
 elseif RequiredScript == "lib/states/ingamemaskoff" and VoidUI.options.enable_assault then
-	local at_enter = IngameMaskOffState.at_enter
-	function IngameMaskOffState:at_enter()
-		at_enter(self)
+	Hooks:PostHook(IngameMaskOffState,"at_enter","void_maskoff_at_enter", function(self)
 		managers.hud:hide(self._MASK_OFF_HUD)
-	end
+	end)
 elseif RequiredScript == "lib/managers/achievmentmanager" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
 	AchievmentManager.MAX_TRACKED = 7
 elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teammate_panels or VoidUI.options.vape_hints) then
-	add_coroutine = PlayerManager.add_coroutine
-	function PlayerManager:add_coroutine(name, func, ...)
+	Hooks:PreHook(PlayerManager,"add_coroutine","void_add_coroutine", function(self, name, func, ...)
 		local arg = {...}
 		local tagged = arg[1]
 		if name == "tag_team" and tagged then
@@ -1381,12 +1338,9 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 				managers.hud:set_teammate_ability_color(HUDManager.PLAYER_PANEL, tweak_data.chat_colors[managers.criminals:character_peer_id_by_unit(tagged)] or tweak_data.chat_colors[#tweak_data.chat_colors])
 			end
 		end
-		add_coroutine(self, name, func, ...)
-	end
+	end)
 	
-	local sync_tag_team = PlayerManager.sync_tag_team
-	function PlayerManager:sync_tag_team(tagged, owner, end_time)
-		sync_tag_team(self, tagged, owner, end_time)
+	Hooks:PostHook(PlayerManager,"sync_tag_team","void_sync_tag_team", function(self, tagged, owner, end_time)
 		local owner_name = owner:base():nick_name()
 		local tagged_id = managers.criminals:character_peer_id_by_unit(tagged)
 		local owner_data = managers.criminals:character_data_by_unit(owner)
@@ -1399,11 +1353,10 @@ elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teamma
 			self:player_unit():sound():play("perkdeck_activate")
 			managers.hud:show_hint({text=managers.localization:text("VoidUI_tag_team_tagged", {NAME=owner_name}), time=5})
 		end
-	end
+	end)
 	
 elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
-	local remove_peer = BaseNetworkSession.remove_peer
-	function BaseNetworkSession:remove_peer(peer, peer_id, reason)
+	Hooks:PreHook(BaseNetworkSession,"remove_peer","void_remove_peer", function(self, peer, peer_id, reason)
 		if managers.criminals and peer_id then
 			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
 
@@ -1411,8 +1364,7 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 				managers.hud:remove_teammate_scoreboard_panel(character_data.panel_id)
 			end
 		end
-		return remove_peer(self, peer, peer_id, reason)
-	end
+	end)
 	
 elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.enable_joining then
 	local update_time = 0.016666666666666666
