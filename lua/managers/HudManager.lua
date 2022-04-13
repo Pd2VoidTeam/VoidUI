@@ -107,7 +107,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 	end
 	-- Name Labels
 	if VoidUI.options.enable_labels then
-		function HUDManager:update_name_label_by_peer(peer)
+		Hooks:OverrideFunction(HUDManager, "update_name_label_by_peer", function(self, peer)
 			for _, data in pairs(self._hud.name_labels) do
 				if data.peer_id == peer:id() then
 					local name = data.character_name
@@ -128,9 +128,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 				else
 				end
 			end
-		end
+		end)
 
-		function HUDManager:update_vehicle_label_by_id(label_id, num_players)
+		Hooks:OverrideFunction(HUDManager, "update_vehicle_label_by_id", function(self, label_id, num_players)
 			if not label_id then
 				return
 			end
@@ -153,7 +153,7 @@ if RequiredScript == "lib/managers/hudmanager" then
 				else
 				end
 			end
-		end
+		end)
 	
 		Hooks:PostHook(HUDManager,"_update_name_labels","void_update_name_labels", function(self, t, dt)
 			local cam = managers.viewport:get_current_camera()
@@ -287,18 +287,18 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 		end)
 		
-		function HUDManager:pd_start_timer(data)
+		Hooks:OverrideFunction(HUDManager, "pd_start_timer", function(self, data)
 			local hud = managers.hud:script(PlayerBase.PLAYER_DOWNED_HUD)
 			hud.unpause_timer()
 			if self._hud_player_downed then
 				self._hud_player_downed:start_timer(data.time or 10)
 			end
-		end
+		end)
 	end
 	
 	--Interaction Panel
 	if VoidUI.options.enable_interact then
-		function HUDManager:pd_start_progress(current, total, msg, icon_id)
+		Hooks:OverrideFunction(HUDManager, "pd_start_progress", function(self, current, total, msg, icon_id)
 			if not self._hud_interaction then
 				return
 			end
@@ -316,28 +316,28 @@ if RequiredScript == "lib/managers/hudmanager" then
 			end
 			self._hud_interaction._interact_bar:stop()
 			self._hud_interaction._interact_bar:animate(feed_circle, total)
-		end
-		
-		function HUDManager:pd_stop_progress()
+		end)
+
+		Hooks:OverrideFunction(HUDManager, "pd_stop_progress", function(self)
 			if not self._hud_interaction then
 				return
 			end
 			self._hud_interaction:remove_interact()
 			self._hud_interaction:hide_interaction_bar(false)
 			self._hud_player_downed:show_timer()
-		end
+		end)
 	end
 
 	
 elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
-	function HUDManager:show_hint(params)
+	Hooks:OverrideFunction(HUDManager, "show_hint", function(self, params)
 		self._hud_hint:show(params)
 	
 		if params.event and not VoidUI.options.presenter_sound then
 			self._sound_source:post_event(params.event)
 		end
-	end
+	end)
 
 	if VoidUI.options.teammate_panels or VoidUI.options.enable_labels then 
 		Hooks:PostHook(HUDManager,"set_ai_stopped","void_set_ai_stopped", function(self, ai_id, stopped)
@@ -388,7 +388,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 		end)
 		
-		function HUDManager:teammate_progress(peer_id, type_index, enabled, tweak_data_id, timer, success)
+		Hooks:OverrideFunction(HUDManager, "teammate_progress", function(self, peer_id, type_index, enabled, tweak_data_id, timer, success)
 			local name_label = self:_name_label_by_peer_id(peer_id)
 			if name_label then
 				name_label.interact:set_visible(enabled)
@@ -466,7 +466,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			elseif character_data and not self._teammate_panels[character_data.panel_id]._custom_player_panel then 
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
 			end
-		end
+		end)
 
 		function HUDManager:_animate_interaction_complete(bar, panel)
 			local center_x = bar:center_x()
@@ -486,9 +486,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 	
 	--Player and Teammate Panels
 	if VoidUI.options.teammate_panels then 
-		function HUDManager:teampanels_height()
+		Hooks:OverrideFunction(HUDManager, "teampanels_height", function(self)
 			return 300
-		end
+		end)
 		
 		Hooks:PreHook(HUDManager,"_create_teammates_panel","void_create_teammates_panel", function(self, ...)
 			self._main_scale = VoidUI.options.hud_main_scale
@@ -631,7 +631,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			interact:set_w(interact_bg:w())
 		end
 
-		function HUDManager:_add_name_label(data)
+		Hooks:OverrideFunction(HUDManager, "_add_name_label", function(self, data)
 			data.name = VoidUI.options.label_upper and utf8.to_upper(data.name) or data.name
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)		
 			local last_id = self._hud.name_labels[#self._hud.name_labels] and self._hud.name_labels[#self._hud.name_labels].id or 0
@@ -826,9 +826,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				bag = bag
 			})
 			return id
-		end
+		end)
 
-		function HUDManager:align_teammate_name_label(panel, interact, experience)
+		Hooks:OverrideFunction(HUDManager, "align_teammate_name_label", function(self, panel, interact, experience)
 			local minmode_panel = panel:child("minmode_panel")
 			local extended_panel = panel:child("extended_panel")
 			local min_text = minmode_panel:child("text")
@@ -898,9 +898,9 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				min_bag_number:set_size(min_bag:w(), min_bag:h())
 				min_bag_number:set_center(min_bag:center())
 			end
-		end
+		end)
 
-		function HUDManager:add_vehicle_name_label(data)
+		Hooks:OverrideFunction(HUDManager, "add_vehicle_name_label", function(self, data)
 			data.name = VoidUI.options.label_upper and utf8.to_upper(data.name) or data.name
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)
 			local last_id = self._hud.name_labels[#self._hud.name_labels] and self._hud.name_labels[#self._hud.name_labels].id or 0
@@ -1096,17 +1096,17 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				bag_number = bag_number
 			})
 			return id
-		end
+		end)
 
-		
-		function HUDManager:set_name_label_carry_info(peer_id, carry_id, value)
+		Hooks:OverrideFunction(HUDManager, "set_name_label_carry_info", function(self, peer_id, carry_id, value)
 			local name_label = self:_name_label_by_peer_id(peer_id)
 			if name_label then
 				name_label.panel:child("extended_panel"):child("bag"):set_visible(true)
 				name_label.panel:child("minmode_panel"):child("min_bag"):set_visible(true)
 			end
-		end
-		function HUDManager:set_vehicle_label_carry_info(label_id, value, number)
+		end)
+
+		Hooks:OverrideFunction(HUDManager, "set_vehicle_label_carry_info", function(self, label_id, value, number)
 			local name_label = self:_get_name_label(label_id)
 			if name_label then
 				name_label.panel:child("extended_panel"):child("bag"):set_visible(value)
@@ -1116,14 +1116,15 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name_label.panel:child("extended_panel"):child("bag_number"):set_text(number)
 				name_label.panel:child("minmode_panel"):child("min_bag_number"):set_text(number)
 			end
-		end
-		function HUDManager:remove_name_label_carry_info(peer_id)
+		end)
+
+		Hooks:OverrideFunction(HUDManager, "remove_name_label_carry_info", function(self, peer_id)
 			local name_label = self:_name_label_by_peer_id(peer_id)
 			if name_label then
 				name_label.panel:child("extended_panel"):child("bag"):set_visible(false)
 				name_label.panel:child("minmode_panel"):child("min_bag"):set_visible(false)
 			end
-		end
+		end)
 	end
 
 	--Timer panel
@@ -1171,7 +1172,7 @@ elseif RequiredScript == "lib/units/player_team/huskteamaidamage" and VoidUI.opt
 elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" and VoidUI.options.enable_subtitles then
 	
 	core:module("CoreSubtitlePresenter")
-	function OverlayPresenter:show_text(text, duration)
+	Hooks:OverrideFunction(OverlayPresenter, "show_text", function(self, text, duration)
 		self._bg_mode = _G.VoidUI.options.subtitles_bg
 		self.__font_name = "fonts/font_medium_mf"
 		self._text_scale = _G.VoidUI.options.subtitle_scale
@@ -1225,11 +1226,12 @@ elseif RequiredScript == "core/lib/managers/subtitle/coresubtitlepresenter" and 
 		local x, y, w, h = label:text_rect()
 		background:set_shape(x-4, y-4, w+8, h+8)
 		blur:set_shape(x-4, y-4, w+8, h+8)
-	end
+	end)
 
 elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.teammate_panels then
 	local PADDING = 8
-	function HUDWaitingLegend:init(hud)
+
+	Hooks:OverrideFunction(HUDWaitingLegend, "init", function(self, hud)
 		self._hud_panel = hud.panel
 		self._panel = self._hud_panel:panel({
 			h = tweak_data.hud_players.name_size + 16,
@@ -1269,9 +1271,9 @@ elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.
 			h = self._btn_panel:h() - PADDING
 		})
 		self._panel:set_visible(false)
-	end
+	end)
 	
-	function HUDWaitingLegend:update_buttons()
+	Hooks:OverrideFunction(HUDWaitingLegend, "update_buttons", function(self)
 		local str = ""
 		for k, btn in pairs(self._all_buttons) do
 			local button_text = managers.localization:btn_macro(btn.binding, true, true)
@@ -1292,9 +1294,9 @@ elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.
 			self:animate_open()
 		end
 		self._panel:set_visible(true)
-	end
+	end)
 	
-	function HUDWaitingLegend:animate_open()
+	Hooks:OverrideFunction(HUDWaitingLegend, "animate_open", function(self)
 		self._btn_panel:stop()
 		self._btn_panel:animate(function()
 			local TOTAL_T = 0.4
@@ -1308,7 +1310,8 @@ elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.
 		end)
 		self._btn_panel:set_w(self._background:w())
 		managers.hud:make_fine_text(self._btn_text)
-	end
+	end)
+
 elseif RequiredScript == "lib/units/player_team/teamaiinventory" and VoidUI.options.scoreboard and VoidUI.options.enable_stats then
 	Hooks:PostHook(TeamAIInventory,"_ensure_weapon_visibility","void_ensure_weapon_visibility", function(self, override_weapon, override)
 		local panel = managers.hud and managers.hud._hud_statsscreen:get_scoreboard_panel_by_character(managers.criminals:character_name_by_unit(self._unit))
@@ -1368,7 +1371,8 @@ elseif RequiredScript == "lib/network/base/basenetworksession" and VoidUI.option
 	
 elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.enable_joining then
 	local update_time = 0.016666666666666666
-	function MenuManager:show_person_joining(id, nick, progress_percentage, join_start)
+
+	Hooks:OverrideFunction(MenuManager, "show_person_joining", function(self, id, nick, progress_percentage, join_start)
 		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) or managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2).panel:child("user_dropin" .. id) then
 			return
 		end
@@ -1612,8 +1616,9 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			self._joining_queue = self._joining_queue or {}
 			table.insert(self._joining_queue, {id = id, nick = nick, join_start = os.clock()})
 		end
-	end
-	function MenuManager:update_person_joining(id, progress_percentage)
+	end)
+
+	Hooks:OverrideFunction(MenuManager, "update_person_joining", function(self, id, progress_percentage)
 		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
 			return
 		end
@@ -1651,9 +1656,9 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 				end
 			end			
 		end
-	end
+	end)
 	
-	function MenuManager:close_person_joining(id)
+	Hooks:OverrideFunction(MenuManager, "close_person_joining", function(self, id)
 		if not managers.hud or not managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2) then
 			return
 		end
@@ -1699,7 +1704,8 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 				end
 			end			
 		end
-	end
+	end)
+
 	function MenuManager:draw_joining_line(x, y)
 		if not self._dropin_draw_panel or tweak_data.preplanning.gui.MAX_DRAW_POINTS < self._num_draw_points then
 			self._draw_mode = false

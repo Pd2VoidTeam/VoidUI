@@ -1,7 +1,5 @@
 if VoidUI.options.teammate_panels then 
-	local init = HUDTeammate.init
-	function HUDTeammate:init(i, teammates_panel, is_player, width) 
-		init(self, i, teammates_panel, is_player, width)
+	Hooks:PostHook(HUDTeammate,"init","void_teammate_init", function(self, i, teammates_panel, is_player, width)
 		local teammate_panel = self._panel
 		self._teammates_panel = teammates_panel
 		self._main_scale = VoidUI.options.hud_main_scale
@@ -759,7 +757,7 @@ if VoidUI.options.teammate_panels then
 		interact_time:set_bottom(self._custom_player_panel:bottom() - 3)
 		self:create_custom_waiting_panel(teammates_panel)
 		self:set_info_visible()
-	end
+	end)
 
 	function HUDTeammate:whisper_mode_changed()
 		self:set_info_visible()
@@ -794,6 +792,7 @@ if VoidUI.options.teammate_panels then
 			end
 		end
 	end
+
 	function HUDTeammate:set_detection()
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local detect_value = health_panel:child("detect_value")
@@ -804,7 +803,8 @@ if VoidUI.options.teammate_panels then
 			detect_value:set_text(string.format("%.0f", managers.blackmarket:get_suspicion_offset_of_peer(managers.network:session():peer(self:peer_id()), tweak_data.player.SUSPICION_OFFSET_LERP or 0.75) * 100).."%")
 		end
 	end
-	function HUDTeammate:set_state(state)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_state", function(self, state)
 		local is_player = state == "player"
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local name = self._custom_player_panel:child("name")
@@ -838,12 +838,13 @@ if VoidUI.options.teammate_panels then
 			weapons_panel:show()
 		end
 		managers.hud:align_teammate_panels()
-	end
+	end)
+
 	function HUDTeammate:color_id()
 		return self._color_id
 	end
 
-	function HUDTeammate:set_callsign(id)
+	Hooks:OverrideFunction(HUDTeammate, "set_callsign", function(self, id)
 		if bkin_bl__menu and self._ai then id = 6 end
 		self._color_id = id
 		local name = self._custom_player_panel:child("name")
@@ -874,11 +875,9 @@ if VoidUI.options.teammate_panels then
 			}, callback(self, self, "whisper_mode_changed"))
 		end
 		self:set_detection()
-	end
+	end)
 
-	local set_name = HUDTeammate.set_name
-	function HUDTeammate:set_name(teammate_name)
-		set_name(self, teammate_name)
+	Hooks:PostHook(HUDTeammate,"set_name","void_teammate_set_name", function(self, teammate_name)
 		if teammate_name == managers.localization:text("menu_jowi") then teammate_name = managers.localization:text("VoidUI_jowi") 
 		elseif teammate_name == managers.localization:text("menu_chico") then teammate_name = managers.localization:text("VoidUI_chico") end
 		teammate_name = VoidUI.options.mate_upper and utf8.to_upper(teammate_name) or teammate_name
@@ -906,22 +905,22 @@ if VoidUI.options.teammate_panels then
 		managers.hud:make_fine_text(name_shadow)
 		name:set_h(name_h)
 		name_shadow:set_h(name_h)
-	end
+	end)
 
-	function HUDTeammate:set_ai(ai)
+	Hooks:OverrideFunction(HUDTeammate, "set_ai", function(self, ai)
 		self._ai = ai
 		self:set_info_visible(true)
-	end
+	end)
 
 	function HUDTeammate:ai()
 		return self._ai
 	end
 	
-	function HUDTeammate:set_cheater(state)
+	Hooks:OverrideFunction(HUDTeammate, "set_cheater", function(self, state)
 		self._custom_player_panel:child("name"):set_color(state and tweak_data.screen_colors.pro_color or Color.white)
-	end
+	end)
 
-	function HUDTeammate:set_condition(icon_data, text)
+	Hooks:OverrideFunction(HUDTeammate, "set_condition", function(self, icon_data, text)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local condition_icon = health_panel:child("condition_icon")
 		local health_value = health_panel:child("health_value")
@@ -939,7 +938,7 @@ if VoidUI.options.teammate_panels then
 			local icon, texture_rect = tweak_data.hud_icons:get_icon_data(icon_data)
 			condition_icon:set_image(icon, texture_rect[1], texture_rect[2], texture_rect[3], texture_rect[4])
 		end
-	end
+	end)
 
 	function HUDTeammate:round(number)
 		local dec = number - math.floor(number)
@@ -949,7 +948,8 @@ if VoidUI.options.teammate_panels then
 			return math.floor(number)
 		end
 	end
-	function HUDTeammate:set_health(data)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_health", function(self, data)
 		if self:ai() then 
 			data.current = (data.current / data.total) * 10
 			data.total = 10
@@ -998,9 +998,9 @@ if VoidUI.options.teammate_panels then
 				end
 			end)
 		end)
-	end
+	end)
 	
-	function HUDTeammate:update_delayed_damage()
+	Hooks:OverrideFunction(HUDTeammate, "update_delayed_damage", function(self)
 		local damage = self._delayed_damage or 0
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_bar = health_panel:child("health_bar")
@@ -1027,15 +1027,16 @@ if VoidUI.options.teammate_panels then
 		delayed_damage_health:set_h(self._bg_h * health_damage_ratio)
 		delayed_damage_health:set_top(health_bar:top())
 		delayed_damage_health:set_texture_rect(881,((1- health_ratio) * 472),202,472 * health_damage_ratio)
-	end
+	end)
 	
-	function HUDTeammate:_damage_taken()
+	Hooks:OverrideFunction(HUDTeammate, "_damage_taken", function(self)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_shade = health_panel:child("health_shade")
 		health_shade:stop()
 		health_shade:animate(callback(self, self, "_animate_damage_taken"))
-	end
-	function HUDTeammate:_animate_damage_taken(health_shade)
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "_animate_damage_taken", function(self, health_shade)
 		health_shade:set_color(Color(1,0,0))
 		local st = 3
 		local t = st
@@ -1045,9 +1046,9 @@ if VoidUI.options.teammate_panels then
 			health_shade:set_color(Color(t / st, 0, 0))
 		end
 		health_shade:set_color(Color(0,0,0))
-	end
+	end)
 
-	function HUDTeammate:set_custom_radial(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_custom_radial", function(self, data)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_background = health_panel:child("health_background")
 		local custom_bar = health_panel:child("custom_bar")
@@ -1067,8 +1068,9 @@ if VoidUI.options.teammate_panels then
 			custom_bar:hide()
 			condition_icon:set_color(Color(1, 1, 1))
 		end
-	end
-	function HUDTeammate:set_armor(data)
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_armor", function(self, data)
 		self._armor_data = data
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local armor_background = health_panel:child("armor_background")
@@ -1099,9 +1101,9 @@ if VoidUI.options.teammate_panels then
 			armor_value:set_font_size(self._armor_value / 2.5)
 			armor_value:set_bottom(health_panel:child("health_value"):top() * 1.25)
 		end
-	end
+	end)
 
-	function HUDTeammate:_set_weapon_selected(id, hud_icon)
+	Hooks:OverrideFunction(HUDTeammate, "_set_weapon_selected", function(self, id, hud_icon)
 		local is_secondary = id == 1
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
@@ -1133,9 +1135,9 @@ if VoidUI.options.teammate_panels then
 				end
 			end)
 		end)
-	end
+	end)
 
-	function HUDTeammate:set_ammo_amount_by_type(type, max_clip, current_clip, current_left, max)
+	Hooks:OverrideFunction(HUDTeammate, "set_ammo_amount_by_type", function(self, type, max_clip, current_clip, current_left, max)
 		local selected_ammo_panel = self._custom_player_panel:child("weapons_panel"):child(type.."_ammo_panel")
 		local ammo_amount = selected_ammo_panel:child(type.."_ammo_amount")
 		local firemode = selected_ammo_panel:child(type.."firemode")
@@ -1171,7 +1173,7 @@ if VoidUI.options.teammate_panels then
 			pickup:set_text("+".. string.sub(pickup:text(), 2) + current_left - self._secondary_max) 
 		end
 		if type == "primary" then self._primary_max = current_left else self._secondary_max = current_left end
-	end
+	end)
 
 	function HUDTeammate:_animate_pickup(pickup)
 		local TOTAL_T = 0.3
@@ -1188,7 +1190,8 @@ if VoidUI.options.teammate_panels then
 		pickup:set_text("+0")
 		pickup:set_alpha(0)
 	end
-	function HUDTeammate:get_firemode()
+
+	Hooks:OverrideFunction(HUDTeammate, "get_firemode", function(self)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
 		local secondary_ammo_panel = weapons_panel:child("secondary_ammo_panel")
@@ -1198,10 +1201,9 @@ if VoidUI.options.teammate_panels then
 		local is_sec_auto = tweak_data.weapon[managers.blackmarket:equipped_secondary().weapon_id].FIRE_MODE == "auto"
 		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
 		secondary_firemode:set_text(managers.localization:text(is_sec_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
-		
-	end
+	end)
 
-	function HUDTeammate:set_weapon_firemode(id, firemode)
+	Hooks:OverrideFunction(HUDTeammate, "set_weapon_firemode", function(self, id, firemode)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
 		local secondary_ammo_panel = weapons_panel:child("secondary_ammo_panel")
@@ -1220,7 +1222,7 @@ if VoidUI.options.teammate_panels then
 				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end
 		end
-	end
+	end)
 	
 	function HUDTeammate:set_weapon_firemode_burst(id)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
@@ -1235,7 +1237,7 @@ if VoidUI.options.teammate_panels then
 		end
 	end
 	
-	function HUDTeammate:set_cable_ties_amount(amount)
+	Hooks:OverrideFunction(HUDTeammate, "set_cable_ties_amount", function(self, amount)
 		local visible = amount ~= 0
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local ties_panel = weapons_panel:child("ties_panel")
@@ -1255,27 +1257,27 @@ if VoidUI.options.teammate_panels then
 			ties_border:set_color(self._fore_color)
 			ties_image:set_color(self._fore_color)
 		end
-	end
+	end)
 
-	function HUDTeammate:set_deployable_equipment(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_deployable_equipment", function(self, data)
 		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local equipment_panel = weapons_panel:child("equipment_panel")
 		local equipment_image = equipment_panel:child("equipment_image")
 		equipment_image:set_image(icon, unpack(texture_rect))
 		self:set_deployable_equipment_amount(1, data)
-	end
+	end)
 
-	function HUDTeammate:set_deployable_equipment_from_string(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_deployable_equipment_from_string", function(self, data)
 		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local equipment_panel = weapons_panel:child("equipment_panel")
 		local equipment_image = equipment_panel:child("equipment_image")
 		equipment_image:set_image(icon, unpack(texture_rect))
 		self:set_deployable_equipment_amount_from_string(1, data)
-	end
+	end)
 
-	function HUDTeammate:set_deployable_equipment_amount(index, data)
+	Hooks:OverrideFunction(HUDTeammate, "set_deployable_equipment_amount", function(self, index, data)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local equipment_panel = weapons_panel:child("equipment_panel")
 		local equipment_image = equipment_panel:child("equipment_image")
@@ -1293,9 +1295,9 @@ if VoidUI.options.teammate_panels then
 			equipment_border:set_color(self._fore_color)
 			equipment_image:set_color(self._fore_color)
 		end
-	end	
+	end)
 
-	function HUDTeammate:set_deployable_equipment_amount_from_string(index, data)
+	Hooks:OverrideFunction(HUDTeammate, "set_deployable_equipment_amount_from_string", function(self, index, data)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local equipment_panel = weapons_panel:child("equipment_panel")
 		local equipment_image = equipment_panel:child("equipment_image")
@@ -1319,9 +1321,9 @@ if VoidUI.options.teammate_panels then
 		
 		equipment_count:set_visible(visible)
 		equipment_count:set_text(data.amount_str)
-	end
+	end)
 
-	function HUDTeammate:set_grenades(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_grenades", function(self, data)
 		local icon, texture_rect = tweak_data.hud_icons:get_icon_data(data.icon, {0, 0, 32, 32})
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
@@ -1339,17 +1341,17 @@ if VoidUI.options.teammate_panels then
 		cooldown_image:set_image(icon, unpack(texture_rect))
 		grenades_icon_ghost:set_image(icon, unpack(texture_rect))
 		self:set_grenades_amount(data)
-	end
+	end)
 	
-	function HUDTeammate:set_ability_icon(icon)
+	Hooks:OverrideFunction(HUDTeammate, "set_ability_icon", function(self, icon)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
 		local texture, texture_rect = tweak_data.hud_icons:get_icon_data(icon, {0, 0, 32, 32})
 		grenades_image:set_image(texture, unpack(texture_rect))
-	end
+	end)
 	
-	function HUDTeammate:set_grenades_amount(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_grenades_amount", function(self, data)
 		if not PlayerBase.USE_GRENADES then
 			return
 		end
@@ -1375,7 +1377,7 @@ if VoidUI.options.teammate_panels then
 				grenades_image:set_color(self._fore_color)
 			end
 		end
-	end
+	end)
 
 	function HUDTeammate:is_using_grenade(grenade)
 		if self._main_player then
@@ -1387,7 +1389,8 @@ if VoidUI.options.teammate_panels then
 		end
 		
 	end
-	function HUDTeammate:set_grenade_cooldown(data)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_grenade_cooldown", function(self, data)
 		if not PlayerBase.USE_GRENADES then
 			return
 		end
@@ -1430,7 +1433,8 @@ if VoidUI.options.teammate_panels then
 				managers.network:session():send_to_peers("sync_grenades_cooldown", end_time, duration)
 			end
 		end
-	end
+	end)
+
 	function HUDTeammate:set_ability_color(color)
 		self._ability_color = color
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
@@ -1487,7 +1491,7 @@ if VoidUI.options.teammate_panels then
 		grenades_panel:animate(animate_fade)
 	end
 	
-	function HUDTeammate:animate_grenade_flash()
+	Hooks:OverrideFunction(HUDTeammate, "animate_grenade_flash", function(self)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local icon = grenades_panel:child("grenades_image")
@@ -1520,9 +1524,9 @@ if VoidUI.options.teammate_panels then
 
 		grenades_panel:stop()
 		grenades_panel:animate(animate_flash)
-	end
+	end)
 	
-	function HUDTeammate:set_ability_radial(data)
+	Hooks:OverrideFunction(HUDTeammate, "set_ability_radial", function(self, data)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local ability_bar = health_panel:child("ability_bar")
 		local percentage = data.current / data.total
@@ -1530,9 +1534,9 @@ if VoidUI.options.teammate_panels then
 		ability_bar:set_h(self._bg_h * percentage)
 		ability_bar:set_texture_rect(203, 0 + ((1 - percentage) * 472),202,472 * percentage)
 		ability_bar:set_bottom(health_panel:child("health_background"):bottom())
-	end
+	end)
 
-	function HUDTeammate:activate_ability_radial(time_left, time_total)
+	Hooks:OverrideFunction(HUDTeammate, "activate_ability_radial", function(self, time_left, time_total)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local ability_bar = health_panel:child("ability_bar")
 		time_total = time_total or time_left
@@ -1558,9 +1562,9 @@ if VoidUI.options.teammate_panels then
 
 			managers.network:session():send_to_peers("sync_ability_hud", end_time, time_total)
 		end
-	end
+	end)
 
-	function HUDTeammate:add_special_equipment(data)
+	Hooks:OverrideFunction(HUDTeammate, "add_special_equipment", function(self, data)
 		local special_equipment = self._special_equipment
 		local id = data.id
 		local equipment_panel = self._custom_player_panel:panel({
@@ -1627,9 +1631,9 @@ if VoidUI.options.teammate_panels then
 			amount_bg:set_bottom(self._main_player and 20 or 18)
 		end
 		self:layout_special_equipments()
-	end
+	end)
 
-	function HUDTeammate:set_special_equipment_amount(equipment_id, amount)
+	Hooks:OverrideFunction(HUDTeammate, "set_special_equipment_amount", function(self, equipment_id, amount)
 		local special_equipment = self._special_equipment
 		for i, panel in ipairs(special_equipment) do
 			if panel:name() == equipment_id then
@@ -1639,9 +1643,9 @@ if VoidUI.options.teammate_panels then
 				return
 			end
 		end
-	end
+	end)
 
-	function HUDTeammate:layout_special_equipments()
+	Hooks:OverrideFunction(HUDTeammate, "layout_special_equipments", function(self)
 		local special_equipment = self._special_equipment
 		local name = self._custom_player_panel:child("name")
 		local w = self._custom_player_panel:w()
@@ -1672,9 +1676,9 @@ if VoidUI.options.teammate_panels then
 				panel:set_bottom(self._custom_player_panel:child("health_panel"):top() - (self._mate_scale < 1 and 19 * self._mate_scale or 19))
 			end
 		end
-	end
+	end)
 
-	function HUDTeammate:remove_special_equipment(equipment)
+	Hooks:OverrideFunction(HUDTeammate, "remove_special_equipment", function(self, equipment)
 		local special_equipment = self._special_equipment
 		for i, panel in ipairs(special_equipment) do
 			if panel:name() == equipment then
@@ -1684,11 +1688,9 @@ if VoidUI.options.teammate_panels then
 				return
 			end
 		end
-	end
+	end)
 
-	function HUDTeammate:create_waiting_panel(parent_panel)
-
-	end
+	Hooks:OverrideFunction(HUDTeammate, "create_waiting_panel", function(self, parent_panel) end)
 
 	function HUDTeammate:create_custom_waiting_panel(parent_panel)
 		local panel = parent_panel:panel()
@@ -1829,7 +1831,7 @@ if VoidUI.options.teammate_panels then
 		self._wait_panel = panel
 	end
 
-	function HUDTeammate:_create_equipment(panel, icon_name, scale)
+	Hooks:OverrideFunction(HUDTeammate, "_create_equipment", function(self, panel, icon_name, scale)
 		scale = scale or 1
 		local icon, rect
 		if icon_name then
@@ -1874,7 +1876,8 @@ if VoidUI.options.teammate_panels then
 			h = self._equipment_panel_h,
 			font_size = self._equipment_panel_h / 2
 		})
-	end
+	end)
+
 	local set_icon_data = function(image, icon, rect)
 		if rect then
 			image:set_image(icon, unpack(rect))
@@ -1883,7 +1886,8 @@ if VoidUI.options.teammate_panels then
 		local text, rect = tweak_data.hud_icons:get_icon_data(icon or "fallback")
 		image:set_image(text, unpack(rect))
 	end
-	function HUDTeammate:set_waiting(waiting, peer)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_waiting", function(self, waiting, peer)
 		local my_peer = managers.network:session():peer(self._peer_id)
 		peer = peer or my_peer
 		if self._wait_panel then
@@ -1947,9 +1951,9 @@ if VoidUI.options.teammate_panels then
 			self._wait_panel:set_visible(waiting)
 		end
 		managers.hud:align_teammate_panels()
-	end
+	end)
 
-	function HUDTeammate:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
+	Hooks:OverrideFunction(HUDTeammate, "teammate_progress", function(self, enabled, type_index, tweak_data_id, timer, success)
 		self._custom_player_panel:child("interact_panel"):stop()
 		self._custom_player_panel:child("interact_panel"):set_visible(enabled)
 		local interact_text = self._custom_player_panel:child("interact_panel"):child("interact_text")
@@ -2039,7 +2043,7 @@ if VoidUI.options.teammate_panels then
 			end)
 			bar:animate(callback(self, self, "_animate_interact_complete"), text)
 		end
-	end
+	end)
 
 	function HUDTeammate:_animate_interact(panel, interact, timer)
 		local t = 0
@@ -2057,6 +2061,7 @@ if VoidUI.options.teammate_panels then
 			else panel:child("interact_time"):set_text("") end
 		end
 	end
+	
 	function HUDTeammate:_animate_interact_complete(bar, text)
 		local TOTAL_T = 1
 		local t = 0
@@ -2075,21 +2080,22 @@ if VoidUI.options.teammate_panels then
 		self._custom_player_panel:remove(bar)
 		self._custom_player_panel:remove(text)
 	end
-	function HUDTeammate:set_carry_info(carry_id, value)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_carry_info", function(self, carry_id, value)
 		local carry_panel = self._custom_player_panel:child("carry_panel")
 		carry_panel:set_visible(true)
 		local value_text = carry_panel:child("name")
 		local value_text_shadow = carry_panel:child("name_shadow")
 		value_text:set_text(tweak_data.carry[carry_id].name_id and managers.localization:text(tweak_data.carry[carry_id].name_id or ""))
 		value_text_shadow:set_text(value_text:text())
-		
-	end
-	function HUDTeammate:remove_carry_info()
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "remove_carry_info", function(self)
 		local carry_panel = self._custom_player_panel:child("carry_panel")
 		carry_panel:set_visible(false)
-	end
+	end)
 
-	function HUDTeammate:start_timer(time)
+	Hooks:OverrideFunction(HUDTeammate, "start_timer", function(self, time)
 		self._timer_paused = 0
 		self._timer = time
 		self._timer_total = time
@@ -2101,15 +2107,16 @@ if VoidUI.options.teammate_panels then
 		self._custom_player_panel:child("health_panel"):child("health_bar"):set_visible(false)
 		self._custom_player_panel:child("health_panel"):child("condition_icon"):set_alpha(0.4)
 		self._custom_player_panel:child("condition_timer"):animate(callback(self, self, "_animate_timer"))
-	end
+	end)
 
-	function HUDTeammate:set_pause_timer(pause)
+	Hooks:OverrideFunction(HUDTeammate, "set_pause_timer", function(self, pause)
 		if not self._timer_paused then
 			return
 		end
 		self._timer_paused = self._timer_paused + (pause and 1 or -1)
-	end
-	function HUDTeammate:stop_timer()
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "stop_timer", function(self)
 		if not alive(self._custom_player_panel) then
 			return
 		end
@@ -2118,13 +2125,13 @@ if VoidUI.options.teammate_panels then
 		self._custom_player_panel:child("health_panel"):child("custom_bar"):set_visible(false)
 		self._custom_player_panel:child("health_panel"):child("health_bar"):set_visible(true)
 		self._custom_player_panel:child("health_panel"):child("condition_icon"):set_alpha(1)
-		
-	end
-	function HUDTeammate:is_timer_running()
-		return self._custom_player_panel:child("condition_timer"):visible()
-	end
+	end)
 
-	function HUDTeammate:_animate_timer()
+	Hooks:OverrideFunction(HUDTeammate, "is_timer_running", function(self)
+		return self._custom_player_panel:child("condition_timer"):visible()
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "_animate_timer", function(self)
 		local rounded_timer = math.round(self._timer)
 		local custom_bar = self._custom_player_panel:child("health_panel"):child("custom_bar")
 		local amount = (self._timer / self._timer_total)
@@ -2148,9 +2155,9 @@ if VoidUI.options.teammate_panels then
 				end
 			end
 		end
-	end
+	end)
 
-	function HUDTeammate:_animate_timer_flash()
+	Hooks:OverrideFunction(HUDTeammate, "_animate_timer_flash", function(self)
 		local t = 0
 		local condition_timer = self._custom_player_panel:child("condition_timer")
 		while t < 0.5 do
@@ -2164,10 +2171,9 @@ if VoidUI.options.teammate_panels then
 			condition_timer:set_font_size(math.lerp(30 * self._mate_scale, 45 * self._mate_scale, n))
 		end
 		condition_timer:set_font_size(30 * self._mate_scale)
-	end
+	end)
 
-
-	function HUDTeammate:remove_panel()
+	Hooks:OverrideFunction(HUDTeammate, "remove_panel", function(self, weapons_panel)
 		local teammate_panel = self._panel
 		teammate_panel:set_visible(false)
 		local special_equipment = self._special_equipment
@@ -2191,9 +2197,9 @@ if VoidUI.options.teammate_panels then
 		self:teammate_progress(false, false, false, false)
 		self._peer_id = nil
 		self._ai = nil
-	end
+	end)
 
-	function HUDTeammate:set_stored_health_max(stored_health_ratio)
+	Hooks:OverrideFunction(HUDTeammate, "set_stored_health_max", function(self, stored_health_ratio)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local health_stored = self._custom_player_panel:child("health_stored")
@@ -2232,9 +2238,9 @@ if VoidUI.options.teammate_panels then
 				health_stored_max:set_bottom(self._custom_player_panel:h())
 			end
 		end
-	end
+	end)
 
-	function HUDTeammate:set_stored_health(stored_health_ratio)
+	Hooks:OverrideFunction(HUDTeammate, "set_stored_health", function(self, stored_health_ratio)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local health_stored = self._custom_player_panel:child("health_stored")
 		local health_stored_bg = self._custom_player_panel:child("health_stored_bg")
@@ -2250,9 +2256,9 @@ if VoidUI.options.teammate_panels then
 				end)
 			end)
 		end
-	end
+	end)
 
-	function HUDTeammate:_animate_update_absorb(o, radial_absorb_shield_name, radial_absorb_health_name, var_name, blink)
+	Hooks:OverrideFunction(HUDTeammate, "_animate_update_absorb", function(self, o, radial_absorb_shield_name, radial_absorb_health_name, var_name, blink)
 		repeat
 			coroutine.yield()
 		until alive(self._panel) and self[var_name] and self._armor_data and self._health_data
@@ -2314,15 +2320,17 @@ if VoidUI.options.teammate_panels then
 				end
 			end
 		end
-	end
-	function HUDTeammate:set_absorb_active(absorb_amount)
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_absorb_active", function(self, absorb_amount)
 		self._absorb_active_amount = absorb_amount
 
 		if self._main_player and managers.network and managers.network:session() then
 			managers.network:session():send_to_peers("sync_damage_absorption_hud", self._absorb_active_amount)
 		end
-	end
-	function HUDTeammate:set_info_meter(data)
+	end)
+
+	Hooks:OverrideFunction(HUDTeammate, "set_info_meter", function(self, data)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local health_stored = self._custom_player_panel:child("health_stored")
@@ -2373,18 +2381,18 @@ if VoidUI.options.teammate_panels then
 				health_stored:set_visible(value > 0)
 			end)
 		end)
-	end
+	end)
 
-	function HUDTeammate:set_revives_amount(revive_amount)
+	Hooks:OverrideFunction(HUDTeammate, "set_revives_amount", function(self, revive_amount)
 		if revive_amount then
 			local health_panel = self._custom_player_panel:child("health_panel")
 			local downs_value = health_panel:child("downs_value")
 			revive_amount = math.max(revive_amount - 1, 0)
 			downs_value:set_text("x".. tostring(revive_amount))
 		end
-	end
+	end)
 
-	function HUDTeammate:set_copr_indicator(enabled, static_damage_ratio)
+	Hooks:OverrideFunction(HUDTeammate, "set_copr_indicator", function(self, enabled, static_damage_ratio)
 		local health_panel = self._custom_player_panel:child("health_panel")
 		local copr_overlay_panel = health_panel:child("copr_overlay_panel")
 		local health_bar = health_panel:child("health_bar")	
@@ -2415,5 +2423,5 @@ if VoidUI.options.teammate_panels then
 				end
 			end
 		end
-	end
+	end)
 end

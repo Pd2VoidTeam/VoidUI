@@ -775,6 +775,7 @@ if VoidUI.options.enable_stats then
 			local extras_panel = self._full_hud_panel:child("extras_panel")
 			local scoreboard_panel = self._full_hud_panel:child("scoreboard_panel")
 			local mutators_panel = self._full_hud_panel:child("mutators_panel")
+
 			self:recreate_right()
 			self:_create_stats_screen_profile(extras_panel)
 			self:_update_stats_screen_loot(extras_panel, top_panel)

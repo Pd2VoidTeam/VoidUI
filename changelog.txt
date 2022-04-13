@@ -1,4 +1,5 @@
 Version 1.3
+ - Added Korean translation made by soulls00 
  - Changed function overrides to hooks
  - Restructured parts of the code
  - Slightly modified the loading tips panel
