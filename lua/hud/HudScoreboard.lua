@@ -373,6 +373,8 @@ if VoidUI.options.enable_stats then
 			local can_lvl_up = not at_max_level and gain_xp >= next_level_data.points - next_level_data.current_points
 			local progress = (next_level_data.current_points or 1) / (next_level_data.points or 1)
 			local gain_progress = math.min(1, (gain_xp or 1) / (next_level_data.points or 1))
+			local get_rank = managers.experience:current_rank()
+			local stored_xp =  managers.experience:get_prestige_xp_percentage_progress()
 			
 			local show_level = true
 			if at_max_level == true then
@@ -439,8 +441,32 @@ if VoidUI.options.enable_stats then
 				align = "right"
 			})
 
-			if at_max_level then
-				local text = show_level and managers.localization:text("hud_at_max_level") or ""
+			local max_text = ""
+			local function comma_value(amount)
+				local formatted = amount
+				while true do  
+					formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+					if (k==0) then
+					break
+					end
+				end
+				return formatted
+			end
+
+			if get_rank > 0 and at_max_level then
+				max_text = managers.localization:to_upper_text("menu_infamy_infamy_panel_prestige_level") .. "\n" .. comma_value(managers.experience:get_current_prestige_xp()) .. "/" .. comma_value(managers.experience:get_max_prestige_xp())
+			else
+				max_text = managers.localization:to_upper_text("hud_at_max_level")
+			end
+
+			local function get_max_rank()
+				local max_rank = tweak_data.infamy.ranks
+				local max_rank_total = managers.experience:current_level() < 100 or max_rank <= managers.experience:current_rank()
+				return max_rank_total
+			end
+
+			if at_max_level and not get_max_rank() then
+				local text = show_level and max_text or ""
 				next_level_text:set_text(text.." "..next_level_text:text())
 				next_level_text_shadow:set_text(next_level_text:text())
 				next_level_text:set_range_color(0, utf8.len(text), tweak_data.hud_stats.potential_xp_color)

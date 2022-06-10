@@ -1,9 +1,8 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.9 (2022.03.17)
- - Should fix the gsub name labels crash
- - Hide pager counter in the scoreboard when the heist goes load
+## Whats new in 1.2.9.1 (2022.06.10)
+ - Added infamy 4 support
 
 ## Credits
 - Most of the hud made by Xeletron
