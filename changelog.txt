@@ -1,3 +1,7 @@
+Version 1.2.9.2 (2022.08.06)
+ - Added Korean localization made by soulls00
+ - Hopefully fixed jokers crash
+ 
 Version 1.2.9.1 (2022.06.10)
  - Added infamy 4 support
 

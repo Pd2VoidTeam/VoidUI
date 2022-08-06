@@ -394,6 +394,17 @@ if VoidUI.options.enable_stats then
 				h = show_level and 7 * self._scale or 0,
 				alpha = 0.6
 			})
+			if stored_xp and stored_xp > 0 then
+				local pool_bar = extras_panel:bitmap({
+					name = "pool_bar",
+					x = 4 * self._scale,
+					y = 4 * self._scale,
+					w = stored_xp * (extras_panel:w() - 8 * self._scale),
+					h = show_level and 7 * self._scale or 0,
+					color = tweak_data.screen_colors.infamy_color,
+					layer = 1
+				})
+			end
 			local exp_gain_bar = extras_panel:bitmap({
 				name = "exp_gain_bar",
 				y = 4 * self._scale,
