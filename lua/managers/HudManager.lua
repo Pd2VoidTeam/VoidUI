@@ -622,13 +622,41 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				self._hud_assault_corner:set_assault_phase()
 			end
 		end
-		
+
 		HUDManager.add_ecm_timer = HUDManager.add_ecm_timer or function(self, unit)
 			if unit and unit:base():battery_life() then
+				-- index -> unit
 				self._jammers = self._jammers or {}
-				table.insert(self._jammers, unit)
+				-- unit -> index
+				self._jammer_indices = self._jammer_indices or {}
+
+				-- insert into _jammers; same functionality as table.insert, except we know the index
+				local index = #self._jammers + 1
+				self._jammers[index] = unit
+				-- store index
+				self._jammer_indices[unit] = index
+
 				self:start_ecm_timer()
 			end
+		end
+
+		HUDManager.remove_ecm_timer = HUDManager.remove_ecm_timer or function(self, unit)
+			if not self._jammers then
+				return
+			end
+
+			-- get the index of unit in _jammers
+			local pos = self._jammer_indices[unit]
+			if not pos then
+				-- this shouldn't happen, but don't remove a timer if we don't have it.
+				return
+			end
+
+			-- remove from tables
+			table.remove(self._jammers, pos)
+			self._jammer_indices[unit] = nil
+			-- stop the timer
+			self._hud_assault_corner:stop_ecm()
 		end
 		
 		HUDManager.start_ecm_timer = HUDManager.start_ecm_timer or function(self)		

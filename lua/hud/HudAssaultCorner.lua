@@ -1678,6 +1678,8 @@ if VoidUI.options.enable_assault then
 			set_active(self, active)
 			if active then
 				managers.hud:add_ecm_timer(self._unit)
+			else
+				managers.hud:remove_ecm_timer(self._unit)
 			end
 		end
 	end
