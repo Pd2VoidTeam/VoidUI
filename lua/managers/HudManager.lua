@@ -622,12 +622,28 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				self._hud_assault_corner:set_assault_phase()
 			end
 		end
-		
+
 		HUDManager.add_ecm_timer = HUDManager.add_ecm_timer or function(self, unit)
 			if unit and unit:base():battery_life() then
 				self._jammers = self._jammers or {}
 				table.insert(self._jammers, unit)
 				self:start_ecm_timer()
+			end
+		end
+
+		HUDManager.remove_ecm_timer = HUDManager.remove_ecm_timer or function(self, unit)
+			if not self._jammers then
+				return
+			end
+
+			table.remove(self._jammers, table.index_of(self._jammers, unit))
+			if #self._jammers > 0 then
+				-- If there's other ECM's active, switch to them
+				self.start_ecm_timer()
+			else
+				-- No ECM's active, switch back to the Pagers panel
+				self._hud_assault_corner:stop_ecm()
+				self._hud_assault_corner:ecm_timer(0)
 			end
 		end
 		
