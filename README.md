@@ -2,7 +2,7 @@
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
 ## Whats new in 1.2.9.4 (2022.09.09)
- - Fixed previous update
+ - Fixed previous update (If you have two Void folders in the mods, delete the VoidUI folder and restart the game and update though the in game updater)
  - Remove HUD timer when ECM Jammer is deactivated by leviinz
 
 ## Credits
