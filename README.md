@@ -1,8 +1,8 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.9.1 (2022.06.10)
- - Added infamy 4 support
+## Whats new in 1.2.9.3 (2022.09.09)
+ - Remove HUD timer when ECM Jammer is deactivated by leviinz
 
 ## Credits
 - Most of the hud made by Xeletron
@@ -13,6 +13,7 @@ VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD
 - French localization made by Esawo
 - Chinese localization made by CoolLKK
 - Italian localization made by LycanCHKN
+- Korean localization made by soulls00
 
 ## Installing
 - Download and install [SuperBLT](https://superblt.znix.xyz)

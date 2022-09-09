@@ -1,3 +1,6 @@
+Version 1.2.9.3 (2022.09.09)
+ - Remove HUD timer when ECM Jammer is deactivated by leviinz
+
 Version 1.2.9.2 (2022.08.06)
  - Added Korean localization made by soulls00
  - Hopefully fixed jokers crash
