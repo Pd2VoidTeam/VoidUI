@@ -639,7 +639,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			table.remove(self._jammers, table.index_of(self._jammers, unit))
 			if #self._jammers > 0 then
 				-- If there's other ECM's active, switch to them
-				self.start_ecm_timer()
+				self:start_ecm_timer()
 			else
 				-- No ECM's active, switch back to the Pagers panel
 				self._hud_assault_corner:stop_ecm()
