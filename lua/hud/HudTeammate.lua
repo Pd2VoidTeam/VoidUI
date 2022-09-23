@@ -1195,8 +1195,9 @@ if VoidUI.options.teammate_panels then
 		local primary_firemode = primary_ammo_panel:child("primary_firemode")
 		local secondary_firemode = secondary_ammo_panel:child("secondary_firemode")
 		local is_primary_auto = tweak_data.weapon[managers.blackmarket:equipped_primary().weapon_id].FIRE_MODE == "auto"
+		local is_primary_volley = tweak_data.weapon[managers.blackmarket:equipped_primary().weapon_id].FIRE_MODE == "volley"
 		local is_sec_auto = tweak_data.weapon[managers.blackmarket:equipped_secondary().weapon_id].FIRE_MODE == "auto"
-		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
+		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or is_primary_volley and "VoidUI_fire_volley" or "VoidUI_fire_semi"))
 		secondary_firemode:set_text(managers.localization:text(is_sec_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
 		
 	end
@@ -1210,6 +1211,8 @@ if VoidUI.options.teammate_panels then
 		if id == 2 then
 			if firemode == "single" then
 				primary_firemode:set_text(managers.localization:text("VoidUI_fire_semi"))
+			elseif firemode == "volley" then
+				primary_firemode:set_text(managers.localization:text("VoidUI_fire_volley"))
 			else
 				primary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end

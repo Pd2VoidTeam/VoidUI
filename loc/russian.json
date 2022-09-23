@@ -386,6 +386,8 @@
 	"VoidUI_red" : "КРАСНЫЙ",
 	"VoidUI_green" : "ЗЕЛЕНЫЙ",
 	"VoidUI_blue" : "СИНИЙ",
-	"VoidUI_not_ai" : "Только игроки"
+	"VoidUI_not_ai" : "Только игроки",
+
+	"VoidUI_fire_volley" : "Volley"
 	
 }

@@ -386,6 +386,8 @@
 	"VoidUI_red" : "레드",
 	"VoidUI_green" : "그린",
 	"VoidUI_blue" : "블루",
-	"VoidUI_not_ai" : "오직 플레이어만 "
+	"VoidUI_not_ai" : "오직 플레이어만 ",
+
+	"VoidUI_fire_volley" : "Volley"
 	
 }

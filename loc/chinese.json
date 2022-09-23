@@ -386,6 +386,8 @@
 	"VoidUI_red" : "红色",
 	"VoidUI_green" : "绿色",
 	"VoidUI_blue" : "蓝色",
-	"VoidUI_not_ai" : "仅玩家"
+	"VoidUI_not_ai" : "仅玩家",
+
+	"VoidUI_fire_volley" : "Volley"
 	
 }

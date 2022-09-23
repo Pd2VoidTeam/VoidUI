@@ -383,6 +383,8 @@
 	"VoidUI_red" : "ROUGE",
 	"VoidUI_green" : "VERT",
 	"VoidUI_blue" : "BLEU",
-	"VoidUI_not_ai" : "Joueurs Seul"
+	"VoidUI_not_ai" : "Joueurs Seul",
+
+	"VoidUI_fire_volley" : "Volley"
 	
 }
