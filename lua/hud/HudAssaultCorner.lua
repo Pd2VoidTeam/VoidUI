@@ -387,7 +387,7 @@ if VoidUI.options.enable_assault then
 				font = "fonts/font_medium_noshadow_mf",
 				font_size = panel_h / 2
 			})
-			local is_level_ghostable = managers.job:is_level_ghostable(managers.job:current_level_id()) and managers.groupai and managers.groupai:state():whisper_mode()
+			local is_level_ghostable = managers.groupai and managers.groupai:state():whisper_mode()
 			local cuffed_panel = icons_panel:panel({
 				name = "cuffed_panel",
 				w = panel_w,
