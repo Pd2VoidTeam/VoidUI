@@ -1462,7 +1462,7 @@ if VoidUI.options.enable_assault then
 			local icon_noreturnbox = point_of_no_return_panel:child("icon_noreturnbox")
 			local point_of_no_return_timer = point_of_no_return_panel:child("point_of_no_return_timer")
 			wait(delay_time)
-			self:_hide_hostages()
+			self:_set_hostage_offseted(true, true)
 			
 			background:set_x(noreturnbox_panel:w())
 			border:set_x(background:x() - 1 * self._scale)
