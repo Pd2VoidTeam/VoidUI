@@ -372,7 +372,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local name = panel and panel:child("name")
 			local label
 			for _, lbl in ipairs(self._hud.name_labels) do
-				if lbl.character_name:gsub("%W", "") == name then
+				if lbl.id == ai_id then
 					label = lbl
 					break
 				end

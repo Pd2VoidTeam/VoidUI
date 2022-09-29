@@ -1,9 +1,8 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.9.6 (2022.09.24)
- - Fixed ecm and pager counters not showing on heists like Big Oil Day 2 by LT71
- - Added support for the new volley firemode
+## Whats new in 1.2.9.7 (2022.09.29)
+ - Fixed AI related crash when a new player joins
  - If you have two Void folders in the mods folder, delete the VoidUI folder and restart the game and update though the in game updater
 
 ## Credits
