@@ -240,6 +240,8 @@
 	"VoidUI_scoreboard_civs_desc" : "Показывать количество убитых игроком гражданских",
 	"VoidUI_scoreboard_downs_title" : "Падения",
 	"VoidUI_scoreboard_downs_desc" : "Показывать сколько раз упал игрок",
+	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
 	"VoidUI_scoreboard_weapons_title" : "Оружие/маски ботов",
 	"VoidUI_scoreboard_weapons_desc" : "Показывать экипированное основное, второстепенное оружие игрока (маску для ботов), а также оружие ближнего боя",
 	"VoidUI_scoreboard_armor_title" : "Броня",

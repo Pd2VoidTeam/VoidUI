@@ -572,6 +572,12 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				self._hud_statsscreen._scoreboard_panels[i]:add_stat("downs")
 			end
 		end
+
+		HUDManager.keep_downs = HUDManager.keep_downs or function(self, i)
+			if self._hud_statsscreen and self._hud_statsscreen._scoreboard_panels then
+				self._hud_statsscreen._scoreboard_panels[i]:reset_downs_stat("downs")
+			end
+		end
 	end
 	
 	--Stat Screen and Scoreboard

@@ -240,6 +240,8 @@
 	"VoidUI_scoreboard_civs_desc" : "Show the amount of civilians a player has killed",
 	"VoidUI_scoreboard_downs_title" : "Show downs",
 	"VoidUI_scoreboard_downs_desc" : "Show the amount of times a player has been downed",
+	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
 	"VoidUI_scoreboard_weapons_title" : "Show weapons/Bots' masks",
 	"VoidUI_scoreboard_weapons_desc" : "Show a player's equiped primary, secondary (mask for bots), and melee weapons",
 	"VoidUI_scoreboard_armor_title" : "Show armor",

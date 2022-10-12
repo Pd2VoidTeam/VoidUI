@@ -240,6 +240,8 @@
 	"VoidUI_scoreboard_civs_desc" : "플레이어가 죽인 시민 수 표시",
 	"VoidUI_scoreboard_downs_title" : "다운 횟수 표시",
 	"VoidUI_scoreboard_downs_desc" : "플레이어가 다운된 횟수 표시",
+	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
 	"VoidUI_scoreboard_weapons_title" : "무기/봇의 마스크 표시",
 	"VoidUI_scoreboard_weapons_desc" : "플레이어의 기본, 보조(봇용 마스크) 및 근거리 무기 표시",
 	"VoidUI_scoreboard_armor_title" : "아머 표시",

@@ -1818,6 +1818,12 @@ if VoidUI.options.enable_stats then
 				stat_count:set_text(tonumber(stat_count:text()) + 1)	
 			end
 		end
+
+		function HUDScoreboard:reset_downs_stat(stat)
+			if not VoidUI.options.scoreboard_downs_no_reset then
+				self._panel:child("downs"):set_text("0")
+			end
+		end
 		
 		function HUDScoreboard:remove_panel()
 			self._taken = false

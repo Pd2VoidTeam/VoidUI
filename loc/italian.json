@@ -240,6 +240,8 @@
 	"VoidUI_scoreboard_civs_desc" : "Mostra il numero di civili uccisi dal giocatore",
 	"VoidUI_scoreboard_downs_title" : "Mostra a terra",
 	"VoidUI_scoreboard_downs_desc" : "Mostra il numero di volte che un giocatore è caduto a terra",
+	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
 	"VoidUI_scoreboard_weapons_title" : "Mostra armi/maschere dei bot",
 	"VoidUI_scoreboard_weapons_desc" : "Mostra l'arma primaria, secondaria (la maschera per i bot), e da corpo a corpo equipaggiata dai giocatori",
 	"VoidUI_scoreboard_armor_title" : "Mostra l'armatura",

@@ -123,6 +123,14 @@
 		},
 		{
 			"type" : "toggle",
+			"id" : "scoreboard_downs_no_reset",
+			"title" : "VoidUI_scoreboard_downs_no_reset_title",
+			"description" : "VoidUI_scoreboard_downs_no_reset_desc",
+			"parent" : ["enable_stats", "scoreboard"],
+			"default_value" : false
+		},
+		{
+			"type" : "toggle",
 			"id" : "scoreboard_weapons",
 			"title" : "VoidUI_scoreboard_weapons_title",
 			"description" : "VoidUI_scoreboard_weapons_desc",

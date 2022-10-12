@@ -237,6 +237,8 @@
 	"VoidUI_scoreboard_civs_desc" : "Montre le nombre de civils qu'un joueur a tué",
 	"VoidUI_scoreboard_downs_title" : "Montrer le nombre de downs",
 	"VoidUI_scoreboard_downs_desc" : "Montrer le nombre de fois qu'un joueur a été abattu au cours de la partie",
+	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
 	"VoidUI_scoreboard_weapons_title" : "Montrer les armes/masque de l'IA",
 	"VoidUI_scoreboard_weapons_desc" : "Montre l'arme primaire, secondaire (masque pour l'IA) et l'arme de mêlée qu'un joueur a équippé",
 	"VoidUI_scoreboard_armor_title" : "Montrer l'armure",

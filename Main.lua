@@ -178,6 +178,7 @@ function VoidUI:DefaultConfig()
 		scoreboard_specials = true,
 		scoreboard_civs = true,
 		scoreboard_downs = true,
+		scoreboard_downs_no_reset = false,
 		scoreboard_weapons = true,
 		scoreboard_armor = true,
 		scoreboard_perk = true,
