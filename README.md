@@ -1,8 +1,10 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.9.7 (2022.09.29)
- - Fixed AI related crash when a new player joins
+## Whats new in 1.2.6.8 (2022.11.29)
+ - Added an option to show total downs per day for the Scoreboard
+ - Fixed previous bag objective been missing by one by MiamiCenter [*]
+ - Added support for Portuguese language (Requires translating) 
  - If you have two Void folders in the mods folder, delete the VoidUI folder and restart the game and update though the in game updater
 
 ## Credits
