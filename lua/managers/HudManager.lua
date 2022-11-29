@@ -1386,7 +1386,7 @@ elseif RequiredScript == "lib/states/ingamemaskoff" and VoidUI.options.enable_as
 elseif RequiredScript == "lib/managers/achievmentmanager" and VoidUI.options.enable_stats and VoidUI.options.scoreboard then
 	AchievmentManager.MAX_TRACKED = 7
 elseif RequiredScript == "lib/managers/playermanager" and (VoidUI.options.teammate_panels or VoidUI.options.vape_hints) then
-	add_coroutine = PlayerManager.add_coroutine
+	local add_coroutine = PlayerManager.add_coroutine
 	function PlayerManager:add_coroutine(name, func, ...)
 		local arg = {...}
 		local tagged = arg[1]
