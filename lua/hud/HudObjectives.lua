@@ -2,6 +2,7 @@ if VoidUI.options.enable_objectives then
 	function HUDObjectives:init(hud)
 		self._hud_panel = hud.panel
 		self._objectives = {}
+		self.objective_amount = {}
 		if self._hud_panel:child("objectives_panel") then
 			self._hud_panel:remove(self._hud_panel:child("objectives_panel"))
 		end
@@ -165,10 +166,13 @@ if VoidUI.options.enable_objectives then
 
 	function HUDObjectives:complete_objective(data)
 		print("[HUDObjectives] complete_objective", data.id, self._active_objective_id)
-		if data.id ~= self._active_objective_id then
-			if self.current_objective_amount and self.total_objective_amount and self.current_objective_amount ~= self.total_objective_amount then
-				self:fix_previous_objective({id = data.id, amount = self.total_objective_amount, text = data.text})
+		if self.objective_amount[data.id] then
+			if self.objective_amount[data.id].current ~= self.objective_amount[data.id].total then
+				self:fix_previous_objective({id = data.id, amount = self.objective_amount[data.id].total, text = data.text})
 			end
+			self.objective_amount[data.id] = nil
+		end
+		if data.id ~= self._active_objective_id then
 			return
 		end
 		local objectives_panel = self._hud_panel:child("objectives_panel")
@@ -177,11 +181,12 @@ if VoidUI.options.enable_objectives then
 	end
 
 	function HUDObjectives:fix_previous_objective(data)
-		if #self._objectives > 1 and alive(self._objectives[#self._objectives - 1]) then
-			local total_amount = data.amount
-			local objective_panel = self._objectives[#self._objectives - 1]
-			local objective_text = objective_panel:child("objective_text")
-			objective_text:set_text(data.text..": ".. tostring(total_amount).."/"..tostring(total_amount))
+		local total_amount = data.amount
+		for i, panel in pairs(self._objectives) do
+			if panel:child("objective_text"):text() == data.text..": "..tostring(total_amount-1).."/"..tostring(total_amount) then
+				local objective_text = panel:child("objective_text")
+				objective_text:set_text(data.text..": ".. tostring(total_amount).."/"..tostring(total_amount))
+			end
 		end
 	end
 
@@ -228,16 +233,17 @@ if VoidUI.options.enable_objectives then
 		if data.id ~= self._active_objective_id then
 			return
 		end
-		self.current_objective_amount = data.current_amount or 0
-		self.total_objective_amount = data.amount
+		local current = data.current_amount or 0
+		local total = data.amount
+		self.objective_amount[data.id] = {current = current, total = total}
 		local objective_panel = self._objectives[#self._objectives]
 		local objective_text = objective_panel:child("objective_text")
 		local objective_text_bg = objective_panel:child("objective_text_bg")
 		local objective_border = objective_panel:child("objective_border")
 		local objective_text_bg_right = objective_panel:child("objective_text_bg_right")
-		objective_panel:child("objective_text"):set_text(data.text..": ".. self.current_objective_amount .. "/" .. self.total_objective_amount)
+		objective_panel:child("objective_text"):set_text(data.text..": ".. current .. "/" .. total)
 		objective_text:set_font_size(tweak_data.hud.active_objective_title_font_size * self._scale)
-		if self.current_objective_amount > 0 then objective_panel:child("objective_text"):animate(callback(self, self, "_animate_objective_count")) end
+		if current > 0 then objective_panel:child("objective_text"):animate(callback(self, self, "_animate_objective_count")) end
 		local _, y, w, h = objective_panel:child("objective_text"):text_rect()
 		objective_text_bg:set_size(w - 17 * self._scale, 30 * self._scale)
 		objective_text_bg_right:set_left(objective_text_bg:right())
