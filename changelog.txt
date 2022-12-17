@@ -1,12 +1,17 @@
-Version 1.2.6.9 (2022.12.06)
+Version 1.2.9.10 (2022.12.17)
+ - Modified the scoreboard xp panel so it shows xp gain for infamy pool
+ - Fixed crash on the Criminal Carol event when the scoreboard was enabled
+ - Fixed the snowball throwable not showing the amount of snowballs you have left
+
+Version 1.2.9.9 (2022.12.06)
  - Fixed issues with the bag objective fix by MiamiCenter [*]
 
-Version 1.2.6.8 (2022.11.29)
+Version 1.2.9.8 (2022.11.29)
  - Added an option to show total downs per day for the Scoreboard
  - Fixed previous bag objective been missing by one by MiamiCenter [*]
  - Added support for Portuguese language (Requires translating) 
 
-Version 1.2.6.7 (2022.09.29)
+Version 1.2.9.7 (2022.09.29)
  - Fixed AI related crash when a new player joins
 
 Version 1.2.9.6 (2022.09.24)

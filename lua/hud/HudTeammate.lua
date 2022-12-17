@@ -606,8 +606,8 @@ if VoidUI.options.teammate_panels then
 			alpha = 1,
 		})	
 		
-		local jammer_count = grenades_panel:text({
-			name = "jammer_count",
+		local secondary_grenades_count = grenades_panel:text({
+			name = "secondary_grenades_count",
 			w = self._equipment_panel_w / 1.1,
 			h = self._equipment_panel_h,
 			font_size = self._equipment_panel_h / 2.5,
@@ -1341,6 +1341,7 @@ if VoidUI.options.teammate_panels then
 		grenades_image:set_image(icon, unpack(texture_rect))
 		cooldown_image:set_image(icon, unpack(texture_rect))
 		grenades_icon_ghost:set_image(icon, unpack(texture_rect))
+		self:check_secondary_grenades()
 		self:set_grenades_amount(data)
 	end
 	
@@ -1359,7 +1360,7 @@ if VoidUI.options.teammate_panels then
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local grenades_panel = weapons_panel:child("grenades_panel")
 		local grenades_image = grenades_panel:child("grenades_image")
-		local grenades_count = self:is_using_grenade("pocket_ecm_jammer") and grenades_panel:child("jammer_count") or grenades_panel:child("grenades_count")
+		local grenades_count = self._use_secondary_grenades and grenades_panel:child("secondary_grenades_count") or grenades_panel:child("grenades_count")
 		local grenades_border = grenades_panel:child("grenades_border")
 		
 		if data.amount == 0 then
@@ -1380,15 +1381,21 @@ if VoidUI.options.teammate_panels then
 		end
 	end
 
-	function HUDTeammate:is_using_grenade(grenade)
+	function HUDTeammate:check_secondary_grenades()
+		self._use_secondary_grenades = nil
+		local id
 		if self._main_player then
-			return self._main_player and managers.blackmarket:equipped_grenade() == grenade
+			id = managers.blackmarket:equipped_grenade()
 		else
 			local peer = managers.network:session():peer(self:peer_id())
 			local outfit = peer and peer:blackmarket_outfit()
-			return outfit and outfit.grenade == grenade
+			id = outfit and outfit.grenade
 		end
-		
+
+		local grenade_tweak = id and tweak_data.blackmarket.projectiles[id]
+		if grenade_tweak and grenade_tweak.base_cooldown and grenade_tweak.max_amount and grenade_tweak.max_amount > 1 then
+			self._use_secondary_grenades = true
+		end
 	end
 	function HUDTeammate:set_grenade_cooldown(data)
 		if not PlayerBase.USE_GRENADES then

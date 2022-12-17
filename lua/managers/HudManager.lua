@@ -228,14 +228,19 @@ if RequiredScript == "lib/managers/hudmanager" then
 		setup_player_info_hud_pd2(self)
 		if VoidUI.options.scoreboard and VoidUI.options.enable_stats and not self._hud_statsscreen then
 			self:_setup_stats_screen()
-			self:show_stats_screen()
-			self:hide_stats_screen()
+
 		end
 		if VoidUI.options.enable_voice then
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_PD2)
 			self:_create_voice_panel(hud)
 		end
 	end
+
+	Hooks:PostHook(HUDManager, "setup_mission_briefing_hud", "void_create_scoreboard", function(self)
+		self:show_stats_screen()
+		self:hide_stats_screen()
+	end)
+	
 	if VoidUI.options.enable_voice then
 		function HUDManager:_create_voice_panel(hud)
 			if managers.network:session() then

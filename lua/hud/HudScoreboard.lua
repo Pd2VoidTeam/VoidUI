@@ -366,137 +366,107 @@ if VoidUI.options.enable_stats then
 				})
 			end
 			
-			local next_level_data = managers.experience:next_level_data() or {}
-			local gain_xp = managers.experience:get_xp_dissected(true, 0, true)
-			local at_max_level = managers.experience:current_level() == managers.experience:level_cap()
 			local current_level = managers.experience:current_level()
-			local can_lvl_up = not at_max_level and gain_xp >= next_level_data.points - next_level_data.current_points
-			local progress = (next_level_data.current_points or 1) / (next_level_data.points or 1)
-			local gain_progress = math.min(1, (gain_xp or 1) / (next_level_data.points or 1))
-			local get_rank = managers.experience:current_rank()
-			local stored_xp =  managers.experience:get_prestige_xp_percentage_progress()
+			local current_rank = managers.experience:current_rank()
+			local at_max_level = managers.experience:reached_level_cap()
 			
-			local show_level = true
-			if at_max_level == true then
-				show_level = VoidUI.options.scoreboard_maxlevel
+			if at_max_level and not VoidUI.options.scoreboard_maxlevel then 
+				return 
 			end
+			
+			local points = managers.experience:next_level_data_points() or 0
+			local current_points = managers.experience:next_level_data_current_points() or 0
+			local points_left = points - current_points
+			local points_progress = current_points / points
+			local gain_xp = managers.experience:get_xp_dissected(true, 0, true) or 0
+			local gain_progress = math.min(points_left / points, gain_xp / points) 
+			local can_lvl_up = not at_max_level and gain_xp >= points_left
+
+			local stored_progress = managers.experience:get_prestige_xp_percentage_progress() or 0
+			local max_stored_xp = managers.experience:get_max_prestige_xp()
+			local stored_gain_progress = math.max(0, (gain_xp - points_left)) / max_stored_xp
+
+			local bar_w = extras_panel:w() - 8 * self._scale
+
 			local experience_bg = extras_panel:bitmap({
 				name = "experience_bg",
-				h = show_level and 15 * self._scale or 0,
-				color = Color.black,
-				alpha = 0.6
+				h = 15 * self._scale,
+				color = Color.black:with_alpha(0.6),
 			})
 			local experience_bar = extras_panel:bitmap({
-				name = "experience_bg",
+				name = "experience_bar",
 				x = 4 * self._scale,
 				y = 4 * self._scale,
-				w = ((next_level_data.current_points or 1) / (next_level_data.points or 1)) * (extras_panel:w() - 8 * self._scale),
-				h = show_level and 7 * self._scale or 0,
+				w = points_progress * bar_w,
+				h = 7 * self._scale,
 				alpha = 0.6
 			})
-			if stored_xp and stored_xp > 0 then
-				local pool_bar = extras_panel:bitmap({
-					name = "pool_bar",
+
+			if gain_progress > 0 then
+				local xp_gain_bar = extras_panel:bitmap({
+					name = "xp_gain_bar",
+					y = 4 * self._scale,
+					w = gain_progress * bar_w,
+					h = 7 * self._scale,
+					color = tweak_data.hud_stats.potential_xp_color:with_alpha(0.6),
+				})
+				xp_gain_bar:set_left(experience_bar:right())
+			end
+
+			if not can_lvl_up and (stored_progress > 0 or stored_gain_progress > 0) and current_points + gain_xp > points then
+				local stored_xp_bar = extras_panel:bitmap({
+					name = "stored_xp_bar",
 					x = 4 * self._scale,
 					y = 4 * self._scale,
-					w = stored_xp * (extras_panel:w() - 8 * self._scale),
-					h = show_level and 7 * self._scale or 0,
+					w = stored_progress * bar_w,
+					h = 7 * self._scale,
 					color = tweak_data.screen_colors.infamy_color,
 					layer = 1
 				})
-			end
-			local exp_gain_bar = extras_panel:bitmap({
-				name = "exp_gain_bar",
-				y = 4 * self._scale,
-				x = progress * (extras_panel:w() - 8 * self._scale) + 4 * self._scale,
-				w = gain_progress * (extras_panel:w() - experience_bar:w() - 8 * self._scale),
-				h = show_level and 7 * self._scale or 0,
-				color = tweak_data.hud_stats.potential_xp_color,
-				alpha = 0.6
-			})
-			local current_level_text = extras_panel:text({
-				name = "current_level_text",
-				font = tweak_data.menu.pd2_large_font,
-				x = 2,
-				y = experience_bg:bottom(),
-				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
-				text = at_max_level and tostring(current_level - 1) or tostring(current_level)
-			})
-			local current_level_text_shadow = extras_panel:text({
-				name = "current_level_text_shadow",
-				font = tweak_data.menu.pd2_large_font,
-				x = 2 + 2 * self._scale,
-				y = experience_bg:bottom() + 2 * self._scale,
-				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
-				text = at_max_level and tostring(current_level - 1) or tostring(current_level),
-				layer = -2,
-				color = Color.black
-			})
-			local next_level_text = extras_panel:text({
-				name = "next_level_text",
-				font = tweak_data.menu.pd2_large_font,
-				x = -2,
-				y = experience_bg:bottom(),
-				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
-				text = at_max_level and tostring(current_level) or tostring(current_level + 1),
-				align = "right"
-			})
-			local next_level_text_shadow = extras_panel:text({
-				name = "next_level_text_shadow",
-				font = tweak_data.menu.pd2_large_font,
-				y = experience_bg:bottom() + 2,
-				font_size = show_level and tweak_data.hud_stats.day_description_size * self._scale or 0,
-				text = at_max_level and tostring(current_level) or tostring(current_level + 1),
-				layer = -2,
-				color = Color.black,
-				align = "right"
-			})
 
-			local max_text = ""
-			local function comma_value(amount)
-				local formatted = amount
-				while true do  
-					formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-					if (k==0) then
-					break
-					end
+				if stored_gain_progress > 0 then
+					local stored_xp_gain_bar = extras_panel:bitmap({
+						name = "stored_xp_gain_bar",
+						y = 4 * self._scale,
+						w = stored_gain_progress * bar_w,
+						h = 7 * self._scale,
+						color = tweak_data.screen_colors.infamy_color:with_alpha(0.4),
+						layer = 2
+					})
+					stored_xp_gain_bar:set_left(stored_xp_bar:right())
 				end
-				return formatted
 			end
 
-			if get_rank > 0 and at_max_level then
-				max_text = managers.localization:to_upper_text("menu_infamy_infamy_panel_prestige_level") .. "\n" .. comma_value(managers.experience:get_current_prestige_xp()) .. "/" .. comma_value(managers.experience:get_max_prestige_xp())
-			else
-				max_text = managers.localization:to_upper_text("hud_at_max_level")
-			end
+			local current_text = tostring(current_level)
+			local next_text = tostring(current_level + 1)
 
-			local function get_max_rank()
-				local max_rank = tweak_data.infamy.ranks
-				local max_rank_total = managers.experience:current_level() < 100 or max_rank <= managers.experience:current_rank()
-				return max_rank_total
-			end
-
-			if at_max_level and not get_max_rank() then
-				local text = show_level and max_text or ""
-				next_level_text:set_text(text.." "..next_level_text:text())
-				next_level_text_shadow:set_text(next_level_text:text())
-				next_level_text:set_range_color(0, utf8.len(text), tweak_data.hud_stats.potential_xp_color)
-			else
-				local current_text = current_level_text:text()
-				local points = next_level_data.points - next_level_data.current_points
-				local text = managers.localization:text("hud_potential_xp", {
+			if not can_lvl_up and(stored_progress > 0 or stored_gain_progress > 0) and current_points + gain_xp > points then
+				current_text = managers.localization:text("hud_potential_xp", {
 					XP = managers.money:add_decimal_marks_to_string(tostring(gain_xp))
 				})
-				current_level_text:set_text(current_level_text:text().." "..text)
-				current_level_text:set_range_color(utf8.len(current_text), utf8.len(current_level_text:text()), tweak_data.hud_stats.potential_xp_color)
-				current_level_text_shadow:set_text(current_level_text:text())
-				
-				local text = managers.localization:text("menu_es_next_level") .. " " .. managers.money:add_decimal_marks_to_string(tostring(points))
+
+				next_text = managers.localization:to_upper_text("menu_infamy_infamy_panel_prestige_level")
+				next_text = next_text.." "..managers.money:add_decimal_marks_to_string(tostring(managers.experience:get_current_prestige_xp()))
+				next_text = next_text.."/"..managers.money:add_decimal_marks_to_string(tostring(max_stored_xp))
+			elseif at_max_level then
+				current_text = current_level - 1
+				next_text = managers.localization:to_upper_text("hud_at_max_level").." "..current_level
+			else
+				current_text = current_text.." "..managers.localization:text("hud_potential_xp", {
+					XP = managers.money:add_decimal_marks_to_string(tostring(gain_xp))
+				})
+				local text = managers.localization:text("menu_es_next_level") .. " " .. managers.money:add_decimal_marks_to_string(tostring(points_left - gain_xp))
+				local color = Color.white
+				if can_lvl_up  then
+					text = managers.localization:to_upper_text("hud_potential_level_up")	
+					color = tweak_data.hud_stats.potential_xp_color	
+				end
 				local next_level_in = extras_panel:text({
 					name = "next_level_in",
 					font = tweak_data.menu.pd2_large_font,
 					y = experience_bg:bottom(),
 					font_size = tweak_data.hud_stats.day_description_size * self._scale,
+					color = color,
 					text = text,
 					align = "center"
 				})
@@ -511,15 +481,46 @@ if VoidUI.options.enable_stats then
 					color = Color.black,
 					align = "center"
 				})
-				if can_lvl_up  then
-					local text = managers.localization:text("hud_potential_level_up")
-					next_level_text:set_text(text:gsub("!",":").." "..next_level_text:text())
-					next_level_text_shadow:set_text(next_level_text:text())
-					next_level_text:set_color(tweak_data.hud_stats.potential_xp_color)
-					next_level_text:animate(callback(self, self, "_animate_text_pulse"), next_level_text_shadow)			
-				end
-				
 			end
+
+			local current_level_text = extras_panel:text({
+				name = "current_level_text",
+				font = tweak_data.menu.pd2_large_font,
+				x = 2,
+				y = experience_bg:bottom(),
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				text = current_text
+			})
+			local current_level_text_shadow = extras_panel:text({
+				name = "current_level_text_shadow",
+				font = tweak_data.menu.pd2_large_font,
+				x = 2 + 2 * self._scale,
+				y = experience_bg:bottom() + 2 * self._scale,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				text = current_text,
+				layer = -2,
+				color = Color.black
+			})
+
+			local next_level_text = extras_panel:text({
+				name = "next_level_text",
+				font = tweak_data.menu.pd2_large_font,
+				x = -2,
+				y = experience_bg:bottom(),
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				text = next_text,
+				align = "right"
+			})
+			local next_level_text_shadow = extras_panel:text({
+				name = "next_level_text_shadow",
+				font = tweak_data.menu.pd2_large_font,
+				y = experience_bg:bottom() + 2,
+				font_size = tweak_data.hud_stats.day_description_size * self._scale,
+				text = next_text,
+				layer = -2,
+				color = Color.black,
+				align = "right"
+			})
 		end
 
 		
