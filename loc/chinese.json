@@ -240,8 +240,8 @@
 	"VoidUI_scoreboard_civs_desc" : "显示玩家击杀平民的数量",
 	"VoidUI_scoreboard_downs_title" : "显示倒地次数",
 	"VoidUI_scoreboard_downs_desc" : "显示玩家被击倒的次数",
-	"VoidUI_scoreboard_downs_no_reset_title" : "Show Total Downs",
-	"VoidUI_scoreboard_downs_no_reset_desc" : "Shows the total amount of downs per heist",
+	"VoidUI_scoreboard_downs_no_reset_title" : "显示总倒地次数",
+	"VoidUI_scoreboard_downs_no_reset_desc" : "显示每个劫案的总倒地次数",
 	"VoidUI_scoreboard_weapons_title" : "显示武器/BOT的面具",
 	"VoidUI_scoreboard_weapons_desc" : "显示玩家的主要武器、次要武器(或BOT面具)和近战武器",
 	"VoidUI_scoreboard_armor_title" : "显示护甲",
@@ -390,6 +390,6 @@
 	"VoidUI_blue" : "蓝色",
 	"VoidUI_not_ai" : "仅玩家",
 
-	"VoidUI_fire_volley" : "Volley"
+	"VoidUI_fire_volley" : "抽射"
 	
 }
