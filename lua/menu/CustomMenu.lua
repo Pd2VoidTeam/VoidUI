@@ -16,6 +16,20 @@ function do_animation(TOTAL_T, clbk)
 end
 
 VoidUIMenu = VoidUIMenu or class()
+--Overrides for the VoidUI Extensions;
+VoidUIMenu.default_menu = "options" --The default menu to open
+VoidUIMenu.MainClass = VoidUI or {} --The main class
+--[[
+	Stuff that has to be provided for new menu class instance using VoidUI_IB as example;
+
+	VoidUI_IB_Menu = VoidUI_IB_Menu or class(VoidUIMenu)
+
+	VoidUI_IB_Menu.menus = {}
+
+	VoidUI_IB_Menu.default_menu = "options" --The default menu to open
+	VoidUI_IB_Menu.MainClass = VoidUI_IB and VoidUI_IB or {} --The main class
+
+]]
 function VoidUIMenu:init()
 	self._ws = managers.gui_data:create_fullscreen_16_9_workspace()
 	self._ws:connect_keyboard(Input:keyboard())
@@ -132,11 +146,11 @@ function VoidUIMenu:init()
 		end
 	end
 	
-	if VoidUI.menus and #VoidUI.menus > 0 then
-		for _, menu in pairs(VoidUI.menus) do
+	if self.MainClass.menus and #self.MainClass.menus > 0 then
+		for _, menu in pairs(self.MainClass.menus) do
 			self:GetMenuFromJson(menu)
 		end
-		self:OpenMenu("options")
+		self:OpenMenu(self.default_menu)
 	end
 	
 	if VoidUI.Warning == 1 then
@@ -211,17 +225,21 @@ function VoidUIMenu:Open()
 			self._panel:set_alpha(math.lerp(a, 1, p))
 		end)
 		self._controller:enable()
+		local cb = callback(self, self, "update")
+		Hooks:PostHook(MenuManager, "update", "update_menu_VoidUI", function(self, t, dt)
+			cb(t, dt)
+		end)
 	end)
 end
-function VoidUIMenu:Close()
+function VoidUIMenu:Close(soft)
 	self._enabled = false
 	managers.mouse_pointer:remove_mouse(self._mouse_id)
 	if self._controller then
 		self._controller:destroy()
 		self._controller = nil
 	end
-	VoidUI:Save()
-	
+	self.MainClass:Save()
+	Hooks:RemovePostHook("update_menu_VoidUI")
 	self._panel:stop()
 	self._panel:animate(function(o)
 		local a = self._panel:alpha()
@@ -231,9 +249,11 @@ function VoidUIMenu:Close()
 		end)
 		
 		self._panel:set_alpha(0)
-		managers.menu._input_enabled = true
-		for _, menu in ipairs(managers.menu._open_menus) do
-			menu.input._controller:enable()
+		if not soft then
+			managers.menu._input_enabled = true
+			for _, menu in ipairs(managers.menu._open_menus) do
+				menu.input._controller:enable()
+			end
 		end
 	end)
 end
@@ -301,7 +321,7 @@ function VoidUIMenu:mouse_press(o, button, x, y)
 					if alive(item) and item:inside(x,y) and item:alpha() == 1 then
 						local parent_item = self._open_choice_dialog.parent_item
 						parent_item.panel:child("title_selected"):set_text(self._open_choice_dialog.items[i]:text())
-						VoidUI.options[parent_item.id] = i
+						self.MainClass.options[parent_item.id] = i
 						parent_item.value = i
 						self:CloseMultipleChoicePanel()
 						self:CreateChangeWarning()
@@ -359,7 +379,7 @@ function VoidUIMenu:Confirm()
 			if alive(item) and self._open_choice_dialog.selected == i then
 				local parent_item = self._open_choice_dialog.parent_item
 				parent_item.panel:child("title_selected"):set_text(self._open_choice_dialog.items[i]:text())
-				VoidUI.options[parent_item.id] = i
+				self.MainClass.options[parent_item.id] = i
 				parent_item.value = i
 				self:CloseMultipleChoicePanel()
 				self:CreateChangeWarning()
@@ -516,11 +536,11 @@ function VoidUIMenu:SetMenuItemsEnabled(menu)
 	for _, item in pairs(menu.items) do
 		local enabled, parents = true, item.parent
 		if parents and type(parents) == "string" then
-			enabled = VoidUI.options[parents]
+			enabled = self.MainClass.options[parents]
 		elseif parents and type(parents) == "table" then
 			for _, parent in pairs(parents) do
-				if VoidUI.options[parent] == false then
-					enabled = VoidUI.options[parent]
+				if self.MainClass.options[parent] == false then
+					enabled = self.MainClass.options[parent]
 				end
 			end
 		end
@@ -616,7 +636,7 @@ function VoidUIMenu:SetItem(item, value, menu)
 	if item and type(item) == "table" and item.default_value ~= nil then
 		if item.type == "toggle" then
 			item.value = value
-			VoidUI.options[item.id] = value
+			self.MainClass.options[item.id] = value
 			
 			item.panel:child("check"):stop()
 			item.panel:child("check"):animate(function(o)
@@ -637,16 +657,16 @@ function VoidUIMenu:SetItem(item, value, menu)
 			item.panel:child("value_text"):set_text(item.percentage and math.floor(value * 100).."%" or value ..(item.suffix and item.suffix or ""))
 			value = tonumber(value)
 			item.value = value
-			VoidUI.options[item.id] = value
+			self.MainClass.options[item.id] = value
 		elseif item.type == "multiple_choice" then
 			item.panel:child("title_selected"):set_text(item.items[value])
 			item.value = value
-			VoidUI.options[item.id] = value
+			self.MainClass.options[item.id] = value
 		elseif item.type == "color_select" then
 			value = Color(unpack(value))
 			item.panel:child("color"):set_color(value)
 			item.value = value
-			VoidUI.options[item.id] = {value.red, value.green, value.blue}
+			self.MainClass.options[item.id] = {value.red, value.green, value.blue}
 		end
 		self:CreateChangeWarning()
 		if item.callback then
@@ -691,16 +711,16 @@ function VoidUIMenu:GetMenuFromJson(path)
 			local default_value = item.default_value
 			local parents = item.parent
 			local enabled = true
-			if VoidUI.options and VoidUI.options[item.id] ~= nil then
-				value = VoidUI.options[item.id]
+			if self.MainClass.options and self.MainClass.options[item.id] ~= nil then
+				value = self.MainClass.options[item.id]
 			end
 			
-			if parents ~= nil and type(parents) == "string" and VoidUI.options[parents] ~= nil then
-				enabled = VoidUI.options[parents]
+			if parents ~= nil and type(parents) == "string" and self.MainClass.options[parents] ~= nil then
+				enabled = self.MainClass.options[parents]
 			elseif parents ~= nil and type(parents) == "table" then
 				for _, parent in pairs(parents) do
-					if VoidUI.options[parent] == false and VoidUI.options[parent] ~= nil then
-						enabled = VoidUI.options[parent]
+					if self.MainClass.options[parent] == false and self.MainClass.options[parent] ~= nil then
+						enabled = self.MainClass.options[parent]
 					end
 				end
 			elseif item.enabled ~= nil then
@@ -1131,7 +1151,7 @@ function VoidUIMenu:SetSlider(item, x, add)
 		value_bar:set_w(math.max(1,item.panel:w() * percentage))
 		value_text:set_text(item.percentage and math.floor(value * 100).."%" or value ..(item.suffix and item.suffix or ""))
 		item.value = value
-		VoidUI.options[item.id] = tonumber(value)
+		self.MainClass.options[item.id] = tonumber(value)
 	end
 end
 --Multiple Choice Items
@@ -1591,11 +1611,11 @@ function VoidUIMenu:CloseColorMenu(save)
 		self._open_color_dialog.parent_item.panel:parent():remove(self._open_color_dialog.panel)
 		if save then
 			local color = self._open_color_dialog.color
-			VoidUI.options[self._open_color_dialog.parent_item.id] = {color.red, color.green, color.blue}
+			self.MainClass.options[self._open_color_dialog.parent_item.id] = {color.red, color.green, color.blue}
 			self._open_color_dialog.parent_item.value = color
 			self:CreateChangeWarning()
 		end
-		local option_color = VoidUI.options[self._open_color_dialog.parent_item.id]
+		local option_color = self.MainClass.options[self._open_color_dialog.parent_item.id]
 		self._open_color_dialog.parent_item.panel:child("color"):set_color(Color(option_color[1], option_color[2], option_color[3]))
 		self._open_color_dialog = nil
 	end)
@@ -1607,11 +1627,11 @@ function VoidUIMenu:ResetOptions()
 	local buttons = {{ 
 		text = managers.localization:text("dialog_yes"), 
 		callback = function()
-			VoidUI:DefaultConfig()
+			self.MainClass:DefaultConfig()
 			for _, menu in pairs(self._menus) do
 				for _, item in pairs(menu.items) do 
 					if item.value ~= nil and item.default_value ~= nil then
-						self:SetItem(item, VoidUI.options[item.id], menu)
+						self:SetItem(item, self.MainClass.options[item.id], menu)
 					end
 				end
 			end
