@@ -1678,8 +1678,9 @@ if VoidUI.options.enable_stats then
 				local outfit = peer and peer:blackmarket_outfit()
 				local level = "" 
 				if peer then 
-					if peer:user_id() then
-						dohttpreq("http://steamcommunity.com/profiles/" .. peer:user_id() .. "/games/?tab=recent", callback(self, self, 'get_hours'))
+					local user_id = peer:user_id()
+					if user_id then
+						dohttpreq("http://steamcommunity.com/profiles/" .. user_id .. "/?l=english", callback(self, self, 'get_hours'))
 					end
 					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
 					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
@@ -1795,38 +1796,37 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:get_hours(webpage)
-			if not self._panel or not self._panel:child("hours") then
+			local hours = self._panel:child("hours")
+			if not self._panel or not hours then
 				return
 			end
 			
-			local hours = self._panel:child("hours")
-			local hours_played = managers.localization:text("VoidUI_error")
 			hours:set_wrap(true)
-			local start_pos = select(2, webpage:find("var rgGames =."))
+			local hours_played = managers.localization:text("VoidUI_error")
+			local div_tag = "<div class=\"game_info_details\">"
+
+			local start_pos = webpage:find(div_tag)
 			if start_pos then
-				local tables = json.decode(webpage:sub(start_pos, webpage:find(".var rgChangingGames", start_pos)))
-				if tables and #tables == 0 then
-					hours_played = managers.localization:text("VoidUI_hidden")
-				elseif tables and #tables > 0 then
-					for i = 1, #tables do
-						if tables[i].appid == 218620 then
-							hours_played = tables[i].hours_forever:gsub(",", "") .. "h"
-							hours:set_wrap(false)
-						end
-					end
+				local end_pos = webpage:find("hrs on record")
+				if end_pos then
+					hours_played = webpage:sub(start_pos + #div_tag, end_pos):gsub("%s+", "")
+					hours:set_wrap(false)
 				end
 			elseif webpage:find("profile_private_info") then
 				hours_played = managers.localization:text("VoidUI_private")
-				hours:set_wrap(true)
+			elseif webpage:find("store.steampowered.com") then
+				hours_played = managers.localization:text("VoidUI_hidden")
 			end
-			hours:set_text(hours_played)
+
 			local size = 15 * self._scale
+			hours:set_text(hours_played)
 			hours:set_font_size(size)
 			local hours_w = select(3, hours:text_rect())
 			if hours_w > hours:w() then
 				hours:set_font_size(size * (hours:w()/ hours_w))
 			end
 		end
+
 		function HUDScoreboard:set_ping(ping)
 			local ping_text = self._panel:child("ping")
 			local color = Color.green
