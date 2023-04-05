@@ -632,7 +632,7 @@ if VoidUI.options.enable_stats then
 				name = "pagers_text",
 				font_size = 20 * self._scale,
 				font = "fonts/font_medium_mf",
-				text = "\n\n" .. managers.localization:text("hud_stats_pagers_used") .. " " .. tostring(pagers_used) .. "/" .. tostring(max_num_pagers),
+				text = "\n\n" .. managers.localization:text("hud_stats_pagers_used") .. ": " .. tostring(pagers_used) .. "/" .. tostring(max_num_pagers),
 				align = "right",
 				layer = 1,
 				visible = managers.groupai and managers.groupai:state():whisper_mode()
@@ -654,6 +654,32 @@ if VoidUI.options.enable_stats then
 			managers.hud:make_fine_text(pagers_text_shadow)
 			pagers_text_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
 			pagers_text_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
+			local jokers_count = extras_panel:text({
+				name = "jokers_count",
+				text = "\n\n" .. managers.localization:text("hud_stats_enemies_converted") .. ": " .. tostring(managers.player:num_local_minions()),
+				font = "fonts/font_medium_mf",
+				font_size = 20 * self._scale,
+				align = "right",
+				layer = 1,
+				visible = not (managers.groupai and managers.groupai:state():whisper_mode())
+			})
+			managers.hud:make_fine_text(jokers_count)
+			jokers_count:set_center_x(extras_panel:w() / 2)
+			jokers_count:set_top(extras_panel:h() / (3 / self._scale))
+			local jokers_count_shadow = extras_panel:text({
+				name = "jokers_count_shadow",
+				font_size = 20 * self._scale,
+				font = "fonts/font_medium_mf",
+				text = jokers_count:text(),
+				align = "right",
+				color = Color.black,
+				layer = -2,
+				rotation = 360,
+				visible = not (managers.groupai and managers.groupai:state():whisper_mode())
+			})
+			managers.hud:make_fine_text(jokers_count_shadow)
+			jokers_count_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
+			jokers_count_shadow:set_top(extras_panel:h() / (3 / self._scale) + 2 * self._scale)
 			if self._scoreboard_panels and #self._scoreboard_panels > 0 and managers.achievment and #managers.achievment:get_tracked_fill() then
 				local toggle_text = extras_panel:text({
 					name = "track_text",
