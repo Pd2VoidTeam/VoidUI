@@ -1,3 +1,9 @@
+Version 1.2.9.11 (2022.04.06)
+  - Fixed the scoreboard showing steam error instead of player hours
+  - Added a jokers tracker to the scoreboard
+  - Allow Extensions to use VoidUI Menu much easier by MiamiCenterPL
+  - Updated Chinese localization by CoolLKKPS
+
 Version 1.2.9.10 (2022.12.17)
  - Modified the scoreboard xp panel so it shows xp gain for infamy pool
  - Fixed crash on the Criminal Carol event when the scoreboard was enabled
