@@ -661,7 +661,7 @@ if VoidUI.options.enable_stats then
 				font_size = 20 * self._scale,
 				align = "right",
 				layer = 1,
-				visible = not (managers.groupai and managers.groupai:state():whisper_mode())
+				visible = managers.player:has_category_upgrade("player", "convert_enemies") and not (managers.groupai and managers.groupai:state():whisper_mode())
 			})
 			managers.hud:make_fine_text(jokers_count)
 			jokers_count:set_center_x(extras_panel:w() / 2)
@@ -675,7 +675,7 @@ if VoidUI.options.enable_stats then
 				color = Color.black,
 				layer = -2,
 				rotation = 360,
-				visible = not (managers.groupai and managers.groupai:state():whisper_mode())
+				visible = managers.player:has_category_upgrade("player", "convert_enemies") and not (managers.groupai and managers.groupai:state():whisper_mode())
 			})
 			managers.hud:make_fine_text(jokers_count_shadow)
 			jokers_count_shadow:set_center_x(extras_panel:w() / 2 + 2 * self._scale)
