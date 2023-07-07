@@ -195,7 +195,7 @@ if VoidUI.options.enable_timer then
 	end
 	function HUDHeistTimer:loot_value_changed()
 			local bags_panel = self._heist_timer_panel:child("bags_panel")
-			local bags_count = bags_panel:child("bags_count")
+			local bags_count = bags_panel and bags_panel:child("bags_count")
 		if VoidUI.options.show_loot then
 			local secured_value = managers.loot:get_secured_mandatory_bags_amount() + managers.loot:get_secured_bonus_bags_amount()
 			if bags_panel:visible() == false and secured_value ~= 0 then

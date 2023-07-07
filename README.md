@@ -1,12 +1,14 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in 1.2.6.11 (2023.04.06)
- - Fixed the scoreboard showing steam error instead of player hours
- - Added a jokers tracker to the scoreboard
- - Allow Extensions to use VoidUI Menu much easier by MiamiCenterPL
- - Updated Chinese localization by CoolLKKPS
- - If you have two Void folders in the mods folder, delete the VoidUI folder and restart the game and update though the in game updater
+## Whats new in Version 1.2.9.12 (2023.07.07)
+  - Added sanity check to prevent crashing with the Scoreboard when using bot boosts and skills
+  - Fixed a crash with the Scoreboard when clicking on joining users mod list on the Epic version
+  - Disabled voice on the Epic version to prevent a crash
+  - Added a sanity check to prevent a crash with the bags_panel
+  - Attempt at fixing joker crash
+  - Fixed Chinese localization not working
+  - If you have two Void folders in the mods folder, delete the VoidUI folder and restart the game and update though the in game updater
 
 ## Credits
 - Most of the hud made by Xeletron

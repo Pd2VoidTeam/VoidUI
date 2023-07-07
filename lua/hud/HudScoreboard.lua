@@ -1779,7 +1779,9 @@ if VoidUI.options.enable_stats then
 					local ability = tweak_data.upgrades.crew_ability_definitions[loadout.ability]
 					if ability then 
 						local icon, rect = tweak_data.hud_icons:get_icon_data(ability.icon)
-						perk_icon:set_image(icon, unpack(rect))	
+						if perk_icon then
+							perk_icon:set_image(icon, unpack(rect))
+						end
 					else
 						perk_icon:set_image("guis/textures/pd2/add_icon")
 					end
@@ -1787,7 +1789,9 @@ if VoidUI.options.enable_stats then
 					local skill = tweak_data.upgrades.crew_skill_definitions[loadout.skill]
 					if skill then 
 						local icon, rect = tweak_data.hud_icons:get_icon_data(skill.icon)
-						skill_icon:set_image(icon, unpack(rect))	
+						if skill_icon then
+							skill_icon:set_image(icon, unpack(rect))
+						end
 					else
 						skill_icon:set_image("guis/textures/pd2/add_icon")
 					end

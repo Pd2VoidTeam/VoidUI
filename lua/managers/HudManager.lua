@@ -1818,7 +1818,7 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 			elseif not ctrl() and self._joining_mods then
 				for _, mod in ipairs(self._joining_mods) do
 					if mod:inside(x,y) then
-						Steam:overlay_activate("url", "www.google.com/search?q=Payday+2+" .. mod:text():gsub(" ", "%+"))
+						managers.network.account:overlay_activate("url", "www.google.com/search?q=Payday+2+" .. mod:text():gsub(" ", "%+"))
 						break
 					end
 				end	

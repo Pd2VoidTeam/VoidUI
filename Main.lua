@@ -84,9 +84,7 @@ Hooks:Add("LocalizationManagerPostInit", "VoidUI_Localization", function(loc)
 	local loc_path = VoidUI.mod_path .. "loc/"
 
 	if file.DirectoryExists(loc_path) then
-		if BLT.Localization._current == 'cht' or BLT.Localization._current == 'zh-cn' then
-			loc:load_localization_file(loc_path .. "chinese.json")
-		elseif BLT.Localization._current == 'pt-br' then
+		if BLT.Localization._current == 'pt-br' then
 			loc:load_localization_file(loc_path .. "portuguese.json")
 		else
 			for _, filename in pairs(file.GetFiles(loc_path)) do
