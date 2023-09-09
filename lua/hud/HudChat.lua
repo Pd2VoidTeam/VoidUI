@@ -35,7 +35,7 @@ if VoidUI.options.enable_chat then
 		self._panel:text({
 			name = "debug",
 			text = "",
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_small_font_size * 0.8 * self._scale,
 			x = 0,
 			y = 0,
@@ -90,7 +90,7 @@ if VoidUI.options.enable_chat then
 		local input_text = self._input_panel:text({
 			name = "input_text",
 			text = "",
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_small_font_size * 0.8 * self._scale,
 			x = 2,
 			y = 0,
@@ -178,7 +178,7 @@ if VoidUI.options.enable_chat then
 		local line = panel:text({
 			name = "line",
 			text = full_message,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_small_font_size * 0.85 * self._scale,
 			x = 0,
 			y = 0,
@@ -196,7 +196,7 @@ if VoidUI.options.enable_chat then
 		local line_shadow = panel:text({
 			name = "line_shadow",
 			text = full_message,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.menu.pd2_small_font_size * 0.85 * self._scale,
 			x = 1,
 			y = 1,

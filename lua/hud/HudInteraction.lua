@@ -26,7 +26,7 @@ if VoidUI.options.enable_interact then
 			layer = 11,
 			color = Color.black,
 			visible = false,
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
 		})
@@ -38,7 +38,7 @@ if VoidUI.options.enable_interact then
 			align = "center",
 			layer = 12,
 			visible = false,
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 64 * self._scale
 		})
@@ -53,7 +53,7 @@ if VoidUI.options.enable_interact then
 			visible = false,
 			color = Color(1, 0.3, 0.3),
 			blend_mode = "normal",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			font_size = tweak_data.hud_present.text_size / 1.2 * self._scale,
 			h = 32 * self._scale
 		})
@@ -66,7 +66,7 @@ if VoidUI.options.enable_interact then
 			align = "center",
 			layer = 2,
 			color = Color.white,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.hud_present.text_size / 1.5 * self._scale,
 			h = 32 * self._scale
 		})
@@ -79,7 +79,7 @@ if VoidUI.options.enable_interact then
 			align = "center",
 			layer = 1,
 			color = Color.black,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			font_size = tweak_data.hud_present.text_size / 1.5 * self._scale,
 			h = 32 * self._scale
 		})		
