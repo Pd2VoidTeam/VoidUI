@@ -59,7 +59,7 @@ if VoidUI.options.teammate_panels then
 			color = Color.white,
 			vertical = "bottom",
 			font_size = 19,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			visible = false
 		})
 		local name_shadow = custom_player_panel:text({
@@ -69,7 +69,7 @@ if VoidUI.options.teammate_panels then
 			color = Color.black,
 			vertical = "bottom",
 			font_size = 19,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			visible = false
 		})
 		local health_panel = custom_player_panel:panel({
@@ -164,7 +164,7 @@ if VoidUI.options.teammate_panels then
 			text = "100",
 			vertical = "bottom",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 5,
 			color = Color.white
 		})	
@@ -178,7 +178,7 @@ if VoidUI.options.teammate_panels then
 			text = "x0",
 			vertical = "top",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 5,
 			color = Color.white,
 		})	
@@ -193,7 +193,7 @@ if VoidUI.options.teammate_panels then
 			text = "75%",
 			vertical = "top",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 5,
 			color = Color.white,
 			visible = false
@@ -238,7 +238,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 5,
 			color = Color.white
 		})	
@@ -261,7 +261,7 @@ if VoidUI.options.teammate_panels then
 			text = "15",
 			vertical = "bottom",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 9,
 			color = Color.white
 		})
@@ -348,7 +348,7 @@ if VoidUI.options.teammate_panels then
 			text = "000/000",
 			vertical = "center",
 			align = self._main_player and"left" or "right",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
@@ -363,7 +363,7 @@ if VoidUI.options.teammate_panels then
 			text = "Semi",
 			vertical = "center",
 			align = "left",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
@@ -379,7 +379,7 @@ if VoidUI.options.teammate_panels then
 			text = "+1",
 			vertical = "bottom",
 			align = "left",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			layer = 3,
 			alpha = 0,
 			color = Color(0.2, 0.5, 0.2)
@@ -414,7 +414,7 @@ if VoidUI.options.teammate_panels then
 			text = "000/000",
 			vertical = "center",
 			align = self._main_player and"left" or "right",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			color = self._fore_color,
 			layer = 3,
 			alpha = 1,
@@ -429,7 +429,7 @@ if VoidUI.options.teammate_panels then
 			text = "Semi",
 			vertical = "center",
 			align = "left",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			color = self._fore_color,
 			layer = 3,
 			visible = self._main_player and true or false
@@ -445,7 +445,7 @@ if VoidUI.options.teammate_panels then
 			text = "+1",
 			vertical = "bottom",
 			align = "left",
-			font = "fonts/font_large_mf",
+			font = tweak_data.menu.pd2_large_font,
 			layer = 3,
 			alpha = 0,
 			color = Color(0.2, 0.5, 0.2)
@@ -499,7 +499,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 3,
 			alpha = 1,
 		})
@@ -544,7 +544,7 @@ if VoidUI.options.teammate_panels then
 			text = "x0",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 3,
 			alpha = 1,
 		})
@@ -601,7 +601,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "bottom",
 			align = "right",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 4,
 			alpha = 1,
 		})	
@@ -614,7 +614,7 @@ if VoidUI.options.teammate_panels then
 			text = "",
 			vertical = "top",
 			align = "right",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 4,
 			alpha = 1,
 		})	
@@ -690,7 +690,7 @@ if VoidUI.options.teammate_panels then
 			h = 23  * self._mate_scale,
 			vertical = "center",
 			font_size = 18 * self._mate_scale,
-			font = "fonts/font_medium_mf"
+			font = tweak_data.menu.pd2_medium_font
 		})
 		carry_panel:text({
 			name = "name_shadow",
@@ -702,7 +702,7 @@ if VoidUI.options.teammate_panels then
 			h = 24  * self._mate_scale,
 			vertical = "center",
 			font_size = 18 * self._mate_scale,
-			font = "fonts/font_medium_mf"
+			font = tweak_data.menu.pd2_medium_font
 		})
 		local interact_panel = custom_player_panel:panel({
 			name = "interact_panel",
@@ -718,7 +718,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "bottom",
 			align = self._main_player and "right" or "left",
 			font_size = 19 * self._mate_scale,
-			font = "fonts/font_medium_noshadow_mf"
+			font = tweak_data.menu.medium_font_no_outline
 		})
 		interact_text:set_bottom(self._main_player and health_panel:top() - self._equipment_panel_h or health_panel:top() - 1)
 		interact_text:set_x(self._main_player and 0 or 9 * self._mate_scale)
@@ -730,7 +730,7 @@ if VoidUI.options.teammate_panels then
 			vertical = "bottom",
 			align = self._main_player and "right" or "left",
 			font_size = 19 * self._mate_scale,
-			font = "fonts/font_medium_noshadow_mf"
+			font = tweak_data.menu.medium_font_no_outline
 		})
 		interact_text_shadow:set_position(interact_text:x() + 1, interact_text:y() + 1)
 		local interact_bar = interact_panel:bitmap({
@@ -751,7 +751,7 @@ if VoidUI.options.teammate_panels then
 			text = "3s",
 			vertical = "bottom",
 			align = "center",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 6,
 			color = Color.white
 		})	
@@ -1607,7 +1607,7 @@ if VoidUI.options.teammate_panels then
 			amount = equipment_panel:child("amount") or equipment_panel:text({
 				name = "amount",
 				text = "x"..tostring(data.amount),
-				font = "fonts/font_small_shadow_mf",
+				font = tweak_data.menu.small_font,
 				font_size = self._main_player and 12 or 10,
 				align = "right",
 				vertical = "bottom",
@@ -1709,7 +1709,7 @@ if VoidUI.options.teammate_panels then
 			font_size = 19,
 			vertical = "bottom",
 			layer = 1,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			text = "Name"
 		})
 		local name_shadow = panel:text({
@@ -1717,7 +1717,7 @@ if VoidUI.options.teammate_panels then
 			font_size = 19,
 			vertical = "bottom",
 			color = Color.black,
-			font = "fonts/font_medium_mf",
+			font = tweak_data.menu.pd2_medium_font,
 			text = "Name"
 		})
 		local player_panel = self._custom_player_panel
@@ -1768,7 +1768,7 @@ if VoidUI.options.teammate_panels then
 			w = self._health_value,
 			h = self._health_value,
 			font_size = self._health_value / 1.7,
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			layer = 3,
 			text = "75%",
 			vertical = "bottom",
@@ -1876,7 +1876,7 @@ if VoidUI.options.teammate_panels then
 			name = "amount",
 			visible = vis_at_start,
 			text = "x0",
-			font = "fonts/font_medium_noshadow_mf",
+			font = tweak_data.menu.medium_font_no_outline,
 			vertical = "bottom",
 			align = "right",
 			layer = 2,
@@ -2029,7 +2029,7 @@ if VoidUI.options.teammate_panels then
 				align = "left",
 				font_size = prev_size,
 				rotation = 360,
-				font = "fonts/font_medium_noshadow_mf"
+				font = tweak_data.menu.medium_font_no_outline
 			})
 			text:set_bottom(self._custom_player_panel:child("health_panel"):top() - 1)
 			text:set_x(9 * self._mate_scale)

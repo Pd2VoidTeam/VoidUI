@@ -536,4 +536,8 @@ if VoidUI.options.enable_chat then
 			if o then managers.mouse_pointer:set_pointer_image("arrow") end
 		end
 	end
+
+	function HUDChat:set_output_alpha(alpha)
+		self._panel:child("output_panel"):set_alpha(alpha)
+	end
 end

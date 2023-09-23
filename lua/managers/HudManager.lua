@@ -796,7 +796,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "action",
 				rotation = 360,
 				text = "Fixing",
-				font = "fonts/font_medium_shadow_mf",
+				font = tweak_data.menu.medium_font,
 				font_size = (tweak_data.hud.name_label_font_size / 1.3) * large_scale,
 				color = crim_color,
 				align = "center",
@@ -1045,7 +1045,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "bag_number",
 				visible = false,
 				text = utf8.to_upper(""),
-				font = "fonts/font_medium_shadow_mf",
+				font = tweak_data.menu.medium_font,
 				font_size = tweak_data.hud.small_name_label_font_size,
 				color = Color.white,
 				align = "center",
@@ -1059,7 +1059,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "action",
 				rotation = 360,
 				text = "Fixing",
-				font = "fonts/font_medium_shadow_mf",
+				font = tweak_data.menu.medium_font,
 				font_size = tweak_data.hud.name_label_font_size / 1.3,
 				color = crim_color,
 				align = "center",
@@ -1128,7 +1128,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "min_bag_number",
 				visible = false,
 				text = utf8.to_upper(""),
-				font = "fonts/font_medium_shadow_mf",
+				font = tweak_data.menu.medium_font,
 				font_size = tweak_data.hud.small_name_label_font_size / 1.5,
 				color = Color.white,
 				align = "center",
@@ -1314,7 +1314,6 @@ elseif RequiredScript == "lib/managers/hud/hudwaitinglegend" and VoidUI.options.
 			layer = 1,
 			font_size = tweak_data.hud_players.name_size,
 			font = tweak_data.hud_players.name_font,
-
 			y = PADDING
 		})
 		managers.hud:make_fine_text(self._btn_text)

@@ -1677,8 +1677,8 @@ if VoidUI.options.enable_stats then
 				local color = tweak_data.chat_colors[self._color_id] or Color.white
 				local outfit = peer and peer:blackmarket_outfit()
 				local level = "" 
-				if peer then 
-					local user_id = peer:user_id()
+				if peer and peer:account_type_str() == "STEAM" then 
+					local user_id = peer:account_id()
 					if user_id then
 						dohttpreq("http://steamcommunity.com/profiles/" .. user_id .. "/?l=english", callback(self, self, 'get_hours'))
 					end
