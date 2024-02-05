@@ -7,9 +7,9 @@ if RequiredScript == "lib/managers/hudmanager" then
 			managers.hud:assault_anticipation()
 		end
 		
-		show_endscreen_hud = HUDManager.show_endscreen_hud
+		local show_endscreen_hud_original = HUDManager.show_endscreen_hud
 		function HUDManager:show_endscreen_hud()
-			show_endscreen_hud(self)
+			show_endscreen_hud_original(self)
 			self._hud_assault_corner:stop_ecm()
 		end
 	end
