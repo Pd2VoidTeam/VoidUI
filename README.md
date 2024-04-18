@@ -1,11 +1,8 @@
 # VoidUI
 VoidUI is a UI mod for PAYDAY 2. It features an overhaul of the default HUD  
 
-## Whats new in Version 1.2.9.14 (2024.04.14)
-  - Attempted to fix newer language fonts not working
-  - Fixed chat not dissapearing
-  - Fixed playhours not displaying on the scoreboard
-  - Fixed a potential stack overflow crash
+## Whats new in Version 1.2.9.15 (2024.04.18)
+  - Made the HUD textures look the same regardless of the games texture settings
   - If you have two Void folders in the mods folder, delete the VoidUI folder and restart the game and update though the in game updater
 
 ## Credits

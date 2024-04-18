@@ -1,3 +1,6 @@
+Version 1.2.9.15 (2024.04.18)
+   - Made the HUD textures look the same regardless of the games texture settings
+
 Version 1.2.9.14 (2024.04.14)
   - Attempted to fix newer language fonts not working
   - Fixed chat not dissapearing
