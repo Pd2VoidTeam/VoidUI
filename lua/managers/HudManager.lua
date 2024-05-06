@@ -489,7 +489,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			end
 			
 			local character_data = managers.criminals:character_data_by_peer_id(peer_id)
-			if character_data and self._teammate_panels[character_data.panel_id]._custom_player_panel then
+			if character_data and self._teammate_panels and self._teammate_panels[character_data.panel_id]._custom_player_panel then
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, type_index, tweak_data_id, timer, success)
 			elseif character_data and not self._teammate_panels[character_data.panel_id]._custom_player_panel then 
 				self._teammate_panels[character_data.panel_id]:teammate_progress(enabled, tweak_data_id, timer, success)
