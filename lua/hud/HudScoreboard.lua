@@ -584,7 +584,7 @@ if VoidUI.options.enable_stats then
 			end
 			local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
 			local accuracy = VoidUI.options.scoreboard_accuracy and hit_accuracy and utf8.to_lower(managers.localization:text("menu_stats_hit_accuracy")):gsub("^%l", string.upper).." ".. hit_accuracy.."%" or ""
-			local delay = VoidUI.options.scoreboard_delay and trade_delay and " Ї "..managers.localization:text("hud_trade_delay", {TIME = tostring(self:_get_time_text(trade_delay))}) or ""
+			local delay = VoidUI.options.scoreboard_delay and trade_delay and " Ї "..managers.localization:text("hud_trade_delay", {TIME = tostring(managers.hud._hud_player_custody:_get_time_text(trade_delay))}) or ""
 
 			top_panel:child("loot_stats"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
@@ -718,15 +718,6 @@ if VoidUI.options.enable_stats then
 				toggle_image:set_top(toggle_text:top())
 			end
 		end
-		function HUDStatsScreen:_get_time_text(time)
-			time = math.max(math.floor(time), 0)
-			local minutes = math.floor(time / 60)
-			time = time - minutes * 60
-			local seconds = math.round(time)
-			local text = ""
-	
-			return text .. (minutes < 10 and "0" .. minutes or minutes) .. ":" .. (seconds < 10 and "0" .. seconds or seconds)
-		end	
 		function HUDStatsScreen:_create_mutators_list(mutators_panel)
 			mutators_panel:clear()
 			if not managers.mutators:are_mutators_active() then
