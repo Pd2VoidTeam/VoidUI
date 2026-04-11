@@ -1800,10 +1800,10 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:get_hours(webpage)
-			local hours = self._panel:child("hours")
-			if not self._panel or not hours then
+			if not self._panel then
 				return
 			end
+			local hours = self._panel:child("hours")
 			
 			hours:set_wrap(true)
 			local hours_played = managers.localization:text("VoidUI_error")
