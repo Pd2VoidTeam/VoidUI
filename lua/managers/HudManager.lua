@@ -686,6 +686,22 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			interact:set_w(interact_bg:w())
 		end
 
+		Hooks:PostHook(HUDManager, "mark_cheater", "void_mark_cheater", function(self, peer_id)
+			local name_label = self:_name_label_by_peer_id(peer_id)
+			if name_label then
+				local name_label_panel = name_label.panel
+				name_label_panel:child("cheater"):set_visible(false)
+
+				local extended_panel = name_label_panel:child("extended_panel")
+				extended_panel:child("cheater"):set_visible(true)
+				extended_panel:child("cheater_shadow"):set_visible(true)
+
+				local minmode_panel = name_label_panel:child("minmode_panel")
+				minmode_panel:child("min_cheater"):set_visible(true)
+				minmode_panel:child("min_cheater_shadow"):set_visible(true)
+			end
+		end)
+
 		function HUDManager:_add_name_label(data)
 			data.name = VoidUI.options.label_upper and utf8.to_upper(data.name) or data.name
 			local hud = managers.hud:script(PlayerBase.PLAYER_INFO_HUD_FULLSCREEN_PD2)		
@@ -780,7 +796,33 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				x = 1,
 				y = 1,
 			})
-			
+			local cheater = extended_panel:text({
+				name = "cheater",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = (tweak_data.hud.name_label_font_size / 1.3) * large_scale,
+				color = tweak_data.screen_colors.pro_color,
+				align = "center",
+				layer = -1,
+				visible = false,
+				w = 256 * large_scale,
+				h = 18 * large_scale
+			})
+			local cheater_shadow = extended_panel:text({
+				name = "cheater_shadow",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = (tweak_data.hud.name_label_font_size / 1.3) * large_scale,
+				color = Color.black,
+				align = "center",
+				layer = -2,
+				visible = false,
+				w = 256,
+				h = 18,
+				x = 1,
+				y = 1
+			})
+
 			local bag = extended_panel:bitmap({
 				name = "bag",
 				texture = "guis/textures/pd2/hud_tabs",
@@ -810,7 +852,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "minmode_panel"
 			})
 			local min_text = minmode_panel:text({
-				name = "text",
+				name = "min_text",
 				text = VoidUI.options.label_minrank and data.name or character_name,
 				font = tweak_data.hud.medium_font,
 				font_size = (tweak_data.hud.name_label_font_size / 2) * min_scale,
@@ -826,7 +868,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				min_text:set_range_color(color_range.start, color_range.stop, color_range.color)
 			end
 			local min_text_shadow = minmode_panel:text({
-				name = "text_shadow",
+				name = "min_text_shadow",
 				text = VoidUI.options.label_minrank and data.name or character_name,
 				font = tweak_data.hud.medium_font,
 				font_size = (tweak_data.hud.name_label_font_size / 2) * min_scale,
@@ -839,6 +881,33 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				x = 1,
 				y = 1,
 			})
+			local min_cheater = minmode_panel:text({
+				name = "min_cheater",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = (tweak_data.hud.name_label_font_size / 2.1) * min_scale,
+				color = tweak_data.screen_colors.pro_color,
+				align = "center",
+				layer = -1,
+				visible = false,
+				w = 100,
+				h = 18
+			})
+			local min_cheater_shadow = minmode_panel:text({
+				name = "min_cheater_shadow",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = (tweak_data.hud.name_label_font_size / 2.1) * min_scale,
+				color = Color.black,
+				align = "center",
+				layer = -2,
+				visible = false,
+				w = 100,
+				h = 18,
+				x = 1,
+				y = 1
+			})
+
 			local min_interact = minmode_panel:bitmap({
 				name = "min_interact",
 				h = 2 * min_scale,
@@ -865,7 +934,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				y = 1,
 				rotation = 360
 			})
-			
+
 			self:align_teammate_name_label(panel, interact)
 			table.insert(self._hud.name_labels, {
 				movement = data.unit:movement(),
@@ -886,8 +955,8 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 		function HUDManager:align_teammate_name_label(panel, interact, experience)
 			local minmode_panel = panel:child("minmode_panel")
 			local extended_panel = panel:child("extended_panel")
-			local min_text = minmode_panel:child("text")
-			local min_text_shadow = minmode_panel:child("text_shadow")
+			local min_text = minmode_panel:child("min_text")
+			local min_text_shadow = minmode_panel:child("min_text_shadow")
 			local text = extended_panel:child("text")
 			local text_shadow = extended_panel:child("text_shadow")
 			local action = extended_panel:child("action")
@@ -895,7 +964,10 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local min_bag = minmode_panel:child("min_bag")
 			local bag_number = extended_panel:child("bag_number")
 			local min_bag_number = minmode_panel:child("min_bag_number")
-			local cheater = panel:child("cheater")
+			local cheater = extended_panel:child("cheater")
+			local cheater_shadow = extended_panel:child("cheater_shadow")
+			local min_cheater = minmode_panel:child("min_cheater")
+			local min_cheater_shadow = minmode_panel:child("min_cheater_shadow")
 			local interact_bg = extended_panel:child("interact_bg")
 			local min_interact = minmode_panel:child("min_interact")
 			local min_interact_bg = minmode_panel:child("min_interact_bg")
@@ -903,11 +975,14 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			local _, _, aw, ah = action:text_rect()
 			local _, _, cw, ch = cheater:text_rect()
 			local _, _, mtw, mth = min_text:text_rect()
-			
-			panel:set_size(math.max(tw, cw, aw, mtw) + 4, th + ah + ch)
+			local _, _, mcw, mch = min_cheater:text_rect()
+
+			panel:set_size(math.max(tw, aw, cw, mtw, mcw) + 4, th + ah + ch)
 			cheater:set_size(panel:w(), ch)
-			cheater:set_position(0, 0)
-			
+			cheater_shadow:set_size(panel:w(), ch)
+			cheater_shadow:set_x(1)
+			cheater_shadow:set_y(cheater:y() + 1)
+
 			extended_panel:set_size(panel:w(), panel:h())
 			text:set_size(panel:w(), th)
 			text_shadow:set_size(panel:w(), th)
@@ -931,19 +1006,25 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				bag_number:set_size(bag:w(), bag:h())
 				bag_number:set_center(bag:center())
 			end
-			
-			minmode_panel:set_size(panel:w(), mth + 1)
+
+			minmode_panel:set_size(panel:w(), mth + mch + 1)
 			minmode_panel:set_bottom(text:bottom())
+			min_cheater:set_size(mcw, mch)
+			min_cheater_shadow:set_size(mcw, mch)
+			min_cheater:set_center_x(minmode_panel:center_x())
+			min_cheater:set_y(0)
+			min_cheater_shadow:set_x(min_cheater:x() + 1)
+			min_cheater_shadow:set_y(min_cheater:y() + 1)
 			min_text:set_size(mtw, mth)
 			min_text_shadow:set_size(mtw, mth)
 			min_text:set_center_x(minmode_panel:center_x())
+			min_text:set_top(min_cheater:bottom())
 			min_text_shadow:set_x(min_text:x() + 1)
-			min_text:set_y(0)
-			min_text_shadow:set_y(1)
+			min_text_shadow:set_y(min_text:y() + 1)
 			min_interact:set_w(mtw)
 			min_interact_bg:set_w(min_interact:w())
 			min_interact:set_center_x(min_text:center_x())
-			min_interact_bg:set_center_x(interact:center_x())
+			min_interact_bg:set_center_x(min_interact:center_x())
 			min_interact:set_bottom(min_text:bottom() + 1)
 			min_interact_bg:set_y(min_interact:y())
 			min_bag:set_size(mth, mth * 0.8)
@@ -1028,6 +1109,32 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				x = 1,
 				y = 1,
 			})
+			local cheater = extended_panel:text({
+				name = "cheater",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = tweak_data.hud.name_label_font_size / 1.3,
+				color = tweak_data.screen_colors.pro_color,
+				align = "center",
+				layer = -1,
+				visible = false,
+				w = 256,
+				h = 18
+			})
+			local cheater_shadow = extended_panel:text({
+				name = "cheater_shadow",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = tweak_data.hud.name_label_font_size / 1.3,
+				color = Color.black,
+				align = "center",
+				layer = -2,
+				visible = false,
+				w = 256,
+				h = 18,
+				x = 1,
+				y = 1
+			})
 			
 			local bag = extended_panel:bitmap({
 				name = "bag",
@@ -1073,7 +1180,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name = "minmode_panel"
 			})
 			local min_text = minmode_panel:text({
-				name = "text",
+				name = "min_text",
 				text = vehicle_name,
 				font = tweak_data.hud.medium_font,
 				font_size = tweak_data.hud.name_label_font_size / 2,
@@ -1085,7 +1192,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				h = 18
 			})
 			local min_text_shadow = minmode_panel:text({
-				name = "text_shadow",
+				name = "min_text_shadow",
 				text = vehicle_name,
 				font = tweak_data.hud.medium_font,
 				font_size = tweak_data.hud.name_label_font_size / 2,
@@ -1097,6 +1204,32 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				h = 18,
 				x = 1,
 				y = 1,
+			})
+			local min_cheater = minmode_panel:text({
+				name = "min_cheater",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = tweak_data.hud.name_label_font_size / 2.1,
+				color = tweak_data.screen_colors.pro_color,
+				align = "center",
+				layer = -1,
+				visible = false,
+				w = 100,
+				h = 18
+			})
+			local min_cheater_shadow = minmode_panel:text({
+				name = "min_cheater_shadow",
+				text = managers.localization:text("menu_hud_cheater"),
+				font = tweak_data.hud.medium_font,
+				font_size = tweak_data.hud.name_label_font_size / 2.1,
+				color = Color.black,
+				align = "center",
+				layer = -2,
+				visible = false,
+				w = 100,
+				h = 18,
+				x = 1,
+				y = 1
 			})
 			local min_interact = minmode_panel:bitmap({
 				name = "min_interact",
@@ -1152,7 +1285,6 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 			})
 			return id
 		end
-
 		
 		function HUDManager:set_name_label_carry_info(peer_id, carry_id, value)
 			local name_label = self:_name_label_by_peer_id(peer_id)
@@ -1161,6 +1293,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name_label.panel:child("minmode_panel"):child("min_bag"):set_visible(true)
 			end
 		end
+
 		function HUDManager:set_vehicle_label_carry_info(label_id, value, number)
 			local name_label = self:_get_name_label(label_id)
 			if name_label then
@@ -1172,6 +1305,7 @@ elseif RequiredScript == "lib/managers/hudmanagerpd2" then
 				name_label.panel:child("minmode_panel"):child("min_bag_number"):set_text(number)
 			end
 		end
+
 		function HUDManager:remove_name_label_carry_info(peer_id)
 			local name_label = self:_name_label_by_peer_id(peer_id)
 			if name_label then
@@ -1841,4 +1975,3 @@ elseif RequiredScript == "lib/managers/menumanagerdialogs" and VoidUI.options.en
 		end
 	end
 end
-
