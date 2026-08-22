@@ -1188,18 +1188,25 @@ if VoidUI.options.teammate_panels then
 		pickup:set_text("+0")
 		pickup:set_alpha(0)
 	end
+
 	function HUDTeammate:get_firemode()
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
 		local secondary_ammo_panel = weapons_panel:child("secondary_ammo_panel")
 		local primary_firemode = primary_ammo_panel:child("primary_firemode")
 		local secondary_firemode = secondary_ammo_panel:child("secondary_firemode")
-		local is_primary_auto = tweak_data.weapon[managers.blackmarket:equipped_primary().weapon_id].FIRE_MODE == "auto"
-		local is_primary_volley = tweak_data.weapon[managers.blackmarket:equipped_primary().weapon_id].FIRE_MODE == "volley"
-		local is_sec_auto = tweak_data.weapon[managers.blackmarket:equipped_secondary().weapon_id].FIRE_MODE == "auto"
-		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or is_primary_volley and "VoidUI_fire_volley" or "VoidUI_fire_semi"))
-		secondary_firemode:set_text(managers.localization:text(is_sec_auto and "VoidUI_fire_auto" or "VoidUI_fire_semi"))
-		
+		local bmmgr = managers.blackmarket
+		local primary = bmmgr:equipped_primary()
+		local secondary = bmmgr:equipped_secondary()
+		local primary_tweak_data_firemode = tweak_data.weapon[primary.weapon_id].FIRE_MODE
+		local secondary_tweak_data_firemode = tweak_data.weapon[secondary.weapon_id].FIRE_MODE
+		local is_primary_auto = primary_tweak_data_firemode == "auto"
+		local is_primary_burst = primary_tweak_data_firemode == "burst"
+		local is_primary_volley = primary_tweak_data_firemode == "volley"
+		local is_secondary_auto = secondary_tweak_data_firemode == "auto"
+		local is_secondary_burst = secondary_tweak_data_firemode == "burst"
+		primary_firemode:set_text(managers.localization:text(is_primary_auto and "VoidUI_fire_auto" or is_primary_burst and "VoidUI_fire_burst" or is_primary_volley and "VoidUI_fire_volley" or "VoidUI_fire_semi"))
+		secondary_firemode:set_text(managers.localization:text(is_secondary_auto and "VoidUI_fire_auto" or is_secondary_burst and "VoidUI_fire_burst" or "VoidUI_fire_semi"))
 	end
 
 	function HUDTeammate:set_weapon_firemode(id, firemode)
@@ -1213,18 +1220,22 @@ if VoidUI.options.teammate_panels then
 				primary_firemode:set_text(managers.localization:text("VoidUI_fire_semi"))
 			elseif firemode == "volley" then
 				primary_firemode:set_text(managers.localization:text("VoidUI_fire_volley"))
+			elseif firemode == "burst" then
+				primary_firemode:set_text(managers.localization:text("VoidUI_fire_burst"))
 			else
 				primary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end
 		else
 			if firemode == "single" then
 				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_semi"))
+			elseif firemode == "burst" then
+				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_burst"))
 			else
 				secondary_firemode:set_text(managers.localization:text("VoidUI_fire_auto"))
 			end
 		end
 	end
-	
+
 	function HUDTeammate:set_weapon_firemode_burst(id)
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
 		local primary_ammo_panel = weapons_panel:child("primary_ammo_panel")
@@ -1237,7 +1248,7 @@ if VoidUI.options.teammate_panels then
 			secondary_firemode:set_text(managers.localization:text("VoidUI_fire_burst"))
 		end
 	end
-	
+
 	function HUDTeammate:set_cable_ties_amount(amount)
 		local visible = amount ~= 0
 		local weapons_panel = self._custom_player_panel:child("weapons_panel")
