@@ -589,7 +589,7 @@ if VoidUI.options.enable_stats then
 			top_panel:child("loot_stats"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			local level_data = Global.level_data.level_id and tweak_data.levels[Global.level_data.level_id]
-			music = managers.localization:text("VoidUI_nosong")
+			local music = managers.localization:text("VoidUI_nosong")
 			if level_data and ((level_data.music_ext_start and Global.music_manager.current_music_ext) or (not level_data.music_ext_start and Global.music_manager.current_track)) then
 				music = managers.music:current_track_string()
 			end
@@ -1791,10 +1791,10 @@ if VoidUI.options.enable_stats then
 		end
 		
 		function HUDScoreboard:get_hours(webpage)
-			if not self._panel then
+			local hours = alive(self._panel) and self._panel:child("hours")
+			if not alive(hours) then
 				return
 			end
-			local hours = self._panel:child("hours")
 			
 			hours:set_wrap(true)
 			local hours_played = managers.localization:text("VoidUI_error")
