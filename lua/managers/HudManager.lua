@@ -158,8 +158,8 @@ if RequiredScript == "lib/managers/hudmanager" then
 					end
 					data.text:set_text(name)
 					data.panel:child("extended_panel"):child("text_shadow"):set_text(name)
-					data.minmode_panel:child("text"):set_text(name)
-					data.minmode_panel:child("text_shadow"):set_text(name)
+					data.minmode_panel:child("min_text"):set_text(name)
+					data.minmode_panel:child("min_text_shadow"):set_text(name)
 					self:align_teammate_name_label(data.panel, data.interact)
 				else
 				end
