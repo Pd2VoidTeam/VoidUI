@@ -575,16 +575,16 @@ if VoidUI.options.enable_stats then
 			local player_unit = managers.player:player_unit()
 			local trade_delay = alive(player_unit) and not tweak_data.player.damage.automatic_respawn_time and managers.groupai:state():all_criminals()[managers.player:player_unit():key()] and managers.groupai:state():all_criminals()[managers.player:player_unit():key()].respawn_penalty
 
-			local body_bag = managers.groupai and managers.groupai:state():whisper_mode() and managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount()).." Ї " or ""
+			local body_bag = managers.groupai and managers.groupai:state():whisper_mode() and managers.localization:text("hud_body_bags")..": "..tostring(managers.player:get_body_bags_amount()).." · " or ""
 			local bags = ""
 			if mandatory_amount and mandatory_amount > 0 then
-				bags = " Ї "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": ".. (bonus_amount > 0 and string.format("%d/%d +%d", secured_amount, mandatory_amount, bonus_amount) or string.format("%d/%d", secured_amount, mandatory_amount))
+				bags = " · "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": ".. (bonus_amount > 0 and string.format("%d/%d +%d", secured_amount, mandatory_amount, bonus_amount) or string.format("%d/%d", secured_amount, mandatory_amount))
 			else
-				bags = " Ї "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": "..tostring(bonus_amount)
+				bags = " · "..utf8.to_lower(managers.localization:text("hud_stats_bags_secured")):gsub("^%l", string.upper)..": "..tostring(bonus_amount)
 			end
-			local instant_cash = small_loot > 0 and " Ї "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
+			local instant_cash = small_loot > 0 and " · "..managers.localization:text("hud_instant_cash")..": "..managers.experience:cash_string(small_loot) or ""
 			local accuracy = VoidUI.options.scoreboard_accuracy and hit_accuracy and utf8.to_lower(managers.localization:text("menu_stats_hit_accuracy")):gsub("^%l", string.upper).." ".. hit_accuracy.."%" or ""
-			local delay = VoidUI.options.scoreboard_delay and trade_delay and " Ї "..managers.localization:text("hud_trade_delay", {TIME = tostring(managers.hud._hud_player_custody:_get_time_text(trade_delay))}) or ""
+			local delay = VoidUI.options.scoreboard_delay and trade_delay and " · "..managers.localization:text("hud_trade_delay", {TIME = tostring(managers.hud._hud_player_custody:_get_time_text(trade_delay))}) or ""
 
 			top_panel:child("loot_stats"):set_text(body_bag..accuracy..delay..bags..instant_cash)
 			top_panel:child("loot_stats_shadow"):set_text(body_bag..accuracy..delay..bags..instant_cash)
@@ -1328,7 +1328,7 @@ if VoidUI.options.enable_stats then
 			})
 			local name = self._panel:text({
 				name = "name",
-				text = "XXVЇ100 Almir",
+				text = "XXV·100 Almir",
 				layer = 2,
 				color = Color.white,
 				vertical = "center",
@@ -1674,7 +1674,7 @@ if VoidUI.options.enable_stats then
 						dohttpreq("http://steamcommunity.com/profiles/" .. user_id .. "/?l=english", callback(self, self, 'get_hours'))
 					end
 					local rank = self._main_player and managers.experience:current_rank() or peer:rank()
-					rank = rank and rank > 0 and managers.experience:rank_string(rank).."Ї" or ""
+					rank = rank and rank > 0 and managers.experience:rank_string(rank).."·" or ""
 					local lvl = self._main_player and managers.experience:current_level() or peer:level()
 					level = (rank or "")..(lvl or"").." "
 				end
