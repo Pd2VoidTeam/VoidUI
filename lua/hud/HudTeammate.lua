@@ -887,7 +887,7 @@ if VoidUI.options.teammate_panels then
 		local peer = managers.network:session():peer(self:peer_id())
 		local level = "" 
 		if VoidUI.options.mate_name and peer then 
-			level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "Ї" or "" ) .. (peer:level() and peer:level().. " " or (self:ai() and "" or " "))
+			level = (peer:rank() > 0 and managers.experience:rank_string(peer:rank()) .. "·" or "" ) .. (peer:level() and peer:level().. " " or (self:ai() and "" or " "))
 		end
 		name:set_font_size(19 * (self._mate_scale < 1 and self._mate_scale or 1))
 		name_shadow:set_font_size(19 * (self._mate_scale < 1 and self._mate_scale or 1))
