@@ -82,9 +82,16 @@ if VoidUI.options.enable_voice then
         end
     elseif RequiredScript == "lib/network/matchmaking/networkvoicechatsteam" then
         Hooks:PostHook(NetworkVoiceChatSTEAM, "set_recording", "set_player_voice", function(self, enabled)
-            if managers.hud and (self._voice_enabled == nil or self._voice_enabled ~= enabled) and managers.network and managers.network.session and managers.network:session():local_peer() and managers.network:session():local_peer():id() and SystemInfo:distribution() == Idstring("STEAM") then
-                self._voice_enabled = enabled
-                managers.hud:set_voice({peer_id = managers.network:session():local_peer():id()}, enabled)
+            if IS_STEAM and (self._voice_enabled == nil or self._voice_enabled ~= enabled) then
+                local hudmgr = managers.hud
+                if hudmgr then
+                    local session = managers.network and managers.network:session()
+                    local local_peer = session and session:local_peer()
+                    if local_peer then
+                        self._voice_enabled = enabled
+                        hudmgr:set_voice({peer_id = local_peer:id()}, enabled)
+                    end
+                end
             end
         end)
     end
