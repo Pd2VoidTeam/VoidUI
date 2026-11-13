@@ -226,14 +226,14 @@ if VoidUI.options.enable_interact then
 		self._hud_panel:child("interaction_time_bg"):set_visible(false)
 		
 	end
-	function HUDInteraction:set_bar_valid(valid, text_id)
+	function HUDInteraction:set_bar_valid(valid, text_id, macros)
 		local color = valid and Color.white or Color(1, 0.3, 0.3)
 		self._interact_bar:set_color(color)
 		self._hud_panel:child(self._child_name_text):set_visible(valid)
 		local invalid_text = self._hud_panel:child(self._child_ivalid_name_text)
 		local valid_text = self._hud_panel:child(self._child_name_text)
 		if text_id then
-			invalid_text:set_text(managers.localization:to_upper_text(text_id))
+			invalid_text:set_text(managers.localization:to_upper_text(text_id, macros))
 		end
 		invalid_text:set_visible(not valid)
 		self._hud_panel:child(self._child_name_bg):set_text(valid and valid_text:text() or invalid_text:text())
